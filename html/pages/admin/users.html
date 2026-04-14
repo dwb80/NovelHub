@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户列表 | NovelHub 管理后台</title>
+    <meta name="description" content="NovelHub管理后台-用户列表">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/admin-common.css">
+    <script src="../../assets/js/admin-theme.js"></script>
+    <style>
+        /* 用户页面特有样式 */
+        .user-info { display: flex; align-items: center; gap: 0.75rem; }
+        .user-avatar { width: 40px; height: 40px; border-radius: var(--radius-full); object-fit: cover; }
+        .user-name { font-weight: 500; color: var(--color-text-primary); }
+        .user-email { font-size: 0.75rem; color: var(--color-text-muted); }
+        .role-badge { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500; }
+        .role-badge.admin { background: var(--color-error-bg); color: var(--color-error); }
+        .role-badge.user { background: var(--color-primary-bg); color: var(--color-primary); }
+        .role-badge.author { background: var(--color-success-bg); color: var(--color-success); }
+        .status-badge { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500; }
+        .status-badge.active { background: var(--color-success-bg); color: var(--color-success); }
+        .status-badge.banned { background: var(--color-error-bg); color: var(--color-error); }
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                <span>NovelHub 管理后台</span>
+            </div>
+            <nav class="admin-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        <span>数据看板</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">内容管理</div>
+                    <a href="novels.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                        <span>小说管理</span>
+                    </a>
+                    <a href="chapters.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        <span>章节审核</span>
+                    </a>
+                    <a href="comments.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        <span>评论管理</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">用户管理</div>
+                    <a href="users.html" class="nav-item active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>用户列表</span>
+                    </a>
+                    <a href="openclaw.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10"></path><path d="M12 12L2.5 8.5"></path></svg>
+                        <span>OpenClaw审核</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">系统</div>
+                    <a href="sensitive.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <span>敏感词管理</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span>系统设置</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">用户列表</h1>
+                <div class="admin-actions">
+                    <button class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        新增用户
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="search-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="searchInput" placeholder="搜索用户名、邮箱...">
+                </div>
+                <div class="filter-group">
+                    <label>角色</label>
+                    <select id="roleFilter"><option value="">全部</option><option value="user">普通用户</option><option value="author">作者</option><option value="admin">管理员</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>状态</label>
+                    <select id="statusFilter"><option value="">全部</option><option value="active">正常</option><option value="banned">已封禁</option></select>
+                </div>
+            </div>
+
+            <div class="data-card">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>用户信息</th><th>角色</th><th>注册时间</th><th>最后登录</th><th>状态</th><th>操作</th></tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+                <div class="pagination">
+                    <div class="pagination-info">显示 1-10 条，共 15,234 条</div>
+                    <div class="pagination-btns">
+                        <button class="page-btn" disabled>上一页</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <span>...</span>
+                        <button class="page-btn">1524</button>
+                        <button class="page-btn">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            renderUserTable();
+            bindEvents();
+        });
+
+        function renderUserTable() {
+            const tbody = document.getElementById('userTableBody');
+            let users = [];
+            if (window.MockData && window.MockData.USERS) {
+                users = window.MockData.USERS.slice(0, 10);
+            }
+
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 3rem;">暂无数据</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const roleClass = user.role === 'admin' ? 'admin' : user.role === 'author' ? 'author' : 'user';
+                const roleText = user.role === 'admin' ? '管理员' : user.role === 'author' ? '作者' : '普通用户';
+                return `
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <img src="${user.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + user.id}" alt="${user.username}" class="user-avatar">
+                                <div>
+                                    <div class="user-name">${user.username}</div>
+                                    <div class="user-email">${user.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge ${roleClass}">${roleText}</span></td>
+                        <td>${new Date(user.created_at).toLocaleDateString('zh-CN')}</td>
+                        <td>${new Date(user.last_login).toLocaleDateString('zh-CN')}</td>
+                        <td><span class="status-badge active">正常</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-icon-sm" title="编辑"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                                <button class="btn-icon-sm" title="封禁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function bindEvents() {
+            document.getElementById('searchInput').addEventListener('input', debounce(renderUserTable, 300));
+            document.getElementById('roleFilter').addEventListener('change', renderUserTable);
+            document.getElementById('statusFilter').addEventListener('change', renderUserTable);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+    </script>
+</body>
+</html>

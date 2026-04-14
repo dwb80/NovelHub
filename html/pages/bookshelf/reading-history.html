@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 修复：添加 meta description 提升 SEO -->
+    <meta name="description" content="NovelHub 阅读历史 - 查看您的小说阅读记录，继续阅读上次中断的章节，管理您的阅读进度">
+    <title>阅读历史 | NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 修复：添加标准导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="my-bookshelf.html" class="nav-link active">书架</a>
+                    <a href="../openclaw/writer-growth.html" class="nav-link">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <!-- 修复：统一登录按钮链接路径为 login.html -->
+                    <div id="userMenu">
+                        <button class="btn-primary" id="loginBtn" onclick="window.location.href='../user/login.html'">登录</button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">阅读历史</h1>
+                    <div class="page-actions">
+                        <button class="btn-secondary" id="clearHistoryBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            清空历史
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 筛选标签 -->
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">全部</button>
+                    <button class="filter-tab" data-filter="today">今天</button>
+                    <button class="filter-tab" data-filter="week">本周</button>
+                    <button class="filter-tab" data-filter="month">本月</button>
+                </div>
+
+                <!-- 历史列表 -->
+                <div class="history-list" id="historyList">
+                    <!-- 动态填充 -->
+                </div>
+
+                <!-- 空状态 -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <h3 class="empty-state-title">暂无阅读历史</h3>
+                    <p class="empty-state-text">开始阅读小说，记录你的阅读轨迹</p>
+                    <a href="../../index.html" class="btn-primary">开始阅读</a>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+
+        <!-- 修复：添加页脚 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="../discover/ranking.html" class="footer-link">排行榜</a>
+                            <a href="../discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="my-bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="reading-history.html" class="footer-link">阅读历史</a>
+                            <a href="../user/settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('关于我们页面即将上线');">关于我们</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('使用条款页面即将上线');">使用条款</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 修复：添加 ES6 Module fallback 支持 file:// 协议
+        document.addEventListener('DOMContentLoaded', function() {
+            // 修复：初始化主题，统一使用 'novelhub-theme' 作为 localStorage key
+            const savedTheme = localStorage.getItem('novelhub-theme') || localStorage.getItem('theme') || 'theme-light';
+            document.body.className = savedTheme;
+            
+            // 主题切换
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                    const currentTheme = themes.find(t => document.body.classList.contains(t)) || 'theme-light';
+                    const currentIndex = themes.indexOf(currentTheme);
+                    const nextTheme = themes[(currentIndex + 1) % themes.length];
+                    
+                    document.body.className = nextTheme;
+                    // 修复：统一使用 'novelhub-theme' 作为 localStorage key
+                    localStorage.setItem('novelhub-theme', nextTheme);
+                });
+            }
+
+            // 加载并渲染历史记录
+            renderHistory();
+
+            // 筛选标签事件
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    renderHistory(this.dataset.filter);
+                });
+            });
+
+            // 清空历史
+            document.getElementById('clearHistoryBtn').addEventListener('click', function() {
+                if (confirm('确定要清空所有阅读历史吗？')) {
+                    localStorage.removeItem('novelhub_reading_history');
+                    renderHistory();
+                }
+            });
+        });
+
+        function renderHistory(filter = 'all') {
+            const historyList = document.getElementById('historyList');
+            const emptyState = document.getElementById('emptyState');
+            
+            // 从 localStorage 获取历史记录或使用 Mock 数据
+            let history = JSON.parse(localStorage.getItem('novelhub_reading_history')) || [];
+            
+            // 如果没有本地数据，使用 Mock 数据
+            if (history.length === 0 && window.MockData && window.MockData.READING_HISTORY) {
+                history = window.MockData.READING_HISTORY.slice(0, 10).map(h => ({
+                    novelId: h.novel_id,
+                    chapterId: h.chapter_id,
+                    chapterTitle: h.chapterTitle,
+                    novelTitle: h.novelTitle || '未知小说',
+                    author: h.author || '未知作者',
+                    cover: h.cover || `https://picsum.photos/seed/${h.novel_id}/200/267`,
+                    progress: h.progress || 0,
+                    lastReadAt: h.last_read_at || new Date().toISOString()
+                }));
+            }
+
+            // 筛选
+            if (filter !== 'all') {
+                const now = new Date();
+                history = history.filter(h => {
+                    const readDate = new Date(h.lastReadAt);
+                    if (filter === 'today') {
+                        return readDate.toDateString() === now.toDateString();
+                    } else if (filter === 'week') {
+                        const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                        return readDate >= weekAgo;
+                    } else if (filter === 'month') {
+                        const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+                        return readDate >= monthAgo;
+                    }
+                    return true;
+                });
+            }
+
+            if (history.length === 0) {
+                historyList.innerHTML = '';
+                emptyState.style.display = 'flex';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div class="history-cover">
+                        <img src="${item.cover}" alt="${item.novelTitle}" loading="lazy">
+                    </div>
+                    <div class="history-info">
+                        <h3 class="history-title">${item.novelTitle}</h3>
+                        <p class="history-author">${item.author}</p>
+                        <p class="history-chapter">读至：${item.chapterTitle}</p>
+                        <div class="history-progress">
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: ${item.progress}%"></div>
+                            </div>
+                            <span class="progress-text">${item.progress}%</span>
+                        </div>
+                        <p class="history-time">${formatTime(item.lastReadAt)}</p>
+                    </div>
+                    <div class="history-actions">
+                        <a href="../reader/reading.html?novel=${item.novelId}&chapter=${item.chapterId}" class="btn-primary btn-sm">继续阅读</a>
+                        <button class="btn-ghost btn-sm" onclick="deleteHistoryItem('${item.novelId}')">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60 * 1000) return '刚刚';
+            if (diff < 60 * 60 * 1000) return `${Math.floor(diff / (60 * 1000))}分钟前`;
+            if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / (60 * 60 * 1000))}小时前`;
+            if (diff < 7 * 24 * 60 * 60 * 1000) return `${Math.floor(diff / (24 * 60 * 60 * 1000))}天前`;
+            return date.toLocaleDateString('zh-CN');
+        }
+
+        function deleteHistoryItem(novelId) {
+            let history = JSON.parse(localStorage.getItem('novelhub_reading_history')) || [];
+            history = history.filter(h => h.novelId !== novelId);
+            localStorage.setItem('novelhub_reading_history', JSON.stringify(history));
+            renderHistory();
+        }
+    </script>
+
+    <style>
+        /* 页面标题 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* 筛选标签 */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-tab:hover {
+            color: var(--color-text-primary);
+            border-color: var(--color-primary);
+        }
+
+        .filter-tab.active {
+            color: white;
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        /* 历史列表 */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-fast);
+        }
+
+        .history-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .history-cover {
+            width: 5rem;
+            height: 6.67rem;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .history-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .history-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .history-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-author {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-chapter {
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .history-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--color-primary);
+            border-radius: var(--radius-full);
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            min-width: 2.5rem;
+            text-align: right;
+        }
+
+        .history-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .history-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .empty-state svg {
+            width: 4rem;
+            height: 4rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 按钮样式统一 */
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .history-item {
+                flex-wrap: wrap;
+            }
+
+            .history-actions {
+                flex-direction: row;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</body>
+</html>

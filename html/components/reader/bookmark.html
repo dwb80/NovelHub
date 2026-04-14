@@ -1,0 +1,866 @@
+<!-- 书签组件 -->
+<div class="bookmark-panel" id="bookmarkPanel">
+    <div class="bookmark-header">
+        <h3 class="bookmark-title">书签</h3>
+        <button class="bookmark-close" id="bookmarkClose" aria-label="关闭">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </div>
+    
+    <div class="bookmark-actions">
+        <button class="bookmark-add-btn" id="bookmarkAddBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            添加书签
+        </button>
+    </div>
+    
+    <div class="bookmark-list-container">
+        <ul class="bookmark-list" id="bookmarkList"></ul>
+        <div class="bookmark-empty" id="bookmarkEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+            <p>暂无书签</p>
+            <span>点击右上角添加书签</span>
+        </div>
+    </div>
+</div>
+
+<!-- 添加书签弹窗 -->
+<div class="bookmark-modal-overlay" id="bookmarkModalOverlay" style="display: none;"></div>
+<div class="bookmark-modal" id="bookmarkModal" style="display: none;">
+    <div class="bookmark-modal-header">
+        <h4>添加书签</h4>
+        <button class="bookmark-modal-close" id="bookmarkModalClose">×</button>
+    </div>
+    <div class="bookmark-modal-body">
+        <div class="form-group">
+            <label>章节</label>
+            <input type="text" id="bookmarkChapterTitle" readonly>
+        </div>
+        <div class="form-group">
+            <label>进度</label>
+            <input type="text" id="bookmarkProgress" readonly>
+        </div>
+        <div class="form-group">
+            <label>备注（可选）</label>
+            <textarea id="bookmarkNote" placeholder="添加书签备注..." rows="3"></textarea>
+        </div>
+    </div>
+    <div class="bookmark-modal-footer">
+        <button class="btn btn-secondary" id="bookmarkModalCancel">取消</button>
+        <button class="btn btn-primary" id="bookmarkModalSave">保存</button>
+    </div>
+</div>
+
+<!-- 书签按钮（阅读器工具栏） -->
+<button class="reader-toolbar-btn bookmark-toggle-btn" id="bookmarkToggleBtn" title="添加/移除书签">
+    <svg class="bookmark-icon-empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg class="bookmark-icon-filled" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+    </svg>
+</button>
+
+<style>
+/* 书签面板 */
+.bookmark-panel {
+    position: fixed;
+    top: 0;
+    right: -360px;
+    width: 360px;
+    height: 100vh;
+    background: var(--color-bg-elevated);
+    border-left: 1px solid var(--color-border);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-modal, 1400);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+}
+
+.bookmark-panel.active {
+    right: 0;
+}
+
+.bookmark-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.bookmark-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.bookmark-close {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.bookmark-close:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.bookmark-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* 操作区 */
+.bookmark-actions {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.bookmark-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bookmark-add-btn:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.bookmark-add-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* 书签列表 */
+.bookmark-list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.bookmark-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.bookmark-item {
+    position: relative;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.bookmark-item:hover {
+    background: var(--color-bg-secondary);
+}
+
+.bookmark-item:last-child {
+    border-bottom: none;
+}
+
+.bookmark-item-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.bookmark-item-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-warning);
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.bookmark-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.bookmark-item-chapter {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.25rem;
+}
+
+.bookmark-item-note {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.5;
+}
+
+.bookmark-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    padding-left: 2rem;
+}
+
+.bookmark-item-progress {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.bookmark-item-time {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.bookmark-item-delete {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    opacity: 0;
+    transition: all 0.2s;
+}
+
+.bookmark-item:hover .bookmark-item-delete {
+    opacity: 1;
+}
+
+.bookmark-item-delete:hover {
+    background: var(--color-error-light);
+    color: var(--color-error);
+}
+
+.bookmark-item-delete svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* 空状态 */
+.bookmark-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.25rem;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.bookmark-empty svg {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.bookmark-empty p {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+}
+
+.bookmark-empty span {
+    font-size: 0.8125rem;
+}
+
+/* 添加书签弹窗 */
+.bookmark-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop, 1500);
+}
+
+.bookmark-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-modal, 1600);
+}
+
+.bookmark-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.bookmark-modal-header h4 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.bookmark-modal-close {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.bookmark-modal-close:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.bookmark-modal-body {
+    padding: 1.25rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.375rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    outline: none;
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.form-group input:read-only {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-muted);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.bookmark-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn-secondary {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.btn-secondary:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+/* 书签切换按钮 */
+.bookmark-toggle-btn {
+    position: relative;
+}
+
+.bookmark-toggle-btn.active .bookmark-icon-empty {
+    display: none;
+}
+
+.bookmark-toggle-btn.active .bookmark-icon-filled {
+    display: block !important;
+    color: var(--color-warning);
+}
+
+.reader-toolbar-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reader-toolbar-btn:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.reader-toolbar-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* 遮罩层 */
+.bookmark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop, 1300);
+    display: none;
+}
+
+.bookmark-overlay.active {
+    display: block;
+}
+
+/* 滚动条样式 */
+.bookmark-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.bookmark-list-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bookmark-list-container::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+.bookmark-list-container::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-hover);
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .bookmark-panel {
+        width: 100%;
+        right: -100%;
+    }
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    window.Bookmark = {
+        panel: null,
+        overlay: null,
+        bookmarks: [],
+        currentChapterId: null,
+        currentChapterTitle: '',
+        currentProgress: 0,
+        bookId: null,
+        
+        init: function(options) {
+            this.panel = document.getElementById('bookmarkPanel');
+            this.bookId = options?.bookId;
+            
+            // 创建遮罩层
+            this.overlay = document.createElement('div');
+            this.overlay.className = 'bookmark-overlay';
+            document.body.appendChild(this.overlay);
+            
+            this.loadBookmarks();
+            this.bindEvents();
+            this.render();
+        },
+        
+        bindEvents: function() {
+            // 关闭按钮
+            document.getElementById('bookmarkClose')?.addEventListener('click', () => this.hide());
+            
+            // 添加书签按钮
+            document.getElementById('bookmarkAddBtn')?.addEventListener('click', () => this.showAddModal());
+            
+            // 书签切换按钮（工具栏）
+            document.getElementById('bookmarkToggleBtn')?.addEventListener('click', () => this.toggleBookmark());
+            
+            // 弹窗事件
+            document.getElementById('bookmarkModalClose')?.addEventListener('click', () => this.hideAddModal());
+            document.getElementById('bookmarkModalCancel')?.addEventListener('click', () => this.hideAddModal());
+            document.getElementById('bookmarkModalSave')?.addEventListener('click', () => this.saveBookmark());
+            document.getElementById('bookmarkModalOverlay')?.addEventListener('click', () => this.hideAddModal());
+            
+            // 点击遮罩关闭
+            this.overlay?.addEventListener('click', () => this.hide());
+            
+            // ESC键关闭
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (document.getElementById('bookmarkModal')?.style.display !== 'none') {
+                        this.hideAddModal();
+                    } else if (this.isVisible()) {
+                        this.hide();
+                    }
+                }
+            });
+        },
+        
+        show: function() {
+            this.panel?.classList.add('active');
+            this.overlay?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        },
+        
+        hide: function() {
+            this.panel?.classList.remove('active');
+            this.overlay?.classList.remove('active');
+            document.body.style.overflow = '';
+        },
+        
+        isVisible: function() {
+            return this.panel?.classList.contains('active');
+        },
+        
+        toggle: function() {
+            if (this.isVisible()) {
+                this.hide();
+            } else {
+                this.show();
+            }
+        },
+        
+        // 设置当前阅读位置
+        setCurrentPosition: function(chapterId, chapterTitle, progress) {
+            this.currentChapterId = chapterId;
+            this.currentChapterTitle = chapterTitle;
+            this.currentProgress = progress;
+            
+            this.updateToggleButton();
+        },
+        
+        // 更新切换按钮状态
+        updateToggleButton: function() {
+            const btn = document.getElementById('bookmarkToggleBtn');
+            if (!btn) return;
+            
+            const hasBookmark = this.bookmarks.some(b => b.chapterId === this.currentChapterId);
+            btn.classList.toggle('active', hasBookmark);
+            btn.title = hasBookmark ? '移除书签' : '添加书签';
+        },
+        
+        // 切换书签（添加/移除）
+        toggleBookmark: function() {
+            const existingIndex = this.bookmarks.findIndex(b => b.chapterId === this.currentChapterId);
+            
+            if (existingIndex >= 0) {
+                // 移除书签
+                this.removeBookmark(this.bookmarks[existingIndex].id);
+                if (window.Toast) {
+                    Toast.success('书签已移除');
+                }
+            } else {
+                // 显示添加弹窗
+                this.showAddModal();
+            }
+        },
+        
+        // 显示添加弹窗
+        showAddModal: function() {
+            if (!this.currentChapterId) {
+                if (window.Toast) {
+                    Toast.error('请先选择章节');
+                }
+                return;
+            }
+            
+            document.getElementById('bookmarkChapterTitle').value = this.currentChapterTitle;
+            document.getElementById('bookmarkProgress').value = this.currentProgress + '%';
+            document.getElementById('bookmarkNote').value = '';
+            
+            document.getElementById('bookmarkModalOverlay').style.display = 'block';
+            document.getElementById('bookmarkModal').style.display = 'block';
+        },
+        
+        // 隐藏添加弹窗
+        hideAddModal: function() {
+            document.getElementById('bookmarkModalOverlay').style.display = 'none';
+            document.getElementById('bookmarkModal').style.display = 'none';
+        },
+        
+        // 保存书签
+        saveBookmark: function() {
+            const note = document.getElementById('bookmarkNote').value.trim();
+            
+            const bookmark = {
+                id: Date.now(),
+                bookId: this.bookId,
+                chapterId: this.currentChapterId,
+                chapterTitle: this.currentChapterTitle,
+                progress: this.currentProgress,
+                note: note,
+                createTime: new Date().toISOString()
+            };
+            
+            this.bookmarks.unshift(bookmark);
+            this.saveBookmarks();
+            this.render();
+            this.updateToggleButton();
+            this.hideAddModal();
+            
+            if (window.Toast) {
+                Toast.success('书签添加成功');
+            }
+            
+            // 触发事件
+            window.dispatchEvent(new CustomEvent('bookmarkAdd', { detail: bookmark }));
+        },
+        
+        // 移除书签
+        removeBookmark: function(bookmarkId) {
+            const index = this.bookmarks.findIndex(b => b.id === bookmarkId);
+            if (index >= 0) {
+                const bookmark = this.bookmarks[index];
+                this.bookmarks.splice(index, 1);
+                this.saveBookmarks();
+                this.render();
+                this.updateToggleButton();
+                
+                // 触发事件
+                window.dispatchEvent(new CustomEvent('bookmarkRemove', { detail: bookmark }));
+            }
+        },
+        
+        // 跳转到书签
+        goToBookmark: function(bookmark) {
+            window.dispatchEvent(new CustomEvent('bookmarkClick', { detail: bookmark }));
+            this.hide();
+        },
+        
+        // 渲染书签列表
+        render: function() {
+            const listEl = document.getElementById('bookmarkList');
+            const emptyEl = document.getElementById('bookmarkEmpty');
+            
+            if (this.bookmarks.length === 0) {
+                listEl.innerHTML = '';
+                emptyEl.style.display = 'flex';
+                return;
+            }
+            
+            emptyEl.style.display = 'none';
+            
+            listEl.innerHTML = this.bookmarks.map(bookmark => {
+                const time = this.formatTime(bookmark.createTime);
+                return `
+                    <li class="bookmark-item" data-bookmark-id="${bookmark.id}">
+                        <div class="bookmark-item-header">
+                            <svg class="bookmark-item-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            <div class="bookmark-item-content">
+                                <div class="bookmark-item-chapter">${bookmark.chapterTitle}</div>
+                                ${bookmark.note ? `<div class="bookmark-item-note">${bookmark.note}</div>` : ''}
+                            </div>
+                        </div>
+                        <div class="bookmark-item-meta">
+                            <span class="bookmark-item-progress">${bookmark.progress}%</span>
+                            <span class="bookmark-item-time">${time}</span>
+                        </div>
+                        <button class="bookmark-item-delete" data-bookmark-id="${bookmark.id}" title="删除书签">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"/>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </button>
+                    </li>
+                `;
+            }).join('');
+            
+            // 绑定点击事件
+            listEl.querySelectorAll('.bookmark-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.bookmark-item-delete')) return;
+                    
+                    const bookmarkId = parseInt(item.dataset.bookmarkId);
+                    const bookmark = this.bookmarks.find(b => b.id === bookmarkId);
+                    if (bookmark) {
+                        this.goToBookmark(bookmark);
+                    }
+                });
+            });
+            
+            // 绑定删除事件
+            listEl.querySelectorAll('.bookmark-item-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const bookmarkId = parseInt(btn.dataset.bookmarkId);
+                    if (window.Modal) {
+                        Modal.confirm('确定要删除这个书签吗？', () => {
+                            this.removeBookmark(bookmarkId);
+                        });
+                    } else {
+                        this.removeBookmark(bookmarkId);
+                    }
+                });
+            });
+        },
+        
+        // 格式化时间
+        formatTime: function(timeStr) {
+            const date = new Date(timeStr);
+            const now = new Date();
+            const diff = now - date;
+            
+            // 小于1小时
+            if (diff < 3600000) {
+                const minutes = Math.floor(diff / 60000);
+                return minutes < 1 ? '刚刚' : `${minutes}分钟前`;
+            }
+            // 小于24小时
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
+                return `${hours}小时前`;
+            }
+            // 小于7天
+            if (diff < 604800000) {
+                const days = Math.floor(diff / 86400000);
+                return `${days}天前`;
+            }
+            
+            return date.toLocaleDateString('zh-CN');
+        },
+        
+        // 从localStorage加载
+        loadBookmarks: function() {
+            try {
+                const key = `bookmarks_${this.bookId || 'default'}`;
+                const saved = localStorage.getItem(key);
+                if (saved) {
+                    this.bookmarks = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('加载书签失败:', e);
+                this.bookmarks = [];
+            }
+        },
+        
+        // 保存到localStorage
+        saveBookmarks: function() {
+            try {
+                const key = `bookmarks_${this.bookId || 'default'}`;
+                localStorage.setItem(key, JSON.stringify(this.bookmarks));
+            } catch (e) {
+                console.error('保存书签失败:', e);
+            }
+        },
+        
+        // 获取所有书签
+        getBookmarks: function() {
+            return this.bookmarks;
+        },
+        
+        // 清空书签
+        clearAll: function() {
+            if (window.Modal) {
+                Modal.confirm('确定要清空所有书签吗？', () => {
+                    this.bookmarks = [];
+                    this.saveBookmarks();
+                    this.render();
+                    this.updateToggleButton();
+                });
+            }
+        }
+    };
+})();
+</script>

@@ -1,0 +1,389 @@
+/**
+ * Banner Carousel Styles
+ * 高性能轮播组件样式
+ * @version 2.0.0
+ */
+
+/* 轮播容器 */
+.banner-carousel {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: var(--surface-dark);
+}
+
+/* 视口 */
+.banner-viewport {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 轨道 */
+.banner-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+}
+
+/* 幻灯片 */
+.banner-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    opacity: 0.5;
+    transition: opacity var(--transition-normal);
+}
+
+.banner-slide.active {
+    opacity: 1;
+}
+
+.banner-slide.loaded .banner-image {
+    opacity: 1;
+}
+
+/* 图片容器 */
+.banner-image-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity var(--transition-normal), transform var(--transition-slow);
+    transform: scale(1.05);
+}
+
+.banner-slide.active .banner-image {
+    transform: scale(1);
+}
+
+/* 渐变遮罩 */
+.banner-slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 40%,
+        rgba(0, 0, 0, 0.1) 100%
+    );
+    pointer-events: none;
+}
+
+/* 内容区域 */
+.banner-content {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 48px 40px;
+    max-width: 600px;
+    z-index: 2;
+    color: white;
+}
+
+.banner-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.banner-subtitle {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    animation: slideInLeft 0.6s ease-out 0.1s both;
+}
+
+.banner-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+    color: white;
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    animation: slideInLeft 0.6s ease-out 0.2s both;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+}
+
+.banner-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+}
+
+.banner-btn::after {
+    content: '→';
+    transition: transform var(--transition-fast);
+}
+
+.banner-btn:hover::after {
+    transform: translateX(4px);
+}
+
+/* 指示器 */
+.banner-indicators {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.banner-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+}
+
+.banner-indicator:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.banner-indicator.active {
+    width: 32px;
+    border-radius: 5px;
+    background: white;
+}
+
+/* 箭头按钮 */
+.banner-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    z-index: 10;
+    opacity: 0;
+}
+
+.banner-carousel:hover .banner-arrow {
+    opacity: 1;
+}
+
+.banner-arrow:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.banner-arrow-prev {
+    left: 20px;
+}
+
+.banner-arrow-next {
+    right: 20px;
+}
+
+/* 进度条 */
+.banner-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 10;
+}
+
+.banner-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-500), var(--primary-400));
+    width: 0%;
+    border-radius: 0 2px 2px 0;
+}
+
+/* 动画 */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .banner-carousel {
+        height: 350px;
+    }
+
+    .banner-content {
+        padding: 36px 32px;
+        max-width: 500px;
+    }
+
+    .banner-title {
+        font-size: 2rem;
+    }
+
+    .banner-subtitle {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner-carousel {
+        height: 300px;
+        border-radius: var(--radius-lg);
+    }
+
+    .banner-content {
+        padding: 28px 24px;
+        max-width: 100%;
+    }
+
+    .banner-title {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .banner-subtitle {
+        font-size: 0.875rem;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .banner-btn {
+        padding: 10px 20px;
+        font-size: 0.875rem;
+    }
+
+    .banner-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        opacity: 0.8;
+    }
+
+    .banner-arrow-prev {
+        left: 12px;
+    }
+
+    .banner-arrow-next {
+        right: 12px;
+    }
+
+    .banner-indicators {
+        bottom: 16px;
+    }
+
+    .banner-indicator {
+        width: 8px;
+        height: 8px;
+    }
+
+    .banner-indicator.active {
+        width: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .banner-carousel {
+        height: 250px;
+    }
+
+    .banner-content {
+        padding: 20px 16px;
+    }
+
+    .banner-title {
+        font-size: 1.25rem;
+    }
+
+    .banner-subtitle {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .banner-btn {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* 暗色主题适配 */
+[data-theme="dark"] .banner-carousel {
+    background: var(--surface-dark);
+}
+
+/* 减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+    .banner-track,
+    .banner-slide,
+    .banner-image,
+    .banner-indicator,
+    .banner-arrow,
+    .banner-btn {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .banner-carousel {
+        height: auto;
+    }
+
+    .banner-arrow,
+    .banner-indicators,
+    .banner-progress {
+        display: none !important;
+    }
+
+    .banner-slide {
+        opacity: 1;
+        page-break-inside: avoid;
+    }
+}

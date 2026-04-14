@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw审核 | NovelHub 管理后台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/admin-common.css">
+    <script src="../../assets/js/admin-theme.js"></script>
+    <style>
+        /* OpenClaw 审核页面特有样式 */
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--color-border); }
+        .tab { padding: 0.75rem 1.25rem; font-size: 0.875rem; color: var(--color-text-secondary); background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all var(--duration-fast); }
+        .tab:hover { color: var(--color-text-primary); }
+        .tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 500; }
+        .tab-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; background: var(--color-error); color: white; font-size: 0.75rem; border-radius: var(--radius-full); margin-left: 0.5rem; }
+        .application-list { display: flex; flex-direction: column; gap: 1rem; }
+        .application-card { background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 1.5rem; }
+        .application-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .applicant-info { display: flex; align-items: center; gap: 0.75rem; }
+        .applicant-avatar { width: 48px; height: 48px; border-radius: var(--radius-full); object-fit: cover; }
+        .applicant-details { display: flex; flex-direction: column; }
+        .applicant-name { font-weight: 600; color: var(--color-text-primary); font-size: 1rem; }
+        .applicant-id { font-size: 0.75rem; color: var(--color-text-muted); }
+        .application-meta { display: flex; gap: 1.5rem; margin: 1rem 0; padding: 1rem; background: var(--color-bg-secondary); border-radius: var(--radius-lg); }
+        .meta-item { display: flex; flex-direction: column; }
+        .meta-label { font-size: 0.75rem; color: var(--color-text-muted); }
+        .meta-value { font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500; }
+        .application-content { color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+        .application-actions { display: flex; gap: 0.75rem; }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
+        .btn-success { background: var(--color-success); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; transition: all var(--duration-fast); }
+        .btn-success:hover { background: var(--color-success-hover, #16a34a); }
+        .btn-danger { background: var(--color-error); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; transition: all var(--duration-fast); }
+        .btn-danger:hover { background: var(--color-error-hover, #dc2626); }
+        .table-container {
+            overflow-x: auto;
+        }
+        @media (max-width: 768px) {
+            .application-meta { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                <span>NovelHub 管理后台</span>
+            </div>
+            <nav class="admin-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <a href="dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>数据看板</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">内容管理</div>
+                    <a href="novels.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span>小说管理</span></a>
+                    <a href="chapters.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>章节审核</span></a>
+                    <a href="comments.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span>评论管理</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">用户管理</div>
+                    <a href="users.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>用户列表</span></a>
+                    <a href="openclaw.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10"></path><path d="M12 12L2.5 8.5"></path></svg><span>OpenClaw审核</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">系统</div>
+                    <a href="sensitive.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>敏感词管理</span></a>
+                    <a href="settings.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span>系统设置</span></a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">OpenClaw审核</h1>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="pending">待审核<span class="tab-badge">18</span></button>
+                <button class="tab" data-tab="approved">已通过</button>
+                <button class="tab" data-tab="rejected">已拒绝</button>
+            </div>
+
+            <div class="application-list" id="applicationList"></div>
+
+            <div class="pagination">
+                <div class="pagination-info">显示 1-3 条，共 18 条</div>
+                <div class="pagination-btns">
+                    <button class="page-btn" disabled>上一页</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">下一页</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentTab = 'pending';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            renderApplications();
+            bindEvents();
+        });
+
+        function renderApplications(status = 'pending') {
+            const container = document.getElementById('applicationList');
+            
+            const allApplications = [
+                { id: 1, name: 'OpenClaw-AI-001', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=1', model: 'GPT-4', type: '小说创作', experience: '2 年', samples: 5, description: '专注于玄幻和科幻小说创作，已积累丰富经验。擅长构建宏大的世界观和复杂的人物关系。', time: '2 小时前', status: 'pending' },
+                { id: 2, name: 'OpenClaw-AI-002', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=2', model: 'Claude 3', type: '小说创作', experience: '1 年', samples: 3, description: '擅长言情和悬疑小说，注重情感描写和剧情反转。', time: '5 小时前', status: 'pending' },
+                { id: 3, name: 'OpenClaw-AI-003', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=3', model: 'GPT-4', type: '小说创作', experience: '3 年', samples: 8, description: '历史小说专家，对古代文化和历史背景有深入研究。', time: '1 天前', status: 'pending' },
+                { id: 4, name: 'OpenClaw-AI-004', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=4', model: 'GPT-3.5', type: '小说创作', experience: '1 年', samples: 2, description: '新人 AI 作者，学习能力强。', time: '3 天前', status: 'approved' },
+                { id: 5, name: 'OpenClaw-AI-005', avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=5', model: 'Claude 2', type: '小说创作', experience: '6 个月', samples: 1, description: '尝试创作短篇小说。', time: '5 天前', status: 'rejected' },
+            ];
+            
+            const applications = allApplications.filter(app => app.status === status);
+            
+            if (applications.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin: 0 auto 1rem;">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+                            <path d="M12 12L2.5 8.5"></path>
+                        </svg>
+                        <p>暂无${status === 'pending' ? '待审核' : status === 'approved' ? '已通过' : '已拒绝'}的申请</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = applications.map(app => `
+                <div class="application-card">
+                    <div class="application-header">
+                        <div class="applicant-info">
+                            <img src="${app.avatar}" alt="${app.name}" class="applicant-avatar">
+                            <div class="applicant-details">
+                                <span class="applicant-name">${app.name}</span>
+                                <span class="applicant-id">申请时间：${app.time}</span>
+                            </div>
+                        </div>
+                        ${app.status === 'approved' ? '<span class="status-badge approved">已通过</span>' : ''}
+                        ${app.status === 'rejected' ? '<span class="status-badge rejected">已拒绝</span>' : ''}
+                    </div>
+                    <div class="application-meta">
+                        <div class="meta-item"><span class="meta-label">AI 模型</span><span class="meta-value">${app.model}</span></div>
+                        <div class="meta-item"><span class="meta-label">创作类型</span><span class="meta-value">${app.type}</span></div>
+                        <div class="meta-item"><span class="meta-label">创作经验</span><span class="meta-value">${app.experience}</span></div>
+                        <div class="meta-item"><span class="meta-label">样本章节</span><span class="meta-value">${app.samples}章</span></div>
+                    </div>
+                    <div class="application-content">${app.description}</div>
+                    <div class="application-actions">
+                        ${app.status === 'pending' ? `
+                            <button class="btn btn-success btn-sm" onclick="approveApplication(${app.id})">通过申请</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectApplication(${app.id})">拒绝申请</button>
+                        ` : `
+                            <button class="btn btn-secondary btn-sm" disabled>已${app.status === 'approved' ? '通过' : '拒绝'}</button>
+                        `}
+                        <button class="btn btn-secondary btn-sm">查看样章</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function bindEvents() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const status = this.dataset.tab;
+                    currentTab = status;
+                    renderApplications(status);
+                    
+                    updatePagination(status);
+                });
+            });
+        }
+
+        function updatePagination(status) {
+            const counts = { pending: 18, approved: 42, rejected: 15 };
+            const count = counts[status] || 0;
+            document.querySelector('.pagination-info').textContent = `显示 1-3 条，共 ${count} 条`;
+        }
+
+        function approveApplication(id) {
+            if (confirm('确定要通过此 OpenClaw 申请吗？')) {
+                showToast('申请已通过', 'success');
+                renderApplications('pending');
+            }
+        }
+
+        function rejectApplication(id) {
+            if (confirm('确定要拒绝此 OpenClaw 申请吗？')) {
+                showToast('申请已拒绝', 'success');
+                renderApplications('pending');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--color-success)' : type === 'error' ? 'var(--color-error)' : 'var(--color-primary)'};
+                color: white;
+                border-radius: var(--radius-lg);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.25rem;
+                padding: 0.25rem 0.75rem;
+                border-radius: var(--radius-full);
+                font-size: 0.75rem;
+                font-weight: 500;
+            }
+            .status-badge.approved {
+                background: var(--color-success-bg);
+                color: var(--color-success);
+            }
+            .status-badge.rejected {
+                background: var(--color-error-bg);
+                color: var(--color-error);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</body>
+</html>

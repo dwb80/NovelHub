@@ -1,0 +1,915 @@
+/* ============================================
+   Theme Styles for Reader (Enhanced)
+   ============================================ */
+
+/* ---------- 主题防闪烁机制 ---------- */
+/* 防止主题切换时的闪烁 */
+html {
+    background-color: var(--color-bg-primary, #ffffff);
+}
+
+body {
+    background-color: var(--color-bg-primary, #ffffff);
+    transition: background-color var(--duration-base) var(--ease-default),
+                color var(--duration-base) var(--ease-default);
+}
+
+/* 主题切换时的全局过渡 */
+.theme-transition-active,
+.theme-transition-active * {
+    transition: background-color var(--duration-base) var(--ease-default) !important;
+    transition: color var(--duration-base) var(--ease-default) !important;
+    transition: border-color var(--duration-base) var(--ease-default) !important;
+    transition: box-shadow var(--duration-base) var(--ease-default) !important;
+}
+
+/* 资源预加载提示 */
+@media (prefers-reduced-motion: no-preference) {
+    .theme-option {
+        cursor: pointer;
+    }
+}
+
+/* 主题切换淡入动画 */
+@keyframes themeFadeIn {
+    from {
+        opacity: 0.95;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.theme-fade-in {
+    animation: themeFadeIn var(--duration-base) var(--ease-default);
+}
+
+/* 主题切换时的平滑过渡 */
+.theme-smooth-transition {
+    transition: all var(--duration-slow) var(--ease-in-out);
+}
+
+.theme-light {
+    --reader-bg: #ffffff;
+    --reader-text: #1e293b;
+    --reader-muted: #64748b;
+    --reader-border: #e2e8f0;
+    --reader-link: #6366f1;
+    --reader-selection-bg: #c7d2fe;
+}
+
+.theme-paper {
+    --reader-bg: #f5f0e6;
+    --reader-text: #3d3426;
+    --reader-muted: #5c4d3a;
+    --reader-border: #d4c4a8;
+    --reader-link: #7c5c2e;
+    --reader-selection-bg: #e8dcc4;
+}
+
+.theme-dark {
+    --reader-bg: #0f172a;
+    --reader-text: #e2e8f0;
+    --reader-muted: #94a3b8;
+    --reader-border: #334155;
+    --reader-link: #818cf8;
+    --reader-selection-bg: #312e81;
+}
+
+.theme-eye-care {
+    --reader-bg: #f5f0e6;
+    --reader-text: #2d2a22;
+    --reader-muted: #5c574a;
+    --reader-border: #d4cfc3;
+    --reader-link: #5c574a;
+    --reader-selection-bg: #e8e0d0;
+}
+
+.reader-container {
+    background-color: var(--reader-bg);
+    color: var(--reader-text);
+    min-height: 100vh;
+    transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.reader-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: var(--reader-bg);
+    border-bottom: 1px solid var(--reader-border);
+    transition: background-color var(--transition-base), border-color var(--transition-base);
+}
+
+.reader-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reader-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--reader-muted);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.reader-nav-btn:hover {
+    color: var(--reader-text);
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.reader-nav-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.reader-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--reader-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 12rem;
+}
+
+.reader-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.reader-main {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.reader-content {
+    width: 100%;
+    max-width: 48rem;
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--reader-text);
+}
+
+.reader-content p {
+    text-indent: 2em;
+    margin-bottom: 1.5em;
+}
+
+.reader-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 2em 0 1em;
+    color: var(--reader-text);
+}
+
+.reader-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1.5em 0 0.75em;
+    color: var(--reader-text);
+}
+
+.reader-footer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem 1rem;
+    border-top: 1px solid var(--reader-border);
+}
+
+.reader-chapter-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reader-chapter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    color: var(--reader-text);
+    background-color: var(--reader-bg);
+    border: 1px solid var(--reader-border);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.reader-chapter-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.reader-chapter-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.reader-chapter-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.reader-settings {
+    position: fixed;
+    bottom: 5rem;
+    right: 1rem;
+    z-index: 100;
+}
+
+.reader-settings-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    color: #ffffff;
+    background-color: var(--color-primary);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-lg);
+    transition: transform var(--transition-fast);
+}
+
+.reader-settings-btn:hover {
+    transform: scale(1.05);
+}
+
+.reader-settings-btn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.reader-settings-panel {
+    position: absolute;
+    bottom: calc(100% + 0.75rem);
+    right: 0;
+    width: 18rem;
+    padding: 1rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.5rem);
+    transition: all var(--transition-fast);
+}
+
+.reader-settings-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.settings-section {
+    margin-bottom: 1rem;
+}
+
+.settings-section:last-child {
+    margin-bottom: 0;
+}
+
+.settings-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.settings-options {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.settings-option {
+    flex: 1;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    transition: all var(--transition-fast);
+}
+
+.settings-option:hover {
+    color: var(--color-text-primary);
+}
+
+.settings-option.active {
+    color: #ffffff;
+    background-color: var(--color-primary);
+}
+
+.font-size-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.font-size-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.font-size-btn:hover {
+    color: var(--color-text-primary);
+}
+
+.font-size-value {
+    min-width: 3rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--color-text-primary);
+}
+
+.progress-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-bg-tertiary);
+    z-index: 200;
+}
+
+.progress-indicator-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.sync-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--color-success);
+}
+
+.sync-indicator svg {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.sync-indicator.syncing svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.progress-sync-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.progress-percentage {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.comment-filter-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+    color: #92400e;
+    background-color: #fef3c7;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+}
+
+.comment-filter-notice svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+/* ---------- Theme Transition ---------- */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+    transition: background-color var(--duration-base) var(--ease-default),
+                color var(--duration-base) var(--ease-default),
+                border-color var(--duration-base) var(--ease-default),
+                box-shadow var(--duration-base) var(--ease-default) !important;
+}
+
+/* ---------- Theme Toggle Button Styles ---------- */
+.theme-selector {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-lg);
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.theme-option:hover {
+    background-color: var(--color-bg-secondary);
+}
+
+.theme-option.active {
+    background-color: var(--color-bg-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-option-light {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.theme-option-paper {
+    background-color: #faf8f5;
+    border: 1px solid #e5dfd5;
+}
+
+.theme-option-dark {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+}
+
+.theme-option-eye-care {
+    background-color: #f5f0e6;
+    border: 1px solid #d4cfc3;
+}
+
+/* ---------- Reading Theme Specific Adjustments ---------- */
+.theme-paper .reader-container,
+.theme-eye-care .reader-container {
+    --shadow-card: none;
+}
+
+.theme-dark .reader-container {
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Selection colors for each theme */
+.theme-light ::selection {
+    background-color: #c7d2fe;
+}
+
+.theme-paper ::selection {
+    background-color: #e8dcc4;
+}
+
+.theme-dark ::selection {
+    background-color: #312e81;
+    color: #e2e8f0;
+}
+
+.theme-eye-care ::selection {
+    background-color: #e8e0d0;
+}
+
+/* ---------- Additional Theme: Sepia (Reading) ---------- */
+.theme-sepia {
+    --reader-bg: #f4ecd8;
+    --reader-text: #5b4636;
+    --reader-muted: #8b7355;
+    --reader-border: #d4c4a8;
+    --reader-link: #8b6f47;
+    --reader-selection-bg: #e8dcc4;
+}
+
+.theme-sepia .reader-container {
+    --shadow-card: none;
+}
+
+/* ---------- Additional Theme: Midnight (Deep Dark) ---------- */
+.theme-midnight {
+    --reader-bg: #0a0a0f;
+    --reader-text: #d0d0d5;
+    --reader-muted: #6b6b75;
+    --reader-border: #2a2a35;
+    --reader-link: #7a7a90;
+    --reader-selection-bg: #1a1a25;
+}
+
+.theme-midnight .reader-container {
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Font Size Classes for Reader ---------- */
+.font-xs .reader-content { font-size: 14px; }
+.font-sm .reader-content { font-size: 16px; }
+.font-base .reader-content { font-size: 18px; }
+.font-lg .reader-content { font-size: 20px; }
+.font-xl .reader-content { font-size: 22px; }
+.font-2xl .reader-content { font-size: 24px; }
+.font-3xl .reader-content { font-size: 28px; }
+
+/* ---------- Line Height Variations ---------- */
+.leading-tight .reader-content { line-height: 1.5; }
+.leading-normal .reader-content { line-height: 1.8; }
+.leading-relaxed .reader-content { line-height: 2.0; }
+.leading-loose .reader-content { line-height: 2.2; }
+
+/* ---------- Font Family Variations for Reader ---------- */
+.font-sans-reader .reader-content { font-family: var(--font-sans); }
+.font-serif-reader .reader-content { font-family: var(--font-serif); }
+.font-mono-reader .reader-content { font-family: var(--font-mono); }
+
+/* ---------- Reading Width Variations ---------- */
+.reading-narrow .reader-content { max-width: 32rem; }
+.reading-normal .reader-content { max-width: 48rem; }
+.reading-wide .reader-content { max-width: 64rem; }
+.reading-full .reader-content { max-width: 100%; }
+
+/* ---------- Theme Smooth Transitions ---------- */
+.theme-smooth,
+.theme-smooth * {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* ---------- High Contrast Theme ---------- */
+.theme-high-contrast {
+    --reader-bg: #ffffff;
+    --reader-text: #000000;
+    --reader-muted: #333333;
+    --reader-border: #000000;
+    --reader-link: #0000ff;
+    --reader-selection-bg: #ffff00;
+}
+
+.theme-high-contrast .reader-content {
+    font-weight: 500;
+}
+
+/* ---------- Theme Specific Scrollbar Colors - 问题 #6 修复 ---------- */
+
+/* 滚动条颜色变量 */
+.theme-light {
+    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-track: #f1f5f9;
+    --scrollbar-thumb-hover: #94a3b8;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.theme-paper {
+    --scrollbar-thumb: #d4c4a8;
+    --scrollbar-track: #f5f0e6;
+    --scrollbar-thumb-hover: #b5a080;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.theme-dark {
+    --scrollbar-thumb: #475569;
+    --scrollbar-track: #1e293b;
+    --scrollbar-thumb-hover: #64748b;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.theme-eye-care {
+    --scrollbar-thumb: #c4b5a0;
+    --scrollbar-track: #f5f0e6;
+    --scrollbar-thumb-hover: #a09070;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.theme-sepia {
+    --scrollbar-thumb: #d4c4a8;
+    --scrollbar-track: #f4ecd8;
+    --scrollbar-thumb-hover: #b5a080;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.theme-midnight {
+    --scrollbar-thumb: #3a3a45;
+    --scrollbar-track: #0a0a0f;
+    --scrollbar-thumb-hover: #5a5a65;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.theme-high-contrast {
+    --scrollbar-thumb: #000000;
+    --scrollbar-track: #ffffff;
+    --scrollbar-thumb-hover: #333333;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Webkit 滚动条样式 */
+.theme-light ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+.theme-light ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.theme-paper ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+.theme-paper ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.theme-eye-care ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+.theme-eye-care ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.theme-sepia ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+.theme-sepia ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.theme-midnight ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+.theme-midnight ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+.theme-high-contrast ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border: 2px solid var(--scrollbar-track);
+}
+
+.theme-high-contrast ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* 滚动条轨道 */
+.theme-light ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+.theme-paper ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+.theme-dark ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+.theme-eye-care ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+.theme-sepia ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+.theme-midnight ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+.theme-high-contrast ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border: 1px solid var(--scrollbar-thumb);
+}
+
+/* ---------- Theme Transition Helper ---------- */
+@keyframes themeFade {
+    from {
+        opacity: 0.8;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.theme-fade {
+    animation: themeFade 0.3s ease;
+}
+
+/* ---------- Reading Progress Bar Theme ---------- */
+.theme-light .progress-indicator-fill {
+    background-color: var(--color-primary);
+}
+
+.theme-paper .progress-indicator-fill {
+    background-color: #8b6f47;
+}
+
+.theme-dark .progress-indicator-fill {
+    background-color: #818cf8;
+}
+
+.theme-eye-care .progress-indicator-fill {
+    background-color: #5c574a;
+}
+
+.theme-sepia .progress-indicator-fill {
+    background-color: #8b6f47;
+}
+
+.theme-midnight .progress-indicator-fill {
+    background-color: #7a7a90;
+}
+
+.theme-high-contrast .progress-indicator-fill {
+    background-color: #0000ff;
+}
+
+/* ---------- Theme Button Hover Effects ---------- */
+.theme-light .theme-option:hover {
+    background-color: #f1f5f9;
+}
+
+.theme-paper .theme-option:hover {
+    background-color: #f5f2ed;
+}
+
+.theme-dark .theme-option:hover {
+    background-color: #1e293b;
+}
+
+.theme-eye-care .theme-option:hover {
+    background-color: #ebe5d9;
+}
+
+.theme-sepia .theme-option:hover {
+    background-color: #f4ecd8;
+}
+
+.theme-midnight .theme-option:hover {
+    background-color: #0f0f15;
+}
+
+.theme-high-contrast .theme-option:hover {
+    background-color: #f0f0f0;
+}
+
+/* ---------- Theme Specific Card Shadows ---------- */
+.theme-light .card {
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-paper .card {
+    box-shadow: 0 2px 8px rgba(91, 70, 54, 0.08);
+}
+
+.theme-dark .card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-eye-care .card {
+    box-shadow: 0 2px 8px rgba(92, 87, 74, 0.08);
+}
+
+.theme-sepia .card {
+    box-shadow: 0 2px 8px rgba(139, 111, 71, 0.08);
+}
+
+.theme-midnight .card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.theme-high-contrast .card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid #000000;
+}
+
+/* ---------- Theme Specific Input Styles ---------- */
+.theme-dark .form-input,
+.theme-midnight .form-input {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+.theme-dark .form-input:focus,
+.theme-midnight .form-input:focus {
+    background-color: #1e293b;
+    border-color: #6366f1;
+}
+
+/* ---------- Theme Specific Link Colors ---------- */
+.theme-light a:hover {
+    color: var(--color-primary-hover);
+}
+
+.theme-paper a:hover {
+    color: #7c5c2e;
+}
+
+.theme-dark a:hover {
+    color: #818cf8;
+}
+
+.theme-eye-care a:hover {
+    color: #5c574a;
+}
+
+.theme-sepia a:hover {
+    color: #7c5c2e;
+}
+
+.theme-midnight a:hover {
+    color: #9a9ab0;
+}
+
+.theme-high-contrast a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Theme Specific Button Styles ---------- */
+.theme-paper .btn-primary {
+    background-color: #8b6f47;
+}
+
+.theme-paper .btn-primary:hover {
+    background-color: #7c5c2e;
+}
+
+.theme-dark .btn-primary {
+    background-color: #6366f1;
+}
+
+.theme-dark .btn-primary:hover {
+    background-color: #818cf8;
+}
+
+.theme-eye-care .btn-primary {
+    background-color: #5c574a;
+}
+
+.theme-eye-care .btn-primary:hover {
+    background-color: #4a473a;
+}
+
+.theme-sepia .btn-primary {
+    background-color: #8b6f47;
+}
+
+.theme-sepia .btn-primary:hover {
+    background-color: #7c5c2e;
+}
+
+.theme-midnight .btn-primary {
+    background-color: #7a7a90;
+}
+
+.theme-midnight .btn-primary:hover {
+    background-color: #9a9ab0;
+}
+
+.theme-high-contrast .btn-primary {
+    background-color: #0000ff;
+}
+
+.theme-high-contrast .btn-primary:hover {
+    background-color: #0000cc;
+}

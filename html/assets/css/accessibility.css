@@ -1,0 +1,737 @@
+/* ============================================
+   无障碍访问优化 (Accessibility Enhancements)
+   ============================================ */
+
+/* ---------- 跳过导航链接 ---------- */
+.skip-to-content {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    padding: 1rem 1.5rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: top var(--duration-fast);
+}
+
+.skip-to-content:focus {
+    top: 1rem;
+    outline: 3px solid var(--color-primary-dark);
+    outline-offset: 2px;
+}
+
+/* ---------- 增强的焦点样式 - 问题 #11-13 修复 ---------- */
+
+/* 统一焦点样式：3px outline */
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* 所有交互元素的焦点样式 */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* 自定义控件焦点样式 */
+.switch:focus-visible,
+.checkbox:focus-visible,
+.radio:focus-visible,
+.slider:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* 卡片焦点样式 */
+.card:focus-visible,
+.novel-card:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* 导航链接焦点样式 */
+.nav-link:focus-visible,
+.user-menu-item:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -2px;
+    box-shadow: inset 0 0 0 2px var(--color-primary-light);
+}
+
+/* 列表项焦点样式 */
+.toc-item:focus-visible,
+.ranking-menu-item:focus-visible,
+.filter-tab:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+/* 按钮焦点样式增强 */
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-ghost:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* 图标按钮焦点样式 */
+.btn-icon:focus-visible,
+.reader-nav-btn:focus-visible,
+.search-clear-btn:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+    border-radius: var(--radius-md);
+}
+
+/* 表单输入焦点样式 */
+.form-input:focus-visible,
+.search-input-main:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 0;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* 高对比度焦点样式 */
+@media (prefers-contrast: high) {
+    :focus-visible {
+        outline: 3px solid #000000;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 4px #ffffff;
+    }
+}
+
+/* ---------- 键盘导航指示器 ---------- */
+.keyboard-nav-active *:focus {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* ---------- Tab 键顺序管理 - 问题 #11-13 修复 ---------- */
+
+/* 确保合理的 Tab 顺序 */
+[tabindex="0"] {
+    /* 默认 Tab 顺序 */
+}
+
+/* 跳过负 tabindex 元素 */
+[tabindex="-1"] {
+    /* 从 Tab 顺序中移除，但仍可通过 JS 聚焦 */
+}
+
+/* 模态框焦点管理 */
+.modal-overlay.active,
+[role="dialog"][aria-modal="true"] {
+    /* 模态框打开时，背景内容不应获得焦点 */
+}
+
+.modal-overlay.active ~ *:not(.modal):not([role="dialog"]) {
+    pointer-events: none;
+}
+
+/* 焦点陷阱容器 */
+.focus-trap {
+    /* 标记焦点陷阱容器 */
+}
+
+.focus-trap *:focus {
+    /* 确保焦点在陷阱内循环 */
+}
+
+/* 阅读器焦点管理 */
+.reader-page .reader-nav-btn:focus-visible,
+.reader-page .chapter-nav-btn:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+/* 目录面板焦点管理 */
+.toc-panel:focus-within {
+    /* 目录面板获得焦点时的样式 */
+}
+
+.toc-item:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -2px;
+    background-color: var(--color-primary-light);
+}
+
+/* 设置面板焦点管理 */
+.settings-panel:focus-within {
+    /* 设置面板获得焦点时的样式 */
+}
+
+.theme-option:focus-visible,
+.font-family-option:focus-visible,
+.line-height-option:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* 搜索页面焦点管理 */
+.search-hot-tag:focus-visible,
+.search-history-item:focus-visible,
+.search-suggestion:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+.search-filter-option:focus-visible,
+.search-sort-tab:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+/* 通知中心焦点管理 */
+.notification-item:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -2px;
+    background-color: var(--color-primary-light);
+}
+
+.btn-view:focus-visible,
+.btn-dismiss:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* 排行榜焦点管理 */
+.ranking-tab:focus-visible,
+.ranking-menu-item:focus-visible,
+.ranking-period-tab:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+.ranking-list-item:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -2px;
+    background-color: var(--color-primary-light);
+}
+
+/* ---------- ARIA 状态样式 ---------- */
+[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+[aria-busy="true"] {
+    position: relative;
+    pointer-events: none;
+}
+
+[aria-busy="true"]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- 屏幕阅读器专用 ---------- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* ---------- 减少动画 ---------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------- 高对比度模式 ---------- */
+@media (prefers-contrast: high),
+.high-contrast {
+    :root {
+        --color-border: #000000;
+        --color-text-primary: #000000;
+        --color-text-secondary: #000000;
+        --color-text-muted: #333333;
+        --color-bg-primary: #ffffff;
+        --color-bg-secondary: #f0f0f0;
+        --color-primary: #0000ff;
+        --color-primary-dark: #0000cc;
+        --color-error: #cc0000;
+        --color-success: #006600;
+        --color-warning: #cc6600;
+    }
+
+    /* 增强边框 */
+    .btn-primary,
+    .btn-secondary,
+    .btn-ghost,
+    .card,
+    .form-input,
+    .modal,
+    .panel,
+    .sidebar {
+        border: 2px solid #000000 !important;
+    }
+
+    /* 增强焦点样式 */
+    :focus-visible {
+        outline: 3px solid #000000 !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 0 0 4px #ffffff, 0 0 0 6px #000000 !important;
+    }
+
+    /* 增强链接 */
+    a {
+        text-decoration: underline !important;
+        color: #0000ff !important;
+    }
+
+    a:visited {
+        color: #800080 !important;
+    }
+
+    /* 增强按钮 */
+    .btn-primary {
+        background: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    .btn-secondary {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    /* 增强表单元素 */
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+        outline: 3px solid #000000 !important;
+        border-color: #000000 !important;
+    }
+
+    /* 增强错误状态 */
+    .form-input.error,
+    .form-group--error .form-input {
+        border: 3px solid #cc0000 !important;
+        background-color: #fff0f0 !important;
+    }
+
+    /* 增强成功状态 */
+    .form-input.success,
+    .form-group--success .form-input {
+        border: 3px solid #006600 !important;
+        background-color: #f0fff0 !important;
+    }
+
+    /* 增强禁用状态 */
+    [disabled],
+    [aria-disabled="true"] {
+        opacity: 0.6 !important;
+        border-style: dashed !important;
+    }
+
+    /* 增强选中状态 */
+    [aria-selected="true"],
+    .active {
+        outline: 3px solid #000000 !important;
+        outline-offset: -3px !important;
+    }
+
+    /* 增强当前页面指示 */
+    [aria-current="page"] {
+        border-bottom: 3px solid #000000 !important;
+        font-weight: 700 !important;
+    }
+
+    /* 图片增强 */
+    img {
+        border: 1px solid #000000;
+    }
+
+    /* 表格增强 */
+    table {
+        border: 2px solid #000000 !important;
+    }
+
+    th, td {
+        border: 1px solid #000000 !important;
+    }
+
+    /* 分隔线增强 */
+    hr {
+        border: 1px solid #000000 !important;
+        border-top-width: 2px !important;
+    }
+
+    /* 滚动条增强 */
+    ::-webkit-scrollbar {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #ffffff !important;
+        border: 2px solid #000000 !important;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+    }
+}
+
+/* ---------- 触控区域优化 (≥44x44px) ---------- */
+@media (pointer: coarse) {
+    button,
+    a,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    [tabindex] {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.75rem;
+    }
+
+    .btn-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .nav-link,
+    .tab-item {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* ---------- 焦点管理 ---------- */
+.modal-overlay.active {
+    overflow: hidden;
+}
+
+.modal-overlay.active * {
+    pointer-events: none;
+}
+
+.modal-overlay.active .modal,
+.modal-overlay.active .modal * {
+    pointer-events: auto;
+}
+
+/* 陷阱焦点容器 */
+[role="dialog"],
+[role="alertdialog"] {
+    outline: none;
+}
+
+/* ---------- 阅读顺序优化 ---------- */
+.main-content {
+    outline: none;
+}
+
+/* ---------- 语言切换 ---------- */
+html[lang] {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+/* ---------- 文字间距优化 ---------- */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* 增加文字间距提高可读性 */
+@media (prefers-contrast: high) {
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.8;
+        letter-spacing: 0.02em;
+    }
+}
+
+/* ---------- 自定义滚动条 (无障碍友好) ---------- */
+@media (prefers-contrast: high) {
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #ffffff;
+        border: 1px solid #000000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #000000;
+        border: 2px solid #ffffff;
+    }
+}
+
+/* ---------- 通知区域 (无障碍) ---------- */
+[role="status"],
+[role="alert"] {
+    position: relative;
+    z-index: var(--z-tooltip);
+}
+
+/* Toast 无障碍优化 */
+.toast {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+}
+
+.toast-message {
+    line-height: 1.5;
+}
+
+/* Modal 无障碍优化 */
+.modal {
+    max-height: calc(100vh - 48px);
+}
+
+.modal-header,
+.modal-footer {
+    min-height: 48px;
+}
+
+/* ---------- 表单无障碍 ---------- */
+.form-group {
+    position: relative;
+}
+
+.form-label {
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-input[aria-invalid="true"],
+.form-textarea[aria-invalid="true"],
+.form-select[aria-invalid="true"] {
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 3px var(--color-error-light);
+}
+
+/* 必填字段指示器 */
+.form-label[aria-required="true"]::after {
+    content: ' *';
+    color: var(--color-error);
+}
+
+/* 错误提示 */
+.form-error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: var(--text-body-s);
+    color: var(--color-error);
+}
+
+.form-error-message svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+/* ---------- 链接无障碍 ---------- */
+a:not([href]) {
+    color: var(--color-text-muted);
+    cursor: default;
+}
+
+a[href] {
+    text-underline-offset: 2px;
+}
+
+a[href]:hover {
+    text-decoration-thickness: 2px;
+}
+
+/* 外部链接标识 */
+a[href^="http"]::after {
+    content: ' ↗';
+    font-size: 0.75em;
+}
+
+/* ---------- 按钮无障碍状态 ---------- */
+.btn-primary[aria-pressed="true"],
+.btn-secondary[aria-pressed="true"] {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary[aria-busy="true"],
+.btn-secondary[aria-busy="true"] {
+    position: relative;
+    color: transparent;
+}
+
+.btn-primary[aria-busy="true"]::after,
+.btn-secondary[aria-busy="true"]::after {
+    content: '';
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    color: var(--color-text-inverse);
+}
+
+/* ---------- 标签页无障碍 ---------- */
+[role="tab"] {
+    position: relative;
+}
+
+[role="tab"][aria-selected="true"] {
+    font-weight: 600;
+}
+
+[role="tab"][aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+[role="tabpanel"] {
+    outline: none;
+}
+
+/* ---------- 手风琴无障碍 ---------- */
+[aria-expanded="false"] + [role="region"] {
+    display: none;
+}
+
+[aria-expanded="true"] + [role="region"] {
+    display: block;
+}
+
+/* ---------- 工具提示无障碍 ---------- */
+[role="tooltip"] {
+    position: absolute;
+    z-index: var(--z-tooltip);
+    pointer-events: none;
+}
+
+/* ---------- 进度指示器无障碍 ---------- */
+[role="progressbar"] {
+    position: relative;
+}
+
+.progress-bar {
+    position: relative;
+}
+
+.progress-bar-fill::after {
+    content: attr(aria-valuenow) '%';
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--text-body-s);
+    font-weight: 600;
+    color: var(--color-text-inverse);
+}
+
+/* ---------- 面包屑导航 ---------- */
+[aria-label="breadcrumb"] {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+[aria-label="breadcrumb"] li:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: var(--color-text-muted);
+}
+
+/* ---------- 表格无障碍 ---------- */
+.table {
+    border-collapse: collapse;
+}
+
+.table th[scope="col"],
+.table th[scope="row"] {
+    font-weight: 600;
+}
+
+.table caption {
+    padding: 0.5rem 0;
+    font-weight: 600;
+    text-align: left;
+    caption-side: top;
+}
+
+/* ---------- 列表无障碍 ---------- */
+ul, ol {
+    padding-left: 1.5rem;
+}
+
+li {
+    margin-bottom: 0.25rem;
+}
+
+/* 描述列表 */
+dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+}
+
+dt {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+dd {
+    margin: 0;
+    color: var(--color-text-secondary);
+}

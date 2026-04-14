@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="注册 NovelHub - AI 驱动的小说创作与阅读平台">
+    <meta name="keywords" content="NovelHub注册,小说阅读平台,AI小说,在线阅读,用户注册">
+    <meta name="author" content="NovelHub Team">
+    <meta name="robots" content="noindex, follow">
+    <title>注册 - NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <style>
+        /* 表单验证状态样式 */
+        .form-input {
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .form-input.error {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px var(--color-error-light);
+            background-color: var(--color-error-bg, #fef2f2);
+        }
+
+        .form-input.success {
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 3px var(--color-success-light);
+            background-color: var(--color-success-bg, #f0fdf4);
+        }
+
+        .form-error {
+            display: none;
+            font-size: 0.8125rem;
+            color: var(--color-error);
+            margin-top: 0.375rem;
+            padding-left: 0.25rem;
+        }
+
+        .form-error.show {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .form-error::before {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3C/svg%3E");
+            background-size: contain;
+            flex-shrink: 0;
+        }
+
+        .validation-indicator {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .validation-indicator .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .validation-indicator .icon.show {
+            opacity: 1;
+        }
+
+        .validation-indicator .icon-success {
+            color: var(--color-success);
+        }
+
+        .validation-indicator .icon-error {
+            color: var(--color-error);
+        }
+
+        /* 密码强度指示器 */
+        .password-strength {
+            margin-top: 0.5rem;
+        }
+
+        .strength-bar {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .strength-item {
+            flex: 1;
+            height: 0.25rem;
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            transition: all 0.3s ease;
+        }
+
+        .strength-item.weak {
+            background: var(--color-error);
+        }
+
+        .strength-item.fair {
+            background: var(--color-warning);
+        }
+
+        .strength-item.good {
+            background: #3b82f6;
+        }
+
+        .strength-item.strong {
+            background: var(--color-success);
+        }
+
+        .strength-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .strength-text.weak { color: var(--color-error); }
+        .strength-text.fair { color: var(--color-warning); }
+        .strength-text.good { color: #3b82f6; }
+        .strength-text.strong { color: var(--color-success); }
+
+        .password-requirements {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .password-requirements li {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            margin-bottom: 0.25rem;
+            transition: color 0.2s ease;
+        }
+
+        .password-requirements li.met {
+            color: var(--color-success);
+        }
+
+        .password-requirements li.met::before {
+            content: '✓';
+            font-weight: bold;
+        }
+
+        .password-requirements li:not(.met)::before {
+            content: '○';
+            opacity: 0.5;
+        }
+
+        /* 表单组 */
+        .form-group {
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group.has-error .form-input {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px var(--color-error-light);
+        }
+
+        .form-group.has-success .form-input {
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 3px var(--color-success-light);
+        }
+
+        .form-label .required {
+            color: var(--color-error);
+            margin-left: 0.25rem;
+        }
+
+        /* 跳过导航链接 */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-md);
+            z-index: 10000;
+            font-weight: 500;
+            transition: top 0.2s ease;
+            text-decoration: none;
+        }
+
+        .skip-link:focus {
+            top: 1rem;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* 加载动画 */
+        .btn-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 1rem;
+            height: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 服务条款弹窗 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: var(--z-modal, 1000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: relative;
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-xl);
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--color-border);
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            padding: 0.625rem 1.25rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-bg-secondary);
+        }
+
+        .btn-primary {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--color-primary);
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <a href="#mainContent" class="skip-link sr-only">跳转到主要内容</a>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <div class="auth-page" id="mainContent" role="main">
+        <div class="auth-sidebar">
+            <a href="../../index.html" class="auth-logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span class="logo-text">NovelHub</span>
+            </a>
+            <div class="auth-sidebar-content">
+                <h1 class="auth-sidebar-title">开启你的阅读之旅</h1>
+                <p class="auth-sidebar-desc">加入我们，探索由 AI 创作的无限精彩小说世界</p>
+                <div class="auth-features">
+                    <div class="auth-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <div>
+                            <h4>个人书架</h4>
+                            <p>收藏喜爱的小说，随时继续阅读</p>
+                        </div>
+                    </div>
+                    <div class="auth-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <div>
+                            <h4>阅读进度同步</h4>
+                            <p>多设备无缝同步，断点续读</p>
+                        </div>
+                    </div>
+                    <div class="auth-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <div>
+                            <h4>评论互动</h4>
+                            <p>与其他读者交流，分享阅读感受</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-main">
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h2 class="auth-form-title">创建账户</h2>
+                    <p class="auth-form-subtitle">加入 NovelHub，开启无限阅读之旅</p>
+                </div>
+
+                <form class="auth-form" id="registerForm" novalidate role="form" aria-label="注册表单">
+                    <div class="form-group" id="usernameGroup">
+                        <label class="form-label" for="registerName">
+                            用户名
+                            <span class="required" aria-label="必填">*</span>
+                        </label>
+                        <div style="position: relative;">
+                            <input 
+                                type="text" 
+                                id="registerName" 
+                                name="username"
+                                class="form-input" 
+                                placeholder="请输入用户名（2-20个字符）" 
+                                required 
+                                minlength="2" 
+                                maxlength="20"
+                                autocomplete="username"
+                                aria-describedby="nameError nameHint"
+                            >
+                            <span class="validation-indicator" aria-hidden="true">
+                                <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="form-error" id="nameError" role="alert"></span>
+                        <span id="nameHint" class="sr-only">用户名只能包含中文、字母、数字和下划线</span>
+                    </div>
+
+                    <div class="form-group" id="emailGroup">
+                        <label class="form-label" for="registerEmail">
+                            邮箱地址
+                            <span class="required" aria-label="必填">*</span>
+                        </label>
+                        <div style="position: relative;">
+                            <input 
+                                type="email" 
+                                id="registerEmail" 
+                                name="email"
+                                class="form-input" 
+                                placeholder="请输入您的邮箱" 
+                                required
+                                autocomplete="email"
+                                aria-describedby="emailError emailHint"
+                            >
+                            <span class="validation-indicator" aria-hidden="true">
+                                <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="form-error" id="emailError" role="alert"></span>
+                        <span id="emailHint" class="sr-only">请输入有效的邮箱地址</span>
+                    </div>
+
+                    <div class="form-group" id="passwordGroup">
+                        <label class="form-label" for="registerPassword">
+                            设置密码
+                            <span class="required" aria-label="必填">*</span>
+                        </label>
+                        <div class="password-input-wrapper" style="position: relative;">
+                            <input 
+                                type="password" 
+                                id="registerPassword" 
+                                name="password"
+                                class="form-input" 
+                                placeholder="至少8位，包含字母和数字" 
+                                required 
+                                minlength="8"
+                                autocomplete="new-password"
+                                aria-describedby="passwordError passwordStrength passwordHint"
+                            >
+                            <button type="button" class="password-toggle" aria-label="显示密码" tabindex="0">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            </button>
+                            <span class="validation-indicator" aria-hidden="true">
+                                <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar">
+                                <span class="strength-item" data-level="1"></span>
+                                <span class="strength-item" data-level="2"></span>
+                                <span class="strength-item" data-level="3"></span>
+                                <span class="strength-item" data-level="4"></span>
+                            </div>
+                            <span class="strength-text" id="strengthText"></span>
+                        </div>
+                        <span class="form-error" id="passwordError" role="alert"></span>
+                        <ul class="password-requirements" id="passwordRequirements">
+                            <li data-req="length">至少8个字符</li>
+                            <li data-req="letter">包含字母</li>
+                            <li data-req="number">包含数字</li>
+                            <li data-req="special">包含特殊字符（可选）</li>
+                        </ul>
+                        <span id="passwordHint" class="sr-only">密码必须包含至少8个字符，包括字母和数字</span>
+                    </div>
+
+                    <div class="form-group" id="confirmPasswordGroup">
+                        <label class="form-label" for="registerPasswordConfirm">
+                            确认密码
+                            <span class="required" aria-label="必填">*</span>
+                        </label>
+                        <div class="password-input-wrapper" style="position: relative;">
+                            <input 
+                                type="password" 
+                                id="registerPasswordConfirm" 
+                                name="confirmPassword"
+                                class="form-input" 
+                                placeholder="请再次输入密码" 
+                                required
+                                autocomplete="new-password"
+                                aria-describedby="confirmError confirmHint"
+                            >
+                            <button type="button" class="password-toggle" aria-label="显示密码" tabindex="0">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            </button>
+                            <span class="validation-indicator" aria-hidden="true">
+                                <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="form-error" id="confirmError" role="alert"></span>
+                        <span id="confirmHint" class="sr-only">请再次输入相同的密码</span>
+                    </div>
+
+                    <div class="form-group" id="termsGroup">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">
+                                我已阅读并同意 <a href="#" class="form-link" id="termsLink" onclick="event.preventDefault(); document.getElementById('termsModal').style.display='flex';">服务条款</a> 和 <a href="#" class="form-link" id="privacyLink" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                                <span class="required" aria-label="必填">*</span>
+                            </span>
+                        </label>
+                        <span class="form-error" id="termsError" role="alert"></span>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full" id="registerBtn" aria-live="polite">
+                        <span class="btn-text">注册</span>
+                        <span class="btn-loading" style="display: none;">
+                            <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"></circle>
+                            </svg>
+                            注册中...
+                        </span>
+                    </button>
+
+                    <div class="auth-divider">
+                        <span>或使用以下方式注册</span>
+                    </div>
+
+                    <div class="auth-social">
+                        <button type="button" class="btn-social" id="googleRegister" title="Google注册" aria-label="使用 Google 账号注册" data-loading="false">
+                            <span class="btn-social-content">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+                                </svg>
+                                <span class="btn-social-text">Google</span>
+                            </span>
+                            <span class="btn-social-loading" style="display: none;">
+                                <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"></circle>
+                                </svg>
+                            </span>
+                        </button>
+                        <button type="button" class="btn-social" id="githubRegister" title="GitHub注册" aria-label="使用 GitHub 账号注册" data-loading="false">
+                            <span class="btn-social-content">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                                </svg>
+                                <span class="btn-social-text">GitHub</span>
+                            </span>
+                            <span class="btn-social-loading" style="display: none;">
+                                <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"></circle>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="auth-footer-text">
+                    已有账户？ <a href="login.html" class="form-link">立即登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 服务条款弹窗 -->
+    <div class="modal" id="termsModal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="termsModalTitle">服务条款</h3>
+                <button type="button" class="modal-close" id="closeTermsModal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="terms-content">
+                    <h4>1. 服务说明</h4>
+                    <p>NovelHub 是一个由 AI 创作小说的在线阅读平台。我们致力于为用户提供高质量的小说阅读体验。</p>
+                    
+                    <h4>2. 用户责任</h4>
+                    <p>用户在使用本平台服务时，应遵守相关法律法规，不得发布违法违规内容，不得侵犯他人合法权益。</p>
+                    
+                    <h4>3. 知识产权</h4>
+                    <p>平台上的所有小说内容由 AI 创作，版权归 NovelHub 所有。用户仅享有阅读权利，未经授权不得复制、传播。</p>
+                    
+                    <h4>4. 免责声明</h4>
+                    <p>平台内容仅供娱乐阅读，不构成任何专业建议。用户应自行判断内容的真实性和适用性。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="declineTerms">不同意</button>
+                <button type="button" class="btn-primary" id="acceptTerms">同意并继续</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入服务 -->
+    <script src="../../assets/js/services/auth-service.js"></script>
+    <script src="../../assets/js/components/form-validator.js"></script>
+    <script src="../../assets/js/components/toast.js"></script>
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- P2级UX修复：可访问性增强（键盘导航、ARIA标签、跳过导航链接） -->
+    <script src="../../assets/js/accessibility-p2-fix.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+    
+    <script>
+        // 使用全局对象或定义fallback
+        let showToast = window.showToast || function(msg, type = 'info') {
+            console.log(`[${type}] ${msg}`);
+        };
+        let showLoadingToast = window.showLoadingToast || function(msg) {
+            console.log(`[Loading] ${msg}`);
+            return { close: function() {} };
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initRegisterPage();
+        });
+
+        function initRegisterPage() {
+            const registerForm = document.getElementById('registerForm');
+            const registerBtn = document.getElementById('registerBtn');
+            const usernameInput = document.getElementById('registerName');
+            const emailInput = document.getElementById('registerEmail');
+            const passwordInput = document.getElementById('registerPassword');
+            const confirmInput = document.getElementById('registerPasswordConfirm');
+            const agreeCheckbox = document.getElementById('agreeTerms');
+
+            // 初始化表单验证
+            const validator = new FormValidator(registerForm, {
+                validateOnBlur: true,
+                validateOnInput: true,
+                showSuccessState: true,
+                scrollToFirstError: true
+            });
+
+            // 添加验证规则 - 用户名
+            validator.addRule('username', [
+                { type: 'required', message: '请输入用户名' },
+                { type: 'minLength', params: 2, message: '用户名至少2个字符' },
+                { type: 'maxLength', params: 20, message: '用户名最多20个字符' },
+                { 
+                    type: 'pattern', 
+                    params: /^[\u4e00-\u9fa5a-zA-Z0-9_]+$/, 
+                    message: '用户名只能包含中文、字母、数字和下划线' 
+                }
+            ]);
+
+            // 添加验证规则 - 邮箱
+            validator.addRule('email', [
+                { type: 'required', message: '请输入邮箱地址' },
+                { type: 'email', message: '请输入有效的邮箱地址（如：user@example.com）' }
+            ]);
+
+            // 添加验证规则 - 密码
+            validator.addRule('password', [
+                { type: 'required', message: '请输入密码' },
+                { type: 'minLength', params: 8, message: '密码长度至少8位' },
+                { 
+                    type: 'custom', 
+                    params: (value) => ({
+                        valid: /[a-zA-Z]/.test(value) && /\d/.test(value),
+                        message: '密码必须同时包含字母和数字'
+                    })
+                }
+            ]);
+
+            // 添加验证规则 - 确认密码
+            validator.addRule('confirmPassword', [
+                { type: 'required', message: '请确认密码' },
+                { 
+                    type: 'match', 
+                    params: '#registerPassword', 
+                    message: '两次输入的密码不一致' 
+                }
+            ]);
+
+            // 密码显示/隐藏切换
+            document.querySelectorAll('.password-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const input = toggle.previousElementSibling;
+                    const eyeOn = toggle.querySelector('.icon-eye');
+                    const eyeOff = toggle.querySelector('.icon-eye-off');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        eyeOn.style.display = 'none';
+                        eyeOff.style.display = 'block';
+                        toggle.setAttribute('aria-label', '隐藏密码');
+                    } else {
+                        input.type = 'password';
+                        eyeOn.style.display = 'block';
+                        eyeOff.style.display = 'none';
+                        toggle.setAttribute('aria-label', '显示密码');
+                    }
+                });
+            });
+
+            // 密码强度检测
+            passwordInput.addEventListener('input', (e) => {
+                checkPasswordStrength(e.target.value);
+                // 如果确认密码已有值，实时验证匹配
+                if (confirmInput.value) {
+                    validator.validateField('confirmPassword');
+                }
+            });
+
+            // 确认密码输入时实时验证
+            confirmInput.addEventListener('input', () => {
+                if (confirmInput.value && passwordInput.value) {
+                    validator.validateField('confirmPassword');
+                }
+            });
+
+            // 用户名输入时实时验证
+            usernameInput.addEventListener('input', () => {
+                if (usernameInput.value.trim()) {
+                    validator.validateField('username');
+                }
+            });
+
+            // 邮箱输入时实时验证
+            emailInput.addEventListener('input', () => {
+                if (emailInput.value.trim()) {
+                    validator.validateField('email');
+                }
+            });
+
+            // 实时验证反馈
+            validator.on('success', ({ field }) => {
+                updateValidationIndicator(field, true);
+                clearFieldError(field);
+            });
+
+            validator.on('error', ({ field }) => {
+                updateValidationIndicator(field, false);
+            });
+
+            // 服务条款弹窗
+            const termsModal = document.getElementById('termsModal');
+            
+            document.getElementById('termsLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                termsModal.style.display = 'flex';
+                document.getElementById('acceptTerms').focus();
+            });
+
+            document.getElementById('privacyLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showToast('隐私政策页面开发中', 'info');
+            });
+
+            document.getElementById('closeTermsModal').addEventListener('click', () => {
+                termsModal.style.display = 'none';
+            });
+
+            document.getElementById('declineTerms').addEventListener('click', () => {
+                termsModal.style.display = 'none';
+            });
+
+            document.getElementById('acceptTerms').addEventListener('click', () => {
+                agreeCheckbox.checked = true;
+                termsModal.style.display = 'none';
+                clearFieldError('terms');
+                showToast('已同意服务条款', 'success');
+            });
+
+            // 点击遮罩关闭弹窗
+            termsModal.querySelector('.modal-overlay').addEventListener('click', () => {
+                termsModal.style.display = 'none';
+            });
+
+            // 表单提交
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // 清除之前的错误状态
+                clearAllErrors();
+                
+                // 验证条款
+                if (!agreeCheckbox.checked) {
+                    const termsError = document.getElementById('termsError');
+                    termsError.textContent = '请阅读并同意服务条款和隐私政策';
+                    termsError.classList.add('show');
+                    termsError.style.display = 'flex';
+                    showToast('请阅读并同意服务条款', 'error');
+                    return;
+                }
+
+                // 验证表单
+                if (!validator.validateAll()) {
+                    showToast('请检查表单填写是否正确', 'error');
+                    return;
+                }
+
+                // 再次检查密码强度
+                const password = passwordInput.value;
+                const strengthCheck = FormValidator.checkPasswordStrength(password);
+                if (strengthCheck.level === 'weak') {
+                    showToast('密码强度太弱，请设置更安全的密码', 'warning');
+                    passwordInput.focus();
+                    return;
+                }
+
+                const username = usernameInput.value.trim();
+                const email = emailInput.value.trim();
+
+                // 显示加载状态
+                setLoading(true);
+                const loadingToast = showLoadingToast('正在注册...');
+
+                try {
+                    // 使用认证服务注册
+                    const result = await authService.register({ username, email, password });
+
+                    if (result.success) {
+                        loadingToast.success('注册成功！正在跳转登录页...');
+                        setTimeout(() => {
+                            window.location.href = 'login.html?registered=true';
+                        }, 1500);
+                    } else {
+                        loadingToast.error(result.error || '注册失败');
+                        
+                        if (result.error && result.error.includes('邮箱')) {
+                            showFieldError('email', result.error);
+                        } else if (result.error && result.error.includes('用户名')) {
+                            showFieldError('username', result.error);
+                        }
+                    }
+                } catch (error) {
+                    console.error('注册错误:', error);
+                    loadingToast.error('注册失败，请稍后重试');
+                } finally {
+                    setLoading(false);
+                }
+            });
+
+            // 社交注册
+            document.getElementById('googleRegister').addEventListener('click', async function() {
+                if (this.dataset.loading === 'true') return;
+                
+                const btn = this;
+                setSocialButtonLoading(btn, true);
+                
+                const loadingToast = showLoadingToast('正在连接 Google...');
+                try {
+                    const result = await authService.socialLogin('Google');
+                    if (result.success) {
+                        loadingToast.success('注册成功！');
+                        setTimeout(() => {
+                            window.location.href = '../../index.html';
+                        }, 1000);
+                    } else {
+                        loadingToast.error(result.error || 'Google 注册失败');
+                        setSocialButtonLoading(btn, false);
+                    }
+                } catch (error) {
+                    console.error('Google注册错误:', error);
+                    loadingToast.error('Google 注册失败，请稍后重试');
+                    setSocialButtonLoading(btn, false);
+                }
+            });
+
+            document.getElementById('githubRegister').addEventListener('click', async function() {
+                if (this.dataset.loading === 'true') return;
+                
+                const btn = this;
+                setSocialButtonLoading(btn, true);
+                
+                const loadingToast = showLoadingToast('正在连接 GitHub...');
+                try {
+                    const result = await authService.socialLogin('GitHub');
+                    if (result.success) {
+                        loadingToast.success('注册成功！');
+                        setTimeout(() => {
+                            window.location.href = '../../index.html';
+                        }, 1000);
+                    } else {
+                        loadingToast.error(result.error || 'GitHub 注册失败');
+                        setSocialButtonLoading(btn, false);
+                    }
+                } catch (error) {
+                    console.error('GitHub注册错误:', error);
+                    loadingToast.error('GitHub 注册失败，请稍后重试');
+                    setSocialButtonLoading(btn, false);
+                }
+            });
+
+            // 社交注册按钮加载状态
+            function setSocialButtonLoading(btn, loading) {
+                btn.dataset.loading = loading ? 'true' : 'false';
+                btn.disabled = loading;
+                const content = btn.querySelector('.btn-social-content');
+                const spinner = btn.querySelector('.btn-social-loading');
+                
+                if (loading) {
+                    content.style.display = 'none';
+                    spinner.style.display = 'inline-flex';
+                } else {
+                    content.style.display = 'inline-flex';
+                    spinner.style.display = 'none';
+                }
+            }
+
+            // 辅助函数
+            function checkPasswordStrength(password) {
+                const requirements = {
+                    length: password.length >= 8,
+                    letter: /[a-zA-Z]/.test(password),
+                    number: /\d/.test(password),
+                    special: /[^a-zA-Z0-9]/.test(password)
+                };
+
+                // 更新要求列表
+                document.querySelectorAll('#passwordRequirements li').forEach(li => {
+                    const req = li.dataset.req;
+                    if (requirements[req]) {
+                        li.classList.add('met');
+                    } else {
+                        li.classList.remove('met');
+                    }
+                });
+
+                // 计算强度
+                let strength = 0;
+                if (requirements.length) strength++;
+                if (requirements.letter && requirements.number) strength++;
+                if (requirements.special) strength++;
+                if (password.length >= 12) strength++;
+
+                // 更新强度条
+                const strengthItems = document.querySelectorAll('.strength-item');
+                strengthItems.forEach((item, index) => {
+                    item.classList.remove('weak', 'fair', 'good', 'strong');
+                    if (index < strength) {
+                        if (strength === 1) item.classList.add('weak');
+                        else if (strength === 2) item.classList.add('fair');
+                        else if (strength === 3) item.classList.add('good');
+                        else if (strength >= 4) item.classList.add('strong');
+                    }
+                });
+
+                // 更新强度文本
+                const strengthText = document.getElementById('strengthText');
+                const strengthLabels = ['', '弱', '一般', '良好', '强'];
+                strengthText.textContent = strength > 0 ? `密码强度：${strengthLabels[strength]}` : '';
+                strengthText.className = 'strength-text';
+                if (strength === 1) strengthText.classList.add('weak');
+                else if (strength === 2) strengthText.classList.add('fair');
+                else if (strength === 3) strengthText.classList.add('good');
+                else if (strength >= 4) strengthText.classList.add('strong');
+            }
+
+            function setLoading(loading) {
+                const btnText = registerBtn.querySelector('.btn-text');
+                const btnLoading = registerBtn.querySelector('.btn-loading');
+                
+                if (loading) {
+                    registerBtn.disabled = true;
+                    btnText.style.display = 'none';
+                    btnLoading.style.display = 'inline-flex';
+                } else {
+                    registerBtn.disabled = false;
+                    btnText.style.display = 'inline';
+                    btnLoading.style.display = 'none';
+                }
+            }
+
+            function updateValidationIndicator(field, isValid) {
+                const group = document.getElementById(field + 'Group');
+                if (!group) return;
+
+                const successIcon = group.querySelector('.icon-success');
+                const errorIcon = group.querySelector('.icon-error');
+
+                if (isValid) {
+                    if (successIcon) successIcon.classList.add('show');
+                    if (errorIcon) errorIcon.classList.remove('show');
+                    group.classList.add('has-success');
+                    group.classList.remove('has-error');
+                } else {
+                    if (successIcon) successIcon.classList.remove('show');
+                    if (errorIcon) errorIcon.classList.add('show');
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                }
+            }
+
+            function showFieldError(field, message) {
+                const group = document.getElementById(field + 'Group');
+                if (!group) return;
+                
+                const errorEl = document.getElementById(field === 'terms' ? 'termsError' : field + 'Error');
+                const input = group.querySelector('input');
+
+                if (errorEl) {
+                    errorEl.textContent = message;
+                    errorEl.classList.add('show');
+                    errorEl.style.display = 'flex';
+                }
+
+                if (input) {
+                    input.classList.add('error');
+                    input.classList.remove('success');
+                    input.setAttribute('aria-invalid', 'true');
+                }
+
+                updateValidationIndicator(field, false);
+            }
+
+            function clearFieldError(field) {
+                const group = document.getElementById(field + 'Group');
+                if (!group) return;
+                
+                const errorEl = document.getElementById(field === 'terms' ? 'termsError' : field + 'Error');
+                const input = group.querySelector('input');
+
+                if (errorEl) {
+                    errorEl.textContent = '';
+                    errorEl.classList.remove('show');
+                    errorEl.style.display = 'none';
+                }
+
+                if (input) {
+                    input.classList.remove('error');
+                    input.removeAttribute('aria-invalid');
+                }
+            }
+
+            function clearAllErrors() {
+                ['username', 'email', 'password', 'confirmPassword', 'terms'].forEach(field => clearFieldError(field));
+            }
+        }
+    </script>
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .auth-sidebar {
+            flex: 1;
+            background: linear-gradient(135deg, var(--color-primary), #8b5cf6);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 4rem;
+        }
+
+        .auth-logo .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .auth-sidebar-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .auth-sidebar-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .auth-sidebar-desc {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .auth-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .auth-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .auth-feature svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+            opacity: 0.9;
+        }
+
+        .auth-feature h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .auth-feature p {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .auth-main {
+            width: 100%;
+            max-width: 520px;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--color-bg-primary);
+        }
+
+        .auth-form-container {
+            width: 100%;
+        }
+
+        .auth-header {
+            margin-bottom: 2rem;
+        }
+
+        .auth-form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-form-subtitle {
+            color: var(--color-text-secondary);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color var(--duration-fast);
+        }
+
+        .form-link:hover {
+            text-decoration: underline;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 2.5rem 0.875rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            transition: all var(--duration-fast);
+        }
+
+        .password-input-wrapper .form-input {
+            padding-right: 5rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle:hover {
+            color: var(--color-text-secondary);
+        }
+
+        .password-toggle svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .form-checkbox input {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--duration-fast);
+            margin-top: 0.125rem;
+        }
+
+        .form-checkbox input:checked + .checkbox-custom {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .form-checkbox input:checked + .checkbox-custom::after {
+            content: '';
+            width: 0.625rem;
+            height: 0.375rem;
+            border-left: 2px solid white;
+            border-bottom: 2px solid white;
+            transform: rotate(-45deg);
+        }
+
+        .checkbox-text {
+            line-height: 1.5;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--color-border);
+        }
+
+        .auth-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-social {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            font-size: 0.875rem;
+        }
+
+        .btn-social:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .btn-social svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .auth-footer-text {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        @media (max-width: 1024px) {
+            .auth-sidebar {
+                display: none;
+            }
+
+            .auth-main {
+                max-width: 100%;
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-social {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                max-height: 90vh;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+    </style>
+</body>
+</html>

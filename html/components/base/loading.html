@@ -1,0 +1,340 @@
+<!-- Loading 加载组件 -->
+
+<!-- 1. 旋转加载器 -->
+<div class="loading-spinner" id="loadingSpinner" style="display: none;">
+    <div class="spinner"></div>
+    <span class="loading-text">加载中...</span>
+</div>
+
+<!-- 2. 骨架屏 -->
+<div class="skeleton-container" id="skeletonContainer" style="display: none;">
+    <!-- 小说卡片骨架屏 -->
+    <div class="skeleton-card">
+        <div class="skeleton-cover"></div>
+        <div class="skeleton-content">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-text"></div>
+            <div class="skeleton-text short"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. 页面加载遮罩 -->
+<div class="page-loading" id="pageLoading" style="display: none;">
+    <div class="page-loading-content">
+        <div class="spinner-large"></div>
+        <p class="page-loading-text">正在加载...</p>
+    </div>
+</div>
+
+<style>
+/* 旋转加载器 */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem;
+}
+
+.spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--color-bg-tertiary);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.spinner-large {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid var(--color-bg-tertiary);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+/* 页面加载遮罩 */
+.page-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal, 9999);
+}
+
+.page-loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-loading-text {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+}
+
+/* 骨架屏 */
+.skeleton-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+}
+
+.skeleton-card {
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+}
+
+.skeleton-cover {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.skeleton-title {
+    height: 1.25rem;
+    background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-text {
+    height: 0.875rem;
+    background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 按钮加载状态 */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* 列表骨架屏 */
+.skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.skeleton-list-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+.skeleton-list-cover {
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.skeleton-list-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* 段落骨架屏 */
+.skeleton-paragraph {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.skeleton-line {
+    height: 1rem;
+    background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-line:last-child {
+    width: 80%;
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    window.Loading = {
+        // 显示旋转加载器
+        showSpinner: function(container, text) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) {
+                spinner.style.display = 'flex';
+                if (text) {
+                    spinner.querySelector('.loading-text').textContent = text;
+                }
+                if (container) {
+                    container.appendChild(spinner);
+                }
+            }
+        },
+        
+        // 隐藏旋转加载器
+        hideSpinner: function() {
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
+        },
+        
+        // 显示页面加载
+        showPageLoading: function(text) {
+            const loading = document.getElementById('pageLoading');
+            if (loading) {
+                loading.style.display = 'flex';
+                if (text) {
+                    loading.querySelector('.page-loading-text').textContent = text;
+                }
+            }
+        },
+        
+        // 隐藏页面加载
+        hidePageLoading: function() {
+            const loading = document.getElementById('pageLoading');
+            if (loading) {
+                loading.style.display = 'none';
+            }
+        },
+        
+        // 显示骨架屏
+        showSkeleton: function(container, type, count) {
+            if (!container) return;
+            
+            const skeleton = document.getElementById('skeletonContainer');
+            if (!skeleton) return;
+            
+            let html = '';
+            count = count || 6;
+            
+            for (let i = 0; i < count; i++) {
+                if (type === 'card') {
+                    html += `
+                        <div class="skeleton-card">
+                            <div class="skeleton-cover"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-text"></div>
+                                <div class="skeleton-text short"></div>
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'list') {
+                    html += `
+                        <div class="skeleton-list-item">
+                            <div class="skeleton-list-cover"></div>
+                            <div class="skeleton-list-content">
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-text"></div>
+                                <div class="skeleton-text short"></div>
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'paragraph') {
+                    html += `
+                        <div class="skeleton-paragraph">
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line"></div>
+                        </div>
+                    `;
+                }
+            }
+            
+            container.innerHTML = html;
+            container.style.display = 'block';
+        },
+        
+        // 隐藏骨架屏
+        hideSkeleton: function(container) {
+            if (container) {
+                container.innerHTML = '';
+                container.style.display = 'none';
+            }
+        },
+        
+        // 设置按钮加载状态
+        setButtonLoading: function(button, loading) {
+            if (!button) return;
+            
+            if (loading) {
+                button.classList.add('btn-loading');
+                button.disabled = true;
+                button.dataset.originalText = button.textContent;
+            } else {
+                button.classList.remove('btn-loading');
+                button.disabled = false;
+            }
+        }
+    };
+})();
+</script>

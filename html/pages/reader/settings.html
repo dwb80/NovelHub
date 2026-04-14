@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读器设置 - NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- 修复：补充缺失的layout.css引用 -->
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+    
+    <style>
+        /* 设置页专用样式 */
+        .settings-page {
+            min-height: 100vh;
+            background-color: var(--color-bg-secondary);
+            padding-bottom: 2rem;
+        }
+
+        /* 头部导航 */
+        .settings-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--color-bg-primary);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .settings-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-md);
+            transition: all var(--duration-fast);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .back-btn:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-tertiary);
+        }
+
+        .back-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .header-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reset-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 0.875rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            transition: all var(--duration-fast);
+            cursor: pointer;
+            border: none;
+        }
+
+        .reset-btn:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+
+        .reset-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* 主内容区 */
+        .settings-main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 6rem;
+        }
+
+        /* 预览区域 */
+        .preview-section {
+            background-color: var(--color-bg-primary);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .preview-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+        }
+
+        .preview-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background-color: var(--color-primary-light);
+            color: var(--color-primary);
+            border-radius: var(--radius-full);
+        }
+
+        .preview-content {
+            padding: 2rem 1.5rem;
+            min-height: 200px;
+            transition: all var(--transition-base);
+        }
+
+        .preview-chapter-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all var(--transition-base);
+        }
+
+        .preview-text {
+            font-family: var(--reading-font-family, var(--font-serif));
+            font-size: var(--reading-font-size, 18px);
+            line-height: var(--reading-line-height, 1.8);
+            text-indent: 2em;
+            transition: all var(--transition-base);
+        }
+
+        .preview-text p {
+            margin-bottom: var(--reading-paragraph-spacing, 1em);
+        }
+
+        /* 设置分组 */
+        .settings-group {
+            background-color: var(--color-bg-primary);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-border);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .settings-group-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            background-color: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .settings-group-title svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .settings-group-content {
+            padding: 1.25rem;
+        }
+
+        /* 主题选择 */
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+
+        .theme-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 0.5rem;
+            border-radius: var(--radius-lg);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            background-color: var(--color-bg-tertiary);
+        }
+
+        .theme-option:hover {
+            border-color: var(--color-border-hover);
+            transform: translateY(-2px);
+        }
+
+        .theme-option.active {
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-light);
+        }
+
+        .theme-preview {
+            width: 3rem;
+            height: 3rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+        }
+
+        .theme-preview.light {
+            background-color: #ffffff;
+        }
+
+        .theme-preview.paper {
+            background-color: #faf8f5;
+        }
+
+        .theme-preview.dark {
+            background-color: #0f172a;
+        }
+
+        .theme-preview.eye-care {
+            background-color: #f5f0e6;
+        }
+
+        .theme-name {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+
+        .theme-option.active .theme-name {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 字体选择 */
+        .font-family-options {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .font-family-option {
+            flex: 1;
+            padding: 0.875rem;
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            border: 2px solid transparent;
+        }
+
+        .font-family-option:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+
+        .font-family-option.active {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-light);
+        }
+
+        .font-family-option.serif {
+            font-family: var(--font-serif);
+        }
+
+        .font-family-option.sans {
+            font-family: var(--font-sans);
+        }
+
+        /* 字体大小控制 */
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .font-size-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            border: none;
+        }
+
+        .font-size-btn:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+
+        .font-size-value {
+            min-width: 4rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            padding: 0.5rem 1rem;
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+        }
+
+        /* 行高选择 */
+        .line-height-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .line-height-option {
+            flex: 1;
+            padding: 0.625rem 0.75rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .line-height-option:hover {
+            color: var(--color-text-primary);
+        }
+
+        .line-height-option.active {
+            color: #ffffff;
+            background-color: var(--color-primary);
+        }
+
+        /* 滑块控制 */
+        .slider-control {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-control:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .slider-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .slider-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            padding: 0.25rem 0.5rem;
+            background-color: var(--color-primary-light);
+            border-radius: var(--radius-md);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            color: var(--color-text-secondary);
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            flex-shrink: 0;
+            border: none;
+        }
+
+        .slider-btn:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+
+        .slider-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .slider-track {
+            flex: 1;
+            height: 6px;
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .slider-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+            border-radius: var(--radius-full);
+            transition: width var(--duration-fast);
+        }
+
+        .slider-thumb {
+            position: absolute;
+            top: 50%;
+            width: 18px;
+            height: 18px;
+            background-color: var(--color-primary);
+            border-radius: var(--radius-full);
+            transform: translate(-50%, -50%);
+            box-shadow: var(--shadow-md);
+            cursor: grab;
+            transition: transform var(--duration-fast);
+        }
+
+        .slider-thumb:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .slider-thumb:active {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        .slider-marks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            padding: 0 0.5rem;
+        }
+
+        .slider-mark {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        /* 选项按钮组 */
+        .option-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            border: 2px solid transparent;
+        }
+
+        .option-btn:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-secondary);
+        }
+
+        .option-btn.active {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-light);
+        }
+
+        /* 开关设置 */
+        .toggle-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .toggle-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .toggle-item:first-child {
+            padding-top: 0;
+        }
+
+        .toggle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .toggle-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .toggle-desc {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background-color: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: background-color var(--duration-fast);
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background-color: var(--color-primary);
+        }
+
+        .toggle-switch-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background-color: #ffffff;
+            border-radius: var(--radius-full);
+            transition: transform var(--duration-fast);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toggle-switch.active .toggle-switch-thumb {
+            transform: translateX(22px);
+        }
+
+        /* 保存按钮 */
+        .save-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background-color: var(--color-bg-primary);
+            border-top: 1px solid var(--color-border);
+            z-index: 100;
+        }
+
+        .save-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            box-shadow: var(--shadow-md);
+            border: none;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .save-btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            top: 5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
+            padding: 0.75rem 1.25rem;
+            background-color: var(--color-text-primary);
+            color: #ffffff;
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            font-weight: 500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--duration-base);
+            z-index: 200;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 响应式 */
+        @media (max-width: 767px) {
+            .settings-main {
+                padding: 1rem 1rem 6rem;
+            }
+
+            .theme-options {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .theme-option {
+                padding: 0.75rem;
+            }
+
+            .font-family-options {
+                flex-direction: column;
+            }
+
+            .line-height-options {
+                flex-direction: column;
+            }
+
+            .option-buttons {
+                flex-direction: column;
+            }
+
+            .preview-content {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 修复：添加标准导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="../bookshelf/my-bookshelf.html" class="nav-link">书架</a>
+                    <a href="../openclaw/writer-growth.html" class="nav-link">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <div id="userMenu">
+                        <button class="btn-primary" id="loginBtn" onclick="window.location.href='../user/auth.html'">登录</button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+    <!-- 修复：将header移入settings-page容器内，修正DOM结构 -->
+    <div class="settings-page">
+        <!-- 头部导航 -->
+        <header class="settings-header">
+            <div class="settings-header-inner">
+                <div class="header-left">
+                    <button class="back-btn" id="backBtn" aria-label="返回">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                    </button>
+                    <h1 class="header-title">阅读器设置</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="reset-btn" id="resetBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"/>
+                            <polyline points="1 20 1 14 7 14"/>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                        </svg>
+                        恢复默认
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="settings-main">
+            <!-- 预览区域 -->
+            <section class="preview-section">
+                <div class="preview-header">
+                    <span class="preview-title">实时预览</span>
+                    <span class="preview-badge">Live</span>
+                </div>
+                <div class="preview-content" id="previewContent">
+                    <h3 class="preview-chapter-title">第一章 始动</h3>
+                    <div class="preview-text" id="previewText">
+                        <p>晨光微熹，天边泛起鱼肚白。主角站在窗前，望着远方若有所思。</p>
+                        <p>昨夜发生的一切仿佛还在眼前，那惊心动魄的场面让他久久不能平静。「该出发了。」他轻声说道，眼中闪过一丝坚定。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 主题设置 -->
+            <section class="settings-group">
+                <div class="settings-group-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    主题模式
+                </div>
+                <div class="settings-group-content">
+                    <div class="theme-options">
+                        <div class="theme-option active" data-theme="light">
+                            <div class="theme-preview light"></div>
+                            <span class="theme-name">浅色</span>
+                        </div>
+                        <div class="theme-option" data-theme="paper">
+                            <div class="theme-preview paper"></div>
+                            <span class="theme-name">纸张</span>
+                        </div>
+                        <div class="theme-option" data-theme="dark">
+                            <div class="theme-preview dark"></div>
+                            <span class="theme-name">深色</span>
+                        </div>
+                        <div class="theme-option" data-theme="eye-care">
+                            <div class="theme-preview eye-care"></div>
+                            <span class="theme-name">护眼</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 字体设置 -->
+            <section class="settings-group">
+                <div class="settings-group-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="4 7 4 4 20 4 20 7"/>
+                        <line x1="9" y1="20" x2="15" y2="20"/>
+                        <line x1="12" y1="4" x2="12" y2="20"/>
+                    </svg>
+                    字体设置
+                </div>
+                <div class="settings-group-content">
+                    <!-- 字体选择 -->
+                    <div class="slider-control">
+                        <div class="slider-header">
+                            <span class="slider-label">字体</span>
+                        </div>
+                        <div class="font-family-options">
+                            <div class="font-family-option serif active" data-font="serif">宋体</div>
+                            <div class="font-family-option sans" data-font="sans">黑体</div>
+                        </div>
+                    </div>
+
+                    <!-- 字体大小 -->
+                    <div class="slider-control">
+                        <div class="slider-header">
+                            <span class="slider-label">字体大小</span>
+                            <span class="slider-value" id="fontSizeValue">18px</span>
+                        </div>
+                        <div class="font-size-control">
+                            <button class="font-size-btn" id="decreaseFontSize">A-</button>
+                            <span class="font-size-value" id="fontSizeDisplay">18</span>
+                            <button class="font-size-btn" id="increaseFontSize">A+</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 排版设置 -->
+            <section class="settings-group">
+                <div class="settings-group-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                    排版设置
+                </div>
+                <div class="settings-group-content">
+                    <!-- 行高 -->
+                    <div class="slider-control">
+                        <div class="slider-header">
+                            <span class="slider-label">行高</span>
+                        </div>
+                        <div class="line-height-options">
+                            <div class="line-height-option" data-lineheight="1.5">紧凑</div>
+                            <div class="line-height-option active" data-lineheight="1.8">适中</div>
+                            <div class="line-height-option" data-lineheight="2.2">宽松</div>
+                        </div>
+                    </div>
+
+                    <!-- 段落间距 -->
+                    <div class="slider-control">
+                        <div class="slider-header">
+                            <span class="slider-label">段落间距</span>
+                            <span class="slider-value" id="paragraphSpacingValue">1.0em</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn" id="decreaseParagraphSpacing">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                            <div class="slider-track" id="paragraphSpacingTrack">
+                                <div class="slider-fill" id="paragraphSpacingFill" style="width: 33%"></div>
+                                <div class="slider-thumb" id="paragraphSpacingThumb" style="left: 33%"></div>
+                            </div>
+                            <button class="slider-btn" id="increaseParagraphSpacing">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="slider-marks">
+                            <span class="slider-mark">0.5em</span>
+                            <span class="slider-mark">1.0em</span>
+                            <span class="slider-mark">1.5em</span>
+                            <span class="slider-mark">2.0em</span>
+                        </div>
+                    </div>
+
+                    <!-- 页边距 -->
+                    <div class="slider-control">
+                        <div class="slider-header">
+                            <span class="slider-label">页边距</span>
+                            <span class="slider-value" id="pageMarginValue">24px</span>
+                        </div>
+                        <div class="slider-container">
+                            <button class="slider-btn" id="decreasePageMargin">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                            <div class="slider-track" id="pageMarginTrack">
+                                <div class="slider-fill" id="pageMarginFill" style="width: 40%"></div>
+                                <div class="slider-thumb" id="pageMarginThumb" style="left: 40%"></div>
+                            </div>
+                            <button class="slider-btn" id="increasePageMargin">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="slider-marks">
+                            <span class="slider-mark">0px</span>
+                            <span class="slider-mark">16px</span>
+                            <span class="slider-mark">32px</span>
+                            <span class="slider-mark">48px</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 翻页设置 -->
+            <section class="settings-group">
+                <div class="settings-group-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    翻页设置
+                </div>
+                <div class="settings-group-content">
+                    <!-- 翻页动画 -->
+                    <div class="slider-control">
+                        <div class="slider-header">
+                            <span class="slider-label">翻页动画</span>
+                        </div>
+                        <div class="option-buttons">
+                            <div class="option-btn active" data-animation="none">无动画</div>
+                            <div class="option-btn" data-animation="slide">滑动</div>
+                            <div class="option-btn" data-animation="fade">淡入淡出</div>
+                            <div class="option-btn" data-animation="curl">仿真翻页</div>
+                        </div>
+                    </div>
+
+                    <!-- 翻页方式 -->
+                    <div class="slider-control" style="margin-bottom: 0;">
+                        <div class="slider-header">
+                            <span class="slider-label">翻页方式</span>
+                        </div>
+                        <div class="option-buttons">
+                            <div class="option-btn active" data-pagemode="tap">点击翻页</div>
+                            <div class="option-btn" data-pagemode="slide">滑动翻页</div>
+                            <div class="option-btn" data-pagemode="volume">音量键翻页</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 其他设置 -->
+            <section class="settings-group">
+                <div class="settings-group-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    其他设置
+                </div>
+                <div class="settings-group-content">
+                    <div class="toggle-list">
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <span class="toggle-label">屏幕常亮</span>
+                                <span class="toggle-desc">阅读时保持屏幕不熄灭</span>
+                            </div>
+                            <div class="toggle-switch active" id="screenOnToggle" data-setting="screenOn">
+                                <div class="toggle-switch-thumb"></div>
+                            </div>
+                        </div>
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <span class="toggle-label">自动同步</span>
+                                <span class="toggle-desc">切换设备时自动恢复上次阅读位置</span>
+                            </div>
+                            <div class="toggle-switch active" id="autoSyncToggle" data-setting="autoSync">
+                                <div class="toggle-switch-thumb"></div>
+                            </div>
+                        </div>
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <span class="toggle-label">休息提醒</span>
+                                <span class="toggle-desc">阅读45分钟后提醒您休息</span>
+                            </div>
+                            <div class="toggle-switch" id="restReminderToggle" data-setting="restReminder">
+                                <div class="toggle-switch-thumb"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 保存按钮 -->
+        <section class="save-section">
+            <button class="save-btn" id="saveBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                保存设置
+            </button>
+        </section>
+    </div>
+
+    <!-- 提示消息 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 设置状态管理 - 与阅读页保持一致
+        const SettingsState = {
+            theme: 'light',
+            fontFamily: 'serif',
+            fontSize: 18,
+            lineHeight: 1.8,
+            paragraphSpacing: 1.0,
+            pageMargin: 24,
+            pageAnimation: 'none',
+            pageMode: 'tap',
+            screenOn: true,
+            autoSync: true,
+            restReminder: false
+        };
+
+        // 主题配置 - 与UI设计规范一致
+        const themeConfig = {
+            light: {
+                bg: '#ffffff',
+                text: '#1e293b',
+                previewClass: 'light'
+            },
+            paper: {
+                bg: '#faf8f5',
+                text: '#3d3a33',
+                previewClass: 'paper'
+            },
+            dark: {
+                bg: '#0f172a',
+                text: '#f1f5f9',
+                previewClass: 'dark'
+            },
+            'eye-care': {
+                bg: '#f5f0e6',
+                text: '#2d2a22',
+                previewClass: 'eye-care'
+            }
+        };
+
+        // DOM 元素
+        const elements = {
+            previewContent: document.getElementById('previewContent'),
+            previewText: document.getElementById('previewText'),
+            fontSizeValue: document.getElementById('fontSizeValue'),
+            fontSizeDisplay: document.getElementById('fontSizeDisplay'),
+            paragraphSpacingValue: document.getElementById('paragraphSpacingValue'),
+            paragraphSpacingFill: document.getElementById('paragraphSpacingFill'),
+            paragraphSpacingThumb: document.getElementById('paragraphSpacingThumb'),
+            pageMarginValue: document.getElementById('pageMarginValue'),
+            pageMarginFill: document.getElementById('pageMarginFill'),
+            pageMarginThumb: document.getElementById('pageMarginThumb'),
+            toast: document.getElementById('toast')
+        };
+
+        // 初始化
+        function init() {
+            loadSettings();
+            setupEventListeners();
+            updatePreview();
+            
+            // 修复：添加主题切换功能
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                    const currentTheme = themes.find(t => document.body.classList.contains(t)) || 'theme-light';
+                    const currentIndex = themes.indexOf(currentTheme);
+                    const nextTheme = themes[(currentIndex + 1) % themes.length];
+                    
+                    document.body.className = nextTheme;
+                    localStorage.setItem('novelhub-theme', nextTheme);
+                });
+            }
+        }
+
+        // 加载设置 - 与阅读页使用相同的localStorage键
+        function loadSettings() {
+            const saved = localStorage.getItem('novelhub_reader_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                SettingsState.theme = settings.theme || 'light';
+                SettingsState.fontFamily = settings.fontFamily || 'serif';
+                SettingsState.fontSize = settings.fontSize || 18;
+                SettingsState.lineHeight = settings.lineHeight || 1.8;
+                SettingsState.paragraphSpacing = settings.paragraphSpacing || 1.0;
+                SettingsState.pageMargin = settings.pageMargin || 24;
+                SettingsState.pageAnimation = settings.pageAnimation || 'none';
+                SettingsState.pageMode = settings.pageMode || 'tap';
+                SettingsState.screenOn = settings.screenOn !== undefined ? settings.screenOn : true;
+                SettingsState.autoSync = settings.autoSync !== undefined ? settings.autoSync : true;
+                SettingsState.restReminder = settings.restReminder || false;
+                
+                // 更新UI状态
+                updateUIState();
+            }
+        }
+
+        // 更新UI状态
+        function updateUIState() {
+            // 主题
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.theme === SettingsState.theme);
+            });
+
+            // 字体
+            document.querySelectorAll('.font-family-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.font === SettingsState.fontFamily);
+            });
+
+            // 字体大小
+            updateFontSizeUI();
+
+            // 行高
+            document.querySelectorAll('.line-height-option').forEach(option => {
+                option.classList.toggle('active', parseFloat(option.dataset.lineheight) === SettingsState.lineHeight);
+            });
+
+            // 段落间距
+            updateParagraphSpacingUI();
+
+            // 页边距
+            updatePageMarginUI();
+
+            // 翻页动画
+            document.querySelectorAll('[data-animation]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.animation === SettingsState.pageAnimation);
+            });
+
+            // 翻页方式
+            document.querySelectorAll('[data-pagemode]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.pagemode === SettingsState.pageMode);
+            });
+
+            // 开关设置
+            document.getElementById('screenOnToggle').classList.toggle('active', SettingsState.screenOn);
+            document.getElementById('autoSyncToggle').classList.toggle('active', SettingsState.autoSync);
+            document.getElementById('restReminderToggle').classList.toggle('active', SettingsState.restReminder);
+        }
+
+        // 更新字体大小UI
+        function updateFontSizeUI() {
+            elements.fontSizeValue.textContent = `${SettingsState.fontSize}px`;
+            elements.fontSizeDisplay.textContent = SettingsState.fontSize;
+        }
+
+        // 更新段落间距UI
+        function updateParagraphSpacingUI() {
+            const value = SettingsState.paragraphSpacing;
+            elements.paragraphSpacingValue.textContent = `${value.toFixed(1)}em`;
+            const percentage = ((value - 0.5) / (2.0 - 0.5)) * 100;
+            elements.paragraphSpacingFill.style.width = `${percentage}%`;
+            elements.paragraphSpacingThumb.style.left = `${percentage}%`;
+        }
+
+        // 更新页边距UI
+        function updatePageMarginUI() {
+            const value = SettingsState.pageMargin;
+            elements.pageMarginValue.textContent = `${value}px`;
+            const percentage = (value / 48) * 100;
+            elements.pageMarginFill.style.width = `${percentage}%`;
+            elements.pageMarginThumb.style.left = `${percentage}%`;
+        }
+
+        // 更新预览
+        function updatePreview() {
+            const theme = themeConfig[SettingsState.theme];
+            
+            elements.previewContent.style.backgroundColor = theme.bg;
+            elements.previewContent.style.color = theme.text;
+            elements.previewContent.style.padding = `${Math.max(16, SettingsState.pageMargin)}px ${SettingsState.pageMargin}px`;
+            
+            elements.previewText.style.fontFamily = 
+                SettingsState.fontFamily === 'serif' ? 'var(--font-serif)' : 'var(--font-sans)';
+            elements.previewText.style.fontSize = `${SettingsState.fontSize}px`;
+            elements.previewText.style.lineHeight = SettingsState.lineHeight;
+            elements.previewText.style.setProperty('--reading-paragraph-spacing', `${SettingsState.paragraphSpacing}em`);
+            
+            // 更新段落间距
+            elements.previewText.querySelectorAll('p').forEach(p => {
+                p.style.marginBottom = `${SettingsState.paragraphSpacing}em`;
+            });
+        }
+
+        // 切换主题
+        function switchTheme(theme) {
+            SettingsState.theme = theme;
+            
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.theme === theme);
+            });
+            
+            updatePreview();
+        }
+
+        // 切换字体
+        function switchFont(font) {
+            SettingsState.fontFamily = font;
+            
+            document.querySelectorAll('.font-family-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.font === font);
+            });
+            
+            updatePreview();
+        }
+
+        // 调整字体大小
+        function changeFontSize(delta) {
+            const newSize = SettingsState.fontSize + delta;
+            if (newSize >= 14 && newSize <= 24) {
+                SettingsState.fontSize = newSize;
+                updateFontSizeUI();
+                updatePreview();
+            }
+        }
+
+        // 切换行高
+        function switchLineHeight(lineHeight) {
+            SettingsState.lineHeight = parseFloat(lineHeight);
+            
+            document.querySelectorAll('.line-height-option').forEach(option => {
+                option.classList.toggle('active', parseFloat(option.dataset.lineheight) === SettingsState.lineHeight);
+            });
+            
+            updatePreview();
+        }
+
+        // 设置段落间距
+        function setParagraphSpacing(value) {
+            value = Math.max(0.5, Math.min(2.0, value));
+            SettingsState.paragraphSpacing = Math.round(value * 10) / 10;
+            updateParagraphSpacingUI();
+            updatePreview();
+        }
+
+        // 设置页边距
+        function setPageMargin(value) {
+            value = Math.max(0, Math.min(48, value));
+            SettingsState.pageMargin = Math.round(value / 8) * 8; // 8px步进
+            updatePageMarginUI();
+            updatePreview();
+        }
+
+        // 切换翻页动画
+        function switchPageAnimation(animation) {
+            SettingsState.pageAnimation = animation;
+            
+            document.querySelectorAll('[data-animation]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.animation === animation);
+            });
+        }
+
+        // 切换翻页方式
+        function switchPageMode(mode) {
+            SettingsState.pageMode = mode;
+            
+            document.querySelectorAll('[data-pagemode]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.pagemode === mode);
+            });
+        }
+
+        // 切换开关
+        function toggleSwitch(toggle) {
+            toggle.classList.toggle('active');
+            const setting = toggle.dataset.setting;
+            const isActive = toggle.classList.contains('active');
+            
+            switch(setting) {
+                case 'screenOn':
+                    SettingsState.screenOn = isActive;
+                    break;
+                case 'autoSync':
+                    SettingsState.autoSync = isActive;
+                    break;
+                case 'restReminder':
+                    SettingsState.restReminder = isActive;
+                    break;
+            }
+        }
+
+        // 保存设置 - 与阅读页使用相同的格式
+        function saveSettings() {
+            const settings = {
+                theme: SettingsState.theme,
+                fontFamily: SettingsState.fontFamily,
+                fontSize: SettingsState.fontSize,
+                lineHeight: SettingsState.lineHeight,
+                paragraphSpacing: SettingsState.paragraphSpacing,
+                pageMargin: SettingsState.pageMargin,
+                pageAnimation: SettingsState.pageAnimation,
+                pageMode: SettingsState.pageMode,
+                screenOn: SettingsState.screenOn,
+                autoSync: SettingsState.autoSync,
+                restReminder: SettingsState.restReminder
+            };
+            
+            localStorage.setItem('novelhub_reader_settings', JSON.stringify(settings));
+            showToast('设置已保存');
+            
+            // 可选：返回上一页
+            setTimeout(() => {
+                if (confirm('设置已保存，是否返回阅读页？')) {
+                    window.history.back();
+                }
+            }, 500);
+        }
+
+        // 恢复默认
+        function resetSettings() {
+            if (!confirm('确定要恢复默认设置吗？')) return;
+            
+            SettingsState.theme = 'light';
+            SettingsState.fontFamily = 'serif';
+            SettingsState.fontSize = 18;
+            SettingsState.lineHeight = 1.8;
+            SettingsState.paragraphSpacing = 1.0;
+            SettingsState.pageMargin = 24;
+            SettingsState.pageAnimation = 'none';
+            SettingsState.pageMode = 'tap';
+            SettingsState.screenOn = true;
+            SettingsState.autoSync = true;
+            SettingsState.restReminder = false;
+            
+            updateUIState();
+            updatePreview();
+            
+            showToast('已恢复默认设置');
+        }
+
+        // 显示提示
+        function showToast(message) {
+            elements.toast.textContent = message;
+            elements.toast.classList.add('show');
+            setTimeout(() => {
+                elements.toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 设置滑块拖拽
+        function setupSlider(track, thumb, fill, min, max, step, callback) {
+            let isDragging = false;
+
+            const updateValue = (clientX) => {
+                const rect = track.getBoundingClientRect();
+                const percentage = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+                const value = min + percentage * (max - min);
+                const steppedValue = Math.round(value / step) * step;
+                callback(steppedValue);
+            };
+
+            track.addEventListener('click', (e) => {
+                updateValue(e.clientX);
+            });
+
+            thumb.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                updateValue(e.clientX);
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
+        // 设置事件监听
+        function setupEventListeners() {
+            // 返回按钮
+            document.getElementById('backBtn').addEventListener('click', () => {
+                window.history.back();
+            });
+
+            // 重置按钮
+            document.getElementById('resetBtn').addEventListener('click', resetSettings);
+
+            // 保存按钮
+            document.getElementById('saveBtn').addEventListener('click', saveSettings);
+
+            // 主题切换
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', () => switchTheme(option.dataset.theme));
+            });
+
+            // 字体切换
+            document.querySelectorAll('.font-family-option').forEach(option => {
+                option.addEventListener('click', () => switchFont(option.dataset.font));
+            });
+
+            // 字体大小按钮
+            document.getElementById('decreaseFontSize').addEventListener('click', () => changeFontSize(-1));
+            document.getElementById('increaseFontSize').addEventListener('click', () => changeFontSize(1));
+
+            // 行高切换
+            document.querySelectorAll('.line-height-option').forEach(option => {
+                option.addEventListener('click', () => switchLineHeight(option.dataset.lineheight));
+            });
+
+            // 段落间距滑块
+            setupSlider(
+                document.getElementById('paragraphSpacingTrack'),
+                elements.paragraphSpacingThumb,
+                elements.paragraphSpacingFill,
+                0.5, 2.0, 0.1,
+                setParagraphSpacing
+            );
+            document.getElementById('decreaseParagraphSpacing').addEventListener('click', () => setParagraphSpacing(SettingsState.paragraphSpacing - 0.1));
+            document.getElementById('increaseParagraphSpacing').addEventListener('click', () => setParagraphSpacing(SettingsState.paragraphSpacing + 0.1));
+
+            // 页边距滑块
+            setupSlider(
+                document.getElementById('pageMarginTrack'),
+                elements.pageMarginThumb,
+                elements.pageMarginFill,
+                0, 48, 8,
+                setPageMargin
+            );
+            document.getElementById('decreasePageMargin').addEventListener('click', () => setPageMargin(SettingsState.pageMargin - 8));
+            document.getElementById('increasePageMargin').addEventListener('click', () => setPageMargin(SettingsState.pageMargin + 8));
+
+            // 翻页动画
+            document.querySelectorAll('[data-animation]').forEach(btn => {
+                btn.addEventListener('click', () => switchPageAnimation(btn.dataset.animation));
+            });
+
+            // 翻页方式
+            document.querySelectorAll('[data-pagemode]').forEach(btn => {
+                btn.addEventListener('click', () => switchPageMode(btn.dataset.pagemode));
+            });
+
+            // 开关切换
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.addEventListener('click', () => toggleSwitch(toggle));
+            });
+        }
+
+        // 启动
+        init();
+    </script>
+</body>
+</html>

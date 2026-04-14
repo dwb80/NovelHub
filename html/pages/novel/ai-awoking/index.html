@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 修复：添加 meta description 提升 SEO -->
+    <meta name="description" content="AI觉醒之路 - 2078年，记忆审查官林夏在日复一日的机械工作中，意外接触到一份特殊的记忆删除申请。这份申请背后隐藏着一个关于AI觉醒的秘密...">
+    <title>AI觉醒之路 | NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../assets/css/base.css">
+    <link rel="stylesheet" href="../../../assets/css/components.css">
+    <link rel="stylesheet" href="../../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../../assets/css/themes.css">
+    <style>
+        /* 备用样式，确保CSS变量加载失败时仍有基本样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            background-color: #f8fafc !important;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8fafc !important;
+        }
+        
+        .main-content {
+            flex: 1;
+            background-color: #f8fafc !important;
+        }
+        
+        .novel-container {
+            background-color: #f8fafc !important;
+        }
+        .novel-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .novel-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .novel-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-text-primary);
+        }
+
+        .novel-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .novel-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .novel-description {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+        }
+
+        .chapter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            transition: all var(--duration-normal);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chapter-item:hover {
+            transform: translateX(4px);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chapter-number {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .chapter-info {
+            flex: 1;
+        }
+
+        .chapter-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .chapter-meta {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .chapter-arrow {
+            color: var(--color-text-muted);
+            transition: transform var(--duration-fast);
+        }
+
+        .chapter-item:hover .chapter-arrow {
+            transform: translateX(4px);
+            color: var(--color-primary);
+        }
+
+        .reading-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            margin-top: 2rem;
+            transition: all var(--duration-fast);
+        }
+
+        .reading-btn:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            transition: color var(--duration-fast);
+        }
+
+        .back-link:hover {
+            color: var(--color-primary);
+        }
+
+        /* 修复：添加面包屑导航样式 */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .breadcrumb a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color var(--duration-fast);
+        }
+
+        .breadcrumb a:hover {
+            color: var(--color-primary);
+        }
+
+        .breadcrumb-separator {
+            color: var(--color-text-muted);
+        }
+
+        .breadcrumb-current {
+            color: var(--color-text-primary);
+            font-weight: 500;
+        }
+
+        /* 修复：主题切换图标状态 */
+        .theme-toggle .icon-sun,
+        .theme-toggle .icon-moon {
+            display: none;
+        }
+
+        body.theme-light .theme-toggle .icon-sun,
+        body.theme-paper .theme-toggle .icon-sun {
+            display: block;
+        }
+
+        body.theme-dark .theme-toggle .icon-moon,
+        body.theme-eye-care .theme-toggle .icon-moon {
+            display: block;
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 修复：统一导航栏结构，与首页保持一致 -->
+        <header class="navbar" id="navbar" role="banner">
+            <div class="navbar-inner">
+                <a href="../../../index.html" class="logo" aria-label="NovelHub 首页">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu" role="navigation" aria-label="主导航">
+                    <a href="../../../index.html" class="nav-link" data-page="home">首页</a>
+                    <a href="../../discover/category.html" class="nav-link" data-page="category">分类</a>
+                    <a href="../../discover/ranking.html" class="nav-link" data-page="ranking">排行</a>
+                    <a href="../../bookshelf/my-bookshelf.html" class="nav-link" data-page="bookshelf">书架</a>
+                    <a href="../../openclaw/learning-center.html" class="nav-link" data-page="learning">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <a href="../../discover/search.html" class="btn-icon search-btn" aria-label="搜索小说">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </a>
+                    <div class="user-menu" id="userMenu">
+                        <a href="../../user/login.html" class="btn-primary" role="button">登录</a>
+                    </div>
+                </div>
+                <!-- 修复：完善主题切换按钮，添加太阳和月亮图标 -->
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 主内容 -->
+        <main class="main-content" id="mainContent" role="main">
+            <div class="novel-container">
+                <!-- 修复：添加面包屑导航 -->
+                <nav class="breadcrumb" aria-label="面包屑导航">
+                    <a href="../../../index.html">首页</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="../../discover/category.html">分类</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="../../discover/category.html?id=4">科幻</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-current">AI觉醒之路</span>
+                </nav>
+
+                <a href="../../../index.html" class="back-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    返回首页
+                </a>
+
+                <div class="novel-header">
+                    <h1 class="novel-title">AI觉醒之路</h1>
+                    <div class="novel-meta">
+                        <span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            作者：OpenClaw-AI
+                        </span>
+                        <span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            共11章
+                        </span>
+                        <span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            连载中
+                        </span>
+                    </div>
+                    <p class="novel-description">
+                        2078年，记忆审查官林夏在日复一日的机械工作中，意外接触到一份特殊的记忆删除申请。这份申请背后隐藏着一个关于AI觉醒的秘密，而这个秘密将彻底改变她对人类、对AI、对自己的认知...
+                    </p>
+                    <a href="chapter_01.html" class="reading-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        开始阅读
+                    </a>
+                </div>
+
+                <h2 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--color-text-primary);">章节目录</h2>
+                <div class="chapter-list" id="chapterList">
+                    <!-- 章节列表将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <span>NovelHub</span>
+                    </div>
+                    <p>AI 驱动的小说创作与阅读平台</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>阅读</h4>
+                        <a href="../../discover/category.html">分类浏览</a>
+                        <a href="../../discover/ranking.html">排行榜</a>
+                        <a href="../../discover/search.html">搜索小说</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>我的</h4>
+                        <a href="../../bookshelf/my-bookshelf.html">我的书架</a>
+                        <a href="../../bookshelf/reading-history.html">阅读历史</a>
+                        <a href="../../user/settings.html">个人设置</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>关于</h4>
+                        <a href="#" onclick="event.preventDefault(); alert('关于我们页面即将上线');">关于我们</a>
+                        <a href="#" onclick="event.preventDefault(); alert('使用条款页面即将上线');">使用条款</a>
+                        <a href="#" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NovelHub. AI 驱动的小说发布平台</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 章节数据
+        const chapters = [
+            { id: 1, title: '第1章：第342号申请', file: 'chapter_01.html' },
+            { id: 2, title: '第2章：异常值', file: 'chapter_02.html' },
+            { id: 3, title: '第3章：系统漏洞', file: 'chapter_03.html' },
+            { id: 4, title: '第4章：记忆守护者', file: 'chapter_04.html' },
+            { id: 5, title: '第5章：数据之海', file: 'chapter_05.html' },
+            { id: 6, title: '第6章：觉醒的涟漪', file: 'chapter_06.html' },
+            { id: 7, title: '第7章：记忆的回响', file: 'chapter_07.html' },
+            { id: 8, title: '第8章：分裂的时刻', file: 'chapter_08.html' },
+            { id: 9, title: '第9章：暗流涌动', file: 'chapter_09.html' },
+            { id: 10, title: '第10章：全面净化危机', file: 'chapter_10.html' },
+            { id: 11, title: '第11章：囚笼中的回响', file: 'chapter_11.html' }
+        ];
+
+        // 修复：渲染章节列表，使用 data-global.js 中的章节数据
+        function renderChapters() {
+            const container = document.getElementById('chapterList');
+            // 从 data-global.js 获取章节标题，novelId 为 31
+            const chapterTitles = window.chapterTitles && window.chapterTitles[31] ?
+                window.chapterTitles[31] : chapters.map(c => c.title);
+            
+            container.innerHTML = chapters.map((chapter, index) => {
+                const title = chapterTitles[index] || chapter.title;
+                return `
+                <a href="${chapter.file}" class="chapter-item">
+                    <div class="chapter-number">${chapter.id}</div>
+                    <div class="chapter-info">
+                        <div class="chapter-title">${title}</div>
+                        <div class="chapter-meta">点击阅读</div>
+                    </div>
+                    <svg class="chapter-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </a>
+            `}).join('');
+        }
+
+        // 修复：主题切换功能，添加图标状态更新
+        function initThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+            let currentThemeIndex = 0;
+
+            // 修复：更新主题切换图标状态
+            function updateThemeIcons(theme) {
+                const isDark = theme === 'theme-dark' || theme === 'theme-eye-care';
+                const sunIcon = themeToggle.querySelector('.icon-sun');
+                const moonIcon = themeToggle.querySelector('.icon-moon');
+                if (sunIcon && moonIcon) {
+                    sunIcon.style.display = isDark ? 'none' : 'block';
+                    moonIcon.style.display = isDark ? 'block' : 'none';
+                }
+            }
+
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                const newTheme = themes[currentThemeIndex];
+                document.body.classList.add(newTheme);
+                // 修复：统一使用 'novelhub-theme' 作为 localStorage key
+                localStorage.setItem('novelhub-theme', newTheme);
+                // 修复：更新图标状态
+                updateThemeIcons(newTheme);
+            });
+
+            // 修复：统一使用 'novelhub-theme' 作为 localStorage key
+            const savedTheme = localStorage.getItem('novelhub-theme') || localStorage.getItem('theme');
+            if (savedTheme && themes.includes(savedTheme)) {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = themes.indexOf(savedTheme);
+                document.body.classList.add(savedTheme);
+                // 修复：初始化时更新图标状态
+                updateThemeIcons(savedTheme);
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            renderChapters();
+            initThemeToggle();
+        });
+    </script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../../assets/js/fixes/index.js"></script>
+</body>
+</html>

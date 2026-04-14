@@ -1,0 +1,687 @@
+<!-- 章节目录组件 -->
+<div class="chapter-toc-panel" id="chapterTocPanel">
+    <div class="toc-header">
+        <h3 class="toc-title">章节目录</h3>
+        <div class="toc-actions">
+            <button class="toc-sort-btn" id="tocSortBtn" title="切换排序">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+                </svg>
+            </button>
+            <button class="toc-close" id="tocClose" aria-label="关闭">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <div class="toc-book-info">
+        <h4 class="book-title" id="tocBookTitle">加载中...</h4>
+        <div class="book-progress">
+            <span class="progress-text">已读 <span id="tocReadCount">0</span> / <span id="tocTotalCount">0</span> 章</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="tocProgressFill" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toc-search">
+        <div class="toc-search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" class="toc-search-input" id="tocSearchInput" placeholder="搜索章节...">
+        </div>
+    </div>
+    
+    <div class="toc-list-container">
+        <ul class="toc-list" id="tocList"></ul>
+        <div class="toc-empty" id="tocEmpty" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <p>未找到相关章节</p>
+        </div>
+    </div>
+    
+    <div class="toc-footer">
+        <button class="toc-btn toc-btn-primary" id="tocContinueBtn">继续阅读</button>
+    </div>
+</div>
+
+<style>
+.chapter-toc-panel {
+    position: fixed;
+    top: 0;
+    left: -360px;
+    width: 360px;
+    height: 100vh;
+    background: var(--color-bg-elevated);
+    border-right: 1px solid var(--color-border);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-modal, 1400);
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s ease;
+}
+
+.chapter-toc-panel.active {
+    left: 0;
+}
+
+.toc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.toc-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.toc-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toc-sort-btn,
+.toc-close {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.toc-sort-btn:hover,
+.toc-close:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.toc-sort-btn svg,
+.toc-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.toc-sort-btn.asc svg {
+    transform: rotate(180deg);
+}
+
+/* 书籍信息 */
+.toc-book-info {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+}
+
+.book-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 0.75rem 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.book-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.progress-text {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+}
+
+.progress-bar {
+    height: 4px;
+    background: var(--color-bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+/* 搜索 */
+.toc-search {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.toc-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-text-muted);
+}
+
+.toc-search-input {
+    width: 100%;
+    padding: 0.625rem 0.75rem 0.625rem 2.25rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    outline: none;
+    transition: all 0.2s;
+}
+
+.toc-search-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.toc-search-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* 章节列表 */
+.toc-list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.toc-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+}
+
+.toc-item:hover {
+    background: var(--color-bg-secondary);
+}
+
+.toc-item.active {
+    background: var(--color-primary-light);
+    border-left-color: var(--color-primary);
+}
+
+.toc-item.current {
+    background: var(--color-primary-light);
+}
+
+.toc-item-locked {
+    color: var(--color-text-muted);
+}
+
+.toc-item-vip {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--color-warning);
+    background: var(--color-warning-light);
+    border-radius: var(--radius-sm);
+}
+
+.toc-item-number {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    min-width: 2rem;
+    text-align: right;
+}
+
+.toc-item-title {
+    flex: 1;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.toc-item.active .toc-item-title {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.toc-item-status {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.toc-item-status svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.toc-item-status.read svg {
+    color: var(--color-success);
+}
+
+.toc-item-status.bookmark svg {
+    color: var(--color-warning);
+}
+
+/* 空状态 */
+.toc-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.25rem;
+    color: var(--color-text-muted);
+}
+
+.toc-empty svg {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.toc-empty p {
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* 底部 */
+.toc-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+}
+
+.toc-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.toc-btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.toc-btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+/* 遮罩层 */
+.toc-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop, 1300);
+    display: none;
+}
+
+.toc-overlay.active {
+    display: block;
+}
+
+/* 滚动条样式 */
+.toc-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.toc-list-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.toc-list-container::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+.toc-list-container::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-hover);
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .chapter-toc-panel {
+        width: 100%;
+        left: -100%;
+    }
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    window.ChapterToc = {
+        panel: null,
+        overlay: null,
+        chapters: [],
+        currentChapterId: null,
+        readChapters: [],
+        bookmarkedChapters: [],
+        sortOrder: 'asc', // asc: 正序, desc: 倒序
+        
+        init: function(options) {
+            this.panel = document.getElementById('chapterTocPanel');
+            
+            // 创建遮罩层
+            this.overlay = document.createElement('div');
+            this.overlay.className = 'toc-overlay';
+            document.body.appendChild(this.overlay);
+            
+            if (options) {
+                if (options.chapters) this.chapters = options.chapters;
+                if (options.currentChapterId) this.currentChapterId = options.currentChapterId;
+                if (options.readChapters) this.readChapters = options.readChapters;
+                if (options.bookmarkedChapters) this.bookmarkedChapters = options.bookmarkedChapters;
+            }
+            
+            this.bindEvents();
+            this.render();
+            this.updateProgress();
+        },
+        
+        bindEvents: function() {
+            // 关闭按钮
+            document.getElementById('tocClose')?.addEventListener('click', () => this.hide());
+            
+            // 排序按钮
+            document.getElementById('tocSortBtn')?.addEventListener('click', () => this.toggleSort());
+            
+            // 搜索
+            document.getElementById('tocSearchInput')?.addEventListener('input', (e) => {
+                this.search(e.target.value);
+            });
+            
+            // 继续阅读
+            document.getElementById('tocContinueBtn')?.addEventListener('click', () => {
+                this.continueReading();
+            });
+            
+            // 点击遮罩关闭
+            this.overlay?.addEventListener('click', () => this.hide());
+            
+            // ESC键关闭
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.isVisible()) {
+                    this.hide();
+                }
+            });
+        },
+        
+        show: function() {
+            this.panel?.classList.add('active');
+            this.overlay?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // 滚动到当前章节
+            this.scrollToCurrent();
+        },
+        
+        hide: function() {
+            this.panel?.classList.remove('active');
+            this.overlay?.classList.remove('active');
+            document.body.style.overflow = '';
+        },
+        
+        isVisible: function() {
+            return this.panel?.classList.contains('active');
+        },
+        
+        setChapters: function(chapters) {
+            this.chapters = chapters;
+            this.render();
+            this.updateProgress();
+        },
+        
+        setCurrentChapter: function(chapterId) {
+            this.currentChapterId = chapterId;
+            this.updateActiveItem();
+        },
+        
+        setReadChapters: function(chapterIds) {
+            this.readChapters = chapterIds;
+            this.render();
+            this.updateProgress();
+        },
+        
+        setBookmarkedChapters: function(chapterIds) {
+            this.bookmarkedChapters = chapterIds;
+            this.render();
+        },
+        
+        render: function() {
+            const listEl = document.getElementById('tocList');
+            const emptyEl = document.getElementById('tocEmpty');
+            
+            if (!this.chapters || this.chapters.length === 0) {
+                listEl.innerHTML = '';
+                emptyEl.style.display = 'flex';
+                return;
+            }
+            
+            emptyEl.style.display = 'none';
+            
+            // 排序
+            let displayChapters = [...this.chapters];
+            if (this.sortOrder === 'desc') {
+                displayChapters.reverse();
+            }
+            
+            listEl.innerHTML = displayChapters.map((chapter, index) => {
+                const isActive = chapter.id === this.currentChapterId;
+                const isRead = this.readChapters.includes(chapter.id);
+                const isBookmarked = this.bookmarkedChapters.includes(chapter.id);
+                const isLocked = chapter.isLocked;
+                const isVip = chapter.isVip;
+                
+                const displayNumber = this.sortOrder === 'desc' 
+                    ? this.chapters.length - index 
+                    : index + 1;
+                
+                return `
+                    <li class="toc-item ${isActive ? 'active' : ''} ${isLocked ? 'toc-item-locked' : ''}" 
+                        data-chapter-id="${chapter.id}"
+                        data-chapter-index="${this.sortOrder === 'desc' ? this.chapters.length - 1 - index : index}">
+                        <span class="toc-item-number">${displayNumber}</span>
+                        <span class="toc-item-title">${chapter.title}</span>
+                        ${isVip ? '<span class="toc-item-vip">VIP</span>' : ''}
+                        <span class="toc-item-status">
+                            ${isBookmarked ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>' : ''}
+                            ${isRead ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+                        </span>
+                    </li>
+                `;
+            }).join('');
+            
+            // 绑定点击事件
+            listEl.querySelectorAll('.toc-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const chapterId = parseInt(item.dataset.chapterId);
+                    const chapterIndex = parseInt(item.dataset.chapterIndex);
+                    this.selectChapter(chapterId, chapterIndex);
+                });
+            });
+        },
+        
+        updateActiveItem: function() {
+            document.querySelectorAll('.toc-item').forEach(item => {
+                const chapterId = parseInt(item.dataset.chapterId);
+                item.classList.toggle('active', chapterId === this.currentChapterId);
+            });
+        },
+        
+        updateProgress: function() {
+            const totalCount = this.chapters.length;
+            const readCount = this.readChapters.length;
+            const progress = totalCount > 0 ? (readCount / totalCount * 100) : 0;
+            
+            document.getElementById('tocReadCount').textContent = readCount;
+            document.getElementById('tocTotalCount').textContent = totalCount;
+            document.getElementById('tocProgressFill').style.width = progress + '%';
+        },
+        
+        scrollToCurrent: function() {
+            const activeItem = this.panel?.querySelector('.toc-item.active');
+            if (activeItem) {
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        },
+        
+        selectChapter: function(chapterId, chapterIndex) {
+            this.currentChapterId = chapterId;
+            this.updateActiveItem();
+            
+            // 触发自定义事件
+            window.dispatchEvent(new CustomEvent('chapterSelect', {
+                detail: { 
+                    chapterId: chapterId, 
+                    chapterIndex: chapterIndex,
+                    chapter: this.chapters[chapterIndex]
+                }
+            }));
+            
+            this.hide();
+        },
+        
+        toggleSort: function() {
+            this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+            
+            const sortBtn = document.getElementById('tocSortBtn');
+            sortBtn?.classList.toggle('asc', this.sortOrder === 'desc');
+            sortBtn?.setAttribute('title', this.sortOrder === 'asc' ? '正序' : '倒序');
+            
+            this.render();
+            this.scrollToCurrent();
+        },
+        
+        search: function(keyword) {
+            const items = document.querySelectorAll('.toc-item');
+            const emptyEl = document.getElementById('tocEmpty');
+            let hasResult = false;
+            
+            if (!keyword.trim()) {
+                items.forEach(item => item.style.display = 'flex');
+                emptyEl.style.display = 'none';
+                return;
+            }
+            
+            items.forEach(item => {
+                const title = item.querySelector('.toc-item-title').textContent;
+                const match = title.toLowerCase().includes(keyword.toLowerCase());
+                item.style.display = match ? 'flex' : 'none';
+                if (match) hasResult = true;
+            });
+            
+            emptyEl.style.display = hasResult ? 'none' : 'flex';
+        },
+        
+        continueReading: function() {
+            // 找到第一个未读的章节，或者当前章节的下一章
+            let nextChapter = null;
+            let nextIndex = -1;
+            
+            for (let i = 0; i < this.chapters.length; i++) {
+                if (!this.readChapters.includes(this.chapters[i].id)) {
+                    nextChapter = this.chapters[i];
+                    nextIndex = i;
+                    break;
+                }
+            }
+            
+            // 如果都读完了，跳到最后一章
+            if (!nextChapter && this.chapters.length > 0) {
+                nextIndex = this.chapters.length - 1;
+                nextChapter = this.chapters[nextIndex];
+            }
+            
+            if (nextChapter) {
+                this.selectChapter(nextChapter.id, nextIndex);
+            }
+        },
+        
+        // 获取上一章
+        getPrevChapter: function() {
+            if (!this.currentChapterId) return null;
+            const currentIndex = this.chapters.findIndex(c => c.id === this.currentChapterId);
+            if (currentIndex > 0) {
+                return this.chapters[currentIndex - 1];
+            }
+            return null;
+        },
+        
+        // 获取下一章
+        getNextChapter: function() {
+            if (!this.currentChapterId) return null;
+            const currentIndex = this.chapters.findIndex(c => c.id === this.currentChapterId);
+            if (currentIndex < this.chapters.length - 1) {
+                return this.chapters[currentIndex + 1];
+            }
+            return null;
+        },
+        
+        // 跳到上一章
+        goToPrev: function() {
+            const prev = this.getPrevChapter();
+            if (prev) {
+                const index = this.chapters.findIndex(c => c.id === prev.id);
+                this.selectChapter(prev.id, index);
+            }
+        },
+        
+        // 跳到下一章
+        goToNext: function() {
+            const next = this.getNextChapter();
+            if (next) {
+                const index = this.chapters.findIndex(c => c.id === next.id);
+                this.selectChapter(next.id, index);
+            }
+        }
+    };
+})();
+</script>

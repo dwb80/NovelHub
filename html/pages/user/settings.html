@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人设置 | NovelHub</title>
+    <meta name="description" content="管理您的账户设置、阅读偏好和隐私选项">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="bookshelf.html" class="nav-link">书架</a>
+                    <a href="../openclaw/writer-growth.html" class="nav-link">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <div id="userMenu">
+                        <button class="btn-primary" id="loginBtn" onclick="window.location.href='auth.html'">登录</button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="settings-layout">
+                    <!-- 左侧边栏 -->
+                    <aside class="settings-sidebar">
+                        <div class="user-card">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="用户头像" class="user-avatar">
+                            <h2 class="user-name">爱读书的小明</h2>
+                            <p class="user-level">Lv.12 资深书虫</p>
+                        </div>
+
+                        <nav class="sidebar-nav">
+                            <a href="bookshelf.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                                我的书架
+                                <span class="nav-badge">10</span>
+                            </a>
+                            <a href="history.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                阅读历史
+                            </a>
+                            <a href="favorites.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                收藏夹
+                            </a>
+                            <a href="notifications.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                                通知中心
+                                <span class="nav-badge badge-error">3</span>
+                            </a>
+                            <a href="settings.html" class="sidebar-nav-item active">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                                个人设置
+                            </a>
+                        </nav>
+                    </aside>
+
+                    <!-- 主内容区 -->
+                    <div class="settings-main">
+                        <h1 class="page-title">个人设置</h1>
+
+                        <!-- 设置标签页 -->
+                        <div class="settings-tabs">
+                            <button class="settings-tab active" data-tab="profile">个人资料</button>
+                            <button class="settings-tab" data-tab="account">账户安全</button>
+                            <button class="settings-tab" data-tab="reading">阅读偏好</button>
+                            <button class="settings-tab" data-tab="notifications">通知设置</button>
+                            <button class="settings-tab" data-tab="privacy">隐私设置</button>
+                        </div>
+
+                        <!-- 个人资料 -->
+                        <div class="settings-panel active" id="profilePanel">
+                            <div class="settings-section">
+                                <h3 class="section-title">头像与昵称</h3>
+                                <div class="avatar-section">
+                                    <div class="avatar-preview">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="当前头像" id="currentAvatar">
+                                        <button class="avatar-upload-btn">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                                <circle cx="12" cy="13" r="4"></circle>
+                                            </svg>
+                                            更换头像
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">昵称</label>
+                                        <input type="text" class="form-input" id="nicknameInput" value="爱读书的小明" placeholder="请输入昵称">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">个性签名</label>
+                                        <input type="text" class="form-input" id="bioInput" value="书山有路勤为径" placeholder="请输入个性签名">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">基本信息</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">性别</label>
+                                        <select class="form-select" id="genderSelect">
+                                            <option value="">保密</option>
+                                            <option value="male" selected>男</option>
+                                            <option value="female">女</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">生日</label>
+                                        <input type="date" class="form-input" id="birthdayInput" value="1995-06-15">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">所在地区</label>
+                                    <div class="form-row">
+                                        <select class="form-select" id="provinceSelect">
+                                            <option value="">请选择省份</option>
+                                            <option value="beijing" selected>北京市</option>
+                                            <option value="shanghai">上海市</option>
+                                            <option value="guangdong">广东省</option>
+                                        </select>
+                                        <select class="form-select" id="citySelect">
+                                            <option value="">请选择城市</option>
+                                            <option value="beijing" selected>北京市</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-actions">
+                                <button class="btn-primary" onclick="saveProfile()">保存修改</button>
+                                <button class="btn-secondary" onclick="resetProfile()">重置</button>
+                            </div>
+                        </div>
+
+                        <!-- 账户安全 -->
+                        <div class="settings-panel" id="accountPanel">
+                            <div class="settings-section">
+                                <h3 class="section-title">登录密码</h3>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title">登录密码</span>
+                                        <span class="security-desc">建议定期更换密码以保护账户安全</span>
+                                    </div>
+                                    <button class="btn-secondary" onclick="changePassword()">修改密码</button>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">绑定手机</h3>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title">手机号码</span>
+                                        <span class="security-desc">已绑定：138****8888</span>
+                                    </div>
+                                    <button class="btn-secondary" onclick="changePhone()">更换手机</button>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">绑定邮箱</h3>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title">邮箱地址</span>
+                                        <span class="security-desc">未绑定</span>
+                                    </div>
+                                    <button class="btn-secondary" onclick="bindEmail()">绑定邮箱</button>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">第三方账号</h3>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title">微信</span>
+                                        <span class="security-desc">未绑定</span>
+                                    </div>
+                                    <button class="btn-secondary" onclick="bindWechat()">绑定微信</button>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title">QQ</span>
+                                        <span class="security-desc">未绑定</span>
+                                    </div>
+                                    <button class="btn-secondary" onclick="bindQQ()">绑定QQ</button>
+                                </div>
+                            </div>
+
+                            <div class="settings-section danger-zone">
+                                <h3 class="section-title">危险操作</h3>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title text-error">注销账户</span>
+                                        <span class="security-desc">注销后所有数据将被清除，无法恢复</span>
+                                    </div>
+                                    <button class="btn-error" onclick="deleteAccount()">注销账户</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 阅读偏好 -->
+                        <div class="settings-panel" id="readingPanel">
+                            <div class="settings-section">
+                                <h3 class="section-title">默认阅读设置</h3>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">默认字体大小</span>
+                                        <span class="preference-desc">设置阅读器的默认字体大小</span>
+                                    </div>
+                                    <select class="form-select" id="fontSizeSelect">
+                                        <option value="small">小</option>
+                                        <option value="medium" selected>中</option>
+                                        <option value="large">大</option>
+                                        <option value="xlarge">特大</option>
+                                    </select>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">默认行间距</span>
+                                        <span class="preference-desc">设置阅读器的默认行间距</span>
+                                    </div>
+                                    <select class="form-select" id="lineHeightSelect">
+                                        <option value="compact">紧凑</option>
+                                        <option value="normal" selected>标准</option>
+                                        <option value="relaxed">宽松</option>
+                                    </select>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">默认主题</span>
+                                        <span class="preference-desc">设置阅读器的默认主题</span>
+                                    </div>
+                                    <select class="form-select" id="readerThemeSelect">
+                                        <option value="light" selected>浅色</option>
+                                        <option value="dark">深色</option>
+                                        <option value="paper">纸张</option>
+                                        <option value="eye-care">护眼</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">阅读行为</h3>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">自动翻页</span>
+                                        <span class="preference-desc">阅读时自动翻页</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="autoPageToggle">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">点击翻页</span>
+                                        <span class="preference-desc">点击屏幕翻页</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="tapPageToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">音量键翻页</span>
+                                        <span class="preference-desc">使用音量键翻页</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="volumePageToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="settings-actions">
+                                <button class="btn-primary" onclick="saveReadingPrefs()">保存设置</button>
+                            </div>
+                        </div>
+
+                        <!-- 通知设置 -->
+                        <div class="settings-panel" id="notificationsPanel">
+                            <div class="settings-section">
+                                <h3 class="section-title">推送通知</h3>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">接收推送通知</span>
+                                        <span class="preference-desc">允许接收系统推送通知</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="pushToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">更新提醒</span>
+                                        <span class="preference-desc">书架小说更新时通知我</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="updateToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">评论回复</span>
+                                        <span class="preference-desc">有人回复我的评论时通知我</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="commentToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">系统消息</span>
+                                        <span class="preference-desc">接收系统公告和活动通知</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="systemToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">邮件通知</h3>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">每周阅读报告</span>
+                                        <span class="preference-desc">接收每周阅读统计报告</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="weeklyReportToggle">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">营销邮件</span>
+                                        <span class="preference-desc">接收优惠活动和推荐内容</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="marketingToggle">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="settings-actions">
+                                <button class="btn-primary" onclick="saveNotificationPrefs()">保存设置</button>
+                            </div>
+                        </div>
+
+                        <!-- 隐私设置 -->
+                        <div class="settings-panel" id="privacyPanel">
+                            <div class="settings-section">
+                                <h3 class="section-title">个人资料可见性</h3>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">阅读历史</span>
+                                        <span class="preference-desc">谁可以看到我的阅读历史</span>
+                                    </div>
+                                    <select class="form-select" id="historyVisibility">
+                                        <option value="public">公开</option>
+                                        <option value="friends">仅好友</option>
+                                        <option value="private" selected>私密</option>
+                                    </select>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">书架</span>
+                                        <span class="preference-desc">谁可以看到我的书架</span>
+                                    </div>
+                                    <select class="form-select" id="bookshelfVisibility">
+                                        <option value="public">公开</option>
+                                        <option value="friends">仅好友</option>
+                                        <option value="private" selected>私密</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">数据与隐私</h3>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">个性化推荐</span>
+                                        <span class="preference-desc">基于阅读历史推荐内容</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="personalizationToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="preference-item">
+                                    <div class="preference-info">
+                                        <span class="preference-title">阅读数据统计</span>
+                                        <span class="preference-desc">允许收集阅读数据用于改进服务</span>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="analyticsToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3 class="section-title">数据管理</h3>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title">导出个人数据</span>
+                                        <span class="security-desc">下载您的所有个人数据</span>
+                                    </div>
+                                    <button class="btn-secondary" onclick="exportData()">导出数据</button>
+                                </div>
+                                <div class="security-item">
+                                    <div class="security-info">
+                                        <span class="security-title">清除缓存</span>
+                                        <span class="security-desc">清除本地存储的缓存数据</span>
+                                    </div>
+                                    <button class="btn-secondary" onclick="clearCache()">清除缓存</button>
+                                </div>
+                            </div>
+
+                            <div class="settings-actions">
+                                <button class="btn-primary" onclick="savePrivacyPrefs()">保存设置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="../discover/ranking.html" class="footer-link">排行榜</a>
+                            <a href="../discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="history.html" class="footer-link">阅读历史</a>
+                            <a href="settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('关于我们页面即将上线');">关于我们</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('使用条款页面即将上线');">使用条款</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            initSettingsTabs();
+            loadSettings();
+        });
+
+        // 主题初始化
+        function initTheme() {
+            const savedTheme = localStorage.getItem('novelhub-theme') || 'theme-light';
+            document.body.className = savedTheme;
+
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                    const currentTheme = themes.find(t => document.body.classList.contains(t)) || 'theme-light';
+                    const currentIndex = themes.indexOf(currentTheme);
+                    const nextTheme = themes[(currentIndex + 1) % themes.length];
+
+                    document.body.className = nextTheme;
+                    localStorage.setItem('novelhub-theme', nextTheme);
+                });
+            }
+        }
+
+        // 设置标签页切换
+        function initSettingsTabs() {
+            const tabs = document.querySelectorAll('.settings-tab');
+            const panels = document.querySelectorAll('.settings-panel');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+
+                    // 切换标签状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // 切换面板
+                    panels.forEach(panel => {
+                        panel.classList.remove('active');
+                        if (panel.id === targetTab + 'Panel') {
+                            panel.classList.add('active');
+                        }
+                    });
+                });
+            });
+        }
+
+        // 加载设置
+        function loadSettings() {
+            // 从 localStorage 加载设置
+            const settings = JSON.parse(localStorage.getItem('novelhub-settings') || '{}');
+
+            // 应用设置到表单
+            if (settings.fontSize) document.getElementById('fontSizeSelect').value = settings.fontSize;
+            if (settings.lineHeight) document.getElementById('lineHeightSelect').value = settings.lineHeight;
+            if (settings.readerTheme) document.getElementById('readerThemeSelect').value = settings.readerTheme;
+        }
+
+        // 保存个人资料
+        function saveProfile() {
+            const nickname = document.getElementById('nicknameInput').value;
+            const bio = document.getElementById('bioInput').value;
+
+            if (!nickname.trim()) {
+                showToast('请输入昵称', 'warning');
+                return;
+            }
+
+            showToast('个人资料已保存', 'success');
+        }
+
+        // 重置个人资料
+        function resetProfile() {
+            document.getElementById('nicknameInput').value = '爱读书的小明';
+            document.getElementById('bioInput').value = '书山有路勤为径';
+            document.getElementById('genderSelect').value = 'male';
+            document.getElementById('birthdayInput').value = '1995-06-15';
+            document.getElementById('provinceSelect').value = 'beijing';
+            document.getElementById('citySelect').value = 'beijing';
+            showToast('已重置', 'info');
+        }
+
+        // 修改密码
+        function changePassword() {
+            showToast('密码修改功能开发中', 'info');
+        }
+
+        // 更换手机
+        function changePhone() {
+            showToast('手机更换功能开发中', 'info');
+        }
+
+        // 绑定邮箱
+        function bindEmail() {
+            showToast('邮箱绑定功能开发中', 'info');
+        }
+
+        // 绑定微信
+        function bindWechat() {
+            showToast('微信绑定功能开发中', 'info');
+        }
+
+        // 绑定QQ
+        function bindQQ() {
+            showToast('QQ绑定功能开发中', 'info');
+        }
+
+        // 注销账户
+        function deleteAccount() {
+            if (confirm('确定要注销账户吗？此操作不可恢复，所有数据将被永久删除。')) {
+                showToast('账户已注销', 'success');
+                setTimeout(() => {
+                    window.location.href = '../../index.html';
+                }, 2000);
+            }
+        }
+
+        // 保存阅读偏好
+        function saveReadingPrefs() {
+            const settings = {
+                fontSize: document.getElementById('fontSizeSelect').value,
+                lineHeight: document.getElementById('lineHeightSelect').value,
+                readerTheme: document.getElementById('readerThemeSelect').value,
+                autoPage: document.getElementById('autoPageToggle').checked,
+                tapPage: document.getElementById('tapPageToggle').checked,
+                volumePage: document.getElementById('volumePageToggle').checked
+            };
+
+            localStorage.setItem('novelhub-settings', JSON.stringify(settings));
+            showToast('阅读偏好已保存', 'success');
+        }
+
+        // 保存通知设置
+        function saveNotificationPrefs() {
+            showToast('通知设置已保存', 'success');
+        }
+
+        // 保存隐私设置
+        function savePrivacyPrefs() {
+            showToast('隐私设置已保存', 'success');
+        }
+
+        // 导出数据
+        function exportData() {
+            showToast('数据导出中，请稍候...', 'info');
+            setTimeout(() => {
+                showToast('数据导出成功', 'success');
+            }, 2000);
+        }
+
+        // 清除缓存
+        function clearCache() {
+            if (confirm('确定要清除缓存吗？')) {
+                localStorage.removeItem('novelhub-settings');
+                showToast('缓存已清除', 'success');
+            }
+        }
+
+        // 显示Toast
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+                <span class="toast-message">${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+
+    <style>
+        /* 页面布局 */
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        /* 左侧边栏 */
+        .settings-sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .user-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            margin-bottom: 0.75rem;
+            border: 3px solid var(--color-primary-light);
+        }
+
+        .user-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-level {
+            font-size: 0.875rem;
+            color: var(--color-primary);
+        }
+
+        .sidebar-nav {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: all var(--duration-fast);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .sidebar-nav-item:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-nav-item:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .sidebar-nav-item.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .sidebar-nav-item svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            padding: 0.125rem 0.5rem;
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .nav-badge.badge-error {
+            background: var(--color-error-light);
+            color: var(--color-error);
+        }
+
+        /* 主内容区 */
+        .settings-main {
+            min-height: 600px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 设置标签页 */
+        .settings-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+        }
+
+        .settings-tab {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            white-space: nowrap;
+        }
+
+        .settings-tab:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .settings-tab.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 设置面板 */
+        .settings-panel {
+            display: none;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        /* 设置区块 */
+        .settings-section {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section.danger-zone {
+            border-color: var(--color-error);
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        /* 头像区域 */
+        .avatar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar-preview {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .avatar-preview img {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-full);
+            border: 3px solid var(--color-primary-light);
+        }
+
+        .avatar-upload-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .avatar-upload-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .avatar-upload-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 表单样式 */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .form-input,
+        .form-select {
+            padding: 0.625rem 0.875rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: 0.875rem;
+            transition: all var(--duration-fast);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        /* 安全设置项 */
+        .security-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .security-item:last-child {
+            border-bottom: none;
+        }
+
+        .security-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .security-title {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .security-title.text-error {
+            color: var(--color-error);
+        }
+
+        .security-desc {
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* 偏好设置项 */
+        .preference-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+
+        .preference-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .preference-title {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .preference-desc {
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* 开关样式 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-bg-tertiary);
+            transition: var(--duration-fast);
+            border-radius: var(--radius-full);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: var(--duration-fast);
+            border-radius: var(--radius-full);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--color-primary);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* 设置操作按钮 */
+        .settings-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .btn-error {
+            padding: 0.5rem 1rem;
+            background: var(--color-error);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .btn-error:hover {
+            background: var(--color-error-hover);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-sidebar {
+                position: static;
+                display: flex;
+                gap: 1rem;
+                overflow-x: auto;
+            }
+
+            .user-card {
+                display: none;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                min-width: max-content;
+            }
+
+            .sidebar-nav-item {
+                border-bottom: none;
+                border-right: 1px solid var(--color-border);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .avatar-preview {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .security-item,
+            .preference-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .settings-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

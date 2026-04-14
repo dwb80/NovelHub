@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="管理您的小说书架 - NovelHub个人书架，收藏喜爱的小说，随时继续阅读">
+    <meta name="keywords" content="我的书架,小说收藏,阅读记录,NovelHub书架,追更管理">
+    <title>我的书架 | NovelHub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- 引入组件 -->
+    <script src="../../components/base/toast.html"></script>
+    <script src="../../components/base/loading.html"></script>
+    <script src="../../components/base/modal.html"></script>
+    <script src="../../components/bookshelf/book-card.html"></script>
+    <script src="../../components/bookshelf/batch-select.html"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <header class="navbar" role="banner">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="my-bookshelf.html" class="nav-link active">书架</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle">切换主题</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="bookshelf-header">
+                    <div class="bookshelf-header-top">
+                        <div class="bookshelf-title-section">
+                            <h1 class="page-title">我的书架</h1>
+                            <p class="bookshelf-stats" id="bookshelfStats">共收藏 <span class="stats-number" id="totalCount">--</span> 本小说，<span class="stats-number" id="readingCount">--</span> 本正在阅读</p>
+                        </div>
+                        <div class="bookshelf-toolbar">
+                            <button class="toolbar-btn" id="layoutToggle" title="切换布局">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"/>
+                                    <rect x="14" y="3" width="7" height="7"/>
+                                    <rect x="14" y="14" width="7" height="7"/>
+                                    <rect x="3" y="14" width="7" height="7"/>
+                                </svg>
+                            </button>
+                            <button class="toolbar-btn" id="batchModeBtn" title="批量管理">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 11l3 3L22 4"/>
+                                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bookshelf-tabs">
+                        <button class="tab-item active" data-tab="reading">在读</button>
+                        <button class="tab-item" data-tab="favorites">收藏</button>
+                        <button class="tab-item" data-tab="history">历史</button>
+                    </div>
+                </div>
+
+                <section class="bookshelf-section active" id="readingSection">
+                    <div class="bookshelf-content" id="readingContent"></div>
+                    <div class="empty-state" id="emptyReading" style="display: none;">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.5;">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                        <h3>还没有在读书籍</h3>
+                        <p>去首页发现感兴趣的小说吧</p>
+                        <a href="../../index.html" class="btn-primary">探索小说</a>
+                    </div>
+                </section>
+
+                <section class="bookshelf-section" id="favoritesSection" style="display: none;">
+                    <div class="bookshelf-content" id="favoritesContent"></div>
+                    <div class="empty-state" id="emptyFavorites" style="display: none;">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.5;">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                        <h3>还没有收藏书籍</h3>
+                        <p>收藏喜欢的小说，方便下次阅读</p>
+                        <a href="../../index.html" class="btn-primary">探索小说</a>
+                    </div>
+                </section>
+
+                <section class="bookshelf-section" id="historySection" style="display: none;">
+                    <div class="bookshelf-content" id="historyContent"></div>
+                    <div class="empty-state" id="emptyHistory" style="display: none;">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.5;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <h3>还没有阅读记录</h3>
+                        <p>开始阅读，记录会在这里显示</p>
+                        <a href="../../index.html" class="btn-primary">探索小说</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 初始化数据
+        let NOVELS, BOOKSHELF_DATA, READING_HISTORY, FAVORITES;
+        
+        function initData() {
+            if (window.MockData) {
+                NOVELS = window.MockData.NOVELS || [];
+                BOOKSHELF_DATA = window.MockData.BOOKSHELF_DATA || [];
+                READING_HISTORY = window.MockData.READING_HISTORY || [];
+                FAVORITES = window.MockData.FAVORITES || [];
+            } else {
+                NOVELS = [];
+                BOOKSHELF_DATA = [];
+                READING_HISTORY = [];
+                FAVORITES = [];
+            }
+        }
+
+        // 格式化字数
+        function formatWordCount(count) {
+            if (count >= 10000) {
+                return (count / 10000).toFixed(1) + '万';
+            }
+            return count.toString();
+        }
+
+        // 更新书架统计信息
+        function updateBookshelfStats() {
+            const totalCount = BOOKSHELF_DATA.length;
+            const readingCount = BOOKSHELF_DATA.filter(item => item.progress < 100).length;
+            
+            const totalEl = document.getElementById('totalCount');
+            const readingEl = document.getElementById('readingCount');
+            
+            if (totalEl) totalEl.textContent = totalCount;
+            if (readingEl) readingEl.textContent = readingCount;
+        }
+
+        // 渲染在读列表
+        function renderReadingList() {
+            const container = document.getElementById('readingContent');
+            const empty = document.getElementById('emptyReading');
+            
+            // 更新统计信息
+            updateBookshelfStats();
+            
+            // 从阅读历史和书架数据中获取在读小说
+            const readingItems = [];
+            
+            // 添加书架数据
+            BOOKSHELF_DATA.forEach(item => {
+                const novel = NOVELS.find(n => n.id === item.novel_id);
+                if (novel) {
+                    readingItems.push({
+                        id: novel.id,
+                        title: novel.title,
+                        author: novel.author,
+                        cover: novel.cover,
+                        progress: item.progress || 0,
+                        currentChapter: item.chapterTitle || '第' + Math.ceil(novel.chapterCount * (item.progress || 0) / 100) + '章',
+                        currentChapterNum: item.chapterId || 1,
+                        lastReadTime: item.last_read_at,
+                        tag: item.progress >= 100 ? '已读完' : '在读'
+                    });
+                }
+            });
+            
+            // 添加阅读历史
+            READING_HISTORY.forEach(item => {
+                const novel = NOVELS.find(n => n.id === item.novel_id);
+                if (novel && !readingItems.find(r => r.id === novel.id)) {
+                    readingItems.push({
+                        id: novel.id,
+                        title: novel.title,
+                        author: novel.author,
+                        cover: novel.cover,
+                        progress: Math.round((item.chapterId / novel.chapterCount) * 100),
+                        currentChapter: item.chapterTitle || '第' + item.chapterId + '章',
+                        currentChapterNum: item.chapterId,
+                        lastReadTime: item.lastReadAt,
+                        tag: '最近阅读'
+                    });
+                }
+            });
+
+            if (readingItems.length === 0) {
+                container.innerHTML = '';
+                empty.style.display = 'flex';
+                return;
+            }
+
+            empty.style.display = 'none';
+            
+            // 使用 BookCard 组件渲染
+            if (window.BookCard) {
+                BookCard.render(container, readingItems, {
+                    layout: currentLayout,
+                    onClick: (book) => {
+                        window.location.href = `../reader/reading.html?id=${book.id}&chapter=${book.currentChapterNum || 1}`;
+                    },
+                    onContinue: (book) => {
+                        window.location.href = `../reader/reading.html?id=${book.id}&chapter=${book.currentChapterNum || 1}`;
+                    },
+                    onDetail: (book) => {
+                        window.location.href = `../detail/index.html?id=${book.id}`;
+                    },
+                    onDelete: (book) => {
+                        if (window.Modal) {
+                            Modal.confirm('确定要从书架移除这本书吗？', () => {
+                                // 实际删除逻辑
+                                if (window.Toast) {
+                                    Toast.success('已移除');
+                                }
+                                renderReadingList();
+                            });
+                        }
+                    },
+                    onSelect: (book, selected) => {
+                        if (window.BatchSelect) {
+                            BatchSelect.toggleSelection(book.id, selected);
+                        }
+                    }
+                });
+            } else {
+                // 回退到旧版渲染
+                renderReadingListLegacy(container, readingItems);
+            }
+        }
+        
+        // 旧版渲染函数
+        function renderReadingListLegacy(container, items) {
+            container.innerHTML = items.map(item => `
+                <div class="bookshelf-item">
+                    <div class="item-cover">
+                        <img src="${item.cover}" alt="${item.title}" loading="lazy">
+                    </div>
+                    <div class="item-info">
+                        <h3 class="item-title">${item.title}</h3>
+                        <p class="item-author">${item.author}</p>
+                        <p class="item-chapter">${item.currentChapter}</p>
+                        <div class="item-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${item.progress}%"></div>
+                            </div>
+                            <span class="progress-text">已读${item.progress}%</span>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <a href="../reader/reading.html?id=${item.id}&chapter=${item.currentChapterNum || 1}" class="btn-primary">继续阅读</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染收藏列表
+        function renderFavoritesList() {
+            const list = document.getElementById('favoritesList');
+            const empty = document.getElementById('emptyFavorites');
+            
+            const favoriteItems = [];
+            FAVORITES.forEach(item => {
+                const novel = NOVELS.find(n => n.id === item.novel_id);
+                if (novel) {
+                    favoriteItems.push({
+                        ...novel,
+                        favoritedAt: item.created_at
+                    });
+                }
+            });
+
+            if (favoriteItems.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.innerHTML = favoriteItems.map(item => `
+                <div class="bookshelf-card">
+                    <div class="card-cover">
+                        <img src="${item.cover}" alt="${item.title}" loading="lazy">
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title">${item.title}</h3>
+                        <p class="card-author">${item.author}</p>
+                        <p class="card-meta">${formatWordCount(item.wordCount)}字 · ${item.rating}分</p>
+                    </div>
+                    <a href="../novel/detail.html?id=${item.id}" class="card-link"></a>
+                </div>
+            `).join('');
+        }
+
+        // 渲染历史列表
+        function renderHistoryList() {
+            const list = document.getElementById('historyList');
+            const empty = document.getElementById('emptyHistory');
+            
+            const historyItems = [];
+            READING_HISTORY.forEach(item => {
+                const novel = NOVELS.find(n => n.id === item.novel_id);
+                if (novel) {
+                    historyItems.push({
+                        ...novel,
+                        chapterTitle: item.chapterTitle,
+                        lastReadAt: item.lastReadAt,
+                        chapterId: item.chapterId
+                    });
+                }
+            });
+
+            if (historyItems.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.innerHTML = historyItems.map(item => `
+                <div class="bookshelf-item">
+                    <div class="item-cover">
+                        <img src="${item.cover}" alt="${item.title}" loading="lazy">
+                    </div>
+                    <div class="item-info">
+                        <h3 class="item-title">${item.title}</h3>
+                        <p class="item-author">${item.author}</p>
+                        <p class="item-chapter">读至：${item.chapterTitle || '第' + item.chapterId + '章'}</p>
+                        <p class="item-time">${new Date(item.lastReadAt).toLocaleString()}</p>
+                    </div>
+                    <div class="item-actions">
+                        <a href="../reader/reading.html?novel=${item.id}&chapter=${item.chapterId}" class="btn-primary">继续阅读</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 切换标签页
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // 更新URL参数
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tabName);
+            window.history.pushState({ tab: tabName }, '', url);
+            
+            // 更新标签按钮状态
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            
+            // 显示对应内容区
+            document.querySelectorAll('.bookshelf-section').forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+            const activeSection = document.getElementById(tabName + 'Section');
+            activeSection.style.display = 'block';
+            activeSection.classList.add('active');
+            
+            // 如果处于批量模式，退出批量模式
+            if (window.BatchSelect && BatchSelect.isBatchMode()) {
+                BatchSelect.deactivate();
+            }
+            
+            // 渲染对应内容
+            if (tabName === 'reading') renderReadingList();
+            else if (tabName === 'favorites') renderFavoritesList();
+            else if (tabName === 'history') renderHistoryList();
+        }
+        
+        // 从URL获取初始Tab
+        function getInitialTab() {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            if (tab && ['reading', 'favorites', 'history'].includes(tab)) {
+                return tab;
+            }
+            return 'reading';
+        }
+
+        // 当前布局模式
+        let currentLayout = 'grid';
+        let currentTab = 'reading';
+        
+        // 书架数据
+        let shelves = [
+            { id: 'default', name: '默认书架', count: 0 },
+            { id: 'reading', name: '在读', count: 0 },
+            { id: 'favorites', name: '收藏', count: 0 },
+            { id: 'finished', name: '已读完', count: 0 }
+        ];
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initData();
+            initComponents();
+            
+            // 绑定标签切换事件
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+            
+            // 主题切换
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    const themes = ['theme-light', 'theme-dark'];
+                    const current = themes.findIndex(t => document.body.classList.contains(t));
+                    document.body.className = themes[(current + 1) % themes.length];
+                });
+            }
+            
+            // 布局切换
+            document.getElementById('layoutToggle')?.addEventListener('click', () => {
+                currentLayout = currentLayout === 'grid' ? 'list' : 'grid';
+                refreshCurrentTab();
+            });
+            
+            // 批量管理模式
+            document.getElementById('batchModeBtn')?.addEventListener('click', () => {
+                if (window.BatchSelect) {
+                    if (BatchSelect.isBatchMode()) {
+                        BatchSelect.deactivate();
+                    } else {
+                        BatchSelect.activate();
+                    }
+                }
+            });
+            
+            // 监听浏览器前进后退
+            window.addEventListener('popstate', (e) => {
+                const tab = getInitialTab();
+                if (tab !== currentTab) {
+                    switchTab(tab);
+                }
+            });
+            
+            // 从URL获取初始Tab并渲染
+            const initialTab = getInitialTab();
+            if (initialTab !== 'reading') {
+                switchTab(initialTab);
+            } else {
+                renderReadingList();
+            }
+        });
+        
+        // 初始化组件
+        function initComponents() {
+            // 初始化批量选择组件
+            if (window.BatchSelect) {
+                BatchSelect.init({
+                    shelves: shelves,
+                    currentShelfId: 'default'
+                });
+                
+                // 监听批量选择事件
+                window.addEventListener('batchSelectActivate', () => {
+                    document.getElementById('batchModeBtn')?.classList.add('active');
+                    setBookCardSelectMode(true);
+                });
+                
+                window.addEventListener('batchSelectDeactivate', () => {
+                    document.getElementById('batchModeBtn')?.classList.remove('active');
+                    setBookCardSelectMode(false);
+                });
+                
+                window.addEventListener('batchSelectAll', (e) => {
+                    const { select } = e.detail;
+                    if (window.BookCard) {
+                        const container = document.querySelector('.bookshelf-section.active .bookshelf-content');
+                        if (container) {
+                            BookCard.toggleSelectAll(container, select);
+                        }
+                    }
+                });
+                
+                window.addEventListener('batchMove', (e) => {
+                    const { itemIds, targetShelfId } = e.detail;
+                    handleBatchMove(itemIds, targetShelfId);
+                });
+                
+                window.addEventListener('batchTop', (e) => {
+                    const { itemIds } = e.detail;
+                    handleBatchTop(itemIds);
+                });
+                
+                window.addEventListener('batchDelete', (e) => {
+                    const { itemIds } = e.detail;
+                    handleBatchDelete(itemIds);
+                });
+            }
+        }
+        
+        // 设置书籍卡片选择模式
+        function setBookCardSelectMode(enabled) {
+            document.querySelectorAll('.bookshelf-content').forEach(container => {
+                if (window.BookCard) {
+                    BookCard.setSelectMode(container, enabled);
+                }
+            });
+        }
+        
+        // 刷新当前标签页
+        function refreshCurrentTab() {
+            if (currentTab === 'reading') renderReadingList();
+            else if (currentTab === 'favorites') renderFavoritesList();
+            else if (currentTab === 'history') renderHistoryList();
+        }
+        
+        // 处理批量移动
+        function handleBatchMove(itemIds, targetShelfId) {
+            if (window.Toast) {
+                Toast.success(`已将 ${itemIds.length} 本书移动到目标书架`);
+            }
+            // 实际移动逻辑...
+            BatchSelect.deactivate();
+        }
+        
+        // 处理批量置顶
+        function handleBatchTop(itemIds) {
+            if (window.Toast) {
+                Toast.success(`已将 ${itemIds.length} 本书置顶`);
+            }
+            // 实际置顶逻辑...
+        }
+        
+        // 处理批量删除
+        function handleBatchDelete(itemIds) {
+            if (window.Toast) {
+                Toast.success(`已删除 ${itemIds.length} 本书`);
+            }
+            // 实际删除逻辑...
+            refreshCurrentTab();
+            BatchSelect.deactivate();
+        }
+    </script>
+
+    <style>
+        .bookshelf-header {
+            margin-bottom: 2rem;
+        }
+        .bookshelf-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        .bookshelf-title-section {
+            flex: 1;
+        }
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .bookshelf-stats {
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+        .stats-number {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        .bookshelf-tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--color-border);
+        }
+        .tab-item {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-item.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+        .bookshelf-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .bookshelf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        .bookshelf-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+        }
+        .item-cover img {
+            width: 80px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+        }
+        .item-info {
+            flex: 1;
+        }
+        .item-title {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        .item-author, .item-chapter, .item-time {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        .item-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--color-bg-tertiary);
+            border-radius: 2px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            border-radius: 2px;
+        }
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+        .bookshelf-card {
+            position: relative;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .card-cover img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        .card-info {
+            padding: 1rem;
+        }
+        .card-title {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .card-author, .card-meta {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+        .card-link {
+            position: absolute;
+            inset: 0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+        }
+        .empty-state p {
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!-- 搜索建议下拉组件 -->
+<div class="search-suggest-container" id="searchSuggestContainer" style="display: none;">
+    <!-- 搜索历史 -->
+    <div class="suggest-section" id="historySection">
+        <div class="suggest-header">
+            <span class="suggest-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                搜索历史
+            </span>
+            <button class="suggest-clear" id="clearHistory">清空</button>
+        </div>
+        <ul class="suggest-list" id="historyList"></ul>
+    </div>
+    
+    <!-- 智能补全 -->
+    <div class="suggest-section" id="suggestSection" style="display: none;">
+        <div class="suggest-header">
+            <span class="suggest-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+                智能补全
+            </span>
+        </div>
+        <ul class="suggest-list" id="suggestList"></ul>
+    </div>
+    
+    <!-- 热门搜索 -->
+    <div class="suggest-section" id="hotSection">
+        <div class="suggest-header">
+            <span class="suggest-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-15 0c0-1.1.5-2.5 1.5-3.5.5.5 2 2.5 2.5 3.5z"/>
+                </svg>
+                热门搜索
+            </span>
+        </div>
+        <ul class="suggest-list" id="hotList"></ul>
+    </div>
+</div>
+
+<style>
+.search-suggest-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-dropdown, 100);
+    overflow: hidden;
+    animation: suggestSlideDown 0.2s ease;
+}
+
+@keyframes suggestSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.suggest-section {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.suggest-section:last-child {
+    border-bottom: none;
+}
+
+.suggest-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg-secondary);
+}
+
+.suggest-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.suggest-title svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.suggest-clear {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+
+.suggest-clear:hover {
+    color: var(--color-error);
+    background: var(--color-error-light);
+}
+
+.suggest-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.suggest-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.suggest-item:hover,
+.suggest-item.active {
+    background: var(--color-bg-secondary);
+}
+
+.suggest-item-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    overflow: hidden;
+}
+
+.suggest-item-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+}
+
+.suggest-item-icon.history {
+    color: var(--color-info);
+}
+
+.suggest-item-icon.hot {
+    color: var(--color-error);
+}
+
+.suggest-item-text {
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.suggest-item-text mark {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    padding: 0 0.125rem;
+    border-radius: var(--radius-sm);
+}
+
+.suggest-item-delete {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    opacity: 0;
+    transition: all 0.2s;
+}
+
+.suggest-item:hover .suggest-item-delete {
+    opacity: 1;
+}
+
+.suggest-item-delete:hover {
+    background: var(--color-error-light);
+    color: var(--color-error);
+}
+
+.suggest-item-delete svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.suggest-hot-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    margin-right: 0.5rem;
+}
+
+.suggest-hot-rank.top3 {
+    background: var(--color-error);
+    color: white;
+}
+
+.suggest-hot-rank.normal {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+}
+
+/* 空状态 */
+.suggest-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .search-suggest-container {
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin-top: 0;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .suggest-item-delete {
+        opacity: 1;
+    }
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    window.SearchSuggest = {
+        container: null,
+        input: null,
+        currentIndex: -1,
+        items: [],
+        maxHistory: 20,
+        debounceTimer: null,
+        
+        init: function(inputSelector) {
+            this.input = document.querySelector(inputSelector);
+            if (!this.input) return;
+            
+            this.container = document.getElementById('searchSuggestContainer');
+            if (!this.container) return;
+            
+            // 绑定事件
+            this.input.addEventListener('focus', () => this.show());
+            this.input.addEventListener('input', () => this.handleInput());
+            this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
+            
+            // 点击外部关闭
+            document.addEventListener('click', (e) => {
+                if (!this.container.contains(e.target) && e.target !== this.input) {
+                    this.hide();
+                }
+            });
+            
+            // 清空历史
+            document.getElementById('clearHistory')?.addEventListener('click', () => {
+                this.clearHistory();
+            });
+            
+            // 初始化热门搜索
+            this.initHotSearch();
+        },
+        
+        show: function() {
+            this.renderHistory();
+            this.container.style.display = 'block';
+            this.currentIndex = -1;
+        },
+        
+        hide: function() {
+            this.container.style.display = 'none';
+            this.currentIndex = -1;
+        },
+        
+        handleInput: function() {
+            clearTimeout(this.debounceTimer);
+            const value = this.input.value.trim();
+            
+            if (!value) {
+                this.renderHistory();
+                document.getElementById('suggestSection').style.display = 'none';
+                return;
+            }
+            
+            // 防抖 300ms
+            this.debounceTimer = setTimeout(() => {
+                this.fetchSuggestions(value);
+            }, 300);
+        },
+        
+        handleKeydown: function(e) {
+            const items = this.container.querySelectorAll('.suggest-item');
+            
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    this.currentIndex = Math.min(this.currentIndex + 1, items.length - 1);
+                    this.updateActiveItem(items);
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    this.currentIndex = Math.max(this.currentIndex - 1, -1);
+                    this.updateActiveItem(items);
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (this.currentIndex >= 0 && items[this.currentIndex]) {
+                        items[this.currentIndex].click();
+                    } else {
+                        this.submitSearch(this.input.value.trim());
+                    }
+                    break;
+                case 'Escape':
+                    this.hide();
+                    this.input.blur();
+                    break;
+            }
+        },
+        
+        updateActiveItem: function(items) {
+            items.forEach((item, index) => {
+                item.classList.toggle('active', index === this.currentIndex);
+            });
+        },
+        
+        // 获取搜索历史
+        getHistory: function() {
+            try {
+                return JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            } catch {
+                return [];
+            }
+        },
+        
+        // 保存搜索历史
+        saveHistory: function(keyword) {
+            if (!keyword) return;
+            
+            let history = this.getHistory();
+            // 去重并移到最前
+            history = history.filter(item => item !== keyword);
+            history.unshift(keyword);
+            // 限制数量
+            history = history.slice(0, this.maxHistory);
+            
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        },
+        
+        // 清空历史
+        clearHistory: function() {
+            localStorage.removeItem('searchHistory');
+            this.renderHistory();
+            Toast.success('搜索历史已清空');
+        },
+        
+        // 删除单条历史
+        deleteHistoryItem: function(keyword, e) {
+            e.stopPropagation();
+            let history = this.getHistory().filter(item => item !== keyword);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+            this.renderHistory();
+        },
+        
+        // 渲染搜索历史
+        renderHistory: function() {
+            const history = this.getHistory();
+            const listEl = document.getElementById('historyList');
+            const sectionEl = document.getElementById('historySection');
+            
+            if (history.length === 0) {
+                sectionEl.style.display = 'none';
+                return;
+            }
+            
+            sectionEl.style.display = 'block';
+            listEl.innerHTML = history.map(keyword => `
+                <li class="suggest-item" data-keyword="${keyword}">
+                    <div class="suggest-item-content">
+                        <svg class="suggest-item-icon history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span class="suggest-item-text">${keyword}</span>
+                    </div>
+                    <button class="suggest-item-delete" title="删除">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </li>
+            `).join('');
+            
+            // 绑定点击事件
+            listEl.querySelectorAll('.suggest-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    this.submitSearch(item.dataset.keyword);
+                });
+                item.querySelector('.suggest-item-delete')?.addEventListener('click', (e) => {
+                    this.deleteHistoryItem(item.dataset.keyword, e);
+                });
+            });
+        },
+        
+        // 获取智能补全
+        fetchSuggestions: function(keyword) {
+            // 模拟API调用
+            const mockSuggestions = [
+                keyword + '小说',
+                keyword + '免费阅读',
+                keyword + '最新章节',
+                keyword + '作者',
+                keyword + '类似推荐'
+            ];
+            
+            this.renderSuggestions(mockSuggestions, keyword);
+        },
+        
+        // 渲染智能补全
+        renderSuggestions: function(suggestions, keyword) {
+            const listEl = document.getElementById('suggestList');
+            const sectionEl = document.getElementById('suggestSection');
+            
+            if (suggestions.length === 0) {
+                sectionEl.style.display = 'none';
+                return;
+            }
+            
+            sectionEl.style.display = 'block';
+            listEl.innerHTML = suggestions.map(text => {
+                const highlighted = text.replace(
+                    new RegExp(keyword, 'gi'),
+                    match => `<mark>${match}</mark>`
+                );
+                return `
+                    <li class="suggest-item" data-keyword="${text}">
+                        <div class="suggest-item-content">
+                            <svg class="suggest-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                            <span class="suggest-item-text">${highlighted}</span>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+            
+            // 绑定点击事件
+            listEl.querySelectorAll('.suggest-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    this.submitSearch(item.dataset.keyword);
+                });
+            });
+        },
+        
+        // 初始化热门搜索
+        initHotSearch: function() {
+            const hotKeywords = [
+                '斗破苍穹',
+                '完美世界',
+                '凡人修仙传',
+                '诡秘之主',
+                '大奉打更人',
+                '雪中悍刀行',
+                '一念永恒',
+                '仙逆'
+            ];
+            
+            const listEl = document.getElementById('hotList');
+            if (!listEl) return;
+            
+            listEl.innerHTML = hotKeywords.map((keyword, index) => `
+                <li class="suggest-item" data-keyword="${keyword}">
+                    <div class="suggest-item-content">
+                        <span class="suggest-hot-rank ${index < 3 ? 'top3' : 'normal'}">${index + 1}</span>
+                        <svg class="suggest-item-icon hot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-15 0c0-1.1.5-2.5 1.5-3.5.5.5 2 2.5 2.5 3.5z"/>
+                        </svg>
+                        <span class="suggest-item-text">${keyword}</span>
+                    </div>
+                </li>
+            `).join('');
+            
+            // 绑定点击事件
+            listEl.querySelectorAll('.suggest-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    this.submitSearch(item.dataset.keyword);
+                });
+            });
+        },
+        
+        // 提交搜索
+        submitSearch: function(keyword) {
+            if (!keyword) return;
+            
+            this.saveHistory(keyword);
+            this.hide();
+            
+            // 触发搜索事件
+            if (window.onSearch) {
+                window.onSearch(keyword);
+            } else {
+                // 默认跳转
+                window.location.href = `/html/pages/discover/search/results.html?q=${encodeURIComponent(keyword)}`;
+            }
+        }
+    };
+})();
+</script>
