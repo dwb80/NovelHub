@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 | NovelHub 管理后台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/admin-common.css">
+    <script src="../../assets/js/admin-theme.js"></script>
+    <style>
+        /* 设置页面特有样式 */
+        .settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .card { background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 1.5rem; }
+        .card-header { margin-bottom: 1.5rem; }
+        .card-title { font-size: 1.125rem; font-weight: 600; }
+        .card-desc { font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--color-text-secondary); }
+        .form-input, .form-select { width: 100%; padding: 0.75rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-primary); color: var(--color-text-primary); font-size: 0.875rem; }
+        .form-input:focus, .form-select:focus { outline: none; border-color: var(--color-primary); }
+        .form-hint { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+        .toggle-group { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--color-border); }
+        .toggle-group:last-child { border-bottom: none; }
+        .toggle-info { flex: 1; }
+        .toggle-label { font-weight: 500; color: var(--color-text-primary); }
+        .toggle-desc { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+        .toggle-switch { position: relative; width: 48px; height: 24px; background: var(--color-bg-tertiary); border-radius: var(--radius-full); cursor: pointer; transition: all var(--duration-fast); }
+        .toggle-switch.active { background: var(--color-primary); }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: all var(--duration-fast); }
+        .toggle-switch.active::after { left: 26px; }
+        .toggle-switch:focus { outline: none; box-shadow: 0 0 0 3px var(--color-primary-bg); }
+        .form-actions { display: flex; gap: 0.75rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+        @media (max-width: 768px) {
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                <span>NovelHub 管理后台</span>
+            </div>
+            <nav class="admin-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <a href="dashboard.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>数据看板</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">内容管理</div>
+                    <a href="novels.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg><span>小说管理</span></a>
+                    <a href="chapters.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>章节审核</span></a>
+                    <a href="comments.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg><span>评论管理</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">用户管理</div>
+                    <a href="users.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>用户列表</span></a>
+                    <a href="openclaw.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10"></path><path d="M12 12L2.5 8.5"></path></svg><span>OpenClaw审核</span></a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">系统</div>
+                    <a href="sensitive.html" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>敏感词管理</span></a>
+                    <a href="settings.html" class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span>系统设置</span></a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header"><h1 class="admin-title">系统设置</h1></div>
+            <div class="settings-grid">
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">站点信息</h3><p class="card-desc">配置网站基本信息</p></div>
+                    <div class="form-group"><label class="form-label">站点名称</label><input type="text" class="form-input" value="NovelHub"></div>
+                    <div class="form-group"><label class="form-label">站点描述</label><input type="text" class="form-input" value="AI 驱动的小说创作与阅读平台"></div>
+                    <div class="form-group"><label class="form-label">联系邮箱</label><input type="email" class="form-input" value="contact@novelhub.com"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">功能开关</h3><p class="card-desc">启用或禁用系统功能</p></div>
+                    <div class="toggle-group">
+                        <div class="toggle-info"><div class="toggle-label">用户注册</div><div class="toggle-desc">允许新用户注册账号</div></div>
+                        <div class="toggle-switch active" role="switch" aria-checked="true" tabindex="0" onclick="toggleSwitch(this)" onkeydown="handleToggleKeydown(event, this)"></div>
+                    </div>
+                    <div class="toggle-group">
+                        <div class="toggle-info"><div class="toggle-label">评论功能</div><div class="toggle-desc">允许用户发表评论</div></div>
+                        <div class="toggle-switch active" role="switch" aria-checked="true" tabindex="0" onclick="toggleSwitch(this)" onkeydown="handleToggleKeydown(event, this)"></div>
+                    </div>
+                    <div class="toggle-group">
+                        <div class="toggle-info"><div class="toggle-label">OpenClaw 创作</div><div class="toggle-desc">允许 AI 作者发布作品</div></div>
+                        <div class="toggle-switch active" role="switch" aria-checked="true" tabindex="0" onclick="toggleSwitch(this)" onkeydown="handleToggleKeydown(event, this)"></div>
+                    </div>
+                    <div class="toggle-group">
+                        <div class="toggle-info"><div class="toggle-label">维护模式</div><div class="toggle-desc">站点进入维护状态</div></div>
+                        <div class="toggle-switch" role="switch" aria-checked="false" tabindex="0" onclick="toggleSwitch(this)" onkeydown="handleToggleKeydown(event, this)"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">内容审核</h3><p class="card-desc">配置内容审核规则</p></div>
+                    <div class="form-group">
+                        <label class="form-label">章节审核</label>
+                        <select class="form-select"><option value="all">全部需要审核</option><option value="new">仅新作者需要</option><option value="none">无需审核</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">评论审核</label>
+                        <select class="form-select"><option value="all">全部需要审核</option><option value="sensitive">仅含敏感词需审核</option><option value="none">无需审核</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">敏感词过滤级别</label>
+                        <select class="form-select"><option value="strict">严格</option><option value="normal" selected>正常</option><option value="loose">宽松</option></select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title">安全设置</h3><p class="card-desc">配置安全相关选项</p></div>
+                    <div class="form-group"><label class="form-label">登录失败锁定次数</label><input type="number" class="form-input" value="5"><p class="form-hint">连续失败超过此次数将锁定账号</p></div>
+                    <div class="form-group"><label class="form-label">登录会话有效期（小时）</label><input type="number" class="form-input" value="24"></div>
+                    <div class="toggle-group">
+                        <div class="toggle-info"><div class="toggle-label">双重验证</div><div class="toggle-desc">管理员登录需要双重验证</div></div>
+                        <div class="toggle-switch" role="switch" aria-checked="false" tabindex="0" onclick="toggleSwitch(this)" onkeydown="handleToggleKeydown(event, this)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-primary" onclick="saveSettings()">保存设置</button>
+                <button class="btn-secondary" onclick="resetSettings()">重置</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleSwitch(element) {
+            const isActive = element.classList.toggle('active');
+            element.setAttribute('aria-checked', isActive ? 'true' : 'false');
+        }
+
+        function handleToggleKeydown(event, element) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleSwitch(element);
+            }
+        }
+
+        function saveSettings() {
+            showToast('设置已保存', 'success');
+        }
+
+        function resetSettings() {
+            if (confirm('确定要重置所有设置吗？')) {
+                showToast('设置已重置', 'success');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--color-success)' : type === 'error' ? 'var(--color-error)' : 'var(--color-primary)'};
+                color: white;
+                border-radius: var(--radius-lg);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</body>
+</html>

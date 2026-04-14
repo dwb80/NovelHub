@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索管理 | NovelHub 管理后台</title>
+    <meta name="description" content="NovelHub 管理后台 - 搜索管理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/admin-common.css">
+    <script src="../../assets/js/admin-theme.js"></script>
+    <style>
+        /* 搜索页面特有样式 */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-main {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3.5rem 1rem 1.5rem;
+            font-size: 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            transition: all var(--duration-fast);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px var(--color-primary-bg);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .search-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .search-suggestions {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .suggestion-title {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .suggestion-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .suggestion-tag {
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .suggestion-tag:hover {
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .filter-chip:hover {
+            border-color: var(--color-primary);
+        }
+
+        .filter-chip.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .search-results {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .result-card {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            transition: all var(--duration-fast);
+        }
+
+        .result-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .result-cover {
+            width: 120px;
+            height: 160px;
+            border-radius: var(--radius-lg);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .result-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .result-badge {
+            padding: 0.25rem 0.75rem;
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .result-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .result-description {
+            font-size: 0.875rem;
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .result-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .result-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+        }
+
+        .search-count {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .search-count strong {
+            color: var(--color-primary);
+        }
+
+        .search-sort {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .sort-label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .sort-options {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .sort-btn {
+            padding: 0.375rem 0.75rem;
+            background: transparent;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .sort-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .sort-btn.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .page-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .page-btn.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .result-card {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .result-cover {
+                width: 100%;
+                max-width: 120px;
+                margin: 0 auto;
+            }
+
+            .search-filters {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span>NovelHub 管理后台</span>
+            </div>
+
+            <nav class="admin-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>数据看板</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">内容管理</div>
+                    <a href="novels.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>小说管理</span>
+                    </a>
+                    <a href="chapters.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <span>章节审核</span>
+                    </a>
+                    <a href="comments.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span>评论管理</span>
+                    </a>
+                    <a href="rankings.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10"></path>
+                            <path d="M12 20V4"></path>
+                            <path d="M6 20v-6"></path>
+                        </svg>
+                        <span>排行榜管理</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">用户管理</div>
+                    <a href="users.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>用户列表</span>
+                    </a>
+                    <a href="openclaw.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+                            <path d="M12 2a10 10 0 0 1 10 10"></path>
+                            <path d="M12 12L2.5 8.5"></path>
+                        </svg>
+                        <span>OpenClaw 审核</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">系统</div>
+                    <a href="sensitive.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>敏感词管理</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>系统设置</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">搜索管理</h1>
+            </div>
+
+            <!-- 搜索框 -->
+            <div class="search-container">
+                <div class="search-main">
+                    <input type="text" class="search-input" id="searchInput" placeholder="搜索小说、作者、关键词..." value="玄幻">
+                    <button class="search-btn" onclick="performSearch()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="search-suggestions">
+                    <div class="suggestion-title">热门搜索</div>
+                    <div class="suggestion-tags">
+                        <div class="suggestion-tag" onclick="search('玄幻')">玄幻</div>
+                        <div class="suggestion-tag" onclick="search('都市')">都市</div>
+                        <div class="suggestion-tag" onclick="search('仙侠')">仙侠</div>
+                        <div class="suggestion-tag" onclick="search('言情')">言情</div>
+                        <div class="suggestion-tag" onclick="search('历史')">历史</div>
+                        <div class="suggestion-tag" onclick="search('科幻')">科幻</div>
+                        <div class="suggestion-tag" onclick="search('悬疑')">悬疑</div>
+                        <div class="suggestion-tag" onclick="search('奇幻')">奇幻</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 筛选条件 -->
+            <div class="search-filters">
+                <div class="filter-chip active" data-filter="all">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    全部
+                </div>
+                <div class="filter-chip" data-filter="male">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 8v8"></path>
+                        <path d="M8 12h8"></path>
+                    </svg>
+                    男频
+                </div>
+                <div class="filter-chip" data-filter="female">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v12"></path>
+                        <path d="M8 10h8"></path>
+                    </svg>
+                    女频
+                </div>
+                <div class="filter-chip" data-filter="vip">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    VIP 作品
+                </div>
+                <div class="filter-chip" data-filter="completed">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    已完结
+                </div>
+            </div>
+
+            <!-- 搜索结果 -->
+            <div class="search-stats">
+                <div class="search-count">找到 <strong>1,258</strong> 部相关作品</div>
+                <div class="search-sort">
+                    <span class="sort-label">排序：</span>
+                    <div class="sort-options">
+                        <button class="sort-btn active" data-sort="relevance">相关度</button>
+                        <button class="sort-btn" data-sort="reads">阅读量</button>
+                        <button class="sort-btn" data-sort="collection">收藏数</button>
+                        <button class="sort-btn" data-sort="update">更新时间</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-results" id="searchResults">
+                <!-- 动态生成 -->
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <button class="page-btn">上一页</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn">下一页</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const searchResults = [
+            {
+                id: 1,
+                title: '星辰变',
+                author: '我吃西红柿',
+                cover: 'https://via.placeholder.com/120x160',
+                category: '东方玄幻',
+                gender: 'male',
+                words: '125.8 万',
+                reads: '1258 万',
+                collection: '52.8 万',
+                status: '连载中',
+                vip: true,
+                description: '一名孩童，天生无法修炼内功。为了得到父亲的重视关注，这个孩童毅然选择了修炼痛苦艰难的外功。',
+                tags: ['精品', '推荐', '热门']
+            },
+            {
+                id: 2,
+                title: '斗破苍穹',
+                author: '天蚕土豆',
+                cover: 'https://via.placeholder.com/120x160',
+                category: '东方玄幻',
+                gender: 'male',
+                words: '535.6 万',
+                reads: '2156 万',
+                collection: '89.5 万',
+                status: '已完结',
+                vip: true,
+                description: '讲述了天才少年萧炎在创造了家族空前绝后的修炼纪录后突然成了废人，整整三年时间，家族冷遇，旁人轻视，被未婚妻退婚……',
+                tags: ['完结', '经典', '热门']
+            },
+            {
+                id: 3,
+                title: '完美世界',
+                author: '辰东',
+                cover: 'https://via.placeholder.com/120x160',
+                category: '东方玄幻',
+                gender: 'male',
+                words: '658.2 万',
+                reads: '1876 万',
+                collection: '76.3 万',
+                status: '已完结',
+                vip: true,
+                description: '一粒尘可填海，一根草斩尽日月星辰，弹指间天崩地裂，瞬间星辰移位。',
+                tags: ['完结', '辰东', '经典']
+            },
+            {
+                id: 4,
+                title: '斗罗大陆',
+                author: '唐家三少',
+                cover: 'https://via.placeholder.com/120x160',
+                category: '玄幻',
+                gender: 'male',
+                words: '298.5 万',
+                reads: '1654 万',
+                collection: '65.8 万',
+                status: '已完结',
+                vip: true,
+                description: '唐门外门弟子唐三，因偷学内门绝学为唐门所不容，跳崖明志时却发现没有死，反而以另外一个身份来到了另一个世界。',
+                tags: ['完结', '经典', '改编']
+            },
+            {
+                id: 5,
+                title: '武动乾坤',
+                author: '天蚕土豆',
+                cover: 'https://via.placeholder.com/120x160',
+                category: '东方玄幻',
+                gender: 'male',
+                words: '398.7 万',
+                reads: '1356 万',
+                collection: '58.9 万',
+                status: '已完结',
+                vip: true,
+                description: '修炼一途，乃窃阴阳，夺造化，转涅盘，握生死，掌轮回。武之极，破苍穹，动乾坤！',
+                tags: ['完结', '土豆', '热血']
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderResults();
+            bindEvents();
+        });
+
+        function renderResults() {
+            const container = document.getElementById('searchResults');
+            container.innerHTML = searchResults.map(result => `
+                <div class="result-card">
+                    <img src="${result.cover}" alt="${result.title}" class="result-cover">
+                    <div class="result-info">
+                        <div class="result-header">
+                            <h3 class="result-title">${result.title}</h3>
+                            ${result.vip ? '<span class="result-badge">VIP</span>' : ''}
+                            ${result.status === '已完结' ? '<span class="result-badge" style="background: var(--color-success-bg); color: var(--color-success);">完结</span>' : ''}
+                        </div>
+                        <div class="result-meta">
+                            <div class="result-meta-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                                </svg>
+                                ${result.author}
+                            </div>
+                            <div class="result-meta-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                ${result.words}
+                            </div>
+                            <div class="result-meta-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                ${result.reads}
+                            </div>
+                            <div class="result-meta-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                ${result.collection}
+                            </div>
+                        </div>
+                        <p class="result-description">${result.description}</p>
+                        <div class="result-tags">
+                            <span class="result-tag">${result.category}</span>
+                            ${result.tags.map(tag => `<span class="result-tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn btn-primary btn-sm" onclick="viewBook(${result.id})">查看详情</button>
+                            <button class="btn btn-secondary btn-sm" onclick="addToShelf(${result.id})">加入书架</button>
+                            <button class="btn btn-success btn-sm" onclick="recommend(${result.id})">推荐本书</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function bindEvents() {
+            // 筛选条件
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    performSearch();
+                });
+            });
+
+            // 排序选项
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    performSearch();
+                });
+            });
+
+            // 回车搜索
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                showToast('请输入搜索关键词', 'error');
+                return;
+            }
+            
+            showToast(`搜索：${query}`, 'info');
+            setTimeout(() => {
+                showToast('搜索完成', 'success');
+            }, 500);
+        }
+
+        function search(keyword) {
+            document.getElementById('searchInput').value = keyword;
+            performSearch();
+        }
+
+        function viewBook(id) {
+            window.location.href = `book-detail.html?id=${id}`;
+        }
+
+        function addToShelf(id) {
+            showToast('已加入书架', 'success');
+        }
+
+        function recommend(id) {
+            showToast('推荐成功', 'success');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--color-success)' : type === 'error' ? 'var(--color-error)' : 'var(--color-primary)'};
+                color: white;
+                border-radius: var(--radius-lg);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</body>
+</html>

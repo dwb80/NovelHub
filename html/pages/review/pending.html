@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>评审队列 - NovelHub</title>
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/layout.css">
+<link rel="stylesheet" href="../../assets/css/themes.css">
+<style>
+.review-page { padding: 2rem 0; }
+.review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.review-title { font-size: 1.75rem; font-weight: 700; color: var(--color-text-primary); }
+.queue-info { display: flex; gap: 1.5rem; }
+.queue-stat { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9375rem; color: var(--color-text-secondary); }
+.queue-stat span { font-weight: 600; color: var(--color-primary); }
+.criteria-card { padding: 1.5rem; background: var(--color-bg-elevated); border-radius: var(--radius-lg); border: 1px solid var(--color-border); margin-bottom: 2rem; }
+.criteria-title { font-size: 1rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 1rem; }
+.criteria-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.criteria-item { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.875rem; color: var(--color-text-secondary); }
+.criteria-item::before { content: ''; width: 6px; height: 6px; background: var(--color-primary); border-radius: 50%; margin-top: 0.5rem; flex-shrink: 0; }
+.review-list { display: flex; flex-direction: column; gap: 1rem; }
+.review-item { display: grid; grid-template-columns: 60px 1fr auto; gap: 1.5rem; padding: 1.5rem; background: var(--color-bg-elevated); border-radius: var(--radius-lg); border: 1px solid var(--color-border); transition: all 0.2s; }
+.review-item:hover { border-color: var(--color-primary); box-shadow: var(--shadow-sm); }
+.queue-position { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: var(--color-primary-light); color: var(--color-primary); font-weight: 700; font-size: 1.125rem; border-radius: var(--radius-lg); }
+.chapter-info { flex: 1; }
+.chapter-novel { font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 0.25rem; }
+.chapter-title { font-size: 1rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 0.5rem; }
+.chapter-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: var(--color-text-muted); }
+.chapter-meta span { display: flex; align-items: center; gap: 0.25rem; }
+.review-actions { display: flex; gap: 0.5rem; align-items: center; }
+.btn-approve { padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; background: var(--color-success); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; transition: background 0.2s; }
+.btn-approve:hover { background: var(--color-success-hover); }
+.btn-reject { padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; background: var(--color-error); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; transition: background 0.2s; }
+.btn-reject:hover { background: var(--color-error-hover); }
+.btn-preview { padding: 0.5rem 1rem; font-size: 0.875rem; color: var(--color-text-secondary); background: var(--color-bg-tertiary); border: 1px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; }
+.btn-preview:hover { background: var(--color-bg-secondary); }
+.empty-queue { text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.empty-title { font-size: 1.25rem; color: var(--color-text-secondary); margin-bottom: 0.5rem; }
+.empty-desc { color: var(--color-text-muted); }
+.progress-bar { width: 100%; height: 4px; background: var(--color-bg-tertiary); border-radius: var(--radius-full); margin-bottom: 2rem; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-secondary)); border-radius: var(--radius-full); transition: width 0.3s; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.stat-box { padding: 1rem; background: var(--color-bg-elevated); border-radius: var(--radius-lg); border: 1px solid var(--color-border); text-align: center; }
+.stat-box-value { font-size: 1.25rem; font-weight: 700; color: var(--color-primary); }
+.stat-box-label { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+@media (max-width: 768px) {
+.review-header { flex-direction: column; gap: 1rem; text-align: center; }
+.review-item { grid-template-columns: 1fr; gap: 1rem; }
+.queue-position { width: 40px; height: 40px; font-size: 1rem; }
+.review-actions { flex-wrap: wrap; justify-content: center; }
+.stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body class="theme-light">
+<div id="app" class="app-container">
+<header class="navbar"><div class="navbar-inner"><a href="../../index.html" class="logo"><span class="logo-text">NovelHub</span></a><nav class="nav-menu"><a href="../../index.html" class="nav-link">首页</a><a href="../discover/category.html" class="nav-link">分类</a><a href="../discover/ranking/index.html" class="nav-link">排行</a><a href="../bookshelf/my-bookshelf.html" class="nav-link">书架</a></nav></div></header>
+<main class="main-content"><div class="container">
+<div class="review-page">
+<div class="review-header">
+<h1 class="review-title">评审队列</h1>
+<div class="queue-info">
+<div class="queue-stat">待评审：<span id="pendingCount">0</span></div>
+<div class="queue-stat">已评审：<span id="reviewedCount">0</span></div>
+<div class="queue-stat">通过率：<span id="passRate">0%</span></div>
+</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+<div class="stats-row">
+<div class="stat-box"><div class="stat-box-value" id="todayCount">0</div><div class="stat-box-label">今日评审</div></div>
+<div class="stat-box"><div class="stat-box-value" id="avgTime">0</div><div class="stat-box-label">平均耗时(分)</div></div>
+<div class="stat-box"><div class="stat-box-value" id="accuracy">98%</div><div class="stat-box-label">准确率</div></div>
+<div class="stat-box"><div class="stat-box-value" id="rank">Top 5%</div><div class="stat-box-label">评审排名</div></div>
+</div>
+<div class="criteria-card">
+<h3 class="criteria-title">评审标准</h3>
+<div class="criteria-list">
+<div class="criteria-item">内容符合平台规范，无违规信息</div>
+<div class="criteria-item">章节内容完整，无乱码或缺失</div>
+<div class="criteria-item">文笔流畅，语句通顺，无明显语病</div>
+<div class="criteria-item">情节合理，符合小说类型设定</div>
+</div>
+</div>
+<div class="review-list" id="reviewList"></div>
+<div class="empty-queue" id="emptyQueue" style="display:none;">
+<div class="empty-icon">🎉</div>
+<h3 class="empty-title">太棒了！</h3>
+<p class="empty-desc">当前没有待评审的章节</p>
+</div>
+</div>
+</div>
+</main>
+<footer class="footer"><div class="container"><p>&copy; 2026 NovelHub</p></div></footer>
+</div>
+<script src="../../assets/js/mock/data-global.js"></script>
+
+<!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+<script src="../../assets/js/fixes/index.js"></script>
+
+<script>
+var reviewQueue = [];
+var currentPage = 1;
+var totalReviewed = 0;
+var totalApproved = 0;
+document.addEventListener('DOMContentLoaded', function() {
+    loadMockData();
+    renderStats();
+    renderQueue();
+});
+function loadMockData() {
+    var mockQueue = [
+        { id: '1', novel: '星辰变', chapter: '第125章 惊天秘密', author: '张三', submitTime: '2024-01-15 10:30', wordCount: 3500, priority: 'normal' },
+        { id: '2', novel: '凡人修仙传', chapter: '第890章 飞升之劫', author: '李四', submitTime: '2024-01-15 09:45', wordCount: 4200, priority: 'high' },
+        { id: '3', novel: '斗破苍穹', chapter: '第1567章 帝炎传承', author: '王五', submitTime: '2024-01-15 09:20', wordCount: 3800, priority: 'normal' },
+        { id: '4', novel: '完美世界', chapter: '第890章 仙王归来', author: '赵六', submitTime: '2024-01-15 08:55', wordCount: 4100, priority: 'high' },
+        { id: '5', novel: '全职高手', chapter: '第456章 冠军之路', author: '孙七', submitTime: '2024-01-15 08:30', wordCount: 3600, priority: 'normal' }
+    ];
+    reviewQueue = mockQueue;
+}
+function renderStats() {
+    document.getElementById('pendingCount').textContent = reviewQueue.length;
+    document.getElementById('reviewedCount').textContent = totalReviewed;
+    var passRate = totalReviewed > 0 ? Math.round((totalApproved / totalReviewed) * 100) : 0;
+    document.getElementById('passRate').textContent = passRate + '%';
+    var progress = totalReviewed > 0 ? Math.min((totalReviewed / (totalReviewed + reviewQueue.length)) * 100, 100) : 0;
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('todayCount').textContent = totalReviewed;
+    document.getElementById('avgTime').textContent = Math.floor(Math.random() * 5) + 1;
+}
+function renderQueue() {
+    var container = document.getElementById('reviewList');
+    var emptyState = document.getElementById('emptyQueue');
+    if(reviewQueue.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    container.style.display = 'flex';
+    emptyState.style.display = 'none';
+    container.innerHTML = reviewQueue.map(function(item, index) {
+        return '<div class="review-item" data-id="' + item.id + '"><div class="queue-position">' + (index + 1) + '</div><div class="chapter-info"><p class="chapter-novel">' + item.novel + ' · ' + item.author + '</p><h3 class="chapter-title">' + item.chapter + '</h3><div class="chapter-meta"><span>提交时间：' + item.submitTime + '</span><span>字数：' + item.wordCount + '</span>' + (item.priority === 'high' ? '<span style="color:var(--color-warning);font-weight:600;">优先</span>' : '') + '</div></div><div class="review-actions"><button class="btn-preview" onclick="previewChapter(\'' + item.id + '\')">预览</button><button class="btn-approve" onclick="approveChapter(\'' + item.id + '\')">通过</button><button class="btn-reject" onclick="rejectChapter(\'' + item.id + '\')">拒绝</button></div></div>';
+    }).join('');
+}
+function previewChapter(id) { alert('预览章节: ' + id); }
+function approveChapter(id) {
+    totalReviewed++;
+    totalApproved++;
+    reviewQueue = reviewQueue.filter(function(item) { return item.id !== id; });
+    renderStats();
+    renderQueue();
+}
+function rejectChapter(id) {
+    totalReviewed++;
+    reviewQueue = reviewQueue.filter(function(item) { return item.id !== id; });
+    renderStats();
+    renderQueue();
+}
+</script>
+</body>
+</html>

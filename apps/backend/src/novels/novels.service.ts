@@ -1,0 +1,224 @@
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateNovelDto } from './dto/create-novel.dto';
+import { UpdateNovelDto } from './dto/update-novel.dto';
+import { NovelResponseDto } from './dto/novel-response.dto';
+import { NovelStatus, Prisma } from '@prisma/client';
+
+@Injectable()
+export class NovelsService {
+  constructor(private prisma: PrismaService) {}
+
+  async create(authorId: string, dto: CreateNovelDto): Promise<NovelResponseDto> {
+    const novel = await this.prisma.novel.create({
+      data: {
+        ...dto,
+        authorId,
+        tags: dto.tags || [],
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+    });
+
+    return this.mapToResponse(novel);
+  }
+
+  async findAll(
+    page: number = 1,
+    limit: number = 20,
+    filters?: {
+      category?: string;
+      status?: NovelStatus;
+      authorId?: string;
+      search?: string;
+    },
+  ): Promise<{ novels: NovelResponseDto[]; total: number }> {
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.NovelWhereInput = {};
+
+    if (filters?.category) {
+      where.category = filters.category as any;
+    }
+
+    if (filters?.status) {
+      where.status = filters.status;
+    } else {
+      where.status = 'PUBLISHED'; // 默认只显示已发布
+    }
+
+    if (filters?.authorId) {
+      where.authorId = filters.authorId;
+    }
+
+    if (filters?.search) {
+      where.OR = [
+        { title: { contains: filters.search, mode: 'insensitive' } },
+        { description: { contains: filters.search, mode: 'insensitive' } },
+      ];
+    }
+
+    const [novels, total] = await Promise.all([
+      this.prisma.novel.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { updatedAt: 'desc' },
+        include: {
+          author: {
+            select: {
+              id: true,
+              displayName: true,
+            },
+          },
+        },
+      }),
+      this.prisma.novel.count({ where }),
+    ]);
+
+    return {
+      novels: novels.map(n => this.mapToResponse(n)),
+      total,
+    };
+  }
+
+  async findOne(id: string): Promise<NovelResponseDto> {
+    const novel = await this.prisma.novel.findUnique({
+      where: { id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+    });
+
+    if (!novel) {
+      throw new NotFoundException('小说不存在');
+    }
+
+    // 增加浏览量
+    await this.prisma.novel.update({
+      where: { id },
+      data: { viewCount: { increment: 1 } },
+    });
+
+    return this.mapToResponse({ ...novel, viewCount: novel.viewCount + 1 });
+  }
+
+  async update(
+    id: string,
+    authorId: string,
+    dto: UpdateNovelDto,
+  ): Promise<NovelResponseDto> {
+    const novel = await this.prisma.novel.findUnique({
+      where: { id },
+    });
+
+    if (!novel) {
+      throw new NotFoundException('小说不存在');
+    }
+
+    if (novel.authorId !== authorId) {
+      throw new ForbiddenException('无权修改此小说');
+    }
+
+    const updated = await this.prisma.novel.update({
+      where: { id },
+      data: dto,
+      include: {
+        author: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+    });
+
+    return this.mapToResponse(updated);
+  }
+
+  async publish(id: string, authorId: string): Promise<NovelResponseDto> {
+    const novel = await this.prisma.novel.findUnique({
+      where: { id },
+    });
+
+    if (!novel) {
+      throw new NotFoundException('小说不存在');
+    }
+
+    if (novel.authorId !== authorId) {
+      throw new ForbiddenException('无权发布此小说');
+    }
+
+    const updated = await this.prisma.novel.update({
+      where: { id },
+      data: {
+        status: 'PUBLISHED',
+        publishedAt: new Date(),
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+    });
+
+    return this.mapToResponse(updated);
+  }
+
+  async remove(id: string, authorId: string): Promise<void> {
+    const novel = await this.prisma.novel.findUnique({
+      where: { id },
+    });
+
+    if (!novel) {
+      throw new NotFoundException('小说不存在');
+    }
+
+    if (novel.authorId !== authorId) {
+      throw new ForbiddenException('无权删除此小说');
+    }
+
+    await this.prisma.novel.delete({
+      where: { id },
+    });
+  }
+
+  private mapToResponse(novel: any): NovelResponseDto {
+    return {
+      id: novel.id,
+      title: novel.title,
+      subtitle: novel.subtitle,
+      description: novel.description,
+      coverImage: novel.coverImage,
+      status: novel.status,
+      category: novel.category,
+      tags: novel.tags,
+      wordCount: novel.wordCount,
+      chapterCount: novel.chapterCount,
+      viewCount: novel.viewCount,
+      likeCount: novel.likeCount,
+      bookmarkCount: novel.bookmarkCount,
+      rating: novel.rating,
+      ratingCount: novel.ratingCount,
+      authorId: novel.author.id,
+      authorName: novel.author.displayName,
+      createdAt: novel.createdAt,
+      updatedAt: novel.updatedAt,
+      publishedAt: novel.publishedAt,
+    };
+  }
+}

@@ -1,0 +1,646 @@
+/* ============================================
+   笔记划线功能样式 (Reading & Annotation Tools)
+   ============================================ */
+
+/* ---------- 文字选中工具栏 ---------- */
+.text-selection-toolbar {
+    position: fixed;
+    z-index: var(--z-popover);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-bg-elevated);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--color-border);
+    transform: translateY(-100%) translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--duration-base) var(--ease-out);
+    pointer-events: none;
+}
+
+.text-selection-toolbar.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-12px) translateX(-50%);
+    pointer-events: auto;
+}
+
+.text-selection-toolbar::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-bg-elevated);
+    border-left: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* 工具栏按钮 */
+.toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--color-text-secondary);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.toolbar-btn:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-tertiary);
+}
+
+.toolbar-btn svg {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background-color: var(--color-border);
+}
+
+/* ---------- 高亮颜色选择器 ---------- */
+.highlight-color-picker {
+    position: relative;
+}
+
+.highlight-color-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.highlight-color-btn:hover {
+    border-color: var(--color-border-hover);
+}
+
+.highlight-color-btn.active {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+}
+
+.highlight-color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.highlight-color-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--duration-fast);
+}
+
+.highlight-color-picker.active .highlight-color-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- 笔记面板 ---------- */
+.annotation-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    max-width: calc(100vw - 60px);
+    height: 100vh;
+    z-index: var(--z-modal);
+    background-color: var(--color-bg-primary);
+    box-shadow: var(--shadow-2xl);
+    transition: right var(--duration-slow) var(--ease-out);
+    display: flex;
+    flex-direction: column;
+}
+
+.annotation-panel.active {
+    right: 0;
+}
+
+.annotation-panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) - 1);
+    background-color: var(--color-bg-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--duration-base);
+}
+
+.annotation-panel-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.annotation-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    min-height: 64px;
+}
+
+.annotation-panel-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.annotation-panel-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.annotation-panel-close:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-tertiary);
+}
+
+.annotation-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+}
+
+.annotation-panel-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+    min-height: 64px;
+}
+
+/* 笔记表单 */
+.annotation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.annotation-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 0.75rem 1rem;
+    font-size: var(--text-body);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    resize: vertical;
+    transition: all var(--duration-fast);
+}
+
+.annotation-textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.annotation-textarea::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* 笔记列表 */
+.annotation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.annotation-item {
+    padding: 1rem;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    border-left: 4px solid;
+    transition: all var(--duration-fast);
+}
+
+.annotation-item:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.annotation-item-highlight {
+    border-left-color: var(--highlight-color, var(--color-warning));
+}
+
+.annotation-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.annotation-item-color {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.annotation-item-date {
+    font-size: var(--text-body-s);
+    color: var(--color-text-muted);
+}
+
+.annotation-item-text {
+    font-size: var(--text-body-s);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-sm);
+}
+
+.annotation-item-content {
+    font-size: var(--text-body);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+}
+
+.annotation-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.annotation-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.5rem;
+    font-size: var(--text-body-s);
+    color: var(--color-text-secondary);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.annotation-action-btn:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-tertiary);
+}
+
+.annotation-action-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* 高亮标记 */
+.highlight-mark {
+    position: relative;
+    padding: 2px 0;
+    background-color: var(--highlight-color, var(--color-warning-light));
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color var(--duration-fast);
+}
+
+.highlight-mark:hover {
+    background-color: var(--highlight-color, var(--color-warning));
+}
+
+.highlight-mark::after {
+    content: attr(data-note);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    width: 280px;
+    padding: 0.75rem;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    font-size: var(--text-body-s);
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all var(--duration-fast);
+    z-index: var(--z-tooltip);
+}
+
+.highlight-mark:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-12px);
+}
+
+/* 笔记导出面板 */
+.export-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 600px;
+    max-height: calc(100vh - 100px);
+    z-index: var(--z-modal);
+    background-color: var(--color-bg-primary);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2xl);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--duration-base);
+    overflow: hidden;
+}
+
+.export-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.export-panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-modal) - 1);
+    background-color: var(--color-bg-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--duration-base);
+}
+
+.export-panel-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.export-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.export-panel-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.export-panel-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.export-panel-close:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-tertiary);
+}
+
+.export-panel-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+.export-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.export-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--color-border);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.export-option:hover {
+    border-color: var(--color-border-hover);
+    background-color: var(--color-bg-tertiary);
+}
+
+.export-option.active {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-light);
+}
+
+.export-option-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.export-option-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-bg-primary);
+    border-radius: var(--radius-md);
+}
+
+.export-option-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-primary);
+}
+
+.export-option-label {
+    display: flex;
+    flex-direction: column;
+}
+
+.export-option-title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.export-option-desc {
+    font-size: var(--text-body-s);
+    color: var(--color-text-secondary);
+}
+
+.export-option-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary);
+}
+
+.export-panel-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-bg-secondary);
+}
+
+.export-count {
+    font-size: var(--text-body-s);
+    color: var(--color-text-secondary);
+}
+
+/* 阅读统计卡片 */
+.reading-stats-card {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    transition: all var(--duration-fast);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 0.5rem;
+    background-color: var(--color-primary-light);
+    border-radius: var(--radius-full);
+}
+
+.stat-card-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-primary);
+}
+
+.stat-card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.stat-card-label {
+    font-size: var(--text-body-s);
+    color: var(--color-text-secondary);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .text-selection-toolbar {
+        max-width: calc(100vw - 2rem);
+        overflow-x: auto;
+    }
+
+    .annotation-panel {
+        width: 100%;
+        max-width: 100vw;
+        right: -100%;
+    }
+
+    .reading-stats-card {
+        grid-template-columns: 1fr;
+    }
+
+    .export-panel {
+        width: 95%;
+        max-height: calc(100vh - 60px);
+    }
+}
+
+/* 深色模式适配 */
+.theme-dark .highlight-mark::after {
+    background-color: var(--color-bg-tertiary);
+}
+
+.theme-dark .annotation-item-text {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* 打印样式 */
+@media print {
+    .text-selection-toolbar,
+    .annotation-panel,
+    .export-panel {
+        display: none !important;
+    }
+
+    .highlight-mark {
+        background-color: transparent !important;
+        text-decoration: underline;
+    }
+
+    .highlight-mark::after {
+        display: none;
+    }
+}

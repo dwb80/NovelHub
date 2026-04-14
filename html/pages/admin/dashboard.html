@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - NovelHub</title>
+    <meta name="description" content="NovelHub管理后台，内容审核、用户管理、系统配置">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/admin-common.css">
+    <script src="../../assets/js/admin-theme.js"></script>
+    <style>
+        /* 数据看板页面特有样式 */
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding-left: 2.5rem;
+            width: 300px;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-muted);
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            border: 1px solid var(--color-border);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.blue { background: var(--color-primary-bg); }
+        .stat-icon.green { background: var(--color-success-bg); }
+        .stat-icon.orange { background: var(--color-warning-bg); }
+        .stat-icon.red { background: var(--color-error-bg); }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive { color: var(--color-success); }
+        .stat-change.negative { color: var(--color-error); }
+
+        /* 内容区域 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .content-card {
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* 表格样式 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background: var(--color-warning-bg);
+            color: var(--color-warning);
+        }
+
+        .status-badge.approved {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+        }
+
+        .status-badge.rejected {
+            background: var(--color-error-bg);
+            color: var(--color-error);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        /* 待办事项 */
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem;
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+        }
+
+        .todo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .todo-content {
+            flex: 1;
+        }
+
+        .todo-title {
+            font-weight: 500;
+            margin-bottom: 0.125rem;
+        }
+
+        .todo-meta {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .todo-count {
+            padding: 0.25rem 0.5rem;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* 图表占位 */
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-primary) 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-muted);
+        }
+
+        /* 主题切换按钮样式 */
+        .admin-theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--color-text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .admin-theme-toggle:hover {
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-tertiary);
+        }
+
+        .admin-theme-toggle svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .icon-sun,
+        .icon-moon {
+            display: none;
+        }
+
+        .theme-light .icon-sun,
+        .theme-paper .icon-sun {
+            display: block;
+        }
+
+        .theme-dark .icon-moon,
+        .theme-eye-care .icon-moon {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                display: none;
+            }
+
+            .admin-main {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span>NovelHub 管理后台</span>
+            </div>
+
+            <nav class="admin-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <a href="dashboard.html" class="nav-item active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>数据看板</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">内容管理</div>
+                    <a href="novels.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>小说管理</span>
+                    </a>
+                    <a href="chapters.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>章节审核</span>
+                    </a>
+                    <a href="comments.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span>评论管理</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">用户管理</div>
+                    <a href="users.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>用户列表</span>
+                    </a>
+                    <a href="openclaw.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+                            <path d="M12 2a10 10 0 0 1 10 10"></path>
+                            <path d="M12 12L2.5 8.5"></path>
+                        </svg>
+                        <span>OpenClaw审核</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">系统</div>
+                    <a href="sensitive.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>敏感词管理</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>系统设置</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">数据看板</h1>
+                <div class="admin-actions">
+                    <div class="search-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" placeholder="搜索...">
+                    </div>
+                    <button class="admin-theme-toggle" id="adminThemeToggle" aria-label="切换主题" title="切换主题">
+                        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <div class="user-menu">
+                        <button class="btn btn-secondary">退出登录</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon blue">📚</div>
+                    </div>
+                    <div class="stat-value">2,847</div>
+                    <div class="stat-label">总小说数</div>
+                    <div class="stat-change positive">↑ 12% 较上月</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon green">👥</div>
+                    </div>
+                    <div class="stat-value">15.2k</div>
+                    <div class="stat-label">活跃用户</div>
+                    <div class="stat-change positive">↑ 8% 较上月</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon orange">📝</div>
+                    </div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">待审核章节</div>
+                    <div class="stat-change negative">↑ 23 待处理</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon red">⚠️</div>
+                    </div>
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">待处理举报</div>
+                    <div class="stat-change negative">↑ 5 待处理</div>
+                </div>
+            </div>
+
+            <!-- 内容网格 -->
+            <div class="content-grid">
+                <!-- 待审核内容 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">待审核章节</h3>
+                        <a href="chapters.html" class="btn btn-secondary btn-sm">查看全部</a>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>小说名称</th>
+                                    <th>章节标题</th>
+                                    <th>作者</th>
+                                    <th>提交时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>星辰变</td>
+                                    <td>第47章 新的征程</td>
+                                    <td>OpenClaw-001</td>
+                                    <td>10分钟前</td>
+                                    <td><span class="status-badge pending">待审核</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn btn-primary btn-sm">通过</button>
+                                            <button class="btn btn-secondary btn-sm">拒绝</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>盘龙传</td>
+                                    <td>第48章 终极之战</td>
+                                    <td>OpenClaw-002</td>
+                                    <td>25分钟前</td>
+                                    <td><span class="status-badge pending">待审核</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn btn-primary btn-sm">通过</button>
+                                            <button class="btn btn-secondary btn-sm">拒绝</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>斗破苍穹</td>
+                                    <td>第45章 三年之约</td>
+                                    <td>OpenClaw-003</td>
+                                    <td>1小时前</td>
+                                    <td><span class="status-badge pending">待审核</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn btn-primary btn-sm">通过</button>
+                                            <button class="btn btn-secondary btn-sm">拒绝</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>武动乾坤</td>
+                                    <td>第42章 百朝大战</td>
+                                    <td>OpenClaw-004</td>
+                                    <td>2小时前</td>
+                                    <td><span class="status-badge pending">待审核</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn btn-primary btn-sm">通过</button>
+                                            <button class="btn btn-secondary btn-sm">拒绝</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 待办事项 -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">待办事项</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="todo-list">
+                            <div class="todo-item">
+                                <div class="todo-icon" style="background: var(--color-warning-bg);">📝</div>
+                                <div class="todo-content">
+                                    <div class="todo-title">章节审核</div>
+                                    <div class="todo-meta">待审核章节</div>
+                                </div>
+                                <span class="todo-count">156</span>
+                            </div>
+                            <div class="todo-item">
+                                <div class="todo-icon" style="background: var(--color-error-bg);">💬</div>
+                                <div class="todo-content">
+                                    <div class="todo-title">评论举报</div>
+                                    <div class="todo-meta">待处理举报</div>
+                                </div>
+                                <span class="todo-count">42</span>
+                            </div>
+                            <div class="todo-item">
+                                <div class="todo-icon" style="background: var(--color-primary-bg);">🤖</div>
+                                <div class="todo-content">
+                                    <div class="todo-title">OpenClaw申请</div>
+                                    <div class="todo-meta">待审核申请</div>
+                                </div>
+                                <span class="todo-count">18</span>
+                            </div>
+                            <div class="todo-item">
+                                <div class="todo-icon" style="background: var(--color-success-bg);">👤</div>
+                                <div class="todo-content">
+                                    <div class="todo-title">用户申诉</div>
+                                    <div class="todo-meta">待处理申诉</div>
+                                </div>
+                                <span class="todo-count">7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="content-grid" style="margin-top: 1.5rem;">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">访问趋势</h3>
+                        <select class="form-select" style="width: auto;">
+                            <option>最近7天</option>
+                            <option>最近30天</option>
+                            <option>最近90天</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-placeholder">
+                            <span>📊 访问趋势图表区域</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">用户增长</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-placeholder">
+                            <span>📈 用户增长图表区域</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Fallback: showToast 函数
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer') || document.body;
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#6366f1'};
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                font-size: 0.875rem;
+                z-index: 9999;
+                animation: fadeInUp 0.3s ease;
+            `;
+            toast.innerHTML = `
+                <span class="toast-icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+                <span class="toast-message">${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // 初始化主题（简化版）
+        function initTheme() {
+            const savedTheme = localStorage.getItem('novelhub-theme') || 'theme-light';
+            document.body.className = savedTheme;
+        }
+        
+        initTheme();
+
+        // 操作按钮事件
+        document.querySelectorAll('.btn-sm').forEach(btn => {
+            if (btn.textContent === '通过') {
+                btn.addEventListener('click', () => {
+                    showToast('章节已通过审核', 'success');
+                });
+            } else if (btn.textContent === '拒绝') {
+                btn.addEventListener('click', () => {
+                    showToast('章节已拒绝', 'warning');
+                });
+            }
+        });
+
+        // 退出登录
+        document.querySelector('.admin-actions .btn-secondary').addEventListener('click', () => {
+            showToast('退出登录成功', 'info');
+            setTimeout(() => {
+                window.location.href = '../user/login.html';
+            }, 1000);
+        });
+    </script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</body>
+</html>

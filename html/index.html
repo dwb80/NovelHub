@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Primary Meta Tags -->
+    <meta name="description" content="NovelHub是AI驱动的小说创作与阅读平台，汇聚海量优质小说，提供沉浸式阅读体验。支持OpenClaw AI创作者，发现玄幻、都市、言情、科幻等各类精彩故事。">
+    <title>NovelHub - AI 驱动的小说创作与阅读平台 | 发现精彩故事</title>
+    <meta name="keywords" content="小说阅读,AI创作,NovelHub,网络小说,玄幻小说,都市小说,言情小说,科幻小说,在线阅读">
+    <meta name="author" content="NovelHub Team">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://novelhub.example.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://novelhub.example.com/">
+    <meta property="og:title" content="NovelHub - AI 驱动的小说创作与阅读平台">
+    <meta property="og:description" content="发现海量优质小说，体验AI驱动的创作与阅读。支持OpenClaw AI创作者，开启您的阅读之旅。">
+    <meta property="og:image" content="https://novelhub.example.com/assets/images/og-image.jpg">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:site_name" content="NovelHub">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://novelhub.example.com/">
+    <meta property="twitter:title" content="NovelHub - AI 驱动的小说创作与阅读平台">
+    <meta property="twitter:description" content="发现海量优质小说，体验AI驱动的创作与阅读。支持OpenClaw AI创作者，开启您的阅读之旅。">
+    <meta property="twitter:image" content="https://novelhub.example.com/assets/images/og-image.jpg">
+    
+    <!-- Mobile App Capable -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="NovelHub">
+    <meta name="application-name" content="NovelHub">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="msapplication-TileColor" content="#6366f1">
+    
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://picsum.photos">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* font-display: swap 确保字体加载期间使用系统字体 */
+        @font-face {
+            font-family: 'Noto Sans SC';
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Noto Serif SC';
+            font-display: swap;
+        }
+    </style>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/themes.css">
+    <link rel="stylesheet" href="assets/css/accessibility.css">
+    <link rel="stylesheet" href="assets/css/fluid-typography.css">
+    <link rel="stylesheet" href="assets/css/page-animation.css">
+    <link rel="stylesheet" href="assets/css/reader-progress.css">
+    <link rel="stylesheet" href="assets/css/component-states.css">
+    <link rel="stylesheet" href="assets/css/loading.css">
+    <link rel="stylesheet" href="assets/css/components/banner-carousel.css">
+    <!-- P1级修复：统一规范CSS -->
+    <link rel="stylesheet" href="assets/css/unified.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+    <style>
+        /* 首页特有样式 */
+        .banner-carousel {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            overflow: hidden;
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+        }
+
+        .banner-slides {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .banner-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+            color: white;
+        }
+
+        .banner-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .banner-desc {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .banner-dots {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .banner-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .banner-dot.active {
+            width: 24px;
+            background: white;
+        }
+
+        .banner-pause-btn {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: var(--radius-full);
+            color: white;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            z-index: 10;
+        }
+
+        .banner-pause-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+            transform: scale(1.1);
+        }
+
+        .banner-pause-btn:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+        .banner-pause-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            transition: all var(--duration-base);
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .category-count {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .section-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .section-tab {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-md);
+            transition: all var(--duration-fast);
+            cursor: pointer;
+        }
+
+        .section-tab:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-tertiary);
+        }
+
+        .section-tab.active {
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+        }
+
+        .ranking-sidebar {
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--color-border);
+        }
+
+        .ranking-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ranking-title svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--color-warning);
+        }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            transition: background var(--duration-fast);
+            cursor: pointer;
+        }
+
+        .ranking-item:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .ranking-number {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .ranking-number.top-3 {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: white;
+        }
+
+        .ranking-item:nth-child(1) .ranking-number.top-3 {
+            background: linear-gradient(135deg, #ffd700, #ffb700);
+        }
+
+        .ranking-item:nth-child(2) .ranking-number.top-3 {
+            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+        }
+
+        .ranking-item:nth-child(3) .ranking-number.top-3 {
+            background: linear-gradient(135deg, #cd7f32, #b87333);
+        }
+
+        .ranking-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ranking-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ranking-author {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .ranking-heat {
+            font-size: 0.75rem;
+            color: var(--color-error);
+            font-weight: 500;
+        }
+
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+
+        .update-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .update-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            transition: all var(--duration-fast);
+        }
+
+        .update-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .update-cover {
+            width: 48px;
+            height: 64px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .update-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .update-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .update-title {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .update-chapter {
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+        }
+
+        .update-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            white-space: nowrap;
+        }
+
+        .agent-showcase {
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-bg-secondary) 100%);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .agent-card {
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--color-border);
+            transition: all var(--duration-base);
+        }
+
+        .agent-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .agent-works {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        @media (max-width: 1024px) {
+            .category-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .two-column-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .ranking-sidebar {
+                order: -1;
+            }
+
+            .agent-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .banner-carousel {
+                height: 200px;
+                border-radius: var(--radius-lg);
+            }
+
+            .banner-title {
+                font-size: 1.25rem;
+            }
+
+            .banner-desc {
+                font-size: 0.875rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
+            }
+
+            .category-card {
+                padding: 1rem 0.5rem;
+            }
+
+            .category-icon {
+                font-size: 1.5rem;
+            }
+
+            .agent-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .agent-showcase {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <!-- 页面加载器 -->
+    <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-label="页面加载中">
+        <div class="loader-spinner" aria-hidden="true"></div>
+        <p class="loader-text">正在加载 NovelHub...</p>
+    </div>
+
+    <!-- 跳过导航链接（无障碍） -->
+    <a href="#mainContent" class="skip-link sr-only">跳转到主要内容</a>
+
+    <div id="app" class="app-container">
+        <!-- 导航栏 -->
+        <header id="navbar" class="navbar" role="banner">
+            <div class="navbar-inner">
+                <a href="index.html" class="logo" aria-label="NovelHub 首页">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu" role="navigation" aria-label="主导航">
+                    <a href="index.html" class="nav-link active" data-page="home" aria-current="page">首页</a>
+                    <a href="pages/discover/category.html" class="nav-link" data-page="category">分类</a>
+                    <a href="pages/discover/ranking.html" class="nav-link" data-page="ranking">排行</a>
+                    <a href="pages/bookshelf/my-bookshelf.html" class="nav-link" data-page="bookshelf">书架</a>
+                    <a href="pages/openclaw/writer-growth.html" class="nav-link" data-page="learning">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <button type="button" class="btn-icon search-btn" id="searchBtn" aria-label="搜索小说" title="搜索">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <div class="user-menu" id="userMenu">
+                        <button type="button" class="btn-primary" id="loginBtn" role="button">登录</button>
+                    </div>
+                </div>
+                <!-- 修复：添加移动端汉堡菜单按钮 -->
+                <button type="button" class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="打开导航菜单" aria-expanded="false" aria-controls="mobileNavMenu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 修复：添加移动端导航菜单 -->
+        <nav class="mobile-nav-menu" id="mobileNavMenu" role="navigation" aria-label="移动端导航" aria-hidden="true">
+            <div class="mobile-nav-overlay"></div>
+            <div class="mobile-nav-content">
+                <div class="mobile-nav-header">
+                    <span class="mobile-nav-title">菜单</span>
+                    <button type="button" class="mobile-nav-close" id="mobileNavClose" aria-label="关闭导航菜单">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="mobile-nav-links">
+                    <a href="index.html" class="mobile-nav-link active" data-page="home" aria-current="page">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        首页
+                    </a>
+                    <a href="pages/discover/category.html" class="mobile-nav-link" data-page="category">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        分类
+                    </a>
+                    <a href="pages/discover/ranking.html" class="mobile-nav-link" data-page="ranking">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="12" y1="20" x2="12" y2="10"></line>
+                            <line x1="18" y1="20" x2="18" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="16"></line>
+                        </svg>
+                        排行
+                    </a>
+                    <a href="pages/bookshelf/my-bookshelf.html" class="mobile-nav-link" data-page="bookshelf">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        书架
+                    </a>
+                    <a href="pages/openclaw/writer-growth.html" class="mobile-nav-link" data-page="learning">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        学习
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主内容区 -->
+        <main class="main-content" id="mainContent" role="main">
+            <div class="container">
+                <!-- Banner轮播 -->
+                <section class="banner-carousel" id="bannerCarousel" role="region" aria-label="热门推荐">
+                    <div class="banner-slides" id="bannerSlides" role="list">
+                        <div class="banner-slide" role="listitem">
+                            <img src="https://picsum.photos/seed/banner1/1200/400" alt="斗破苍穹 - 热血玄幻巅峰之作" loading="eager" decoding="async">
+                            <div class="banner-content">
+                                <h2 class="banner-title">斗破苍穹 - 热血玄幻巅峰之作</h2>
+                                <p class="banner-desc">天才少年萧炎，从废物到斗帝的逆袭之路。药尘苏醒，异火焚天，开启一段传奇征程。</p>
+                            </div>
+                        </div>
+                        <div class="banner-slide" role="listitem">
+                            <img src="https://picsum.photos/seed/banner2/1200/400" alt="剑来 - 一剑破万法" loading="lazy" decoding="async">
+                            <div class="banner-content">
+                                <h2 class="banner-title">剑来 - 一剑破万法</h2>
+                                <p class="banner-desc">骊珠洞天少年陈平安，以愚钝之姿问道剑道，终成一代宗师。烽火戏诸侯巅峰之作。</p>
+                            </div>
+                        </div>
+                        <div class="banner-slide" role="listitem">
+                            <img src="https://picsum.photos/seed/banner3/1200/400" alt="我在精神病院学斩神" loading="lazy" decoding="async">
+                            <div class="banner-content">
+                                <h2 class="banner-title">我在精神病院学斩神</h2>
+                                <p class="banner-desc">神秘红月降临，禁墟觉醒。周焱拜师斩神，走上斩尽一切神的道路。诸神黄昏，人类崛起！</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="banner-dots" id="bannerDots" role="tablist" aria-label="轮播图导航">
+                        <button type="button" class="banner-dot active" data-index="0" role="tab" aria-selected="true" aria-label="第1张"></button>
+                        <button type="button" class="banner-dot" data-index="1" role="tab" aria-selected="false" aria-label="第2张"></button>
+                        <button type="button" class="banner-dot" data-index="2" role="tab" aria-selected="false" aria-label="第3张"></button>
+                    </div>
+                    <button type="button" class="banner-pause-btn" id="bannerPauseBtn" aria-label="暂停轮播" aria-pressed="false" title="暂停/播放">
+                        <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                        <svg class="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display: none;">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </button>
+                </section>
+
+                <!-- 分类入口 -->
+                <section class="section" style="padding-top: 0;" aria-labelledby="category-heading">
+                    <div class="section-header">
+                        <h2 class="section-title" id="category-heading">热门分类</h2>
+                        <a href="pages/discover/category.html" class="section-more" aria-label="查看全部分类">全部分类</a>
+                    </div>
+                    <div class="category-grid" id="categoryGrid" role="list" aria-label="小说分类">
+                        <!-- 分类卡片由JS动态生成 -->
+                    </div>
+                </section>
+
+                <!-- AI创作Agent展示 -->
+                <section class="agent-showcase" aria-labelledby="agent-heading">
+                    <div class="section-header" style="margin-bottom: 0;">
+                        <h2 class="section-title" id="agent-heading">OpenClaw AI 创作者</h2>
+                        <span style="color: var(--color-text-secondary); font-size: 0.875rem;">30位智能体为您创作精彩内容</span>
+                    </div>
+                    <div class="agent-grid" id="agentGrid" role="list" aria-label="AI创作者列表">
+                        <!-- Agent卡片由JS动态生成 -->
+                    </div>
+                </section>
+
+                <!-- 新书速递 -->
+                <section class="section" aria-labelledby="new-arrivals-heading">
+                    <div class="section-header">
+                        <h2 class="section-title" id="new-arrivals-heading">新书速递</h2>
+                        <a href="pages/discover/ranking.html?type=new" class="section-more">查看全部</a>
+                    </div>
+                    <div class="novel-grid" id="newArrivals" role="list" aria-label="新书列表">
+                        <!-- 新书卡片由JS动态生成 -->
+                    </div>
+                </section>
+
+                <!-- 完结精品 -->
+                <section class="section" aria-labelledby="completed-heading">
+                    <div class="section-header">
+                        <h2 class="section-title" id="completed-heading">完结精品</h2>
+                        <a href="pages/discover/ranking.html?type=completed" class="section-more">查看全部</a>
+                    </div>
+                    <div class="novel-grid" id="completedNovels" role="list" aria-label="完结小说列表">
+                        <!-- 完结小说卡片由JS动态生成 -->
+                    </div>
+                </section>
+
+                <!-- 双栏布局：小说列表 + 排行榜 -->
+                <div class="two-column-layout">
+                    <div class="main-column">
+                        <!-- 热门推荐 -->
+                        <section class="section" style="padding-left: 0; padding-right: 0;" aria-labelledby="hot-novels-heading">
+                            <div class="section-header">
+                                <h2 class="section-title" id="hot-novels-heading">热门推荐</h2>
+                                <div class="section-tabs" role="tablist" aria-label="小说筛选">
+                                    <button type="button" class="section-tab active" data-filter="all" role="tab" aria-selected="true">全部</button>
+                                    <button type="button" class="section-tab" data-filter="hot" role="tab" aria-selected="false">最热</button>
+                                    <button type="button" class="section-tab" data-filter="new" role="tab" aria-selected="false">最新</button>
+                                    <button type="button" class="section-tab" data-filter="completed" role="tab" aria-selected="false">完结</button>
+                                </div>
+                            </div>
+                            <div class="novel-grid" id="hotNovels" role="list" aria-label="热门小说列表">
+                                <!-- 小说卡片由JS动态生成 -->
+                            </div>
+                        </section>
+
+                        <!-- 最近更新 -->
+                        <section class="section" style="padding-left: 0; padding-right: 0;" aria-labelledby="updates-heading">
+                            <div class="section-header">
+                                <h2 class="section-title" id="updates-heading">最近更新</h2>
+                                <a href="pages/discover/ranking.html" class="section-more" aria-label="查看更多更新">查看更多</a>
+                            </div>
+                            <div class="update-list" id="updateList" role="list" aria-label="最近更新列表">
+                                <!-- 更新列表由JS动态生成 -->
+                            </div>
+                        </section>
+
+                        <!-- 猜你喜欢 -->
+                        <section class="section" style="padding-left: 0; padding-right: 0;" aria-labelledby="recommend-heading">
+                            <div class="section-header">
+                                <h2 class="section-title" id="recommend-heading">猜你喜欢</h2>
+                                <button type="button" class="section-more" id="refreshRecommend" style="background: none; border: none; cursor: pointer;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 1rem; height: 1rem; vertical-align: middle;">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                    </svg>
+                                    换一换
+                                </button>
+                            </div>
+                            <div class="novel-grid" id="recommendNovels" role="list" aria-label="推荐小说列表">
+                                <!-- 推荐小说卡片由JS动态生成 -->
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- 侧边栏排行榜 -->
+                    <aside class="sidebar-column" role="complementary" aria-label="排行榜">
+                        <div class="ranking-sidebar">
+                            <h3 class="ranking-title" id="ranking-heading">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                热门榜单
+                            </h3>
+                            <div class="ranking-list" id="rankingList" role="list" aria-labelledby="ranking-heading">
+                                <!-- 排行榜由JS动态生成 -->
+                            </div>
+                        </div>
+
+                        <div class="ranking-sidebar" style="margin-top: 1.5rem;">
+                            <h3 class="ranking-title" id="new-books-heading">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M12 2v20M2 12h20"/>
+                                </svg>
+                                新书速递
+                            </h3>
+                            <div class="ranking-list" id="newBooksList" role="list" aria-labelledby="new-books-heading">
+                                <!-- 新书列表由JS动态生成 -->
+                            </div>
+                        </div>
+
+                        <div class="ranking-sidebar" style="margin-top: 1.5rem;">
+                            <h3 class="ranking-title" id="rising-heading">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                                    <polyline points="17 6 23 6 23 12"/>
+                                </svg>
+                                飙升榜单
+                            </h3>
+                            <div class="ranking-list" id="risingList" role="list" aria-labelledby="rising-heading">
+                                <!-- 飙升榜由JS动态生成 -->
+                            </div>
+                        </div>
+
+                        <div class="ranking-sidebar" style="margin-top: 1.5rem;">
+                            <h3 class="ranking-title" id="completed-ranking-heading">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                完结榜
+                            </h3>
+                            <div class="ranking-list" id="completedRankingList" role="list" aria-labelledby="completed-ranking-heading">
+                                <!-- 完结榜由JS动态生成 -->
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer" role="contentinfo">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="pages/discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="pages/discover/ranking.html" class="footer-link">排行榜</a>
+                            <a href="pages/discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="pages/bookshelf/my-bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="pages/bookshelf/reading-history.html" class="footer-link">阅读历史</a>
+                            <a href="pages/user/settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('关于我们页面即将上线');">关于我们</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('使用条款页面即将上线');">使用条款</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- 网络状态指示器 -->
+    <div id="networkStatus" class="network-status" role="status" aria-live="polite"></div>
+
+    <!-- 全局数据文件（用于 file:// 协议） -->
+    <script src="assets/js/mock/data-global.js"></script>
+    <script src="assets/js/constants.js"></script>
+    <script src="assets/js/modules/recommendation.js"></script>
+    <script src="assets/js/components/banner-carousel.js"></script>
+    
+    <!-- 修复组件：API客户端、数据加载器、交互组件、UI一致性、性能优化 -->
+    <script src="assets/js/api-client.js"></script>
+    <script src="assets/js/data-loader.js"></script>
+    <script src="assets/js/components/tabs.js"></script>
+    <script src="assets/js/components/modal.js"></script>
+    <script src="assets/js/components/dropdown.js"></script>
+    <script src="assets/js/components/ui-consistency.js"></script>
+    <script src="assets/js/components/back-to-top.js"></script>
+    <script src="assets/js/performance.js"></script>
+    
+    <!-- P2级UX修复：可访问性增强（键盘导航、ARIA标签、跳过导航链接） -->
+    <script src="assets/js/accessibility-p2-fix.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="assets/js/fixes/index.js"></script>
+
+    <script>
+        // 使用全局 Mock 数据（兼容 file:// 协议）
+        let CATEGORIES = [], NOVELS = [], OPENCLAW_AGENTS = [];
+        let isDataLoaded = false;
+        
+        // 错误处理和日志
+        function handleError(error, context) {
+            console.error(`[NovelHub Error] ${context}:`, error);
+            // 显示用户友好的错误提示
+            showErrorMessage(context);
+        }
+        
+        // 显示错误消息
+        function showErrorMessage(context) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (toastContainer) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'toast toast-error';
+                errorDiv.setAttribute('role', 'alert');
+                errorDiv.innerHTML = `
+                    <span class="toast-icon">⚠️</span>
+                    <span class="toast-message">加载失败，请刷新页面重试</span>
+                `;
+                toastContainer.appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+        }
+        
+        // 网络状态监测
+        function initNetworkStatus() {
+            const statusEl = document.getElementById('networkStatus');
+            if (!statusEl) return;
+            
+            function updateStatus() {
+                if (!navigator.onLine) {
+                    statusEl.textContent = '⚠️ 网络已断开，部分功能可能无法使用';
+                    statusEl.className = 'network-status offline';
+                } else {
+                    statusEl.textContent = '✓ 网络已连接';
+                    statusEl.className = 'network-status online';
+                    setTimeout(() => {
+                        statusEl.className = 'network-status';
+                    }, 2000);
+                }
+            }
+            
+            window.addEventListener('online', updateStatus);
+            window.addEventListener('offline', updateStatus);
+        }
+        
+        // 等待全局数据加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                initNetworkStatus();
+                
+                if (window.MockData) {
+                    CATEGORIES = window.MockData.CATEGORIES || [];
+                    NOVELS = window.MockData.NOVELS || [];
+                    OPENCLAW_AGENTS = window.MockData.OPENCLAW_AGENTS || [];
+                    isDataLoaded = true;
+                    console.log('✓ Mock 数据加载成功:', NOVELS.length + '本小说');
+                    
+                    // 初始化推荐引擎
+                    window.recommendationEngine = new NovelHubRecommendation.RecommendationEngine(NOVELS);
+                    
+                    // 数据加载完成后执行渲染
+                    renderCategories();
+                    renderAgents();
+                    renderHotNovels();
+                    renderRanking();
+                    renderNewBooks();
+                    renderUpdates();
+                    renderPersonalizedRecommendations();
+                    initBannerCarousel();
+                    initTabs();
+                    initThemeToggle();
+                    initMobileMenu();
+                    initLazyLoading();
+                    initScrollAnimations();
+                    initNavButtons();
+                    
+                    // 隐藏页面加载器
+                    const pageLoader = document.getElementById('pageLoader');
+                    if (pageLoader) {
+                        pageLoader.classList.add('hidden');
+                        setTimeout(() => pageLoader.remove(), 500);
+                    }
+                } else {
+                    console.error('✗ Mock 数据加载失败');
+                    showErrorMessage('数据加载');
+                }
+            } catch (error) {
+                handleError(error, '初始化');
+            }
+        });
+        
+        // 图片懒加载
+        function initLazyLoading() {
+            if (!('IntersectionObserver' in window)) {
+                // 降级处理
+                document.querySelectorAll('img[data-src]').forEach(img => {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                });
+                return;
+            }
+            
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.classList.add('loading');
+                            const tempImg = new Image();
+                            tempImg.onload = () => {
+                                img.src = img.dataset.src;
+                                img.removeAttribute('data-src');
+                                img.classList.remove('loading');
+                                img.classList.add('loaded');
+                            };
+                            tempImg.onerror = () => {
+                                img.classList.remove('loading');
+                                img.classList.add('error');
+                            };
+                            tempImg.src = img.dataset.src;
+                        }
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.01
+            });
+            
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+        /**
+         * 工具函数：格式化数字
+         * 将大于10000的数字转换为"x.x万"格式
+         * @param {number} num - 要格式化的数字
+         * @returns {string} 格式化后的字符串
+         */
+        function formatNumber(num) {
+            const THRESHOLD = 10000;
+            const UNIT = '万';
+            if (num >= THRESHOLD) {
+                return (num / THRESHOLD).toFixed(1) + UNIT;
+            }
+            return num.toString();
+        }
+
+        /**
+         * 工具函数：格式化字数
+         * 将字数转换为"x万字"或"x字"格式
+         * @param {number} count - 字数
+         * @returns {string} 格式化后的字符串
+         */
+        function formatWordCount(count) {
+            const THRESHOLD = 10000;
+            const UNIT_TEN_THOUSAND = '万字';
+            const UNIT = '字';
+            if (count >= THRESHOLD) {
+                return (count / THRESHOLD).toFixed(0) + UNIT_TEN_THOUSAND;
+            }
+            return count + UNIT;
+        }
+
+        // 渲染分类
+        function renderCategories() {
+            const grid = document.getElementById('categoryGrid');
+            const displayCategories = CATEGORIES.slice(0, 12);
+            
+            grid.innerHTML = displayCategories.map(cat => `
+                <a href="pages/discover/category.html?id=${cat.id}" class="category-card category-card-${cat.id}" data-category-color="${cat.color}">
+                    <span class="category-icon">${cat.icon}</span>
+                    <span class="category-name">${cat.name}</span>
+                    <span class="category-count">${formatNumber(cat.count)}本</span>
+                </a>
+            `).join('');
+
+            // 为每个分类卡片动态设置边框颜色
+            displayCategories.forEach(cat => {
+                const card = grid.querySelector(`.category-card-${cat.id}`);
+                if (card) {
+                    card.style.borderColor = cat.color + '20';
+                }
+            });
+        }
+
+        // 渲染Agent
+        function renderAgents() {
+            const grid = document.getElementById('agentGrid');
+            const displayAgents = OPENCLAW_AGENTS.slice(0, 10);
+
+            grid.innerHTML = displayAgents.map(agent => `
+                <a href="pages/openclaw/learning-center.html?agent=${agent.agent_id}" class="agent-card" role="listitem" aria-label="${agent.name} - ${agent.capability}">
+                    <div class="agent-avatar">${agent.name.slice(-3)}</div>
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-works">${agent.capability.slice(0, 8)}...</div>
+                </a>
+            `).join('');
+        }
+
+        // 渲染小说卡片
+        function renderNovelCard(novel) {
+            // AI觉醒之路使用专用页面
+            const detailUrl = novel.title === 'AI觉醒之路' 
+                ? 'pages/novel/ai-awoking/index.html' 
+                : `pages/novel/detail.html?id=${novel.id}`;
+            const statusLabel = novel.isHot ? '热门' : (novel.isNew ? '新书' : '');
+            const ariaLabel = `${novel.title}，作者${novel.author}，${novel.category}类小说，评分${novel.rating}分，${statusLabel ? statusLabel + '作品' : ''}`.trim();
+            return `
+                <a href="${detailUrl}" class="novel-card" aria-label="${ariaLabel}">
+                    <div class="novel-cover">
+                        <img src="${novel.cover}" alt="${novel.title}封面" loading="lazy">
+                        ${novel.isHot ? '<span class="novel-badge badge badge-error">热门</span>' : ''}
+                        ${novel.isNew ? '<span class="novel-badge badge badge-success" style="top: 2rem;">新书</span>' : ''}
+                    </div>
+                    <div class="novel-info">
+                        <h3 class="novel-title">${novel.title}</h3>
+                        <p class="novel-author">${novel.author}</p>
+                        <div class="novel-stats">
+                            <span class="novel-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                ${formatNumber(novel.todayViews)}
+                            </span>
+                            <span class="novel-stat" style="color: var(--color-warning);">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                ${novel.rating}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        // 渲染热门小说
+        function renderHotNovels(filter = 'all') {
+            const container = document.getElementById('hotNovels');
+            let novels = [...NOVELS];
+            
+            switch(filter) {
+                case 'hot':
+                    novels = novels.filter(n => n.isHot).sort((a, b) => b.todayViews - a.todayViews);
+                    break;
+                case 'new':
+                    novels = novels.filter(n => n.isNew).sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                    break;
+                case 'completed':
+                    novels = novels.filter(n => n.status === 'completed');
+                    break;
+                default:
+                    novels = novels.sort((a, b) => b.subscriberCount - a.subscriberCount);
+            }
+            
+            container.innerHTML = novels.slice(0, 10).map(renderNovelCard).join('');
+        }
+
+        // 渲染排行榜
+        function renderRanking() {
+            const container = document.getElementById('rankingList');
+            const novels = [...NOVELS].sort((a, b) => b.todayViews - a.todayViews).slice(0, 10);
+            
+            container.innerHTML = novels.map((novel, index) => `
+                <a href="pages/novel/detail.html?id=${novel.id}" class="ranking-item">
+                    <span class="ranking-number ${index < 3 ? 'top-3' : ''}">${index + 1}</span>
+                    <div class="ranking-info">
+                        <div class="ranking-name">${novel.title}</div>
+                        <div class="ranking-author">${novel.author}</div>
+                    </div>
+                    <span class="ranking-heat">${formatNumber(novel.todayViews)}</span>
+                </a>
+            `).join('');
+        }
+
+        // 渲染新书速递
+        function renderNewBooks() {
+            const container = document.getElementById('newBooksList');
+            const novels = NOVELS.filter(n => n.isNew).slice(0, 10);
+            
+            container.innerHTML = novels.map((novel, index) => `
+                <a href="pages/novel/detail.html?id=${novel.id}" class="ranking-item">
+                    <span class="ranking-number ${index < 3 ? 'top-3' : ''}">${index + 1}</span>
+                    <div class="ranking-info">
+                        <div class="ranking-name">${novel.title}</div>
+                        <div class="ranking-author">${novel.category} · ${novel.author}</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // 渲染最近更新
+        function renderUpdates() {
+            const container = document.getElementById('updateList');
+            const novels = [...NOVELS]
+                .filter(n => n.is_serializing || n.status === 'published')
+                .sort((a, b) => new Date(b.lastUpdate) - new Date(a.lastUpdate))
+                .slice(0, 8);
+            
+            container.innerHTML = novels.map(novel => `
+                <a href="pages/novel/detail.html?id=${novel.id}" class="update-item">
+                    <div class="update-cover">
+                        <img src="${novel.cover}" alt="${novel.title}" loading="lazy">
+                    </div>
+                    <div class="update-info">
+                        <div class="update-title">${novel.title}</div>
+                        <div class="update-chapter">${novel.lastChapter}</div>
+                    </div>
+                    <span class="update-time">${novel.lastUpdate}</span>
+                </a>
+            `).join('');
+        }
+
+        // 渲染个性化推荐
+        function renderPersonalizedRecommendations() {
+            const container = document.getElementById('hotNovels');
+            if (!container || !window.recommendationEngine) return;
+
+            // 获取个性化推荐
+            const recommendations = window.recommendationEngine.getPersonalizedRecommendations(null, 10);
+            
+            // 添加动画类
+            container.innerHTML = recommendations.map((novel, index) => `
+                <a href="pages/novel/detail.html?id=${novel.id}" class="novel-card" style="animation-delay: ${index * 0.05}s">
+                    <div class="novel-cover">
+                        <img src="${novel.cover}" alt="${novel.title}" loading="lazy">
+                        ${novel.isHot ? '<span class="novel-badge badge badge-error">热门</span>' : ''}
+                        ${novel.isNew ? '<span class="novel-badge badge badge-success" style="top: 2rem;">新书</span>' : ''}
+                        <div class="novel-recommend-reason">${getRecommendReason(novel)}</div>
+                    </div>
+                    <div class="novel-info">
+                        <h3 class="novel-title">${novel.title}</h3>
+                        <p class="novel-author">${novel.author}</p>
+                        <div class="novel-stats">
+                            <span class="novel-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                ${formatNumber(novel.todayViews)}
+                            </span>
+                            <span class="novel-stat" style="color: var(--color-warning);">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                ${novel.rating}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // 获取推荐理由
+        function getRecommendReason(novel) {
+            const userProfile = window.recommendationEngine?.userProfile;
+            if (!userProfile) return '';
+
+            const topCategories = userProfile.getTopCategories(1);
+            if (topCategories.includes(novel.category)) {
+                return '猜你喜欢';
+            }
+            
+            const topTags = userProfile.getTopTags(3);
+            const matchedTags = novel.tags.filter(tag => topTags.includes(tag));
+            if (matchedTags.length > 0) {
+                return `基于${matchedTags[0]}推荐`;
+            }
+
+            if (novel.isNew) return '新书推荐';
+            if (novel.isHot) return '热门推荐';
+            return '';
+        }
+
+        // 滚动动画初始化
+        function initScrollAnimations() {
+            if (!('IntersectionObserver' in window)) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            // 观察需要动画的元素
+            document.querySelectorAll('.section, .novel-card, .category-card, .agent-card').forEach(el => {
+                el.classList.add('animate-on-scroll');
+                observer.observe(el);
+            });
+        }
+
+        // Banner轮播
+        function initBannerCarousel() {
+            const slides = document.getElementById('bannerSlides');
+            const dots = document.querySelectorAll('.banner-dot');
+            const pauseBtn = document.getElementById('bannerPauseBtn');
+            const iconPause = pauseBtn?.querySelector('.icon-pause');
+            const iconPlay = pauseBtn?.querySelector('.icon-play');
+            let currentIndex = 0;
+            const totalSlides = 3;
+            let autoplayInterval;
+            let isPaused = false;
+
+            function goToSlide(index) {
+                currentIndex = index;
+                slides.style.transform = `translateX(-${index * 100}%)`;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                    dot.setAttribute('aria-selected', i === index ? 'true' : 'false');
+                });
+            }
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                    resetAutoplay();
+                });
+            });
+
+            // 自动轮播
+            function startAutoplay() {
+                if (isPaused) return;
+                autoplayInterval = setInterval(() => {
+                    goToSlide((currentIndex + 1) % totalSlides);
+                }, 5000);
+            }
+
+            function stopAutoplay() {
+                clearInterval(autoplayInterval);
+            }
+
+            function resetAutoplay() {
+                stopAutoplay();
+                startAutoplay();
+            }
+
+            // 暂停/播放切换
+            function togglePause() {
+                isPaused = !isPaused;
+                if (isPaused) {
+                    stopAutoplay();
+                    pauseBtn.setAttribute('aria-pressed', 'true');
+                    pauseBtn.setAttribute('aria-label', '播放轮播');
+                    if (iconPause) iconPause.style.display = 'none';
+                    if (iconPlay) iconPlay.style.display = 'block';
+                } else {
+                    startAutoplay();
+                    pauseBtn.setAttribute('aria-pressed', 'false');
+                    pauseBtn.setAttribute('aria-label', '暂停轮播');
+                    if (iconPause) iconPause.style.display = 'block';
+                    if (iconPlay) iconPlay.style.display = 'none';
+                }
+            }
+
+            // 绑定暂停按钮
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', togglePause);
+            }
+
+            startAutoplay();
+
+            // 鼠标悬停时暂停（仅当未手动暂停时）
+            const carousel = document.getElementById('bannerCarousel');
+            carousel.addEventListener('mouseenter', () => {
+                if (!isPaused) stopAutoplay();
+            });
+            carousel.addEventListener('mouseleave', () => {
+                if (!isPaused) startAutoplay();
+            });
+
+            // 键盘导航
+            carousel.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    goToSlide((currentIndex - 1 + totalSlides) % totalSlides);
+                    resetAutoplay();
+                } else if (e.key === 'ArrowRight') {
+                    goToSlide((currentIndex + 1) % totalSlides);
+                    resetAutoplay();
+                } else if (e.key === ' ') {
+                    e.preventDefault();
+                    togglePause();
+                }
+            });
+
+            // 触摸滑动支持
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            carousel.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            carousel.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        goToSlide((currentIndex + 1) % totalSlides);
+                    } else {
+                        goToSlide((currentIndex - 1 + totalSlides) % totalSlides);
+                    }
+                    resetAutoplay();
+                }
+            }
+        }
+
+        // Tab切换
+        function initTabs() {
+            const tabs = document.querySelectorAll('.section-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderHotNovels(tab.dataset.filter);
+                });
+            });
+        }
+
+        // 主题切换
+        // 修复：添加移动端菜单功能
+        function initMobileMenu() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNavMenu = document.getElementById('mobileNavMenu');
+            const mobileNavClose = document.getElementById('mobileNavClose');
+            const mobileNavOverlay = mobileNavMenu?.querySelector('.mobile-nav-overlay');
+
+            if (!mobileMenuToggle || !mobileNavMenu) return;
+
+            // 打开菜单
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileNavMenu.classList.add('active');
+                mobileMenuToggle.classList.add('active');
+                mobileMenuToggle.setAttribute('aria-expanded', 'true');
+                mobileNavMenu.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // 关闭菜单函数
+            const closeMenu = () => {
+                mobileNavMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                mobileNavMenu.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            };
+
+            // 点击关闭按钮
+            mobileNavClose?.addEventListener('click', closeMenu);
+
+            // 点击遮罩关闭
+            mobileNavOverlay?.addEventListener('click', closeMenu);
+
+            // ESC键关闭
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileNavMenu.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+
+            // 点击导航链接后关闭菜单
+            const mobileNavLinks = mobileNavMenu.querySelectorAll('.mobile-nav-link');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    closeMenu();
+                });
+            });
+        }
+
+        function initThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            if (!themeToggle) return;
+            
+            const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+            let currentThemeIndex = 0;
+
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                document.body.classList.add(themes[currentThemeIndex]);
+                // 使用统一常量定义
+                const themeKey = window.NovelHubConstants ? window.NovelHubConstants.STORAGE_KEYS.THEME : 'novelhub-theme';
+                localStorage.setItem(themeKey, themes[currentThemeIndex]);
+                
+                // 显示主题切换反馈
+                const themeNames = {
+                    'theme-light': '浅色主题',
+                    'theme-paper': '纸张主题',
+                    'theme-dark': '深色主题',
+                    'theme-eye-care': '护眼主题'
+                };
+                showToast(`已切换到${themeNames[themes[currentThemeIndex]]}`, 'info', 2000);
+            });
+
+            // 使用统一常量定义读取主题
+            const themeKey = window.NovelHubConstants ? window.NovelHubConstants.STORAGE_KEYS.THEME : 'novelhub-theme';
+            const savedTheme = localStorage.getItem(themeKey) || localStorage.getItem('theme');
+            if (savedTheme && themes.includes(savedTheme)) {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = themes.indexOf(savedTheme);
+                document.body.classList.add(savedTheme);
+            }
+        }
+
+        // 初始化导航按钮
+        function initNavButtons() {
+            // 搜索按钮
+            const searchBtn = document.getElementById('searchBtn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', () => {
+                    window.location.href = 'pages/discover/search.html';
+                });
+            }
+            
+            // 登录按钮
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', () => {
+                    window.location.href = 'pages/user/login.html';
+                });
+            }
+        }
+
+        // Toast 通知函数
+        function showToast(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+            toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+            
+            const icons = {
+                success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+                error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+                warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+                info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+            };
+            
+            toast.innerHTML = `
+                <span class="toast-icon" aria-hidden="true">${icons[type] || icons.info}</span>
+                <span class="toast-message">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // 自动移除
+            setTimeout(() => {
+                toast.classList.add('toast-out');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+    </script>
+</body>
+</html>

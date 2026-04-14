@@ -1,0 +1,91 @@
+<!-- NovelHub 组件库入口 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovelHub 组件库</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/themes.css">
+    <style>
+        .components-page {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .components-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--color-text-primary);
+        }
+        .component-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--color-border);
+        }
+        .component-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-primary);
+        }
+        .component-demo {
+            padding: 2rem;
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+        }
+        .component-code {
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            font-family: monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div class="components-page">
+        <h1 class="components-title">NovelHub 组件库</h1>
+        
+        <div class="component-section">
+            <h2>基础组件</h2>
+            <ul>
+                <li><a href="base/toast.html">Toast 提示</a></li>
+                <li><a href="base/loading.html">Loading 加载</a></li>
+                <li><a href="base/modal.html">Modal 弹窗</a></li>
+            </ul>
+        </div>
+        
+        <div class="component-section">
+            <h2>搜索组件</h2>
+            <ul>
+                <li><a href="search/search-suggest.html">SearchSuggest 搜索建议</a></li>
+            </ul>
+        </div>
+        
+        <div class="component-section">
+            <h2>阅读器组件</h2>
+            <ul>
+                <li><a href="reader/reader-settings.html">ReaderSettings 阅读设置</a></li>
+                <li><a href="reader/chapter-toc.html">ChapterToc 章节目录</a></li>
+                <li><a href="reader/bookmark.html">Bookmark 书签</a></li>
+            </ul>
+        </div>
+        
+        <div class="component-section">
+            <h2>书架组件</h2>
+            <ul>
+                <li><a href="bookshelf/book-card.html">BookCard 书籍卡片</a></li>
+                <li><a href="bookshelf/batch-select.html">BatchSelect 批量选择</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

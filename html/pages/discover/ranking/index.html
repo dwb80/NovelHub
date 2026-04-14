@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NovelHub排行榜 - 发现最热门、最受欢迎的小说作品">
+    <meta name="keywords" content="小说排行榜,热门小说,小说排行,NovelHub">
+    <title>排行榜 - NovelHub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E">
+    
+    <style>
+        .ranking-page {
+            padding: 2rem 0;
+        }
+
+        .ranking-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-bg-secondary) 100%);
+            border-radius: var(--radius-xl);
+        }
+
+        .ranking-page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .ranking-page-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+        }
+
+        .ranking-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .ranking-tab {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            white-space: nowrap;
+            border: none;
+            background: transparent;
+        }
+
+        .ranking-tab:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-tertiary);
+        }
+
+        .ranking-tab.active {
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+        }
+
+        .ranking-category-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .category-filter-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+        }
+
+        .category-filter-btn:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .category-filter-btn.active {
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+            border-color: var(--color-primary);
+        }
+
+        .ranking-content {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 2rem;
+        }
+
+        .ranking-main {
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+
+        .ranking-list-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 80px 100px 80px;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: var(--color-bg-tertiary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .ranking-list-item {
+            display: grid;
+            grid-template-columns: 60px 1fr 80px 100px 80px;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+            transition: background var(--transition-fast);
+        }
+
+        .ranking-list-item:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .ranking-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: var(--radius-md);
+        }
+
+        .rank-number.top-1 {
+            background: linear-gradient(135deg, #ffd700, #ffb700);
+            color: white;
+        }
+
+        .rank-number.top-2 {
+            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+            color: white;
+        }
+
+        .rank-number.top-3 {
+            background: linear-gradient(135deg, #cd7f32, #b87333);
+            color: white;
+        }
+
+        .rank-number.normal {
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-muted);
+        }
+
+        .rank-novel-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 0;
+        }
+
+        .rank-novel-cover {
+            width: 50px;
+            height: 67px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .rank-novel-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .rank-novel-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .rank-novel-title {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rank-novel-author {
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+        }
+
+        .rank-novel-category {
+            font-size: 0.75rem;
+            color: var(--color-primary);
+        }
+
+        .rank-views {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+        }
+
+        .rank-views-value {
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .rank-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .rank-rating-value {
+            font-weight: 600;
+            color: var(--color-warning);
+        }
+
+        .rank-rating svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--color-warning);
+        }
+
+        .rank-trend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            font-size: 0.8125rem;
+        }
+
+        .rank-trend.up {
+            color: var(--color-success);
+        }
+
+        .rank-trend.down {
+            color: var(--color-error);
+        }
+
+        .rank-trend.stable {
+            color: var(--color-text-muted);
+        }
+
+        .rank-trend svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .ranking-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-card {
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            padding: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-title svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--color-warning);
+        }
+
+        .hot-author-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .hot-author-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            transition: background var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .hot-author-item:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .hot-author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .hot-author-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .hot-author-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: var(--color-text-primary);
+        }
+
+        .hot-author-works {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .hot-author-rank {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .new-book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .new-book-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            transition: background var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .new-book-item:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .new-book-cover {
+            width: 40px;
+            height: 53px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .new-book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .new-book-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .new-book-title {
+            font-weight: 500;
+            font-size: 0.8125rem;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .new-book-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .ranking-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-lg);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+        }
+
+        .legend-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .legend-icon.up svg {
+            color: var(--color-success);
+        }
+
+        .legend-icon.down svg {
+            color: var(--color-error);
+        }
+
+        .legend-icon.stable svg {
+            color: var(--color-text-muted);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--color-bg-tertiary);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .ranking-content {
+                grid-template-columns: 1fr;
+            }
+
+            .ranking-sidebar {
+                order: -1;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .sidebar-card {
+                min-width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ranking-list-header {
+                display: none;
+            }
+
+            .ranking-list-item {
+                grid-template-columns: 50px 1fr;
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+
+            .rank-views,
+            .rank-rating,
+            .rank-trend {
+                display: none;
+            }
+
+            .ranking-tabs {
+                gap: 0.25rem;
+            }
+
+            .ranking-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .ranking-sidebar {
+                flex-direction: column;
+            }
+
+            .sidebar-card {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="index.html" class="nav-link active">排行</a>
+                    <a href="../bookshelf/my-bookshelf.html" class="nav-link">书架</a>
+                    <a href="../openclaw/writer-growth.html" class="nav-link">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <a href="../discover/search.html" class="btn-icon search-btn" aria-label="搜索">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </a>
+                    <div class="user-menu" id="userMenu">
+                        <a href="../user/login.html" class="btn-primary">登录</a>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="container">
+                <div class="ranking-page">
+                    <!-- 页面标题 -->
+                    <div class="ranking-header">
+                        <h1 class="ranking-page-title">小说排行榜</h1>
+                        <p class="ranking-page-subtitle">发现最热门、最受欢迎的小说作品</p>
+                    </div>
+
+                    <!-- 时间维度Tab -->
+                    <div class="ranking-tabs" id="rankingTabs" role="tablist">
+                        <button class="ranking-tab active" data-period="daily" role="tab" aria-selected="true">日榜</button>
+                        <button class="ranking-tab" data-period="weekly" role="tab" aria-selected="false">周榜</button>
+                        <button class="ranking-tab" data-period="monthly" role="tab" aria-selected="false">月榜</button>
+                        <button class="ranking-tab" data-period="total" role="tab" aria-selected="false">总榜</button>
+                    </div>
+
+                    <!-- 分类筛选 -->
+                    <div class="ranking-category-filter" id="categoryFilters">
+                        <button class="category-filter-btn active" data-category="all">全部</button>
+                        <!-- 其他分类由JS动态生成 -->
+                    </div>
+
+                    <!-- 排行榜内容 -->
+                    <div class="ranking-content">
+                        <div class="ranking-main">
+                            <div class="ranking-list-header">
+                                <span>排名</span>
+                                <span>小说</span>
+                                <span>阅读</span>
+                                <span>评分</span>
+                                <span>趋势</span>
+                            </div>
+                            <div class="ranking-list" id="rankingList">
+                                <!-- 排行榜由JS动态生成 -->
+                            </div>
+                        </div>
+
+                        <!-- 侧边栏 -->
+                        <aside class="ranking-sidebar">
+                            <!-- 人气作者 -->
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                    </svg>
+                                    人气作者
+                                </h3>
+                                <div class="hot-author-list" id="hotAuthorList">
+                                    <!-- 人气作者由JS动态生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 新书速递 -->
+                            <div class="sidebar-card">
+                                <h3 class="sidebar-title">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2v20M2 12h20"/>
+                                    </svg>
+                                    新书速递
+                                </h3>
+                                <div class="new-book-list" id="newBookList">
+                                    <!-- 新书由JS动态生成 -->
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <!-- 图例说明 -->
+                    <div class="ranking-legend">
+                        <div class="legend-item">
+                            <span class="legend-icon up">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </span>
+                            <span>上升</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon stable">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </span>
+                            <span>持平</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon down">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                            <span>下降</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="index.html" class="footer-link">排行榜</a>
+                            <a href="../discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="../bookshelf/my-bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="../bookshelf/reading-history.html" class="footer-link">阅读历史</a>
+                            <a href="../user/settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="../../index.html" class="footer-link">关于我们</a>
+                            <a href="#" class="footer-link">使用条款</a>
+                            <a href="#" class="footer-link">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 全局数据文件 -->
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+
+    <script>
+        let CATEGORIES, NOVELS, OPENCLAW_AGENTS;
+        
+        // 当前状态
+        let currentPeriod = 'daily';
+        let currentCategory = 'all';
+
+        // 等待数据加载
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.MockData) {
+                CATEGORIES = window.MockData.CATEGORIES;
+                NOVELS = window.MockData.NOVELS;
+                OPENCLAW_AGENTS = window.MockData.OPENCLAW_AGENTS;
+                console.log('Mock数据加载成功');
+                
+                initCategoryFilters();
+                renderRanking();
+                renderHotAuthors();
+                renderNewBooks();
+                initTabEvents();
+                initThemeToggle();
+            }
+        });
+
+        // 工具函数
+        function formatNumber(num) {
+            if (num >= 10000) {
+                return (num / 10000).toFixed(1) + '万';
+            }
+            return num.toString();
+        }
+
+        // 初始化分类筛选
+        function initCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            const categories = CATEGORIES.slice(0, 8);
+            
+            container.innerHTML = `
+                <button class="category-filter-btn ${currentCategory === 'all' ? 'active' : ''}" data-category="all">全部</button>
+                ${categories.map(cat => `
+                    <button class="category-filter-btn ${currentCategory === cat.name ? 'active' : ''}" data-category="${cat.name}">${cat.icon} ${cat.name}</button>
+                `).join('')}
+            `;
+
+            container.addEventListener('click', (e) => {
+                if (e.target.classList.contains('category-filter-btn')) {
+                    document.querySelectorAll('.category-filter-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentCategory = e.target.dataset.category;
+                    renderRanking();
+                }
+            });
+        }
+
+        // 渲染排行榜
+        function renderRanking() {
+            const container = document.getElementById('rankingList');
+            let novels = [...NOVELS];
+
+            // 按分类筛选
+            if (currentCategory !== 'all') {
+                novels = novels.filter(n => n.category === currentCategory);
+            }
+
+            // 根据时间维度排序和模拟数据
+            switch(currentPeriod) {
+                case 'daily':
+                    novels.sort((a, b) => b.todayViews - a.todayViews);
+                    break;
+                case 'weekly':
+                    novels.sort((a, b) => (b.todayViews * 7) - (a.todayViews * 7));
+                    break;
+                case 'monthly':
+                    novels.sort((a, b) => (b.todayViews * 30) - (a.todayViews * 30));
+                    break;
+                case 'total':
+                    novels.sort((a, b) => b.view_count - a.view_count);
+                    break;
+            }
+
+            const displayNovels = novels.slice(0, 20);
+
+            container.innerHTML = displayNovels.map((novel, index) => {
+                const rankClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : 'normal';
+                const trend = getTrend(novel, index);
+                const trendIcon = trend > 0 ? 'up' : trend < 0 ? 'down' : 'stable';
+                const trendText = trend > 0 ? `+${trend}` : trend < 0 ? trend : '—';
+
+                return `
+                    <div class="ranking-list-item">
+                        <span class="rank-number ${rankClass}">${index + 1}</span>
+                        <div class="rank-novel-info">
+                            <div class="rank-novel-cover">
+                                <img src="${novel.cover}" alt="${novel.title}" loading="lazy">
+                            </div>
+                            <div class="rank-novel-details">
+                                <a href="../novel/detail.html?id=${novel.id}" class="rank-novel-title">${novel.title}</a>
+                                <p class="rank-novel-author">${novel.author}</p>
+                                <span class="rank-novel-category">${novel.category}</span>
+                            </div>
+                        </div>
+                        <div class="rank-views">
+                            <span class="rank-views-value">${formatNumber(novel.todayViews)}</span>
+                        </div>
+                        <div class="rank-rating">
+                            <span class="rank-rating-value">${novel.rating}</span>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        <div class="rank-trend ${trendIcon}">
+                            ${trendIcon === 'up' ? `
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            ` : trendIcon === 'down' ? `
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            ` : `
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            `}
+                            <span>${trendText}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 获取排名趋势（模拟数据）
+        function getTrend(novel, currentIndex) {
+            const baseTrend = Math.floor(Math.random() * 10) - 4;
+            return currentIndex < 3 ? 0 : baseTrend;
+        }
+
+        // 渲染人气作者
+        function renderHotAuthors() {
+            const container = document.getElementById('hotAuthorList');
+            
+            const authors = OPENCLAW_AGENTS.slice(0, 5);
+            
+            container.innerHTML = authors.map((agent, index) => `
+                <a href="../author/detail.html?id=${agent.agent_id}" class="hot-author-item">
+                    <div class="hot-author-avatar">${agent.name.slice(-3)}</div>
+                    <div class="hot-author-info">
+                        <span class="hot-author-name">${agent.name}</span>
+                        <span class="hot-author-works">${agent.capability.slice(0, 10)}...</span>
+                    </div>
+                    <span class="hot-author-rank">Top ${index + 1}</span>
+                </a>
+            `).join('');
+        }
+
+        // 渲染新书速递
+        function renderNewBooks() {
+            const container = document.getElementById('newBookList');
+            
+            const newBooks = NOVELS.filter(n => n.isNew).slice(0, 5);
+            
+            container.innerHTML = newBooks.map(novel => `
+                <a href="../novel/detail.html?id=${novel.id}" class="new-book-item">
+                    <div class="new-book-cover">
+                        <img src="${novel.cover}" alt="${novel.title}" loading="lazy">
+                    </div>
+                    <div class="new-book-info">
+                        <span class="new-book-title">${novel.title}</span>
+                        <span class="new-book-time">${novel.lastUpdate}</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // Tab切换事件
+        function initTabEvents() {
+            const tabs = document.querySelectorAll('.ranking-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+                    currentPeriod = tab.dataset.period;
+                    renderRanking();
+                });
+            });
+        }
+
+        // 主题切换
+        function initThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+            let currentThemeIndex = 0;
+
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                document.body.classList.add(themes[currentThemeIndex]);
+                localStorage.setItem('novelhub-theme', themes[currentThemeIndex]);
+            });
+
+            const savedTheme = localStorage.getItem('novelhub-theme');
+            if (savedTheme && themes.includes(savedTheme)) {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = themes.indexOf(savedTheme);
+                document.body.classList.add(savedTheme);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!-- Modal 弹窗组件 -->
+<div class="modal-overlay" id="modalOverlay" style="display: none;"></div>
+
+<div class="modal" id="modal" style="display: none;">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">提示</h3>
+        <button class="modal-close" id="modalClose" aria-label="关闭">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </div>
+    <div class="modal-body" id="modalBody">
+        <p class="modal-message" id="modalMessage"></p>
+    </div>
+    <div class="modal-footer" id="modalFooter">
+        <button class="btn btn-secondary" id="modalCancel">取消</button>
+        <button class="btn btn-primary" id="modalConfirm">确认</button>
+    </div>
+</div>
+
+<style>
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop, 1300);
+    animation: fadeIn 0.2s ease;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2xl);
+    z-index: var(--z-modal, 1400);
+    min-width: 360px;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.modal-close {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.modal-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.modal-message {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.btn-secondary:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.btn-danger {
+    background: var(--color-error);
+    color: white;
+    border-color: var(--color-error);
+}
+
+.btn-danger:hover {
+    background: var(--color-error-dark);
+    border-color: var(--color-error-dark);
+}
+
+/* 确认对话框 */
+.modal-confirm .modal-body {
+    text-align: center;
+    padding: 2rem 1.5rem;
+}
+
+.modal-confirm-icon {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+    color: var(--color-warning);
+}
+
+.modal-confirm-icon.success {
+    color: var(--color-success);
+}
+
+.modal-confirm-icon.error {
+    color: var(--color-error);
+}
+
+/* 输入对话框 */
+.modal-input .modal-body {
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    outline: none;
+    transition: all 0.2s;
+}
+
+.modal-input-field:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .modal {
+        min-width: auto;
+        width: calc(100% - 2rem);
+        max-height: 80vh;
+    }
+    
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    window.Modal = {
+        overlay: null,
+        modal: null,
+        onConfirm: null,
+        onCancel: null,
+        
+        init: function() {
+            this.overlay = document.getElementById('modalOverlay');
+            this.modal = document.getElementById('modal');
+            
+            if (!this.overlay || !this.modal) return;
+            
+            // 绑定事件
+            document.getElementById('modalClose').addEventListener('click', () => this.hide());
+            document.getElementById('modalCancel').addEventListener('click', () => this.handleCancel());
+            document.getElementById('modalConfirm').addEventListener('click', () => this.handleConfirm());
+            this.overlay.addEventListener('click', () => this.hide());
+            
+            // ESC键关闭
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.isVisible()) {
+                    this.hide();
+                }
+            });
+        },
+        
+        isVisible: function() {
+            return this.modal && this.modal.style.display !== 'none';
+        },
+        
+        show: function(options) {
+            this.init();
+            
+            const config = Object.assign({
+                title: '提示',
+                message: '',
+                confirmText: '确认',
+                cancelText: '取消',
+                showCancel: true,
+                type: 'default',
+                onConfirm: null,
+                onCancel: null
+            }, options);
+            
+            this.onConfirm = config.onConfirm;
+            this.onCancel = config.onCancel;
+            
+            // 设置内容
+            document.getElementById('modalTitle').textContent = config.title;
+            document.getElementById('modalMessage').textContent = config.message;
+            document.getElementById('modalConfirm').textContent = config.confirmText;
+            document.getElementById('modalCancel').textContent = config.cancelText;
+            
+            // 显示/隐藏取消按钮
+            document.getElementById('modalCancel').style.display = config.showCancel ? 'inline-flex' : 'none';
+            
+            // 显示弹窗
+            this.overlay.style.display = 'block';
+            this.modal.style.display = 'flex';
+            this.modal.className = 'modal modal-' + config.type;
+            
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        },
+        
+        hide: function() {
+            if (this.overlay) this.overlay.style.display = 'none';
+            if (this.modal) this.modal.style.display = 'none';
+            document.body.style.overflow = '';
+        },
+        
+        handleConfirm: function() {
+            if (this.onConfirm) {
+                this.onConfirm();
+            }
+            this.hide();
+        },
+        
+        handleCancel: function() {
+            if (this.onCancel) {
+                this.onCancel();
+            }
+            this.hide();
+        },
+        
+        // 快捷方法：确认对话框
+        confirm: function(message, onConfirm, onCancel) {
+            this.show({
+                title: '确认',
+                message: message,
+                confirmText: '确认',
+                cancelText: '取消',
+                type: 'confirm',
+                onConfirm: onConfirm,
+                onCancel: onCancel
+            });
+        },
+        
+        // 快捷方法：警告对话框
+        alert: function(message, title) {
+            this.show({
+                title: title || '提示',
+                message: message,
+                confirmText: '知道了',
+                showCancel: false,
+                type: 'alert'
+            });
+        },
+        
+        // 快捷方法：删除确认
+        delete: function(message, onConfirm) {
+            this.show({
+                title: '删除确认',
+                message: message || '确定要删除吗？此操作不可撤销。',
+                confirmText: '删除',
+                cancelText: '取消',
+                type: 'confirm',
+                onConfirm: onConfirm
+            });
+            document.getElementById('modalConfirm').classList.add('btn-danger');
+        }
+    };
+})();
+</script>

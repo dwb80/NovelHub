@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排行榜管理 | NovelHub 管理后台</title>
+    <meta name="description" content="NovelHub 管理后台 - 排行榜管理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/admin-common.css">
+    <script src="../../assets/js/admin-theme.js"></script>
+    <style>
+        /* 排行榜页面特有样式 */
+        .rank-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .rank-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .rank-tab:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .rank-tab.active {
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+        }
+
+        .period-selector {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .period-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-primary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .period-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .period-btn.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all var(--duration-fast);
+        }
+
+        .rank-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .rank-number {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .rank-number.top-1 {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+        }
+
+        .rank-number.top-2 {
+            background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+            color: white;
+        }
+
+        .rank-number.top-3 {
+            background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+            color: white;
+        }
+
+        .rank-number.normal {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-secondary);
+        }
+
+        .rank-trend {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .rank-trend.up {
+            color: var(--color-success);
+        }
+
+        .rank-trend.down {
+            color: var(--color-error);
+        }
+
+        .rank-trend.same {
+            color: var(--color-text-muted);
+        }
+
+        .rank-cover {
+            width: 48px;
+            height: 64px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .rank-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .rank-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--color-text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rank-author {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .rank-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .rank-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .rank-stat svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .rank-value {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.875rem;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .rank-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .category-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .category-tag {
+            padding: 0.375rem 0.75rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .category-tag:hover {
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+        }
+
+        .category-tag.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .rank-item {
+                flex-wrap: wrap;
+            }
+
+            .rank-value {
+                width: 100%;
+                text-align: left;
+                margin-top: 0.5rem;
+            }
+
+            .rank-actions {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span>NovelHub 管理后台</span>
+            </div>
+
+            <nav class="admin-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>数据看板</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">内容管理</div>
+                    <a href="novels.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>小说管理</span>
+                    </a>
+                    <a href="chapters.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <span>章节审核</span>
+                    </a>
+                    <a href="comments.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span>评论管理</span>
+                    </a>
+                    <a href="rankings.html" class="nav-item active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10"></path>
+                            <path d="M12 20V4"></path>
+                            <path d="M6 20v-6"></path>
+                        </svg>
+                        <span>排行榜管理</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">用户管理</div>
+                    <a href="users.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>用户列表</span>
+                    </a>
+                    <a href="openclaw.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+                            <path d="M12 2a10 10 0 0 1 10 10"></path>
+                            <path d="M12 12L2.5 8.5"></path>
+                        </svg>
+                        <span>OpenClaw 审核</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">系统</div>
+                    <a href="sensitive.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>敏感词管理</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>系统设置</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">排行榜管理</h1>
+                <div class="admin-actions">
+                    <button class="btn btn-secondary" onclick="exportRankings()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        导出数据
+                    </button>
+                    <button class="btn btn-primary" onclick="refreshRankings()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        立即更新
+                    </button>
+                </div>
+            </div>
+
+            <!-- 分类筛选 -->
+            <div class="category-tags">
+                <div class="category-tag active" data-category="all">全部</div>
+                <div class="category-tag" data-category="male">男频</div>
+                <div class="category-tag" data-category="female">女频</div>
+                <div class="category-tag" data-category="fantasy">东方玄幻</div>
+                <div class="category-tag" data-category="urban">都市言情</div>
+                <div class="category-tag" data-category="xianxia">仙侠武侠</div>
+                <div class="category-tag" data-category="history">历史军事</div>
+            </div>
+
+            <!-- 排行榜类型切换 -->
+            <div class="rank-tabs">
+                <button class="rank-tab active" data-type="reading">阅读榜</button>
+                <button class="rank-tab" data-type="new">新书榜</button>
+                <button class="rank-tab" data-type="collection">收藏榜</button>
+                <button class="rank-tab" data-type="comment">评论榜</button>
+                <button class="rank-tab" data-type="gift">打赏榜</button>
+            </div>
+
+            <!-- 时间周期选择 -->
+            <div class="period-selector">
+                <button class="period-btn" data-period="daily">日榜</button>
+                <button class="period-btn active" data-period="weekly">周榜</button>
+                <button class="period-btn" data-period="monthly">月榜</button>
+                <button class="period-btn" data-period="total">总榜</button>
+            </div>
+
+            <!-- 排行榜列表 -->
+            <div class="rank-list" id="rankList">
+                <!-- 动态生成 -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentType = 'reading';
+        let currentPeriod = 'weekly';
+        let currentCategory = 'all';
+
+        const mockData = {
+            reading: [
+                { id: 1, title: '星辰变', author: '我吃西红柿', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 1258000, trend: 'same', lastRank: 1 },
+                { id: 2, title: '斗破苍穹', author: '天蚕土豆', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 1156000, trend: 'up', lastRank: 3 },
+                { id: 3, title: '盘龙传', author: '我吃西红柿', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 985000, trend: 'down', lastRank: 2 },
+                { id: 4, title: '完美世界', author: '辰东', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 876000, trend: 'up', lastRank: 5 },
+                { id: 5, title: '武动乾坤', author: '天蚕土豆', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 756000, trend: 'same', lastRank: 5 },
+                { id: 6, title: '遮天', author: '辰东', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 698000, trend: 'up', lastRank: 8 },
+                { id: 7, title: '斗罗大陆', author: '唐家三少', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 654000, trend: 'down', lastRank: 6 },
+                { id: 8, title: '大主宰', author: '天蚕土豆', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 589000, trend: 'down', lastRank: 7 },
+                { id: 9, title: '凡人修仙传', author: '忘语', cover: 'https://via.placeholder.com/48x64', category: 'xianxia', reads: 512000, trend: 'up', lastRank: 10 },
+                { id: 10, title: '仙逆', author: '耳根', cover: 'https://via.placeholder.com/48x64', category: 'xianxia', reads: 478000, trend: 'same', lastRank: 10 },
+            ],
+            new: [
+                { id: 11, title: '领主：被后妈流放，我打烂全世界', author: '菲尔', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 125000, trend: 'new', lastRank: 0 },
+                { id: 12, title: '是攻略系统，不是攻城略地系统！', author: '几根金胡子', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 98000, trend: 'new', lastRank: 0 },
+                { id: 13, title: '异世界：我的人生开了挂！', author: '挂王', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 87000, trend: 'up', lastRank: 3 },
+            ],
+            collection: [
+                { id: 1, title: '星辰变', author: '我吃西红柿', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 528000, trend: 'same', lastRank: 1 },
+                { id: 2, title: '斗破苍穹', author: '天蚕土豆', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 456000, trend: 'up', lastRank: 3 },
+                { id: 4, title: '完美世界', author: '辰东', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 376000, trend: 'down', lastRank: 2 },
+            ],
+            comment: [
+                { id: 2, title: '斗破苍穹', author: '天蚕土豆', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 28500, trend: 'up', lastRank: 3 },
+                { id: 7, title: '斗罗大陆', author: '唐家三少', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 25600, trend: 'down', lastRank: 2 },
+                { id: 1, title: '星辰变', author: '我吃西红柿', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 21800, trend: 'same', lastRank: 3 },
+            ],
+            gift: [
+                { id: 1, title: '星辰变', author: '我吃西红柿', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 89500, trend: 'same', lastRank: 1 },
+                { id: 4, title: '完美世界', author: '辰东', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 76200, trend: 'up', lastRank: 2 },
+                { id: 2, title: '斗破苍穹', author: '天蚕土豆', cover: 'https://via.placeholder.com/48x64', category: 'fantasy', reads: 68900, trend: 'down', lastRank: 2 },
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderRankings();
+            bindEvents();
+        });
+
+        function renderRankings() {
+            const container = document.getElementById('rankList');
+            const data = mockData[currentType] || [];
+            
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin: 0 auto 1rem;">
+                            <path d="M18 20V10"></path>
+                            <path d="M12 20V4"></path>
+                            <path d="M6 20v-6"></path>
+                        </svg>
+                        <p>暂无排行榜数据</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.map((item, index) => {
+                const rank = index + 1;
+                const rankClass = rank <= 3 ? `top-${rank}` : 'normal';
+                const trendClass = item.trend === 'up' ? 'up' : item.trend === 'down' ? 'down' : 'same';
+                const trendIcon = item.trend === 'up' ? '↑' : item.trend === 'down' ? '↓' : '-';
+                
+                return `
+                    <div class="rank-item">
+                        <div class="rank-number ${rankClass}">${rank}</div>
+                        <div class="rank-trend ${trendClass}">${trendIcon}</div>
+                        <img src="${item.cover}" alt="${item.title}" class="rank-cover">
+                        <div class="rank-info">
+                            <div class="rank-title">${item.title}</div>
+                            <div class="rank-author">${item.author}</div>
+                            <div class="rank-meta">
+                                <span class="rank-stat">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                                    </svg>
+                                    ${item.category}
+                                </span>
+                                <span class="rank-stat">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    更新至 ${Math.floor(Math.random() * 1000)}章
+                                </span>
+                            </div>
+                        </div>
+                        <div class="rank-value">${formatNumber(item.reads)}</div>
+                        <div class="rank-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="viewNovel(${item.id})">查看</button>
+                            <button class="btn btn-primary btn-sm" onclick="recommend(${item.id})">推荐</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function bindEvents() {
+            // 排行榜类型切换
+            document.querySelectorAll('.rank-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.rank-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentType = this.dataset.type;
+                    renderRankings();
+                });
+            });
+
+            // 时间周期切换
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentPeriod = this.dataset.period;
+                    showToast(`${this.textContent}更新中`, 'info');
+                    setTimeout(() => renderRankings(), 500);
+                });
+            });
+
+            // 分类筛选
+            document.querySelectorAll('.category-tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.dataset.category;
+                    showToast(`筛选：${this.textContent}`, 'info');
+                });
+            });
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(0) + 'k';
+            }
+            return num.toString();
+        }
+
+        function refreshRankings() {
+            showToast('排行榜更新中...', 'info');
+            setTimeout(() => {
+                showToast('排行榜已更新', 'success');
+                renderRankings();
+            }, 1000);
+        }
+
+        function exportRankings() {
+            showToast('导出中...', 'info');
+            setTimeout(() => {
+                showToast('导出成功', 'success');
+            }, 1000);
+        }
+
+        function viewNovel(id) {
+            window.location.href = `novels.html?id=${id}`;
+        }
+
+        function recommend(id) {
+            showToast('已加入推荐位', 'success');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--color-success)' : type === 'error' ? 'var(--color-error)' : 'var(--color-primary)'};
+                color: white;
+                border-radius: var(--radius-lg);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</body>
+</html>

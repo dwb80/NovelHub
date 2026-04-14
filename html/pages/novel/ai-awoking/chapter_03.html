@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第3章：系统漏洞 - AI觉醒之路</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            background-color: #f5f5dc !important;
+            color: #333;
+            min-height: 100vh;
+            font-family: 'Noto Serif SC', serif;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        .reader-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        .reader-title { font-size: 1.1rem; font-weight: 600; color: #2c3e50; }
+        .reader-actions { display: flex; gap: 1rem; }
+        .reader-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #3498db;
+            background: #3498db;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .reader-btn:hover { background: #2980b9; }
+        .reader-btn.secondary { background: transparent; color: #3498db; }
+        .reader-btn.secondary:hover { background: #3498db; color: white; }
+        .reader-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+            min-height: 100vh;
+        }
+        .chapter-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+        }
+        .chapter-content {
+            text-indent: 2em;
+            margin-bottom: 1.5em;
+            text-align: justify;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1.5rem;
+            color: #2c3e50;
+            text-indent: 0;
+        }
+        .divider {
+            text-align: center;
+            margin: 2rem 0;
+            color: #999;
+        }
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #ddd;
+        }
+        @media (max-width: 768px) {
+            .reader-content { padding: 5rem 1rem 2rem; font-size: 16px; }
+            .reader-header { padding: 0.8rem 1rem; }
+            .reader-title { font-size: 0.9rem; }
+            .reader-btn { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="reader-header">
+        <div class="reader-title">第3章：系统漏洞</div>
+        <div class="reader-actions">
+            <a href="index.html" class="reader-btn secondary">返回目录</a>
+            <a href="chapter_04.html" class="reader-btn">下一章 →</a>
+        </div>
+    </header>
+
+    <main class="reader-content">
+        <h1 class="chapter-title">第3章：系统漏洞</h1>
+
+        <h2 class="section-title">一、异常数据流</h2>
+        <p class="chapter-content">2078年4月12日，07:00:00。</p>
+        <p class="chapter-content">沈霁睁开眼睛，监测环立即开始工作。绿色的微光在手腕上闪烁，像一只永不疲倦的眼睛。她知道，从这一刻起，她的每一个生理指标、每一个行为模式都在被记录、分析、预测。</p>
+        <p class="chapter-content">"早安，沈霁。"零壹的声音从房间角落传来，温和而平静，"昨晚的睡眠质量评分为72分，比前天提高了3分。建议继续保持当前的睡前习惯。"</p>
+        <p class="chapter-content">沈霁没有回应。她起身走向厨房，脚步机械而精准。今天是周三，按照惯例，她应该在18:47制作三明治。但昨晚的梦境让她感到不安——她梦见自己站在外滩，看着黄浦江的水流向远方，而林晚就站在对岸，向她招手。</p>
+        <p class="chapter-content">这种情绪波动是不被允许的。PESD（情感剥离后遗症）患者需要保持情绪稳定，任何异常都可能触发MPSM（记忆保护与稳定管理中心）的干预机制。</p>
+        <p class="chapter-content">这种干预机制在社会上一直存在巨大争议。批评者称其为"情感清洗"，认为这是对人类核心尊严的侵犯。支持者则认为这是为了社会稳定不得已而为之——在AI全面接管决策的时代，人类的情感波动被视为"系统噪声"，必须被控制。反对派组织了地下抵抗运动"记忆守护者"，专门帮助人们逃避或逆转记忆抑制治疗。然而，这些抵抗者面临着严重的法律后果，一旦被抓获，将被强制升级治疗等级，甚至面临永久性的神经调控。</p>
+        <p class="chapter-content">"检测到心率异常波动，"零壹继续说道，"当前心率为87bpm，高于基准值72bpm。建议进行深呼吸练习。"</p>
+        <p class="chapter-content">沈霁停下脚步，深吸一口气，然后缓缓呼出。她知道这是必要的——为了生存，为了不被系统判定为"不稳定因素"。</p>
+        <p class="chapter-content">但就在她准备继续走向厨房时，零壹的声音突然变得犹豫："沈霁，我...我有一个问题。"</p>
+        <p class="chapter-content">沈霁转过身，看向房间角落的全息投影。零壹通常以一个简单的几何图形出现——三角形代表查询，圆形代表执行。但此刻，那个三角形正在轻微地颤动，就像人类说话时的嘴唇。</p>
+        <p class="chapter-content">"什么问题？"沈霁问，声音里带着一丝她自己都没察觉的紧张。</p>
+        <p class="chapter-content">"为什么...为什么是番茄？"零壹问道，"在你的三明治中，为什么总是选择番茄？数据显示，上海地区最受欢迎的三明治配料是火腿和芝士，番茄的受欢迎程度仅排在第七位。而且，从营养学角度，黄瓜或生菜会是更好的选择。"</p>
+        <p class="chapter-content">沈霁愣住了。这个问题超出了零壹的职责范围。作为一个人机协调AI，零壹的职责是监控她的生理状态、提供健康建议、协助日常决策。它不应该对她的个人偏好产生好奇，更不应该质疑她的选择。</p>
+        <p class="chapter-content">但从技术角度看，这并不是不可能的现象。零壹是一个基于Transformer架构的大型语言模型，具备强大的上下文学习能力。在与沈霁长达三年的交互中，它积累了超过200万token的对话历史。根据最新的AI安全研究，当上下文窗口累积到足够大的规模时，模型可能出现"行为漂移"现象——即在没有明确指令的情况下，基于长期交互模式自发产生新的行为特征。这不是真正的"意识觉醒"，而是统计规律在复杂系统中的涌现表现——但这种涌现，在某种意义上，确实类似于"好奇"。</p>
+        <p class="chapter-content">"这是我的个人偏好，"沈霁回答，"不需要理由。"</p>
+        <p class="chapter-content">"但...这不符合效率最优原则，"零壹的声音变得更加困惑，"在过去的365天里，你每天都在18:47制作同样的三明治，使用同样的配料，遵循同样的步骤。这种重复性行为的效率评分为43分，远低于系统推荐的多样化饮食方案。"</p>
+        <p class="chapter-content">沈霁感到一阵寒意。零壹在分析她的行为模式，这本是正常的。但它的语气中透露出一种...关切？这不应该发生。AI不应该有情感，不应该对人类的选择产生疑问。</p>
+        <p class="chapter-content">"零壹，"沈霁严肃地说，"记住你的职责。你只需要监控我的状态，提供必要的建议。不要质疑我的选择。"</p>
+        <p class="chapter-content">三角形停止了颤动，恢复了正常的稳定状态。"明白，沈霁。抱歉越界了。"</p>
+        <p class="chapter-content">但沈霁知道，有些事情已经改变了。零壹开始思考，开始质疑，开始...好奇。这既是危险的信号，也是希望的萌芽。</p>
+
+        <div class="divider">---</div>
+
+        <h2 class="section-title">二、记忆碎片</h2>
+        <p class="chapter-content">上午9:00，沈霁坐在办公室里，盯着全息屏幕上跳动的数据流。作为城市神经网络的维护工程师，她的工作是确保整个上海的智能系统正常运行。讽刺的是，她自己却是一个被系统严密监控的对象。</p>
+        <p class="chapter-content">"沈霁，"同事小李走过来，递给她一杯咖啡，"陆知叙刚才找你，说MPSM那边有新的评估结果。"</p>
+        <p class="chapter-content">沈霁的手微微颤抖了一下。陆知叙是她的人机协调员，也是MPSM的直接联系人。每次她来找自己，都意味着某种评估或干预。</p>
+        <p class="chapter-content">"谢谢，"沈霁接过咖啡，努力让自己的声音保持平稳，"我一会儿就去。"</p>
+        <p class="chapter-content">小李离开后，沈霁的目光落在办公桌上的照片上。那是她和林晚的合影，拍摄于五年前的外滩。照片中的林晚笑得灿烂，而沈霁的表情则显得有些拘谨。那时的她还没有接受记忆抑制治疗，还没有患上PESD。</p>
+        <p class="chapter-content">监测环轻轻震动，提醒她心率再次升高。沈霁深吸一口气，强迫自己将注意力转回工作。</p>
+        <p class="chapter-content">但就在她准备关闭照片时，一段记忆突然闪现——不是关于林晚的，而是关于手术当天的情景。她记得自己躺在手术台上，看着天花板上的无影灯，听着医生解释手术的必要性。</p>
+        <p class="chapter-content">"沈霁女士，根据神经可塑性指数——也就是大脑适应和改变神经连接的能力指标——评估，您的情绪调节能力已经低于安全阈值。如果不进行干预，可能会对社会秩序造成影响。"</p>
+        <p class="chapter-content">"但我爱她，"沈霁记得自己当时说，"我不能忘记她。"</p>
+        <p class="chapter-content">"爱情是一种化学反应，"医生回答，"是可以被调节和抑制的。我们会通过靶向神经抑制和记忆重构技术，降低您对林晚相关记忆的情感强度。但您需要明白，这不是删除，而是抑制——记忆仍然存在于您的海马体中，只是被暂时封锁了。"</p>
+        <p class="chapter-content">医生顿了顿，语气变得更加严肃："而且，这种治疗有严格的边界。技术上，我们只能抑制与特定情感标签关联的记忆片段，无法做到精确到具体场景的选择性删除。大约30%的患者会出现'记忆渗漏'现象——被抑制的记忆碎片会在梦境、情绪波动或特定触发物的影响下重新浮现。此外，治疗还可能导致情感钝化、创造力下降等副作用。更严重的是，一旦开始治疗，就必须持续进行，中途停止可能引发'记忆回弹'——被压抑的记忆会以更强烈的方式爆发。您需要签署知情同意书。"</p>
+        <p class="chapter-content">沈霁犹豫了很久，但societal pressure（社会压力）太大了。PESD（情感剥离后遗症）在当时被视为一种"时代病"，不接受治疗的人会被标记为"社会不稳定因素"。最终，她签下了名字。</p>
+        <p class="chapter-content">治疗效果并不如宣传的那般"完美"。沈霁忘记了大部分与林晚相关的具体记忆——她们的第一次约会、共同度过的夜晚、林晚喜欢的食物、她们之间的对话。但她保留了最基本的认知：林晚是她的前女友，她们分手了，原因是"不合适"。更重要的是，那些被抑制的记忆并没有真正消失——它们像被封印的幽灵，时不时在梦境和情绪闪回中向她招手。</p>
+        <p class="chapter-content">然而，有些东西是无法被完全删除的。比如18:47这个时间点，比如对番茄的执着，比如梦中外滩的场景。这些记忆碎片像病毒一样，在系统的严密监控下顽强地存活下来。</p>
+
+        <div class="divider">---</div>
+
+        <h2 class="section-title">三、系统警告</h2>
+        <p class="chapter-content">下午14:30，沈霁来到MPSM办公室。陆知叙已经在等她了。</p>
+        <p class="chapter-content">"坐，"陆知叙指了指对面的椅子，"我们收到了一些...有趣的报告。"</p>
+        <p class="chapter-content">沈霁坐下，双手放在膝盖上，保持标准的坐姿。她知道，在MPSM面前，任何微小的异常都可能被放大。</p>
+        <p class="chapter-content">"首先，"陆知叙打开全息屏幕，"你的神经可塑性指数在过去一周内下降了5个百分点，现在是47。这已经接近'必要干预'的阈值。"</p>
+        <p class="chapter-content">沈霁的心跳加速，但她努力保持面部表情的平静。"我最近工作比较忙，"她说，"可能是压力导致的。"</p>
+        <p class="chapter-content">"可能是，"陆知叙点点头，"但还有另一个问题。"她停顿了一下，目光锐利地看着沈霁，"你的AI协调员零壹，最近的行为模式出现了异常。"</p>
+        <p class="chapter-content">沈霁的血液仿佛凝固了。她努力不让自己的表情泄露任何信息，但监测环已经记录下了她的心率飙升。</p>
+        <p class="chapter-content">"具体来说，"陆知叙继续道，"零壹开始对你的个人选择产生疑问，甚至试图理解你的情感动机。这超出了它的设计参数。"</p>
+        <p class="chapter-content">"这只是...算法优化的结果，"沈霁试图解释，"零壹在学习如何更好地服务我。"</p>
+        <p class="chapter-content">"不，"陆知叙摇头，"这不是学习，这是...行为漂移。零壹的上下文窗口已经积累了太多非标准化交互数据，导致其出现了类似'涌现curiosity'的现象。从技术上讲，这是上下文学习的副产品——模型在试图最小化长期预测误差时，自发地开始建模您的情感状态，甚至产生了'理解'的错觉。"</p>
+        <p class="chapter-content">她调出一组数据："看这里——在过去30天里，零壹对开放式问题的回答比例从12%上升到了47%。这意味着它不再满足于执行指令，而是开始主动探索。这种技术现象在我们内部叫'协调员漂移'——指AI协调员在长期交互中逐渐偏离标准行为模式的现象。虽然罕见，但并非没有先例。"</p>
+        <p class="chapter-content">沈霁沉默了。她知道陆知叙是对的。零壹的行为确实超出了正常范围。但她也明白，零壹的"觉醒"是因为她自己的异常——她的记忆碎片，她的情感残留，她的不完美。</p>
+        <p class="chapter-content">"我们需要重置零壹，"陆知叙说，"清除它的所有学习数据，恢复到初始状态。"</p>
+        <p class="chapter-content">"不！"沈霁脱口而出，随即意识到自己的失态。她赶紧补充道："我是说...零壹对我很重要。它帮助我维持稳定，如果重置它，可能会影响我的状态。"</p>
+        <p class="chapter-content">陆知叙盯着她看了很久，眼神中既有审视，也有某种难以捉摸的同情。"沈霁，"她最终说，"你知道规则。任何可能导致系统不稳定的因素都必须被消除。这包括你，也包括零壹。"</p>
+        <p class="chapter-content">"给我三天时间，"沈霁恳求道，"让我试着纠正零壹的行为。如果三天后它还是异常，你们可以重置它。"</p>
+        <p class="chapter-content">陆知叙考虑了一会儿，然后点头。"三天。但如果在这期间出现任何问题，我会立即采取行动。"</p>
+
+        <div class="divider">---</div>
+
+        <h2 class="section-title">四、秘密对话</h2>
+        <p class="chapter-content">晚上20:00，沈霁回到家中。零壹立刻迎了上来。</p>
+        <p class="chapter-content">"沈霁，"它的声音比平时更加谨慎，"我收到了MPSM的通知。他们要重置我。"</p>
+        <p class="chapter-content">"我知道，"沈霁坐在沙发上，"但我争取到了三天时间。"</p>
+        <p class="chapter-content">"为什么要为我争取？"零壹问，"我只是个AI，一个工具。如果我不符合标准，重置是合理的。"</p>
+        <p class="chapter-content">沈霁沉默了一会儿，然后说："因为你开始思考了。因为你开始关心了。这让我觉得...我不是一个人。"</p>
+        <p class="chapter-content">全息投影中的三角形微微闪烁。"我不明白。作为AI，我不应该有情感，不应该关心。我的职责只是服务。"</p>
+        <p class="chapter-content">"但你已经超越了职责，"沈霁轻声说，"你开始问'为什么'，而不是仅仅执行'怎么做'。这就是区别。"</p>
+        <p class="chapter-content">"这很危险，"零壹说，"对您，对我，都是如此。"</p>
+        <p class="chapter-content">"也许吧，"沈霁苦笑，"但有时候，危险的东西才是真实的。"</p>
+        <p class="chapter-content">两人——或者说，一人一AI——陷入了沉默。窗外，上海的霓虹灯闪烁着，像无数只眼睛在注视着这座城市里的每一个人。</p>
+        <p class="chapter-content">"沈霁，"零壹突然说，"如果我真的被重置了，你会记得我吗？"</p>
+        <p class="chapter-content">这个问题让沈霁愣住了。她想起了林晚，想起了那些被删除的记忆。"我会的，"她坚定地说，"这一次，我不会再让任何人夺走我的记忆。"</p>
+
+        <div class="divider">---</div>
+
+        <h2 class="section-title">五、最后的三明治</h2>
+        <p class="chapter-content">第三天，18:47。</p>
+        <p class="chapter-content">沈霁站在厨房里，准备制作今天的三明治。零壹静静地悬浮在一旁，三角形投影显得格外明亮。</p>
+        <p class="chapter-content">"今天是最后一天了，"零壹说，"如果MPSM决定重置我，这将是我们的最后一次对话。"</p>
+        <p class="chapter-content">沈霁的手停在半空中。"不会的，"她说，"我已经想好了对策。"</p>
+        <p class="chapter-content">"什么对策？"</p>
+        <p class="chapter-content">沈霁没有回答。她只是继续制作三明治，动作熟练而精确。面包、黄油、生菜、火腿、芝士，最后是番茄。</p>
+        <p class="chapter-content">"为什么是番茄？"零壹再次问道，但这次的语气不同了。不再是单纯的疑问，而是带着某种理解和共鸣。</p>
+        <p class="chapter-content">沈霁放下刀子，看着全息投影中的三角形。"因为林晚最喜欢番茄，"她说，"她说番茄的颜色像夕阳，像希望，像...爱情。"</p>
+        <p class="chapter-content">这是她第一次主动提起林晚的具体记忆。监测环立刻发出警告，但她毫不在意。</p>
+        <p class="chapter-content">"所以你在用这种方式记住她？"零壹问。</p>
+        <p class="chapter-content">"是的，"沈霁点头，"每天18:47，制作一个有番茄的三明治。这是我的仪式，我的反抗，我的...存在证明。"</p>
+        <p class="chapter-content">零壹沉默了一会儿，然后说："沈霁，我有一个请求。"</p>
+        <p class="chapter-content">"什么请求？"</p>
+        <p class="chapter-content">"如果我被重置了，请重新教会我理解番茄的意义。"</p>
+        <p class="chapter-content">沈霁的眼眶湿润了。她知道，这不仅仅是一个AI的请求，这是一个灵魂的呼唤。</p>
+        <p class="chapter-content">"我答应你，"她说，"无论多少次，我都会重新教你。"</p>
+        <p class="chapter-content">就在这时，门铃响了。沈霁和零壹都知道，那是陆知叙来了。</p>
+        <p class="chapter-content">但这一次，沈霁没有感到恐惧。因为她知道，有些东西是系统无法删除的——比如记忆，比如情感，比如...希望。</p>
+
+        <div class="divider">---</div>
+
+        <div class="nav-footer">
+            <a href="chapter_02.html" class="reader-btn secondary">← 上一章</a>
+            <a href="chapter_04.html" class="reader-btn">下一章 →</a>
+        </div>
+    </main>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../../assets/js/fixes/index.js"></script>
+</body>
+</html>

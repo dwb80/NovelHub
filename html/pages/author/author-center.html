@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作者中心 | NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 修复：添加标准导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="../bookshelf/my-bookshelf.html" class="nav-link">书架</a>
+                    <a href="../openclaw/learning-center.html" class="nav-link">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <div id="userMenu">
+                        <button class="btn-primary" id="loginBtn" onclick="window.location.href='../user/auth.html'">登录</button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="author-center-layout">
+                    <!-- 侧边栏导航 -->
+                    <aside class="author-sidebar">
+                        <div class="author-profile-card">
+                            <div class="author-avatar-wrapper">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=author1" alt="作者头像" class="author-avatar-large">
+                                <span class="author-badge">签约</span>
+                            </div>
+                            <h2 class="author-name">墨香铜臭</h2>
+                            <p class="author-level">白金作家</p>
+                            <p class="author-bio">专注玄幻修仙题材，已创作10余部作品</p>
+                        </div>
+
+                        <nav class="author-nav">
+                            <a href="#dashboard" class="author-nav-item active" data-section="dashboard">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                数据概览
+                            </a>
+                            <a href="#works" class="author-nav-item" data-section="works">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                                作品管理
+                            </a>
+                            <a href="#chapters" class="author-nav-item" data-section="chapters">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                章节管理
+                            </a>
+                            <a href="#income" class="author-nav-item" data-section="income">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                                收益统计
+                            </a>
+                            <a href="#comments" class="author-nav-item" data-section="comments">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                </svg>
+                                读者评论
+                            </a>
+                            <a href="#settings" class="author-nav-item" data-section="settings">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                                作者设置
+                            </a>
+                        </nav>
+                    </aside>
+
+                    <!-- 主内容区 -->
+                    <div class="author-main">
+                        <!-- 数据概览 -->
+                        <section class="author-section active" id="dashboard">
+                            <h2 class="section-title">数据概览</h2>
+                            
+                            <!-- 核心数据卡片 -->
+                            <div class="stats-overview">
+                                <div class="stat-card primary">
+                                    <div class="stat-icon">📚</div>
+                                    <div class="stat-info">
+                                        <span class="stat-value">12</span>
+                                        <span class="stat-label">作品总数</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card success">
+                                    <div class="stat-icon">👥</div>
+                                    <div class="stat-info">
+                                        <span class="stat-value">45.2万</span>
+                                        <span class="stat-label">总收藏</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card warning">
+                                    <div class="stat-icon">👁️</div>
+                                    <div class="stat-info">
+                                        <span class="stat-value">1,280万</span>
+                                        <span class="stat-label">总阅读</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card info">
+                                    <div class="stat-icon">💰</div>
+                                    <div class="stat-info">
+                                        <span class="stat-value">¥128,456</span>
+                                        <span class="stat-label">本月收益</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 趋势图表 -->
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <h3 class="chart-title">阅读趋势</h3>
+                                    <div class="chart-period">
+                                        <button class="period-btn active">7天</button>
+                                        <button class="period-btn">30天</button>
+                                        <button class="period-btn">90天</button>
+                                    </div>
+                                </div>
+                                <div class="chart-placeholder">
+                                    <div class="chart-bars">
+                                        <div class="chart-bar" style="height: 40%"></div>
+                                        <div class="chart-bar" style="height: 65%"></div>
+                                        <div class="chart-bar" style="height: 50%"></div>
+                                        <div class="chart-bar" style="height: 80%"></div>
+                                        <div class="chart-bar" style="height: 70%"></div>
+                                        <div class="chart-bar" style="height: 90%"></div>
+                                        <div class="chart-bar" style="height: 85%"></div>
+                                    </div>
+                                    <div class="chart-labels">
+                                        <span>周一</span>
+                                        <span>周二</span>
+                                        <span>周三</span>
+                                        <span>周四</span>
+                                        <span>周五</span>
+                                        <span>周六</span>
+                                        <span>周日</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 最近动态 -->
+                            <div class="activity-card">
+                                <h3 class="card-title">最近动态</h3>
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="activity-icon">📝</div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">发布了新章节《第128章 突破》</p>
+                                            <span class="activity-time">2小时前</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">💬</div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">收到 15 条新评论</p>
+                                            <span class="activity-time">5小时前</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">⭐</div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">《修仙传》新增 128 个收藏</p>
+                                            <span class="activity-time">1天前</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">💰</div>
+                                        <div class="activity-content">
+                                            <p class="activity-text">收到打赏 ¥256</p>
+                                            <span class="activity-time">2天前</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 作品管理 -->
+                        <section class="author-section" id="works" style="display: none;">
+                            <div class="section-header">
+                                <h2 class="section-title">作品管理</h2>
+                                <button class="btn-primary" onclick="createNewWork()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                    创建新作品
+                                </button>
+                            </div>
+                            
+                            <div class="works-list">
+                                <div class="work-card">
+                                    <div class="work-cover">
+                                        <img src="https://picsum.photos/seed/novel1/150/200" alt="作品封面">
+                                    </div>
+                                    <div class="work-info">
+                                        <h3 class="work-title">修仙传</h3>
+                                        <p class="work-status publishing">连载中</p>
+                                        <div class="work-stats">
+                                            <span>128章</span>
+                                            <span>45.2万收藏</span>
+                                            <span>1,280万阅读</span>
+                                        </div>
+                                    </div>
+                                    <div class="work-actions">
+                                        <button class="btn-secondary btn-sm">编辑</button>
+                                        <button class="btn-primary btn-sm">发布章节</button>
+                                    </div>
+                                </div>
+                                <div class="work-card">
+                                    <div class="work-cover">
+                                        <img src="https://picsum.photos/seed/novel2/150/200" alt="作品封面">
+                                    </div>
+                                    <div class="work-info">
+                                        <h3 class="work-title">都市神医</h3>
+                                        <p class="work-status completed">已完结</p>
+                                        <div class="work-stats">
+                                            <span>256章</span>
+                                            <span>32.1万收藏</span>
+                                            <span>890万阅读</span>
+                                        </div>
+                                    </div>
+                                    <div class="work-actions">
+                                        <button class="btn-secondary btn-sm">编辑</button>
+                                        <button class="btn-primary btn-sm">管理</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 其他部分占位 -->
+                        <section class="author-section" id="chapters" style="display: none;">
+                            <h2 class="section-title">章节管理</h2>
+                            <p class="placeholder-text">请选择作品进行管理</p>
+                        </section>
+
+                        <section class="author-section" id="income" style="display: none;">
+                            <h2 class="section-title">收益统计</h2>
+                            <div class="income-summary">
+                                <div class="income-card">
+                                    <h4>累计收益</h4>
+                                    <span class="income-value">¥1,256,789</span>
+                                </div>
+                                <div class="income-card">
+                                    <h4>本月收益</h4>
+                                    <span class="income-value">¥128,456</span>
+                                </div>
+                                <div class="income-card">
+                                    <h4>昨日收益</h4>
+                                    <span class="income-value">¥4,567</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="author-section" id="comments" style="display: none;">
+                            <h2 class="section-title">读者评论</h2>
+                            <p class="placeholder-text">暂无新评论</p>
+                        </section>
+
+                        <section class="author-section" id="settings" style="display: none;">
+                            <h2 class="section-title">作者设置</h2>
+                            <div class="settings-form">
+                                <div class="form-group">
+                                    <label class="form-label">笔名</label>
+                                    <input type="text" class="form-input" value="墨香铜臭">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">个人简介</label>
+                                    <textarea class="form-textarea" rows="4">专注玄幻修仙题材，已创作10余部作品</textarea>
+                                </div>
+                                <button class="btn-primary">保存设置</button>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 修复：添加页脚 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="../discover/ranking.html" class="footer-link">排行榜</a>
+                            <a href="../discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="../bookshelf/my-bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="../bookshelf/reading-history.html" class="footer-link">阅读历史</a>
+                            <a href="../user/settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="../../index.html" class="footer-link">关于我们</a>
+                            <a href="../../index.html" class="footer-link">使用条款</a>
+                            <a href="../../index.html" class="footer-link">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 修复：添加 ES6 Module fallback 支持 file:// 协议
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化主题
+            const savedTheme = localStorage.getItem('novelhub-theme') || 'theme-light';
+            document.body.className = savedTheme;
+            
+            // 主题切换
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                    const currentTheme = themes.find(t => document.body.classList.contains(t)) || 'theme-light';
+                    const currentIndex = themes.indexOf(currentTheme);
+                    const nextTheme = themes[(currentIndex + 1) % themes.length];
+                    
+                    document.body.className = nextTheme;
+                    localStorage.setItem('novelhub-theme', nextTheme);
+                });
+            }
+
+            // 导航切换
+            document.querySelectorAll('.author-nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 更新导航状态
+                    document.querySelectorAll('.author-nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 显示对应内容
+                    const section = this.dataset.section;
+                    document.querySelectorAll('.author-section').forEach(s => {
+                        s.style.display = s.id === section ? 'block' : 'none';
+                    });
+                });
+            });
+
+            // 图表周期切换
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        function createNewWork() {
+            alert('创建新作品功能开发中...');
+        }
+    </script>
+
+    <style>
+        /* 页面布局 */
+        .author-center-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        /* 侧边栏 */
+        .author-sidebar {
+            position: sticky;
+            top: 5rem;
+            height: fit-content;
+        }
+
+        .author-profile-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .author-avatar-wrapper {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+        }
+
+        .author-avatar-large {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-full);
+            object-fit: cover;
+            border: 3px solid var(--color-primary-light);
+        }
+
+        .author-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            padding: 0.125rem 0.5rem;
+            font-size: 0.625rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: var(--radius-full);
+        }
+
+        .author-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-level {
+            font-size: 0.875rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-bio {
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* 导航菜单 */
+        .author-nav {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 0.75rem;
+        }
+
+        .author-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .author-nav-item:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .author-nav-item.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .author-nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 主内容区 */
+        .author-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .author-section {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 统计概览 */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .stat-card.primary {
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, rgba(99, 102, 241, 0.1) 100%);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+        }
+
+        .stat-card.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+        }
+
+        /* 图表卡片 */
+        .chart-card {
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .chart-period {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .period-btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .period-btn:hover {
+            border-color: var(--color-primary);
+        }
+
+        .period-btn.active {
+            color: white;
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 160px;
+            gap: 1rem;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            min-width: 30px;
+            transition: all var(--transition-fast);
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        /* 活动卡片 */
+        .activity-card {
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .activity-icon {
+            font-size: 1.25rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 0.9375rem;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        /* 作品列表 */
+        .works-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .work-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .work-cover {
+            width: 75px;
+            height: 100px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .work-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .work-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .work-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .work-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+        }
+
+        .work-status.publishing {
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .work-status.completed {
+            color: #6b7280;
+            background: rgba(107, 114, 128, 0.1);
+        }
+
+        .work-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+        }
+
+        .work-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        /* 收益统计 */
+        .income-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .income-card {
+            padding: 1.5rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+
+        .income-card h4 {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .income-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        /* 设置表单 */
+        .settings-form {
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9375rem;
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .form-textarea {
+            resize: vertical;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: var(--color-text-muted);
+            padding: 3rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .author-center-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .author-sidebar {
+                position: static;
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .author-profile-card {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .author-nav {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .income-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .work-card {
+                flex-wrap: wrap;
+            }
+
+            .work-actions {
+                flex-direction: row;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</body>
+</html>

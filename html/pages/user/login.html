@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="登录 NovelHub - AI 驱动的小说创作与阅读平台，开启您的阅读之旅">
+    <meta name="keywords" content="NovelHub登录,小说阅读平台,AI小说,在线阅读,用户登录">
+    <meta name="author" content="NovelHub Team">
+    <meta name="robots" content="noindex, follow">
+    <title>登录 - NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <style>
+        /* 表单验证状态样式 */
+        .form-input {
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .form-input.error {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px var(--color-error-light);
+            background-color: var(--color-error-bg, #fef2f2);
+        }
+
+        .form-input.success {
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 3px var(--color-success-light);
+            background-color: var(--color-success-bg, #f0fdf4);
+        }
+
+        .form-error {
+            display: none;
+            font-size: 0.8125rem;
+            color: var(--color-error);
+            margin-top: 0.375rem;
+            padding-left: 0.25rem;
+        }
+
+        .form-error.show {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .form-error::before {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3C/svg%3E");
+            background-size: contain;
+            flex-shrink: 0;
+        }
+
+        .form-success-icon {
+            position: absolute;
+            right: 2.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--color-success);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .form-input.success + .form-success-icon {
+            opacity: 1;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-input-wrapper .form-success-icon {
+            right: 3.5rem;
+        }
+
+        /* 演示账户提示 */
+        .demo-account-hint {
+            margin-top: 1.5rem;
+            padding: 0.875rem 1rem;
+            background: var(--color-info-light, #eff6ff);
+            border: 1px solid var(--color-info-border, #dbeafe);
+            border-radius: var(--radius-md);
+            font-size: 0.8125rem;
+            color: var(--color-info-text, #1e40af);
+        }
+
+        .demo-account-hint strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .demo-account-hint code {
+            background: rgba(0,0,0,0.05);
+            padding: 0.125rem 0.375rem;
+            border-radius: var(--radius-sm);
+            font-family: monospace;
+        }
+
+        /* 加载动画 */
+        .btn-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 1rem;
+            height: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 跳过导航链接 - 无障碍支持 */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-md);
+            z-index: 10000;
+            font-weight: 500;
+            transition: top 0.2s var(--ease-default);
+            text-decoration: none;
+        }
+
+        .skip-link:focus {
+            top: 1rem;
+        }
+
+        /* 屏幕阅读器专用 - 视觉隐藏但可被朗读 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* 实时验证指示器 */
+        .validation-indicator {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .validation-indicator .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .validation-indicator .icon.show {
+            opacity: 1;
+        }
+
+        .validation-indicator .icon-success {
+            color: var(--color-success);
+        }
+
+        .validation-indicator .icon-error {
+            color: var(--color-error);
+        }
+
+        /* 表单组增强 */
+        .form-group {
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group.has-error .form-input {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px var(--color-error-light);
+        }
+
+        .form-group.has-success .form-input {
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 3px var(--color-success-light);
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <!-- 跳过导航链接（无障碍） -->
+    <a href="#mainContent" class="skip-link sr-only">跳转到主要内容</a>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <div class="auth-page" id="mainContent" role="main">
+        <div class="auth-sidebar">
+            <a href="../../index.html" class="auth-logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span class="logo-text">NovelHub</span>
+            </a>
+            <div class="auth-sidebar-content">
+                <h1 class="auth-sidebar-title">开启你的阅读之旅</h1>
+                <p class="auth-sidebar-desc">加入我们，探索由 AI 创作的无限精彩小说世界</p>
+                <div class="auth-features">
+                    <div class="auth-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <div>
+                            <h4>个人书架</h4>
+                            <p>收藏喜爱的小说，随时继续阅读</p>
+                        </div>
+                    </div>
+                    <div class="auth-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <div>
+                            <h4>阅读进度同步</h4>
+                            <p>多设备无缝同步，断点续读</p>
+                        </div>
+                    </div>
+                    <div class="auth-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <div>
+                            <h4>评论互动</h4>
+                            <p>与其他读者交流，分享阅读感受</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-main">
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h2 class="auth-form-title">欢迎回来</h2>
+                    <p class="auth-form-subtitle">登录您的账户，继续精彩阅读</p>
+                </div>
+
+                <form class="auth-form" id="loginForm" novalidate role="form" aria-label="登录表单">
+                    <div class="form-group" id="emailGroup">
+                        <label class="form-label" for="loginEmail">
+                            邮箱地址
+                            <span class="required" aria-label="必填">*</span>
+                        </label>
+                        <div style="position: relative;">
+                            <input 
+                                type="email" 
+                                id="loginEmail" 
+                                name="email"
+                                class="form-input" 
+                                placeholder="请输入您的邮箱" 
+                                required
+                                autocomplete="email"
+                                aria-describedby="emailError emailHint"
+                                aria-required="true"
+                            >
+                            <span class="validation-indicator" aria-hidden="true">
+                                <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="form-error" id="emailError" role="alert" aria-live="polite"></span>
+                        <span id="emailHint" class="sr-only">请输入有效的邮箱地址，例如 user@example.com</span>
+                    </div>
+
+                    <div class="form-group" id="passwordGroup">
+                        <div class="form-label-row">
+                            <label class="form-label" for="loginPassword">
+                                密码
+                                <span class="required" aria-label="必填">*</span>
+                            </label>
+                            <a href="forgot-password.html" class="form-link">忘记密码？</a>
+                        </div>
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="loginPassword" 
+                                name="password"
+                                class="form-input" 
+                                placeholder="请输入密码" 
+                                required
+                                autocomplete="current-password"
+                                aria-describedby="passwordError passwordHint"
+                                aria-required="true"
+                            >
+                            <button type="button" class="password-toggle" aria-label="显示密码" tabindex="0">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            </button>
+                            <span class="validation-indicator" aria-hidden="true">
+                                <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="15" y1="9" x2="9" y2="15"/>
+                                    <line x1="9" y1="9" x2="15" y2="15"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="form-error" id="passwordError" role="alert" aria-live="polite"></span>
+                        <span id="passwordHint" class="sr-only">密码长度至少6位</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="rememberMe" name="rememberMe" checked>
+                            <span class="checkbox-custom"></span>
+                            记住我（30天内自动登录）
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full" id="loginBtn" aria-live="polite">
+                        <span class="btn-text">登录</span>
+                        <span class="btn-loading" style="display: none;">
+                            <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"></circle>
+                            </svg>
+                            登录中...
+                        </span>
+                    </button>
+
+                    <div class="auth-divider">
+                        <span>或使用以下方式登录</span>
+                    </div>
+
+                    <div class="auth-social">
+                        <button type="button" class="btn-social" id="googleLogin" title="Google登录" aria-label="使用 Google 账号登录" data-loading="false">
+                            <span class="btn-social-content">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+                                </svg>
+                                <span class="btn-social-text">Google</span>
+                            </span>
+                            <span class="btn-social-loading" style="display: none;">
+                                <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"></circle>
+                                </svg>
+                            </span>
+                        </button>
+                        <button type="button" class="btn-social" id="githubLogin" title="GitHub登录" aria-label="使用 GitHub 账号登录" data-loading="false">
+                            <span class="btn-social-content">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                                </svg>
+                                <span class="btn-social-text">GitHub</span>
+                            </span>
+                            <span class="btn-social-loading" style="display: none;">
+                                <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"></circle>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="auth-footer-text">
+                    还没有账户？ <a href="register.html" class="form-link">立即注册</a>
+                </div>
+
+                <!-- 演示账户提示 -->
+                <div class="demo-account-hint" role="note">
+                    <strong>演示账户</strong>
+                    邮箱: <code>demo@novelhub.com</code> / 密码: <code>demo123456</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入服务 -->
+    <script src="../../assets/js/services/auth-service.js"></script>
+    <script src="../../assets/js/components/form-validator.js"></script>
+    <script src="../../assets/js/components/toast.js"></script>
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- P2级UX修复：可访问性增强（键盘导航、ARIA标签、跳过导航链接） -->
+    <script src="../../assets/js/accessibility-p2-fix.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+    
+    <script>
+        // 使用全局对象或定义fallback
+        let showToast = window.showToast || function(msg, type = 'info') {
+            console.log(`[${type}] ${msg}`);
+        };
+        let showLoadingToast = window.showLoadingToast || function(msg) {
+            console.log(`[Loading] ${msg}`);
+            return { close: function() {} };
+        };
+
+        // 检查是否已登录
+        if (typeof authService !== 'undefined' && authService.isLoggedIn()) {
+            const redirect = new URLSearchParams(window.location.search).get('redirect');
+            window.location.href = redirect || '../../index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initLoginPage();
+        });
+
+        function initLoginPage() {
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+            const rememberMeCheckbox = document.getElementById('rememberMe');
+
+            // 初始化表单验证
+            const validator = new FormValidator(loginForm, {
+                validateOnBlur: true,
+                validateOnInput: true,
+                showSuccessState: true,
+                scrollToFirstError: true
+            });
+
+            // 添加验证规则 - 邮箱
+            validator.addRule('email', [
+                { type: 'required', message: '请输入邮箱地址' },
+                { type: 'email', message: '请输入有效的邮箱地址（如：user@example.com）' }
+            ]);
+
+            // 添加验证规则 - 密码
+            validator.addRule('password', [
+                { type: 'required', message: '请输入密码' },
+                { type: 'minLength', params: 6, message: '密码长度至少6位' }
+            ]);
+
+            // 密码显示/隐藏切换
+            document.querySelectorAll('.password-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const input = toggle.previousElementSibling;
+                    const eyeOn = toggle.querySelector('.icon-eye');
+                    const eyeOff = toggle.querySelector('.icon-eye-off');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        eyeOn.style.display = 'none';
+                        eyeOff.style.display = 'block';
+                        toggle.setAttribute('aria-label', '隐藏密码');
+                    } else {
+                        input.type = 'password';
+                        eyeOn.style.display = 'block';
+                        eyeOff.style.display = 'none';
+                        toggle.setAttribute('aria-label', '显示密码');
+                    }
+                });
+            });
+
+            // 检查本地存储的记住我信息
+            const rememberedEmail = localStorage.getItem('novelhub_remembered_email');
+            if (rememberedEmail) {
+                emailInput.value = rememberedEmail;
+                rememberMeCheckbox.checked = true;
+            }
+
+            // 实时验证反馈
+            validator.on('success', ({ field, element }) => {
+                updateValidationIndicator(field, true);
+                clearFieldError(field);
+            });
+
+            validator.on('error', ({ field, message }) => {
+                updateValidationIndicator(field, false);
+            });
+
+            // 输入时实时验证
+            emailInput.addEventListener('input', () => {
+                if (emailInput.value.trim()) {
+                    validator.validateField('email');
+                }
+            });
+
+            passwordInput.addEventListener('input', () => {
+                if (passwordInput.value) {
+                    validator.validateField('password');
+                }
+            });
+
+            // 表单提交
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // 清除之前的错误状态
+                clearAllErrors();
+                
+                // 验证表单
+                if (!validator.validateAll()) {
+                    showToast('请检查表单填写是否正确', 'error');
+                    return;
+                }
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const rememberMe = rememberMeCheckbox.checked;
+
+                // 显示加载状态
+                setLoading(true);
+                const loadingToast = showLoadingToast('正在登录...');
+
+                try {
+                    // 使用认证服务登录
+                    const result = await authService.login({ email, password, rememberMe });
+
+                    if (result.success) {
+                        // 保存记住的邮箱
+                        if (rememberMe) {
+                            localStorage.setItem('novelhub_remembered_email', email);
+                        } else {
+                            localStorage.removeItem('novelhub_remembered_email');
+                        }
+
+                        loadingToast.success('登录成功！正在跳转...');
+                        
+                        // 延迟跳转
+                        setTimeout(() => {
+                            const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
+                            window.location.href = redirectUrl || '../../index.html';
+                        }, 1000);
+                    } else {
+                        loadingToast.error(result.error || '登录失败');
+                        
+                        // 显示字段级错误
+                        if (result.error && result.error.includes('邮箱')) {
+                            showFieldError('email', result.error);
+                        } else if (result.error && result.error.includes('密码')) {
+                            showFieldError('password', result.error);
+                        }
+                    }
+                } catch (error) {
+                    console.error('登录错误:', error);
+                    loadingToast.error('登录失败，请稍后重试');
+                } finally {
+                    setLoading(false);
+                }
+            });
+
+            // 社交登录
+            document.getElementById('googleLogin').addEventListener('click', async function() {
+                if (this.dataset.loading === 'true') return;
+                
+                const btn = this;
+                setSocialButtonLoading(btn, true);
+                
+                const loadingToast = showLoadingToast('正在连接 Google...');
+                try {
+                    const result = await authService.socialLogin('Google');
+                    if (result.success) {
+                        loadingToast.success(result.message);
+                        setTimeout(() => {
+                            window.location.href = '../../index.html';
+                        }, 1000);
+                    } else {
+                        loadingToast.error(result.error || 'Google 登录失败');
+                        setSocialButtonLoading(btn, false);
+                    }
+                } catch (error) {
+                    console.error('Google登录错误:', error);
+                    loadingToast.error('Google 登录失败，请稍后重试');
+                    setSocialButtonLoading(btn, false);
+                }
+            });
+
+            document.getElementById('githubLogin').addEventListener('click', async function() {
+                if (this.dataset.loading === 'true') return;
+                
+                const btn = this;
+                setSocialButtonLoading(btn, true);
+                
+                const loadingToast = showLoadingToast('正在连接 GitHub...');
+                try {
+                    const result = await authService.socialLogin('GitHub');
+                    if (result.success) {
+                        loadingToast.success(result.message);
+                        setTimeout(() => {
+                            window.location.href = '../../index.html';
+                        }, 1000);
+                    } else {
+                        loadingToast.error(result.error || 'GitHub 登录失败');
+                        setSocialButtonLoading(btn, false);
+                    }
+                } catch (error) {
+                    console.error('GitHub登录错误:', error);
+                    loadingToast.error('GitHub 登录失败，请稍后重试');
+                    setSocialButtonLoading(btn, false);
+                }
+            });
+
+            // 社交登录按钮加载状态
+            function setSocialButtonLoading(btn, loading) {
+                btn.dataset.loading = loading ? 'true' : 'false';
+                btn.disabled = loading;
+                const content = btn.querySelector('.btn-social-content');
+                const spinner = btn.querySelector('.btn-social-loading');
+                
+                if (loading) {
+                    content.style.display = 'none';
+                    spinner.style.display = 'inline-flex';
+                } else {
+                    content.style.display = 'inline-flex';
+                    spinner.style.display = 'none';
+                }
+            }
+
+            // 辅助函数
+            function setLoading(loading) {
+                const btnText = loginBtn.querySelector('.btn-text');
+                const btnLoading = loginBtn.querySelector('.btn-loading');
+                
+                if (loading) {
+                    loginBtn.disabled = true;
+                    btnText.style.display = 'none';
+                    btnLoading.style.display = 'inline-flex';
+                } else {
+                    loginBtn.disabled = false;
+                    btnText.style.display = 'inline';
+                    btnLoading.style.display = 'none';
+                }
+            }
+
+            function updateValidationIndicator(field, isValid) {
+                const group = document.getElementById(field + 'Group');
+                if (!group) return;
+
+                const successIcon = group.querySelector('.icon-success');
+                const errorIcon = group.querySelector('.icon-error');
+
+                if (isValid) {
+                    successIcon.classList.add('show');
+                    errorIcon.classList.remove('show');
+                    group.classList.add('has-success');
+                    group.classList.remove('has-error');
+                } else {
+                    successIcon.classList.remove('show');
+                    errorIcon.classList.add('show');
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                }
+            }
+
+            function showFieldError(field, message) {
+                const group = document.getElementById(field + 'Group');
+                const errorEl = document.getElementById(field + 'Error');
+                const input = group.querySelector('input');
+
+                if (errorEl) {
+                    errorEl.textContent = message;
+                    errorEl.classList.add('show');
+                    errorEl.style.display = 'flex';
+                }
+
+                if (input) {
+                    input.classList.add('error');
+                    input.classList.remove('success');
+                    input.setAttribute('aria-invalid', 'true');
+                }
+
+                updateValidationIndicator(field, false);
+            }
+
+            function clearFieldError(field) {
+                const group = document.getElementById(field + 'Group');
+                if (!group) return;
+                
+                const errorEl = document.getElementById(field + 'Error');
+                const input = group.querySelector('input');
+
+                if (errorEl) {
+                    errorEl.textContent = '';
+                    errorEl.classList.remove('show');
+                    errorEl.style.display = 'none';
+                }
+
+                if (input) {
+                    input.classList.remove('error');
+                    input.removeAttribute('aria-invalid');
+                }
+            }
+
+            function clearAllErrors() {
+                ['email', 'password'].forEach(field => clearFieldError(field));
+            }
+        }
+    </script>
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .auth-sidebar {
+            flex: 1;
+            background: linear-gradient(135deg, var(--color-primary), #8b5cf6);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 4rem;
+        }
+
+        .auth-logo .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+
+        .auth-sidebar-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .auth-sidebar-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .auth-sidebar-desc {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .auth-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .auth-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .auth-feature svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+            opacity: 0.9;
+        }
+
+        .auth-feature h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .auth-feature p {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .auth-main {
+            width: 100%;
+            max-width: 520px;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--color-bg-primary);
+        }
+
+        .auth-form-container {
+            width: 100%;
+        }
+
+        .auth-header {
+            margin-bottom: 2rem;
+        }
+
+        .auth-form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-form-subtitle {
+            color: var(--color-text-secondary);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label .required {
+            color: var(--color-error);
+            margin-left: 0.25rem;
+        }
+
+        .form-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color var(--duration-fast);
+        }
+
+        .form-link:hover {
+            text-decoration: underline;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 2.5rem 0.875rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            transition: all var(--duration-fast);
+        }
+
+        .password-input-wrapper .form-input {
+            padding-right: 5rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle:hover {
+            color: var(--color-text-secondary);
+        }
+
+        .password-toggle svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .form-checkbox input {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--duration-fast);
+        }
+
+        .form-checkbox input:checked + .checkbox-custom {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .form-checkbox input:checked + .checkbox-custom::after {
+            content: '';
+            width: 0.625rem;
+            height: 0.375rem;
+            border-left: 2px solid white;
+            border-bottom: 2px solid white;
+            transform: rotate(-45deg);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--color-border);
+        }
+
+        .auth-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-social {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            font-size: 0.875rem;
+        }
+
+        .btn-social:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .btn-social svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .auth-footer-text {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        @media (max-width: 1024px) {
+            .auth-sidebar {
+                display: none;
+            }
+
+            .auth-main {
+                max-width: 100%;
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-social {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

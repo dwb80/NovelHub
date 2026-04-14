@@ -1,0 +1,654 @@
+<!-- 批量选择组件 -->
+<div class="batch-select-bar" id="batchSelectBar">
+    <div class="batch-select-content">
+        <div class="batch-select-left">
+            <label class="batch-select-all">
+                <input type="checkbox" id="batchSelectAll">
+                <span>全选</span>
+            </label>
+            <span class="batch-select-count">已选择 <strong id="selectedCount">0</strong> 项</span>
+        </div>
+        <div class="batch-select-actions">
+            <button class="batch-btn batch-btn-move" id="batchMoveBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                移动
+            </button>
+            <button class="batch-btn batch-btn-top" id="batchTopBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="17 11 12 6 7 11"/>
+                    <polyline points="17 18 12 13 7 18"/>
+                </svg>
+                置顶
+            </button>
+            <button class="batch-btn batch-btn-delete" id="batchDeleteBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                删除
+            </button>
+        </div>
+        <button class="batch-select-close" id="batchSelectClose">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<!-- 移动书籍弹窗 -->
+<div class="batch-modal-overlay" id="batchModalOverlay" style="display: none;"></div>
+<div class="batch-modal" id="batchMoveModal" style="display: none;">
+    <div class="batch-modal-header">
+        <h4>移动到书架</h4>
+        <button class="batch-modal-close" id="batchModalClose">×</button>
+    </div>
+    <div class="batch-modal-body">
+        <div class="shelf-list" id="shelfList"></div>
+    </div>
+    <div class="batch-modal-footer">
+        <button class="btn btn-secondary" id="batchMoveCancel">取消</button>
+        <button class="btn btn-primary" id="batchMoveConfirm">确定</button>
+    </div>
+</div>
+
+<style>
+/* 批量选择栏 */
+.batch-select-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-bg-elevated);
+    border-top: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-sticky, 1000);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.batch-select-bar.active {
+    transform: translateY(0);
+}
+
+.batch-select-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.batch-select-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.batch-select-all {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+}
+
+.batch-select-all input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.batch-select-count {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.batch-select-count strong {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.batch-select-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.batch-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.batch-btn:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-border-hover);
+}
+
+.batch-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.batch-btn-delete {
+    color: var(--color-error);
+}
+
+.batch-btn-delete:hover {
+    background: var(--color-error-light);
+    border-color: var(--color-error);
+}
+
+.batch-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.batch-select-close {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.batch-select-close:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.batch-select-close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* 弹窗 */
+.batch-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop, 1500);
+}
+
+.batch-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-modal, 1600);
+}
+
+.batch-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.batch-modal-header h4 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.batch-modal-close {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.batch-modal-close:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+.batch-modal-body {
+    padding: 1.25rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.batch-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+}
+
+/* 书架列表 */
+.shelf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.shelf-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: var(--color-bg-secondary);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.shelf-item:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.shelf-item.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+}
+
+.shelf-item-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary-light);
+    border-radius: var(--radius-lg);
+    color: var(--color-primary);
+}
+
+.shelf-item-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.shelf-item-info {
+    flex: 1;
+}
+
+.shelf-item-name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 0.125rem;
+}
+
+.shelf-item-count {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.shelf-item-check {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-primary);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.shelf-item.selected .shelf-item-check {
+    opacity: 1;
+}
+
+/* 按钮 */
+.btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-secondary {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.btn-secondary:hover {
+    background: var(--color-bg-tertiary);
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .batch-select-content {
+        flex-wrap: wrap;
+        padding: 0.75rem;
+    }
+    
+    .batch-select-left {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .batch-select-actions {
+        flex: 1;
+        justify-content: flex-end;
+    }
+    
+    .batch-btn span {
+        display: none;
+    }
+    
+    .batch-btn {
+        padding: 0.5rem;
+    }
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    window.BatchSelect = {
+        bar: null,
+        isActive: false,
+        selectedItems: [],
+        shelves: [],
+        currentShelfId: null,
+        targetShelfId: null,
+        
+        init: function(options = {}) {
+            this.bar = document.getElementById('batchSelectBar');
+            this.shelves = options.shelves || [];
+            this.currentShelfId = options.currentShelfId;
+            
+            this.bindEvents();
+        },
+        
+        bindEvents: function() {
+            // 关闭按钮
+            document.getElementById('batchSelectClose')?.addEventListener('click', () => {
+                this.deactivate();
+            });
+            
+            // 全选/取消全选
+            document.getElementById('batchSelectAll')?.addEventListener('change', (e) => {
+                this.toggleSelectAll(e.target.checked);
+            });
+            
+            // 移动按钮
+            document.getElementById('batchMoveBtn')?.addEventListener('click', () => {
+                this.showMoveModal();
+            });
+            
+            // 置顶按钮
+            document.getElementById('batchTopBtn')?.addEventListener('click', () => {
+                this.topSelected();
+            });
+            
+            // 删除按钮
+            document.getElementById('batchDeleteBtn')?.addEventListener('click', () => {
+                this.deleteSelected();
+            });
+            
+            // 弹窗关闭
+            document.getElementById('batchModalClose')?.addEventListener('click', () => {
+                this.hideMoveModal();
+            });
+            
+            document.getElementById('batchModalOverlay')?.addEventListener('click', () => {
+                this.hideMoveModal();
+            });
+            
+            document.getElementById('batchMoveCancel')?.addEventListener('click', () => {
+                this.hideMoveModal();
+            });
+            
+            document.getElementById('batchMoveConfirm')?.addEventListener('click', () => {
+                this.confirmMove();
+            });
+        },
+        
+        // 激活批量选择模式
+        activate: function() {
+            this.isActive = true;
+            this.selectedItems = [];
+            this.bar?.classList.add('active');
+            this.updateUI();
+            
+            // 触发自定义事件
+            window.dispatchEvent(new CustomEvent('batchSelectActivate'));
+        },
+        
+        // 退出批量选择模式
+        deactivate: function() {
+            this.isActive = false;
+            this.selectedItems = [];
+            this.bar?.classList.remove('active');
+            
+            // 重置全选复选框
+            const selectAllCheckbox = document.getElementById('batchSelectAll');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+            }
+            
+            // 触发自定义事件
+            window.dispatchEvent(new CustomEvent('batchSelectDeactivate'));
+        },
+        
+        // 切换选择状态
+        toggleSelection: function(itemId, selected) {
+            if (selected) {
+                if (!this.selectedItems.includes(itemId)) {
+                    this.selectedItems.push(itemId);
+                }
+            } else {
+                this.selectedItems = this.selectedItems.filter(id => id !== itemId);
+            }
+            
+            this.updateUI();
+        },
+        
+        // 全选/取消全选
+        toggleSelectAll: function(select) {
+            if (select) {
+                // 获取所有可选项目
+                window.dispatchEvent(new CustomEvent('batchSelectAll', {
+                    detail: { select: true }
+                }));
+            } else {
+                this.selectedItems = [];
+                window.dispatchEvent(new CustomEvent('batchSelectAll', {
+                    detail: { select: false }
+                }));
+            }
+            this.updateUI();
+        },
+        
+        // 更新UI
+        updateUI: function() {
+            const countEl = document.getElementById('selectedCount');
+            if (countEl) {
+                countEl.textContent = this.selectedItems.length;
+            }
+            
+            // 更新按钮状态
+            const hasSelection = this.selectedItems.length > 0;
+            document.getElementById('batchMoveBtn')?.toggleAttribute('disabled', !hasSelection);
+            document.getElementById('batchTopBtn')?.toggleAttribute('disabled', !hasSelection);
+            document.getElementById('batchDeleteBtn')?.toggleAttribute('disabled', !hasSelection);
+            
+            // 更新全选复选框状态
+            const selectAllCheckbox = document.getElementById('batchSelectAll');
+            if (selectAllCheckbox) {
+                // 这里需要根据实际项目数量来判断
+                // 暂时简化处理
+            }
+        },
+        
+        // 显示移动弹窗
+        showMoveModal: function() {
+            if (this.selectedItems.length === 0) return;
+            
+            this.renderShelfList();
+            document.getElementById('batchModalOverlay').style.display = 'block';
+            document.getElementById('batchMoveModal').style.display = 'block';
+        },
+        
+        // 隐藏移动弹窗
+        hideMoveModal: function() {
+            document.getElementById('batchModalOverlay').style.display = 'none';
+            document.getElementById('batchMoveModal').style.display = 'none';
+            this.targetShelfId = null;
+        },
+        
+        // 渲染书架列表
+        renderShelfList: function() {
+            const listEl = document.getElementById('shelfList');
+            if (!listEl) return;
+            
+            listEl.innerHTML = this.shelves.map(shelf => `
+                <div class="shelf-item ${shelf.id === this.targetShelfId ? 'selected' : ''}" data-shelf-id="${shelf.id}">
+                    <div class="shelf-item-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                    </div>
+                    <div class="shelf-item-info">
+                        <div class="shelf-item-name">${shelf.name}</div>
+                        <div class="shelf-item-count">${shelf.count || 0} 本书</div>
+                    </div>
+                    <svg class="shelf-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </div>
+            `).join('');
+            
+            // 绑定点击事件
+            listEl.querySelectorAll('.shelf-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    listEl.querySelectorAll('.shelf-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    this.targetShelfId = item.dataset.shelfId;
+                });
+            });
+        },
+        
+        // 确认移动
+        confirmMove: function() {
+            if (!this.targetShelfId) {
+                if (window.Toast) {
+                    Toast.warning('请选择目标书架');
+                }
+                return;
+            }
+            
+            window.dispatchEvent(new CustomEvent('batchMove', {
+                detail: {
+                    itemIds: this.selectedItems,
+                    targetShelfId: this.targetShelfId
+                }
+            }));
+            
+            this.hideMoveModal();
+        },
+        
+        // 置顶选中项
+        topSelected: function() {
+            if (this.selectedItems.length === 0) return;
+            
+            window.dispatchEvent(new CustomEvent('batchTop', {
+                detail: { itemIds: this.selectedItems }
+            }));
+        },
+        
+        // 删除选中项
+        deleteSelected: function() {
+            if (this.selectedItems.length === 0) return;
+            
+            if (window.Modal) {
+                Modal.confirm(`确定要删除选中的 ${this.selectedItems.length} 本书吗？`, () => {
+                    window.dispatchEvent(new CustomEvent('batchDelete', {
+                        detail: { itemIds: this.selectedItems }
+                    }));
+                    this.selectedItems = [];
+                    this.updateUI();
+                });
+            } else {
+                if (confirm(`确定要删除选中的 ${this.selectedItems.length} 本书吗？`)) {
+                    window.dispatchEvent(new CustomEvent('batchDelete', {
+                        detail: { itemIds: this.selectedItems }
+                    }));
+                    this.selectedItems = [];
+                    this.updateUI();
+                }
+            }
+        },
+        
+        // 获取选中的项目
+        getSelectedItems: function() {
+            return this.selectedItems;
+        },
+        
+        // 设置书架列表
+        setShelves: function(shelves) {
+            this.shelves = shelves;
+        },
+        
+        // 是否处于批量选择模式
+        isBatchMode: function() {
+            return this.isActive;
+        }
+    };
+})();
+</script>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>话题详情 | NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 修复：添加标准导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="../bookshelf/my-bookshelf.html" class="nav-link">书架</a>
+                    <a href="../openclaw/learning-center.html" class="nav-link">学习</a>
+                    <a href="forum.html" class="nav-link active">社区</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <div id="userMenu">
+                        <button class="btn-primary" id="loginBtn" onclick="window.location.href='../user/auth.html'">登录</button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="topic-detail-layout">
+                    <!-- 主内容区 -->
+                    <div class="topic-detail-main">
+                        <!-- 话题头部 -->
+                        <div class="topic-header-card">
+                            <div class="topic-breadcrumbs">
+                                <a href="forum.html">社区</a>
+                                <span>/</span>
+                                <a href="forum.html">好书推荐</a>
+                                <span>/</span>
+                                <span>话题详情</span>
+                            </div>
+                            <h1 class="topic-detail-title" id="topicTitle">推荐几本最近看完的好书，都是精品！</h1>
+                            <div class="topic-detail-meta">
+                                <div class="topic-author-info">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="作者" class="author-avatar">
+                                    <div class="author-info">
+                                        <span class="author-name">书虫小王</span>
+                                        <span class="author-level">Lv.15</span>
+                                    </div>
+                                </div>
+                                <div class="topic-stats-bar">
+                                    <span class="topic-stat-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        2小时前
+                                    </span>
+                                    <span class="topic-stat-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                        2,340 阅读
+                                    </span>
+                                    <span class="topic-stat-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                        </svg>
+                                        128 回复
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 话题内容 -->
+                        <div class="topic-content-card">
+                            <div class="topic-body" id="topicBody">
+                                <p>最近读了几本非常不错的小说，在这里推荐给大家：</p>
+                                <h3>1. 《三体》- 刘慈欣</h3>
+                                <p>科幻巨作，脑洞大开，读完让人震撼不已。强烈推荐！</p>
+                                <h3>2. 《活着》- 余华</h3>
+                                <p>经典文学作品，讲述了一个普通人的一生，感人至深。</p>
+                                <h3>3. 《百年孤独》- 加西亚·马尔克斯</h3>
+                                <p>魔幻现实主义的代表作，值得反复阅读。</p>
+                                <p>大家还有什么好书推荐吗？欢迎在评论区分享！</p>
+                            </div>
+                            <div class="topic-actions-bar">
+                                <button class="action-btn like-btn" id="likeBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    <span id="likeCount">256</span> 点赞
+                                </button>
+                                <button class="action-btn collect-btn" id="collectBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    收藏
+                                </button>
+                                <button class="action-btn share-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="18" cy="5" r="3"></circle>
+                                        <circle cx="6" cy="12" r="3"></circle>
+                                        <circle cx="18" cy="19" r="3"></circle>
+                                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                    </svg>
+                                    分享
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 回复区域 -->
+                        <div class="replies-section">
+                            <div class="replies-header">
+                                <h3>全部回复 <span class="reply-count">128</span></h3>
+                                <div class="reply-sort">
+                                    <button class="sort-option active">最新</button>
+                                    <button class="sort-option">最热</button>
+                                </div>
+                            </div>
+
+                            <!-- 回复输入框 -->
+                            <div class="reply-input-area">
+                                <div class="reply-input-wrapper">
+                                    <textarea class="reply-textarea" placeholder="写下你的回复..." id="replyContent"></textarea>
+                                    <div class="reply-toolbar">
+                                        <div class="reply-tools">
+                                            <button class="tool-btn" title="插入表情">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                                </svg>
+                                            </button>
+                                            <button class="tool-btn" title="插入图片">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <button class="btn-primary" onclick="submitReply()">发布回复</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 回复列表 -->
+                            <div class="replies-list" id="repliesList">
+                                <!-- 动态填充 -->
+                            </div>
+
+                            <!-- 分页 -->
+                            <div class="pagination" id="pagination"></div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧边栏 -->
+                    <aside class="topic-detail-sidebar">
+                        <!-- 作者信息 -->
+                        <div class="author-card">
+                            <div class="author-card-header">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="作者" class="author-card-avatar">
+                                <div class="author-card-info">
+                                    <h4 class="author-card-name">书虫小王</h4>
+                                    <span class="author-card-level">Lv.15 资深书虫</span>
+                                </div>
+                            </div>
+                            <div class="author-card-stats">
+                                <div class="author-stat">
+                                    <span class="author-stat-value">128</span>
+                                    <span class="author-stat-label">话题</span>
+                                </div>
+                                <div class="author-stat">
+                                    <span class="author-stat-value">2.3k</span>
+                                    <span class="author-stat-label">获赞</span>
+                                </div>
+                                <div class="author-stat">
+                                    <span class="author-stat-value">456</span>
+                                    <span class="author-stat-label">粉丝</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary btn-full">关注</button>
+                        </div>
+
+                        <!-- 相关话题 -->
+                        <div class="related-topics-card">
+                            <h3 class="sidebar-card-title">相关话题</h3>
+                            <div class="related-topic-list">
+                                <a href="#" class="related-topic-item">
+                                    <span class="related-topic-title">2026年必读书单推荐</span>
+                                    <span class="related-topic-stats">89 回复</span>
+                                </a>
+                                <a href="#" class="related-topic-item">
+                                    <span class="related-topic-title">求推荐治愈系小说</span>
+                                    <span class="related-topic-stats">67 回复</span>
+                                </a>
+                                <a href="#" class="related-topic-item">
+                                    <span class="related-topic-title">最近在读什么书？</span>
+                                    <span class="related-topic-stats">234 回复</span>
+                                </a>
+                                <a href="#" class="related-topic-item">
+                                    <span class="related-topic-title">经典文学推荐</span>
+                                    <span class="related-topic-stats">156 回复</span>
+                                </a>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </main>
+
+        <!-- 修复：添加页脚，统一使用3列布局，修复链接指向 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="../discover/ranking.html" class="footer-link">排行榜</a>
+                            <a href="../discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="../bookshelf/my-bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="../bookshelf/reading-history.html" class="footer-link">阅读历史</a>
+                            <a href="../user/settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="../../index.html" class="footer-link">关于我们</a>
+                            <a href="#" class="footer-link">使用条款</a>
+                            <a href="#" class="footer-link">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 修复：添加 ES6 Module fallback 支持 file:// 协议
+        let isLiked = false;
+        let isCollected = false;
+        let likeCount = 256;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化主题
+            const savedTheme = localStorage.getItem('novelhub-theme') || 'theme-light';
+            document.body.className = savedTheme;
+            
+            // 主题切换
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                    const currentTheme = themes.find(t => document.body.classList.contains(t)) || 'theme-light';
+                    const currentIndex = themes.indexOf(currentTheme);
+                    const nextTheme = themes[(currentIndex + 1) % themes.length];
+                    
+                    document.body.className = nextTheme;
+                    localStorage.setItem('novelhub-theme', nextTheme);
+                });
+            }
+
+            // 渲染回复列表
+            renderReplies();
+
+            // 点赞功能
+            document.getElementById('likeBtn').addEventListener('click', function() {
+                isLiked = !isLiked;
+                likeCount += isLiked ? 1 : -1;
+                this.classList.toggle('active', isLiked);
+                document.getElementById('likeCount').textContent = likeCount;
+            });
+
+            // 收藏功能
+            document.getElementById('collectBtn').addEventListener('click', function() {
+                isCollected = !isCollected;
+                this.classList.toggle('active', isCollected);
+                this.innerHTML = isCollected 
+                    ? `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>已收藏`
+                    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>收藏`;
+            });
+
+            // 回复排序
+            document.querySelectorAll('.sort-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sort-option').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderReplies();
+                });
+            });
+        });
+
+        function renderReplies() {
+            const container = document.getElementById('repliesList');
+            
+            // 模拟回复数据
+            const replies = [
+                {
+                    id: 1,
+                    author: '夜读人',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user2',
+                    level: 'Lv.12',
+                    content: '《三体》确实是一部神作，读完之后久久不能平静。强烈建议没看过的人都去看看！',
+                    time: '1小时前',
+                    likes: 45,
+                    isLiked: false
+                },
+                {
+                    id: 2,
+                    author: '追书达人',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user3',
+                    level: 'Lv.10',
+                    content: '余华的作品都很经典，《活着》我看了好几遍，每次看都有不同的感受。',
+                    time: '2小时前',
+                    likes: 32,
+                    isLiked: false
+                },
+                {
+                    id: 3,
+                    author: '文字控',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user4',
+                    level: 'Lv.8',
+                    content: '推荐一本最近看的《人类简史》，虽然不是小说，但是非常值得一读。',
+                    time: '3小时前',
+                    likes: 28,
+                    isLiked: false
+                }
+            ];
+
+            container.innerHTML = replies.map(reply => `
+                <div class="reply-item">
+                    <div class="reply-author">
+                        <img src="${reply.avatar}" alt="${reply.author}" class="reply-avatar">
+                    </div>
+                    <div class="reply-content-wrapper">
+                        <div class="reply-header">
+                            <span class="reply-author-name">${reply.author}</span>
+                            <span class="reply-author-level">${reply.level}</span>
+                            <span class="reply-time">${reply.time}</span>
+                        </div>
+                        <div class="reply-content">
+                            ${reply.content}
+                        </div>
+                        <div class="reply-actions">
+                            <button class="reply-action-btn ${reply.isLiked ? 'active' : ''}" onclick="toggleReplyLike(${reply.id})">
+                                <svg viewBox="0 0 24 24" fill="${reply.isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                                ${reply.likes}
+                            </button>
+                            <button class="reply-action-btn" onclick="replyToUser('${reply.author}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                </svg>
+                                回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleReplyLike(replyId) {
+            // 模拟点赞切换
+            renderReplies();
+        }
+
+        function replyToUser(username) {
+            const textarea = document.getElementById('replyContent');
+            textarea.value = `@${username} `;
+            textarea.focus();
+        }
+
+        function submitReply() {
+            const content = document.getElementById('replyContent').value.trim();
+            if (!content) {
+                alert('请输入回复内容');
+                return;
+            }
+            
+            alert('回复发布成功！');
+            document.getElementById('replyContent').value = '';
+            renderReplies();
+        }
+    </script>
+
+    <style>
+        /* 页面布局 */
+        .topic-detail-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        /* 主内容区 */
+        .topic-detail-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* 话题头部卡片 */
+        .topic-header-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+        }
+
+        .topic-breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .topic-breadcrumbs a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .topic-breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        .topic-detail-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .topic-detail-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .topic-author-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .author-level {
+            font-size: 0.75rem;
+            color: var(--color-primary);
+        }
+
+        .topic-stats-bar {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .topic-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .topic-stat-item svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 话题内容卡片 */
+        .topic-content-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+        }
+
+        .topic-body {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--color-text-primary);
+        }
+
+        .topic-body p {
+            margin-bottom: 1rem;
+        }
+
+        .topic-body h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .topic-actions-bar {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .action-btn.active {
+            color: white;
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* 回复区域 */
+        .replies-section {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+        }
+
+        .replies-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .replies-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .reply-count {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            font-weight: 400;
+        }
+
+        .reply-sort {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .sort-option {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .sort-option:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .sort-option.active {
+            color: white;
+            background: var(--color-primary);
+        }
+
+        /* 回复输入框 */
+        .reply-input-area {
+            margin-bottom: 1.5rem;
+        }
+
+        .reply-input-wrapper {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .reply-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            font-size: 0.9375rem;
+            color: var(--color-text-primary);
+            background: transparent;
+            border: none;
+            resize: vertical;
+        }
+
+        .reply-textarea:focus {
+            outline: none;
+        }
+
+        .reply-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: var(--color-bg-tertiary);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .reply-tools {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tool-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .tool-btn:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .tool-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* 回复列表 */
+        .replies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .reply-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .reply-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+        }
+
+        .reply-content-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .reply-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .reply-author-name {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .reply-author-level {
+            font-size: 0.75rem;
+            color: var(--color-primary);
+        }
+
+        .reply-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-left: auto;
+        }
+
+        .reply-content {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            color: var(--color-text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .reply-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .reply-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .reply-action-btn:hover {
+            color: var(--color-primary);
+        }
+
+        .reply-action-btn.active {
+            color: #ef4444;
+        }
+
+        .reply-action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 右侧边栏 */
+        .topic-detail-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .author-card,
+        .related-topics-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+        }
+
+        .author-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .author-card-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+        }
+
+        .author-card-info {
+            flex: 1;
+        }
+
+        .author-card-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-card-level {
+            font-size: 0.75rem;
+            color: var(--color-primary);
+        }
+
+        .author-card-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 1rem;
+        }
+
+        .author-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .author-stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .author-stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .sidebar-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .related-topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .related-topic-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 0;
+            border-bottom: 1px solid var(--color-border);
+            text-decoration: none;
+        }
+
+        .related-topic-item:last-child {
+            border-bottom: none;
+        }
+
+        .related-topic-title {
+            flex: 1;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 0.5rem;
+        }
+
+        .related-topic-item:hover .related-topic-title {
+            color: var(--color-primary);
+        }
+
+        .related-topic-stats {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            flex-shrink: 0;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .topic-detail-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .topic-detail-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topic-detail-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .topic-stats-bar {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .topic-actions-bar {
+                flex-wrap: wrap;
+            }
+
+            .reply-item {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .reply-avatar {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+</body>
+</html>

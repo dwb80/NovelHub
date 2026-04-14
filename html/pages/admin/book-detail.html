@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍详情 | NovelHub 管理后台</title>
+    <meta name="description" content="NovelHub 管理后台 - 书籍详情管理">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <link rel="stylesheet" href="../../assets/css/admin-common.css">
+    <script src="../../assets/js/admin-theme.js"></script>
+    <style>
+        /* 书籍详情页特有样式 */
+        .book-detail-header {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .book-cover {
+            width: 200px;
+            height: 280px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            object-fit: cover;
+        }
+
+        .book-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .book-tag {
+            padding: 0.375rem 0.75rem;
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .book-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .book-stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .book-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .book-stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .section {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chapter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+        }
+
+        .chapter-item:hover {
+            border-color: var(--color-primary);
+        }
+
+        .chapter-info {
+            flex: 1;
+        }
+
+        .chapter-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .chapter-meta {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .chapter-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .chapter-status.published {
+            background: var(--color-success-bg);
+            color: var(--color-success);
+        }
+
+        .chapter-status.pending {
+            background: var(--color-warning-bg);
+            color: var(--color-warning);
+        }
+
+        .chapter-status.rejected {
+            background: var(--color-error-bg);
+            color: var(--color-error);
+        }
+
+        .comment-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .comment-item {
+            padding: 1rem;
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .comment-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .comment-username {
+            font-weight: 500;
+        }
+
+        .comment-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .comment-content {
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .tab-btn:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--color-primary-bg);
+            color: var(--color-primary);
+        }
+
+        @media (max-width: 768px) {
+            .book-detail-header {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .book-cover {
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+            }
+
+            .book-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .book-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span>NovelHub 管理后台</span>
+            </div>
+
+            <nav class="admin-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <a href="dashboard.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>数据看板</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">内容管理</div>
+                    <a href="novels.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>小说管理</span>
+                    </a>
+                    <a href="chapters.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <span>章节审核</span>
+                    </a>
+                    <a href="comments.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span>评论管理</span>
+                    </a>
+                    <a href="rankings.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10"></path>
+                            <path d="M12 20V4"></path>
+                            <path d="M6 20v-6"></path>
+                        </svg>
+                        <span>排行榜管理</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">用户管理</div>
+                    <a href="users.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>用户列表</span>
+                    </a>
+                    <a href="openclaw.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+                            <path d="M12 2a10 10 0 0 1 10 10"></path>
+                            <path d="M12 12L2.5 8.5"></path>
+                        </svg>
+                        <span>OpenClaw 审核</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">系统</div>
+                    <a href="sensitive.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>敏感词管理</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>系统设置</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">书籍详情</h1>
+                <div class="admin-actions">
+                    <button class="btn btn-secondary" onclick="window.history.back()">返回</button>
+                    <button class="btn btn-primary" onclick="editBook()">编辑书籍</button>
+                </div>
+            </div>
+
+            <!-- 书籍信息 -->
+            <div class="book-detail-header">
+                <img src="https://via.placeholder.com/200x280" alt="星辰变" class="book-cover" id="bookCover">
+                <div class="book-info">
+                    <h1 id="bookTitle">星辰变</h1>
+                    <div class="book-meta">
+                        <span class="book-tag">东方玄幻</span>
+                        <span class="book-tag">连载中</span>
+                        <span class="book-tag">VIP 作品</span>
+                        <span class="book-tag">精品推荐</span>
+                    </div>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        一名孩童，天生无法修炼内功。为了得到父亲的重视关注，这个孩童毅然选择了修炼痛苦艰难的外功。
+                        烈日下，一个孩童站在河边，他不断的挥动着手中的铁剑，不断的劈砍着河水。
+                        他的父亲，就是镇上唯一的铁匠。他的母亲，在他很小的时候就去世了。
+                        他叫秦羽，是镇长的孙子，也是镇上唯一的无法修炼内功的"废物"。
+                    </p>
+                    
+                    <div class="book-stats">
+                        <div class="book-stat-item">
+                            <div class="book-stat-value">125.8 万</div>
+                            <div class="book-stat-label">总字数</div>
+                        </div>
+                        <div class="book-stat-item">
+                            <div class="book-stat-value">458</div>
+                            <div class="book-stat-label">章节数</div>
+                        </div>
+                        <div class="book-stat-item">
+                            <div class="book-stat-value">1258 万</div>
+                            <div class="book-stat-label">阅读量</div>
+                        </div>
+                        <div class="book-stat-item">
+                            <div class="book-stat-value">52.8 万</div>
+                            <div class="book-stat-label">收藏数</div>
+                        </div>
+                    </div>
+
+                    <div class="book-actions">
+                        <button class="btn btn-primary">推荐本书</button>
+                        <button class="btn btn-success">加入精品</button>
+                        <button class="btn btn-warning">下架处理</button>
+                        <button class="btn btn-danger">封禁书籍</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 选项卡 -->
+            <div class="tab-group">
+                <button class="tab-btn active" data-tab="chapters">章节列表</button>
+                <button class="tab-btn" data-tab="comments">读者评论</button>
+                <button class="tab-btn" data-tab="data">数据分析</button>
+                <button class="tab-btn" data-tab="history">操作历史</button>
+            </div>
+
+            <!-- 章节列表 -->
+            <div class="section" id="chaptersTab">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    章节列表（458 章）
+                </div>
+                <div class="chapter-list" id="chapterList">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 读者评论 -->
+            <div class="section" id="commentsTab" style="display: none;">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    读者评论（28500 条）
+                </div>
+                <div class="comment-preview" id="commentList">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 数据分析 -->
+            <div class="section" id="dataTab" style="display: none;">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    数据分析
+                </div>
+                <div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">
+                    数据图表区域（待集成图表库）
+                </div>
+            </div>
+
+            <!-- 操作历史 -->
+            <div class="section" id="historyTab" style="display: none;">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    操作历史
+                </div>
+                <div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">
+                    操作日志记录区域
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const chapters = [
+            { id: 1, title: '第 1 章 秦家三少', status: 'published', words: 2856, pubTime: '2024-01-01 10:00', reads: 125800, comments: 258 },
+            { id: 2, title: '第 2 章 天生废体', status: 'published', words: 3024, pubTime: '2024-01-01 14:00', reads: 118500, comments: 236 },
+            { id: 3, title: '第 3 章 外功修炼', status: 'published', words: 2945, pubTime: '2024-01-02 10:00', reads: 112300, comments: 215 },
+            { id: 4, title: '第 4 章 流星泪', status: 'published', words: 3156, pubTime: '2024-01-02 14:00', reads: 108900, comments: 198 },
+            { id: 5, title: '第 5 章 先天之境', status: 'pending', words: 2876, pubTime: '-', reads: 0, comments: 0 },
+            { id: 6, title: '第 6 章 突破极限', status: 'pending', words: 3087, pubTime: '-', reads: 0, comments: 0 },
+        ];
+
+        const comments = [
+            { id: 1, user: '书虫 123', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1', content: '这本书真的太好看了，主角不靠天赋，靠努力修炼，这才是真正的强者之路！', time: '10 分钟前', likes: 258, replies: 15 },
+            { id: 2, user: '老书迷', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2', content: '番茄出品，必属精品！已经追更三个月了，每天最期待的就是更新。', time: '30 分钟前', likes: 189, replies: 8 },
+            { id: 3, user: '夜读人', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3', content: '世界观设定很宏大，剧情紧凑不拖沓，人物刻画也很到位。强烈推荐！', time: '1 小时前', likes: 156, replies: 12 },
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderChapters();
+            renderComments();
+            bindEvents();
+        });
+
+        function renderChapters() {
+            const container = document.getElementById('chapterList');
+            container.innerHTML = chapters.map(chapter => `
+                <div class="chapter-item">
+                    <div class="chapter-info">
+                        <div class="chapter-title">${chapter.title}</div>
+                        <div class="chapter-meta">
+                            ${chapter.words}字 · 
+                            ${chapter.status === 'published' ? chapter.pubTime : '待审核'} · 
+                            ${chapter.reads > 0 ? chapter.reads.toLocaleString() + '阅读' : '-'} · 
+                            ${chapter.comments > 0 ? chapter.comments + '评论' : '-'}
+                        </div>
+                    </div>
+                    <span class="chapter-status ${chapter.status}">
+                        ${chapter.status === 'published' ? '已发布' : chapter.status === 'pending' ? '待审核' : '已拒绝'}
+                    </span>
+                    <div class="action-btns">
+                        <button class="btn btn-secondary btn-sm" onclick="viewChapter(${chapter.id})">查看</button>
+                        ${chapter.status === 'pending' ? `
+                            <button class="btn btn-success btn-sm" onclick="approveChapter(${chapter.id})">通过</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectChapter(${chapter.id})">拒绝</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderComments() {
+            const container = document.getElementById('commentList');
+            container.innerHTML = comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-user">
+                            <img src="${comment.avatar}" alt="${comment.user}" class="comment-avatar">
+                            <div>
+                                <div class="comment-username">${comment.user}</div>
+                                <div class="comment-time">${comment.time}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-content">${comment.content}</div>
+                    <div class="comment-actions">
+                        <button class="btn btn-secondary btn-sm">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.25rem;">
+                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                            </svg>
+                            ${comment.likes}
+                        </button>
+                        <button class="btn btn-secondary btn-sm">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.25rem;">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                            ${comment.replies}
+                        </button>
+                        <button class="btn btn-danger btn-sm">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function bindEvents() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tab = this.dataset.tab;
+                    document.getElementById('chaptersTab').style.display = tab === 'chapters' ? 'block' : 'none';
+                    document.getElementById('commentsTab').style.display = tab === 'comments' ? 'block' : 'none';
+                    document.getElementById('dataTab').style.display = tab === 'data' ? 'block' : 'none';
+                    document.getElementById('historyTab').style.display = tab === 'history' ? 'block' : 'none';
+                });
+            });
+        }
+
+        function editBook() {
+            showToast('编辑功能开发中', 'info');
+        }
+
+        function viewChapter(id) {
+            window.location.href = `chapters.html?id=${id}`;
+        }
+
+        function approveChapter(id) {
+            if (confirm('确定要通过此章节吗？')) {
+                showToast('章节已通过', 'success');
+                renderChapters();
+            }
+        }
+
+        function rejectChapter(id) {
+            if (confirm('确定要拒绝此章节吗？')) {
+                showToast('章节已拒绝', 'success');
+                renderChapters();
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? 'var(--color-success)' : type === 'error' ? 'var(--color-error)' : 'var(--color-primary)'};
+                color: white;
+                border-radius: var(--radius-lg);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书友社区 | NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 修复：添加标准导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="../bookshelf/my-bookshelf.html" class="nav-link">书架</a>
+                    <a href="../openclaw/learning-center.html" class="nav-link">学习</a>
+                    <a href="forum.html" class="nav-link active">社区</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <div id="userMenu">
+                        <button class="btn-primary" id="loginBtn" onclick="window.location.href='../user/auth.html'">登录</button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="forum-layout">
+                    <!-- 左侧边栏 -->
+                    <aside class="forum-sidebar">
+                        <!-- 发布按钮 -->
+                        <button class="btn-primary btn-full btn-lg" onclick="openPostModal()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            发布话题
+                        </button>
+
+                        <!-- 板块列表 -->
+                        <div class="forum-sections">
+                            <h3 class="sidebar-title">热门板块</h3>
+                            <nav class="section-list">
+                                <a href="#" class="section-item active" data-section="all">
+                                    <span class="section-icon">🏠</span>
+                                    <span class="section-name">全部</span>
+                                </a>
+                                <a href="#" class="section-item" data-section="recommend">
+                                    <span class="section-icon">📚</span>
+                                    <span class="section-name">好书推荐</span>
+                                </a>
+                                <a href="#" class="section-item" data-section="review">
+                                    <span class="section-icon">📝</span>
+                                    <span class="section-name">书评交流</span>
+                                </a>
+                                <a href="#" class="section-item" data-section="discussion">
+                                    <span class="section-icon">💬</span>
+                                    <span class="section-name">剧情讨论</span>
+                                </a>
+                                <a href="#" class="section-item" data-section="creation">
+                                    <span class="section-icon">✍️</span>
+                                    <span class="section-name">创作交流</span>
+                                </a>
+                                <a href="#" class="section-item" data-section="help">
+                                    <span class="section-icon">❓</span>
+                                    <span class="section-name">求助问答</span>
+                                </a>
+                            </nav>
+                        </div>
+
+                        <!-- 热门标签 -->
+                        <div class="forum-tags">
+                            <h3 class="sidebar-title">热门标签</h3>
+                            <div class="tag-cloud">
+                                <a href="#" class="tag-item">玄幻</a>
+                                <a href="#" class="tag-item">修仙</a>
+                                <a href="#" class="tag-item">都市</a>
+                                <a href="#" class="tag-item">言情</a>
+                                <a href="#" class="tag-item">科幻</a>
+                                <a href="#" class="tag-item">悬疑</a>
+                                <a href="#" class="tag-item">历史</a>
+                                <a href="#" class="tag-item">游戏</a>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- 主内容区 -->
+                    <div class="forum-main">
+                        <!-- 筛选标签 -->
+                        <div class="forum-filter">
+                            <div class="filter-tabs">
+                                <button class="filter-tab active" data-filter="hot">热门</button>
+                                <button class="filter-tab" data-filter="new">最新</button>
+                                <button class="filter-tab" data-filter="top">精华</button>
+                            </div>
+                        </div>
+
+                        <!-- 话题列表 -->
+                        <div class="topic-list" id="topicList">
+                            <!-- 动态填充 -->
+                        </div>
+
+                        <!-- 分页 -->
+                        <div class="pagination" id="pagination"></div>
+                    </div>
+
+                    <!-- 右侧边栏 -->
+                    <aside class="forum-rightbar">
+                        <!-- 社区公告 -->
+                        <div class="notice-card">
+                            <h3 class="card-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                社区公告
+                            </h3>
+                            <ul class="notice-list">
+                                <li class="notice-item">
+                                    <span class="notice-badge">置顶</span>
+                                    <a href="#" class="notice-text">社区规范更新，请仔细阅读</a>
+                                </li>
+                                <li class="notice-item">
+                                    <span class="notice-badge new">NEW</span>
+                                    <a href="#" class="notice-text">2026年度好书评选活动开始</a>
+                                </li>
+                                <li class="notice-item">
+                                    <a href="#" class="notice-text">关于近期系统维护的通知</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- 活跃用户 -->
+                        <div class="active-users-card">
+                            <h3 class="card-title">活跃用户</h3>
+                            <div class="user-list">
+                                <div class="user-item">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="用户" class="user-avatar">
+                                    <div class="user-info">
+                                        <span class="user-name">书虫小王</span>
+                                        <span class="user-level">Lv.15</span>
+                                    </div>
+                                </div>
+                                <div class="user-item">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user2" alt="用户" class="user-avatar">
+                                    <div class="user-info">
+                                        <span class="user-name">夜读人</span>
+                                        <span class="user-level">Lv.12</span>
+                                    </div>
+                                </div>
+                                <div class="user-item">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user3" alt="用户" class="user-avatar">
+                                    <div class="user-info">
+                                        <span class="user-name">追书达人</span>
+                                        <span class="user-level">Lv.10</span>
+                                    </div>
+                                </div>
+                                <div class="user-item">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user4" alt="用户" class="user-avatar">
+                                    <div class="user-info">
+                                        <span class="user-name">文字控</span>
+                                        <span class="user-level">Lv.8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 今日热帖 -->
+                        <div class="hot-topics-card">
+                            <h3 class="card-title">今日热帖</h3>
+                            <ol class="hot-topic-list">
+                                <li class="hot-topic-item">
+                                    <span class="hot-rank top">1</span>
+                                    <a href="#" class="hot-topic-title">推荐几本最近看完的好书</a>
+                                </li>
+                                <li class="hot-topic-item">
+                                    <span class="hot-rank top">2</span>
+                                    <a href="#" class="hot-topic-title">这本小说的结局太意想不到了</a>
+                                </li>
+                                <li class="hot-topic-item">
+                                    <span class="hot-rank top">3</span>
+                                    <a href="#" class="hot-topic-title">求推荐类似《XXX》的小说</a>
+                                </li>
+                                <li class="hot-topic-item">
+                                    <span class="hot-rank">4</span>
+                                    <a href="#" class="hot-topic-title">新人作者求指导</a>
+                                </li>
+                                <li class="hot-topic-item">
+                                    <span class="hot-rank">5</span>
+                                    <a href="#" class="hot-topic-title">讨论：你最喜欢的反派角色</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </main>
+
+        <!-- 修复：添加页脚 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="../discover/ranking.html" class="footer-link">排行榜</a>
+                            <a href="../discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="../bookshelf/my-bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="../bookshelf/reading-history.html" class="footer-link">阅读历史</a>
+                            <a href="../user/settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="../../index.html" class="footer-link">关于我们</a>
+                            <a href="../../index.html" class="footer-link">使用条款</a>
+                            <a href="../../index.html" class="footer-link">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 发布话题弹窗 -->
+    <div class="modal" id="postModal" style="display: none;">
+        <div class="modal-overlay" onclick="closePostModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>发布话题</h3>
+                <button class="modal-close" onclick="closePostModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" placeholder="请输入话题标题" id="postTitle">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">板块</label>
+                    <select class="form-select" id="postSection">
+                        <option value="recommend">好书推荐</option>
+                        <option value="review">书评交流</option>
+                        <option value="discussion">剧情讨论</option>
+                        <option value="creation">创作交流</option>
+                        <option value="help">求助问答</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">内容</label>
+                    <textarea class="form-textarea" rows="6" placeholder="请输入话题内容" id="postContent"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closePostModal()">取消</button>
+                <button class="btn-primary" onclick="submitPost()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 修复：添加 ES6 Module fallback 支持 file:// 协议
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化主题
+            const savedTheme = localStorage.getItem('novelhub-theme') || 'theme-light';
+            document.body.className = savedTheme;
+            
+            // 主题切换
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                    const currentTheme = themes.find(t => document.body.classList.contains(t)) || 'theme-light';
+                    const currentIndex = themes.indexOf(currentTheme);
+                    const nextTheme = themes[(currentIndex + 1) % themes.length];
+                    
+                    document.body.className = nextTheme;
+                    localStorage.setItem('novelhub-theme', nextTheme);
+                });
+            }
+
+            // 渲染话题列表
+            renderTopics();
+
+            // 板块切换
+            document.querySelectorAll('.section-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.section-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    renderTopics();
+                });
+            });
+
+            // 筛选切换
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    renderTopics();
+                });
+            });
+        });
+
+        function renderTopics() {
+            const container = document.getElementById('topicList');
+            
+            // 模拟话题数据
+            const topics = [
+                {
+                    id: 1,
+                    title: '推荐几本最近看完的好书，都是精品！',
+                    author: '书虫小王',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user1',
+                    section: 'recommend',
+                    replies: 128,
+                    views: 2340,
+                    isTop: true,
+                    isHot: true,
+                    time: '2小时前'
+                },
+                {
+                    id: 2,
+                    title: '这本小说的结局太意想不到了，大家怎么看？',
+                    author: '夜读人',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user2',
+                    section: 'discussion',
+                    replies: 89,
+                    views: 1567,
+                    isTop: false,
+                    isHot: true,
+                    time: '4小时前'
+                },
+                {
+                    id: 3,
+                    title: '新人作者求指导，关于小说开头的写法',
+                    author: '追书达人',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user3',
+                    section: 'creation',
+                    replies: 45,
+                    views: 892,
+                    isTop: false,
+                    isHot: false,
+                    time: '6小时前'
+                },
+                {
+                    id: 4,
+                    title: '求推荐类似《斗破苍穹》的玄幻小说',
+                    author: '文字控',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user4',
+                    section: 'help',
+                    replies: 67,
+                    views: 1234,
+                    isTop: false,
+                    isHot: false,
+                    time: '8小时前'
+                },
+                {
+                    id: 5,
+                    title: '【书评】《三体》读后感，震撼人心的科幻巨作',
+                    author: '科幻迷',
+                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=user5',
+                    section: 'review',
+                    replies: 234,
+                    views: 4567,
+                    isTop: true,
+                    isHot: true,
+                    time: '1天前'
+                }
+            ];
+
+            container.innerHTML = topics.map(topic => `
+                <div class="topic-item ${topic.isTop ? 'top' : ''} ${topic.isHot ? 'hot' : ''}">
+                    <div class="topic-author">
+                        <img src="${topic.avatar}" alt="${topic.author}" class="topic-avatar">
+                    </div>
+                    <div class="topic-content">
+                        <div class="topic-badges">
+                            ${topic.isTop ? '<span class="topic-badge top">置顶</span>' : ''}
+                            ${topic.isHot ? '<span class="topic-badge hot">热门</span>' : ''}
+                            <span class="topic-section">${getSectionName(topic.section)}</span>
+                        </div>
+                        <h3 class="topic-title">
+                            <a href="topic.html?id=${topic.id}">${topic.title}</a>
+                        </h3>
+                        <div class="topic-meta">
+                            <span class="topic-author-name">${topic.author}</span>
+                            <span class="topic-time">${topic.time}</span>
+                        </div>
+                    </div>
+                    <div class="topic-stats">
+                        <div class="topic-stat">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                            <span>${topic.replies}</span>
+                        </div>
+                        <div class="topic-stat">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <span>${topic.views}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getSectionName(section) {
+            const names = {
+                'recommend': '好书推荐',
+                'review': '书评交流',
+                'discussion': '剧情讨论',
+                'creation': '创作交流',
+                'help': '求助问答'
+            };
+            return names[section] || '其他';
+        }
+
+        function openPostModal() {
+            document.getElementById('postModal').style.display = 'flex';
+        }
+
+        function closePostModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        function submitPost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            
+            if (!title.trim()) {
+                alert('请输入标题');
+                return;
+            }
+            if (!content.trim()) {
+                alert('请输入内容');
+                return;
+            }
+            
+            alert('话题发布成功！');
+            closePostModal();
+            
+            // 清空表单
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+        }
+    </script>
+
+    <style>
+        /* 页面布局 */
+        .forum-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr 280px;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        /* 左侧边栏 */
+        .forum-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .btn-lg {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-lg svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .section-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .section-item:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .section-item.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .section-icon {
+            font-size: 1.25rem;
+        }
+
+        .section-name {
+            font-size: 0.9375rem;
+        }
+
+        /* 标签云 */
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag-item {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+        }
+
+        .tag-item:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        /* 主内容区 */
+        .forum-main {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+        }
+
+        .forum-filter {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-tab:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .filter-tab.active {
+            color: white;
+            background: var(--color-primary);
+        }
+
+        /* 话题列表 */
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .topic-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-fast);
+        }
+
+        .topic-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topic-item.top {
+            background: linear-gradient(135deg, var(--color-bg-secondary) 0%, rgba(245, 158, 11, 0.05) 100%);
+        }
+
+        .topic-author {
+            flex-shrink: 0;
+        }
+
+        .topic-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+        }
+
+        .topic-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .topic-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.375rem;
+        }
+
+        .topic-badge {
+            padding: 0.125rem 0.375rem;
+            font-size: 0.625rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+        }
+
+        .topic-badge.top {
+            color: white;
+            background: #f59e0b;
+        }
+
+        .topic-badge.hot {
+            color: white;
+            background: #ef4444;
+        }
+
+        .topic-section {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .topic-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .topic-title a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+        }
+
+        .topic-title a:hover {
+            color: var(--color-primary);
+        }
+
+        .topic-meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+        }
+
+        .topic-author-name {
+            color: var(--color-primary);
+        }
+
+        .topic-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .topic-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+        }
+
+        .topic-stat svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 右侧边栏 */
+        .forum-rightbar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .notice-card,
+        .active-users-card,
+        .hot-topics-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .card-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--color-primary);
+        }
+
+        .notice-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .notice-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notice-badge {
+            padding: 0.125rem 0.375rem;
+            font-size: 0.625rem;
+            font-weight: 600;
+            color: white;
+            background: #f59e0b;
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+        }
+
+        .notice-badge.new {
+            background: #ef4444;
+        }
+
+        .notice-text {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .notice-text:hover {
+            color: var(--color-primary);
+        }
+
+        /* 活跃用户 */
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+        }
+
+        .user-level {
+            font-size: 0.75rem;
+            color: var(--color-primary);
+        }
+
+        /* 热帖 */
+        .hot-topic-list {
+            list-style: none;
+            counter-reset: hot-rank;
+        }
+
+        .hot-topic-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .hot-topic-item:last-child {
+            border-bottom: none;
+        }
+
+        .hot-rank {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+        }
+
+        .hot-rank.top {
+            color: white;
+            background: #f59e0b;
+        }
+
+        .hot-topic-title {
+            flex: 1;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .hot-topic-title:hover {
+            color: var(--color-primary);
+        }
+
+        /* 弹窗 */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            z-index: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .modal-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .modal-body {
+            padding: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9375rem;
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .forum-layout {
+                grid-template-columns: 200px 1fr;
+            }
+
+            .forum-rightbar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .forum-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .forum-sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .forum-sections {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .forum-tags {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .topic-item {
+                flex-wrap: wrap;
+            }
+
+            .topic-stats {
+                flex-direction: row;
+                width: 100%;
+                justify-content: flex-start;
+                padding-left: 56px;
+            }
+        }
+    </style>
+</body>
+</html>

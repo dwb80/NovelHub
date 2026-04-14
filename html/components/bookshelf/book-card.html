@@ -1,0 +1,651 @@
+<!-- 书籍卡片组件 -->
+<template id="bookCardTemplate">
+    <div class="book-card">
+        <div class="book-card-cover">
+            <img class="book-cover-img" src="" alt="" loading="lazy">
+            <div class="book-card-badge"></div>
+            <div class="book-card-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <span class="progress-text"></span>
+            </div>
+        </div>
+        <div class="book-card-info">
+            <h4 class="book-card-title"></h4>
+            <p class="book-card-author"></p>
+            <p class="book-card-chapter"></p>
+            <div class="book-card-meta">
+                <span class="book-card-update"></span>
+                <span class="book-card-tag"></span>
+            </div>
+        </div>
+        <div class="book-card-actions">
+            <button class="book-card-btn btn-continue" title="继续阅读">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+            </button>
+            <button class="book-card-btn btn-more" title="更多操作">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="1"/>
+                    <circle cx="19" cy="12" r="1"/>
+                    <circle cx="5" cy="12" r="1"/>
+                </svg>
+            </button>
+        </div>
+        <div class="book-card-checkbox">
+            <input type="checkbox" class="batch-checkbox">
+        </div>
+    </div>
+</template>
+
+<style>
+/* 书籍卡片样式 */
+.book-card {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.book-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.book-card.select-mode {
+    padding-left: 3rem;
+}
+
+.book-card.select-mode .book-card-checkbox {
+    display: flex;
+}
+
+.book-card.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+}
+
+/* 封面 */
+.book-card-cover {
+    position: relative;
+    width: 80px;
+    height: 112px;
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.book-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.book-card-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: white;
+    background: var(--color-error);
+    border-radius: 0 0 var(--radius-sm) 0;
+}
+
+.book-card-badge.update {
+    background: var(--color-success);
+}
+
+.book-card-badge.new {
+    background: var(--color-primary);
+}
+
+.book-card-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.book-card-progress .progress-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.book-card-progress .progress-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.book-card-progress .progress-text {
+    display: block;
+    font-size: 0.625rem;
+    color: white;
+    margin-top: 0.25rem;
+}
+
+/* 信息区域 */
+.book-card-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.book-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.book-card-author,
+.book-card-chapter {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.book-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.book-card-update {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.book-card-tag {
+    padding: 0.125rem 0.375rem;
+    font-size: 0.625rem;
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+    border-radius: var(--radius-sm);
+}
+
+/* 操作按钮 */
+.book-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.book-card:hover .book-card-actions {
+    opacity: 1;
+}
+
+.book-card-btn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.book-card-btn:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.book-card-btn svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* 复选框 */
+.book-card-checkbox {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.batch-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+/* 网格布局 */
+.book-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+/* 列表布局 */
+.book-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.book-card-list .book-card {
+    flex-direction: row;
+}
+
+/* 封面布局 */
+.book-card-cover-only {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+.book-card-cover-only .book-card {
+    flex-direction: column;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.book-card-cover-only .book-card-cover {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/4;
+}
+
+.book-card-cover-only .book-card-info {
+    padding: 0.5rem 0;
+}
+
+.book-card-cover-only .book-card-title {
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.book-card-cover-only .book-card-author,
+.book-card-cover-only .book-card-chapter,
+.book-card-cover-only .book-card-meta,
+.book-card-cover-only .book-card-actions {
+    display: none;
+}
+
+/* 更多菜单 */
+.book-card-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 140px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    display: none;
+    overflow: hidden;
+}
+
+.book-card-menu.active {
+    display: block;
+}
+
+.book-card-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.book-card-menu-item:hover {
+    background: var(--color-bg-secondary);
+}
+
+.book-card-menu-item.danger {
+    color: var(--color-error);
+}
+
+.book-card-menu-item svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+    .book-card {
+        padding: 0.75rem;
+    }
+    
+    .book-card-cover {
+        width: 64px;
+        height: 90px;
+    }
+    
+    .book-card-title {
+        font-size: 0.9375rem;
+    }
+    
+    .book-card-actions {
+        opacity: 1;
+    }
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    window.BookCard = {
+        // 创建书籍卡片
+        create: function(book, options = {}) {
+            const template = document.getElementById('bookCardTemplate');
+            if (!template) {
+                console.error('BookCard template not found');
+                return null;
+            }
+            
+            const clone = template.content.cloneNode(true);
+            const card = clone.querySelector('.book-card');
+            
+            // 设置数据属性
+            card.dataset.bookId = book.id;
+            
+            // 封面
+            const coverImg = card.querySelector('.book-cover-img');
+            coverImg.src = book.cover || '../../assets/images/default-cover.jpg';
+            coverImg.alt = book.title;
+            
+            // 徽章
+            const badge = card.querySelector('.book-card-badge');
+            if (book.isNew) {
+                badge.textContent = 'NEW';
+                badge.classList.add('new');
+            } else if (book.hasUpdate) {
+                badge.textContent = '更新';
+                badge.classList.add('update');
+            } else {
+                badge.style.display = 'none';
+            }
+            
+            // 进度
+            const progressFill = card.querySelector('.progress-fill');
+            const progressText = card.querySelector('.progress-text');
+            const progress = book.progress || 0;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = progress >= 100 ? '已读完' : `已读 ${progress}%`;
+            
+            // 信息
+            card.querySelector('.book-card-title').textContent = book.title;
+            card.querySelector('.book-card-author').textContent = book.author;
+            card.querySelector('.book-card-chapter').textContent = book.currentChapter || '未开始阅读';
+            
+            // 元信息
+            const updateEl = card.querySelector('.book-card-update');
+            if (book.lastReadTime) {
+                updateEl.textContent = this.formatTime(book.lastReadTime);
+            } else if (book.updateTime) {
+                updateEl.textContent = this.formatTime(book.updateTime);
+            } else {
+                updateEl.style.display = 'none';
+            }
+            
+            const tagEl = card.querySelector('.book-card-tag');
+            if (book.tag) {
+                tagEl.textContent = book.tag;
+            } else {
+                tagEl.style.display = 'none';
+            }
+            
+            // 绑定事件
+            this.bindEvents(card, book, options);
+            
+            return card;
+        },
+        
+        // 绑定事件
+        bindEvents: function(card, book, options) {
+            // 卡片点击
+            card.addEventListener('click', (e) => {
+                // 如果点击的是操作按钮或复选框，不触发卡片点击
+                if (e.target.closest('.book-card-btn') || 
+                    e.target.closest('.book-card-checkbox') ||
+                    e.target.closest('.book-card-menu')) {
+                    return;
+                }
+                
+                if (options.onClick) {
+                    options.onClick(book);
+                }
+            });
+            
+            // 继续阅读按钮
+            const continueBtn = card.querySelector('.btn-continue');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (options.onContinue) {
+                        options.onContinue(book);
+                    } else {
+                        // 默认跳转到阅读页
+                        window.location.href = `../reader/reading.html?id=${book.id}&chapter=${book.currentChapterNum || 1}`;
+                    }
+                });
+            }
+            
+            // 更多按钮
+            const moreBtn = card.querySelector('.btn-more');
+            if (moreBtn) {
+                moreBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.showMenu(card, book, options);
+                });
+            }
+            
+            // 复选框
+            const checkbox = card.querySelector('.batch-checkbox');
+            if (checkbox) {
+                checkbox.addEventListener('change', (e) => {
+                    card.classList.toggle('selected', e.target.checked);
+                    if (options.onSelect) {
+                        options.onSelect(book, e.target.checked);
+                    }
+                });
+            }
+        },
+        
+        // 显示更多菜单
+        showMenu: function(card, book, options) {
+            // 移除已有的菜单
+            const existingMenu = card.querySelector('.book-card-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+            
+            const menu = document.createElement('div');
+            menu.className = 'book-card-menu active';
+            menu.innerHTML = `
+                <div class="book-card-menu-item" data-action="detail">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    查看详情
+                </div>
+                <div class="book-card-menu-item" data-action="top">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="17 11 12 6 7 11"/>
+                        <polyline points="17 18 12 13 7 18"/>
+                    </svg>
+                    置顶
+                </div>
+                <div class="book-card-menu-item" data-action="move">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    移动到
+                </div>
+                <div class="book-card-menu-item danger" data-action="delete">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    删除
+                </div>
+            `;
+            
+            const actionsBtn = card.querySelector('.btn-more');
+            actionsBtn.style.position = 'relative';
+            actionsBtn.appendChild(menu);
+            
+            // 绑定菜单项点击
+            menu.querySelectorAll('.book-card-menu-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const action = item.dataset.action;
+                    
+                    switch (action) {
+                        case 'detail':
+                            if (options.onDetail) {
+                                options.onDetail(book);
+                            } else {
+                                window.location.href = `../detail/index.html?id=${book.id}`;
+                            }
+                            break;
+                        case 'top':
+                            if (options.onTop) {
+                                options.onTop(book);
+                            }
+                            break;
+                        case 'move':
+                            if (options.onMove) {
+                                options.onMove(book);
+                            }
+                            break;
+                        case 'delete':
+                            if (options.onDelete) {
+                                options.onDelete(book);
+                            }
+                            break;
+                    }
+                    
+                    menu.remove();
+                });
+            });
+            
+            // 点击其他地方关闭菜单
+            const closeMenu = (e) => {
+                if (!menu.contains(e.target)) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+            setTimeout(() => {
+                document.addEventListener('click', closeMenu);
+            }, 0);
+        },
+        
+        // 设置批量选择模式
+        setSelectMode: function(container, enabled) {
+            container.querySelectorAll('.book-card').forEach(card => {
+                card.classList.toggle('select-mode', enabled);
+            });
+        },
+        
+        // 获取选中的书籍
+        getSelectedBooks: function(container) {
+            const selected = [];
+            container.querySelectorAll('.book-card.selected').forEach(card => {
+                selected.push(card.dataset.bookId);
+            });
+            return selected;
+        },
+        
+        // 全选/取消全选
+        toggleSelectAll: function(container, select) {
+            container.querySelectorAll('.book-card').forEach(card => {
+                const checkbox = card.querySelector('.batch-checkbox');
+                if (checkbox) {
+                    checkbox.checked = select;
+                    card.classList.toggle('selected', select);
+                }
+            });
+        },
+        
+        // 格式化时间
+        formatTime: function(timeStr) {
+            const date = new Date(timeStr);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 3600000) {
+                const minutes = Math.floor(diff / 60000);
+                return minutes < 1 ? '刚刚' : `${minutes}分钟前`;
+            }
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
+                return `${hours}小时前`;
+            }
+            if (diff < 604800000) {
+                const days = Math.floor(diff / 86400000);
+                return `${days}天前`;
+            }
+            
+            return date.toLocaleDateString('zh-CN');
+        },
+        
+        // 渲染书籍列表
+        render: function(container, books, options = {}) {
+            container.innerHTML = '';
+            
+            if (!books || books.length === 0) {
+                container.innerHTML = options.emptyHtml || '<div class="empty-state">暂无书籍</div>';
+                return;
+            }
+            
+            // 添加布局类
+            const layoutClass = options.layout || 'grid';
+            container.className = `book-card-${layoutClass}`;
+            
+            books.forEach(book => {
+                const card = this.create(book, options);
+                if (card) {
+                    container.appendChild(card);
+                }
+            });
+        }
+    };
+})();
+</script>

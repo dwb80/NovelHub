@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 修复：补充缺失的keywords元数据 -->
+    <meta name="keywords" content="小说分类,玄幻小说,都市小说,言情小说,网络小说分类,NovelHub">
+    <meta name="description" content="浏览NovelHub小说分类，发现玄幻、都市、言情、科幻等各类精彩小说">
+    <title>分类 - NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <!-- P1级修复：统一规范CSS -->
+    <link rel="stylesheet" href="../../assets/css/unified.css">
+    <style>
+        .category-page {
+            padding: 2rem 0;
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .category-page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-page-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+        }
+
+        .category-filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-option {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+        }
+
+        .filter-option:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .filter-option.active {
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+            border-color: var(--color-primary);
+        }
+
+        .category-all-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .category-all-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1.5rem;
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            transition: all var(--transition-base);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .category-all-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .category-all-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-all-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-all-count {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .category-novels-section {
+            margin-top: 3rem;
+        }
+
+        .category-novels-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .category-novels-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .category-novels-count {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        .sort-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sort-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+        }
+
+        .sort-btn:hover {
+            color: var(--color-text-primary);
+            background: var(--color-bg-secondary);
+        }
+
+        .sort-btn.active {
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+            border-color: var(--color-primary);
+        }
+
+        .novels-result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--color-bg-tertiary);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-desc {
+            color: var(--color-text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .category-all-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 1rem;
+            }
+
+            .category-all-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .category-all-icon {
+                font-size: 2.5rem;
+            }
+
+            .novels-result-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 1rem;
+            }
+
+            .category-filter-bar {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 导航栏 -->
+        <header id="navbar" class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link" data-page="home">首页</a>
+                    <a href="category.html" class="nav-link active" data-page="category">分类</a>
+                    <a href="ranking.html" class="nav-link" data-page="ranking">排行</a>
+                    <a href="../bookshelf/my-bookshelf.html" class="nav-link" data-page="bookshelf">书架</a>
+                    <a href="../openclaw/writer-growth.html" class="nav-link">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <a href="search.html" class="btn-icon search-btn" aria-label="搜索">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </a>
+                    <div class="user-menu" id="userMenu">
+                        <a href="../user/login.html" class="btn-primary">登录</a>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="main-content" id="mainContent">
+            <div class="container">
+                <div class="category-page">
+                    <!-- 页面标题 -->
+                    <div class="category-header">
+                        <h1 class="category-page-title">小说分类</h1>
+                        <p class="category-page-subtitle">发现你喜欢的小说类型，探索无限精彩世界</p>
+                    </div>
+
+                    <!-- 筛选栏 -->
+                    <div class="category-filter-bar" id="categoryFilterBar">
+                        <div class="filter-group">
+                            <span class="filter-label">分类</span>
+                            <div class="filter-options" id="categoryFilters">
+                                <span class="filter-option active" data-category="all">全部分类</span>
+                                <!-- 其他分类由 JS 动态生成 -->
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">状态</span>
+                            <div class="filter-options" id="statusFilters">
+                                <span class="filter-option active" data-status="all">全部</span>
+                                <span class="filter-option" data-status="serializing">连载中</span>
+                                <span class="filter-option" data-status="completed">已完结</span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">字数</span>
+                            <div class="filter-options" id="wordCountFilters">
+                                <span class="filter-option active" data-wordcount="all">全部</span>
+                                <span class="filter-option" data-wordcount="short">100 万以下</span>
+                                <span class="filter-option" data-wordcount="medium">100-300 万</span>
+                                <span class="filter-option" data-wordcount="long">300 万以上</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 全部分类展示 -->
+                    <section class="category-all-section">
+                        <div class="category-all-grid" id="categoryAllGrid">
+                            <!-- 分类卡片由 JS 动态生成 -->
+                        </div>
+                    </section>
+
+                    <!-- 小说列表区域 -->
+                    <section class="category-novels-section" id="categoryNovelsSection" style="display: none;">
+                        <div class="category-novels-header">
+                            <h2 class="category-novels-title" id="categoryNovelsTitle">玄幻小说</h2>
+                            <span class="category-novels-count" id="categoryNovelsCount">共 0 本</span>
+                        </div>
+
+                        <!-- 排序栏 -->
+                        <div class="sort-bar">
+                            <button class="sort-btn active" data-sort="hot">热门</button>
+                            <button class="sort-btn" data-sort="new">最新</button>
+                            <button class="sort-btn" data-sort="rating">评分</button>
+                            <button class="sort-btn" data-sort="subscribers">订阅</button>
+                        </div>
+
+                        <!-- 小说列表 -->
+                        <div class="novels-result-grid" id="novelsResultGrid">
+                            <!-- 小说卡片由 JS 动态生成 -->
+                        </div>
+
+                        <!-- 加载更多 -->
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <button class="btn-primary" id="loadMoreBtn" style="display: none;">加载更多</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <!-- 修复：统一页脚结构为3列布局 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="category.html" class="footer-link">分类浏览</a>
+                            <a href="ranking.html" class="footer-link">排行榜</a>
+                            <a href="search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="../bookshelf/my-bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="../bookshelf/reading-history.html" class="footer-link">阅读历史</a>
+                            <a href="../user/settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('关于我们页面即将上线');">关于我们</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('使用条款页面即将上线');">使用条款</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 全局数据文件 -->
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- P2级UX修复：可访问性增强（键盘导航、ARIA标签、跳过导航链接） -->
+    <script src="../../assets/js/accessibility-p2-fix.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+
+    <script>
+        // 使用全局 Mock 数据
+        let CATEGORIES, NOVELS;
+        
+        // 当前状态
+        let currentCategory = 'all';
+        let currentStatus = 'all';
+        let currentWordCount = 'all';
+        let currentSort = 'hot';
+        let currentPage = 1;
+        const pageSize = 20;
+
+        // 等待数据加载
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.MockData) {
+                CATEGORIES = window.MockData.CATEGORIES;
+                NOVELS = window.MockData.NOVELS;
+                console.log('✓ Mock 数据加载成功');
+                
+                // 从 URL 获取参数
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryId = urlParams.get('id');
+                
+                // 初始化页面
+                initCategoryFilters();
+                renderCategoryAllGrid();
+                
+                // 如果有分类 ID，直接显示该分类的小说
+                if (categoryId) {
+                    selectCategory(categoryId);
+                }
+                
+                // 绑定事件
+                initFilterEvents();
+                initSortEvents();
+                initThemeToggle();
+            } else {
+                console.error('✗ Mock 数据加载失败');
+            }
+        });
+
+        // 工具函数
+        function formatNumber(num) {
+            if (num >= 10000) {
+                return (num / 10000).toFixed(1) + '万';
+            }
+            return num.toString();
+        }
+
+        function formatWordCount(count) {
+            if (count >= 10000) {
+                return (count / 10000).toFixed(0) + '万字';
+            }
+            return count + '字';
+        }
+
+        // 初始化分类筛选
+        function initCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            const categories = CATEGORIES.slice(0, 12);
+            
+            const html = `
+                <span class="filter-option ${currentCategory === 'all' ? 'active' : ''}" data-category="all">全部分类</span>
+                ${categories.map(cat => `
+                    <span class="filter-option ${currentCategory === cat.id ? 'active' : ''}" data-category="${cat.id}">${cat.name}</span>
+                `).join('')}
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // 渲染全部分类网格
+        function renderCategoryAllGrid() {
+            const grid = document.getElementById('categoryAllGrid');
+            
+            grid.innerHTML = CATEGORIES.map(cat => `
+                <a href="?id=${cat.id}" class="category-all-card" style="border-color: ${cat.color}20;">
+                    <span class="category-all-icon">${cat.icon}</span>
+                    <span class="category-all-name">${cat.name}</span>
+                    <span class="category-all-count">${formatNumber(cat.count)}本</span>
+                </a>
+            `).join('');
+        }
+
+        // 选择分类
+        function selectCategory(categoryId) {
+            currentCategory = categoryId;
+            
+            // 更新筛选按钮状态
+            document.querySelectorAll('#categoryFilters .filter-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.category === categoryId);
+            });
+            
+            // 隐藏全部分类展示，显示小说列表
+            document.getElementById('categoryAllGrid').closest('.category-all-section').style.display = 'none';
+            document.getElementById('categoryNovelsSection').style.display = 'block';
+            
+            // 更新标题
+            if (categoryId === 'all') {
+                document.getElementById('categoryNovelsTitle').textContent = '全部小说';
+            } else {
+                const category = CATEGORIES.find(c => c.id === categoryId);
+                if (category) {
+                    document.getElementById('categoryNovelsTitle').textContent = category.name;
+                }
+            }
+            
+            // 加载小说
+            loadNovels();
+        }
+
+        // 加载小说列表
+        function loadNovels() {
+            const grid = document.getElementById('novelsResultGrid');
+            let filtered = [...NOVELS];
+            
+            // 按分类筛选
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(n => n.category === currentCategory);
+            }
+            
+            // 按状态筛选
+            if (currentStatus !== 'all') {
+                const isSerializing = currentStatus === 'serializing';
+                filtered = filtered.filter(n => n.is_serializing === isSerializing);
+            }
+            
+            // 按字数筛选
+            if (currentWordCount !== 'all') {
+                switch(currentWordCount) {
+                    case 'short':
+                        filtered = filtered.filter(n => n.wordCount < 1000000);
+                        break;
+                    case 'medium':
+                        filtered = filtered.filter(n => n.wordCount >= 1000000 && n.wordCount < 3000000);
+                        break;
+                    case 'long':
+                        filtered = filtered.filter(n => n.wordCount >= 3000000);
+                        break;
+                }
+            }
+            
+            // 排序
+            switch(currentSort) {
+                case 'hot':
+                    filtered.sort((a, b) => b.todayViews - a.todayViews);
+                    break;
+                case 'new':
+                    filtered.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                    break;
+                case 'rating':
+                    filtered.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'subscribers':
+                    filtered.sort((a, b) => b.subscriberCount - a.subscriberCount);
+                    break;
+            }
+            
+            // 更新计数
+            document.getElementById('categoryNovelsCount').textContent = `共 ${filtered.length} 本`;
+            
+            // 分页
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pageNovels = filtered.slice(start, end);
+            
+            // 渲染小说卡片
+            if (pageNovels.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">📚</div>
+                        <h3 class="empty-title">暂无小说</h3>
+                        <p class="empty-desc">换个条件试试吧</p>
+                    </div>
+                `;
+                document.getElementById('loadMoreBtn').style.display = 'none';
+            } else {
+                grid.innerHTML = pageNovels.map(novel => renderNovelCard(novel)).join('');
+                
+                // 显示加载更多按钮
+                const loadMoreBtn = document.getElementById('loadMoreBtn');
+                if (end < filtered.length) {
+                    loadMoreBtn.style.display = 'inline-block';
+                    loadMoreBtn.onclick = () => {
+                        currentPage++;
+                        const moreNovels = filtered.slice(start + pageSize, start + pageSize * 2);
+                        grid.innerHTML += moreNovels.map(novel => renderNovelCard(novel)).join('');
+                        if (start + pageSize * 2 >= filtered.length) {
+                            loadMoreBtn.style.display = 'none';
+                        }
+                    };
+                } else {
+                    loadMoreBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // 渲染小说卡片
+        function renderNovelCard(novel) {
+            return `
+                <a href="../novel/detail.html?id=${novel.id}" class="novel-card">
+                    <div class="novel-cover">
+                        <img src="${novel.cover}" alt="${novel.title}" loading="lazy">
+                        ${novel.isHot ? '<span class="novel-badge badge badge-error">热门</span>' : ''}
+                        ${novel.isNew ? '<span class="novel-badge badge badge-success" style="top: 2rem;">新书</span>' : ''}
+                    </div>
+                    <div class="novel-info">
+                        <h3 class="novel-title">${novel.title}</h3>
+                        <p class="novel-author">${novel.author}</p>
+                        <div class="novel-stats">
+                            <span class="novel-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                ${formatNumber(novel.todayViews)}
+                            </span>
+                            <span class="novel-stat" style="color: var(--color-warning);">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
+                                ${novel.rating}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        // 初始化筛选事件
+        function initFilterEvents() {
+            // 分类筛选
+            document.getElementById('categoryFilters').addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-option')) {
+                    const categoryId = e.target.dataset.category;
+                    if (categoryId === currentCategory) return;
+                    
+                    selectCategory(categoryId);
+                    
+                    // 滚动到小说列表
+                    document.getElementById('categoryNovelsSection').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+            
+            // 状态筛选
+            document.getElementById('statusFilters').addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-option')) {
+                    document.querySelectorAll('#statusFilters .filter-option').forEach(opt => opt.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentStatus = e.target.dataset.status;
+                    currentPage = 1;
+                    loadNovels();
+                }
+            });
+            
+            // 字数筛选
+            document.getElementById('wordCountFilters').addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-option')) {
+                    document.querySelectorAll('#wordCountFilters .filter-option').forEach(opt => opt.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentWordCount = e.target.dataset.wordcount;
+                    currentPage = 1;
+                    loadNovels();
+                }
+            });
+        }
+
+        // 初始化排序事件
+        function initSortEvents() {
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSort = btn.dataset.sort;
+                    currentPage = 1;
+                    loadNovels();
+                });
+            });
+        }
+
+        // 主题切换
+        function initThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+            let currentThemeIndex = 0;
+
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+                document.body.classList.add(themes[currentThemeIndex]);
+                localStorage.setItem('theme', themes[currentThemeIndex]);
+            });
+
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme && themes.includes(savedTheme)) {
+                document.body.classList.remove(themes[currentThemeIndex]);
+                currentThemeIndex = themes.indexOf(savedTheme);
+                document.body.classList.add(savedTheme);
+            }
+        }
+    </script>
+</body>
+</html>

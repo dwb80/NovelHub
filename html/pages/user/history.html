@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读历史 | NovelHub</title>
+    <meta name="description" content="查看您的阅读历史记录，快速回到上次阅读位置">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+</head>
+<body class="theme-light">
+    <div id="app" class="app-container">
+        <!-- 导航栏 -->
+        <header class="navbar">
+            <div class="navbar-inner">
+                <a href="../../index.html" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span class="logo-text">NovelHub</span>
+                </a>
+                <nav class="nav-menu">
+                    <a href="../../index.html" class="nav-link">首页</a>
+                    <a href="../discover/category.html" class="nav-link">分类</a>
+                    <a href="../discover/ranking.html" class="nav-link">排行</a>
+                    <a href="bookshelf.html" class="nav-link">书架</a>
+                    <a href="../openclaw/writer-growth.html" class="nav-link">学习</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <div id="userMenu">
+                        <button class="btn-primary" id="loginBtn" onclick="window.location.href='auth.html'">登录</button>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="container">
+                <div class="history-layout">
+                    <!-- 左侧边栏 -->
+                    <aside class="history-sidebar">
+                        <div class="user-card">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="用户头像" class="user-avatar">
+                            <h2 class="user-name">爱读书的小明</h2>
+                            <p class="user-level">Lv.12 资深书虫</p>
+                        </div>
+
+                        <nav class="sidebar-nav">
+                            <a href="bookshelf.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                                我的书架
+                                <span class="nav-badge">10</span>
+                            </a>
+                            <a href="history.html" class="sidebar-nav-item active">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                阅读历史
+                            </a>
+                            <a href="favorites.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                收藏夹
+                            </a>
+                            <a href="notifications.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                                通知中心
+                                <span class="nav-badge badge-error">3</span>
+                            </a>
+                            <a href="settings.html" class="sidebar-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                                个人设置
+                            </a>
+                        </nav>
+                    </aside>
+
+                    <!-- 主内容区 -->
+                    <div class="history-main">
+                        <!-- 页面标题 -->
+                        <div class="page-header">
+                            <h1 class="page-title">阅读历史</h1>
+                            <div class="page-actions">
+                                <button class="btn-secondary" id="clearHistoryBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                    清空历史
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 统计卡片 -->
+                        <div class="stats-cards">
+                            <div class="stat-card">
+                                <div class="stat-icon">📚</div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="totalBooks">0</span>
+                                    <span class="stat-label">阅读书籍</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="totalHours">0</span>
+                                    <span class="stat-label">阅读时长(小时)</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📖</div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="totalChapters">0</span>
+                                    <span class="stat-label">阅读章节</span>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🔥</div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="streakDays">0</span>
+                                    <span class="stat-label">连续阅读(天)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 时间筛选 -->
+                        <div class="time-filter">
+                            <button class="time-tab active" data-period="all">全部</button>
+                            <button class="time-tab" data-period="today">今天</button>
+                            <button class="time-tab" data-period="week">本周</button>
+                            <button class="time-tab" data-period="month">本月</button>
+                        </div>
+
+                        <!-- 历史列表 -->
+                        <div class="history-content" id="historyContent">
+                            <!-- 动态填充 -->
+                        </div>
+
+                        <!-- 空状态 -->
+                        <div class="empty-state" id="emptyState" style="display: none;">
+                            <div class="empty-icon">📖</div>
+                            <h3 class="empty-title">暂无阅读记录</h3>
+                            <p class="empty-desc">开始阅读精彩小说，记录您的阅读旅程</p>
+                            <a href="../../index.html" class="btn-primary">去发现好书</a>
+                        </div>
+
+                        <!-- 分页 -->
+                        <div class="pagination" id="pagination">
+                            <button class="pagination-btn" disabled>上一页</button>
+                            <span class="pagination-info">第 1 页</span>
+                            <button class="pagination-btn" disabled>下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-inner">
+                    <div class="footer-brand">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="logo-text">NovelHub</span>
+                        </div>
+                        <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-title">阅读</h4>
+                            <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                            <a href="../discover/ranking.html" class="footer-link">排行榜</a>
+                            <a href="../discover/search.html" class="footer-link">搜索小说</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">我的</h4>
+                            <a href="bookshelf.html" class="footer-link">我的书架</a>
+                            <a href="history.html" class="footer-link">阅读历史</a>
+                            <a href="settings.html" class="footer-link">个人设置</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-title">关于</h4>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('关于我们页面即将上线');">关于我们</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('使用条款页面即将上线');">使用条款</a>
+                            <a href="#" class="footer-link" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            renderHistory();
+            initTimeFilter();
+            initClearHistory();
+            updateStats();
+        });
+
+        // 主题初始化
+        function initTheme() {
+            const savedTheme = localStorage.getItem('novelhub-theme') || 'theme-light';
+            document.body.className = savedTheme;
+
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                    const currentTheme = themes.find(t => document.body.classList.contains(t)) || 'theme-light';
+                    const currentIndex = themes.indexOf(currentTheme);
+                    const nextTheme = themes[(currentIndex + 1) % themes.length];
+
+                    document.body.className = nextTheme;
+                    localStorage.setItem('novelhub-theme', nextTheme);
+                });
+            }
+        }
+
+        // 更新统计数据
+        function updateStats() {
+            const history = window.MockData?.READING_HISTORY_DATA || [];
+            const uniqueBooks = new Set(history.map(h => h.novel_id)).size;
+            const totalMinutes = history.reduce((sum, h) => sum + (h.duration_minutes || 0), 0);
+            const totalHours = Math.round(totalMinutes / 60);
+            const totalChapters = history.length;
+            const streakDays = Math.floor(Math.random() * 30) + 1;
+
+            document.getElementById('totalBooks').textContent = uniqueBooks;
+            document.getElementById('totalHours').textContent = totalHours;
+            document.getElementById('totalChapters').textContent = totalChapters;
+            document.getElementById('streakDays').textContent = streakDays;
+        }
+
+        // 渲染历史记录
+        function renderHistory(period = 'all') {
+            const container = document.getElementById('historyContent');
+            const emptyState = document.getElementById('emptyState');
+
+            let history = [];
+            if (window.MockData && window.MockData.READING_HISTORY_DATA) {
+                history = window.MockData.READING_HISTORY_DATA;
+            }
+
+            // 按时间筛选
+            const now = new Date();
+            if (period !== 'all') {
+                history = history.filter(item => {
+                    const readDate = new Date(item.read_at);
+                    switch(period) {
+                        case 'today':
+                            return readDate.toDateString() === now.toDateString();
+                        case 'week':
+                            const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                            return readDate >= weekAgo;
+                        case 'month':
+                            const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+                            return readDate >= monthAgo;
+                        default:
+                            return true;
+                    }
+                });
+            }
+
+            // 按时间排序
+            history.sort((a, b) => new Date(b.read_at) - new Date(a.read_at));
+
+            if (history.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'flex';
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            emptyState.style.display = 'none';
+            document.getElementById('pagination').style.display = 'flex';
+
+            // 按日期分组
+            const groupedHistory = groupByDate(history);
+            container.innerHTML = groupedHistory.map(group => renderHistoryGroup(group)).join('');
+        }
+
+        // 按日期分组
+        function groupByDate(history) {
+            const groups = {};
+            history.forEach(item => {
+                const date = new Date(item.read_at);
+                const dateKey = formatDate(date);
+                if (!groups[dateKey]) {
+                    groups[dateKey] = {
+                        date: dateKey,
+                        items: []
+                    };
+                }
+                groups[dateKey].items.push(item);
+            });
+            return Object.values(groups);
+        }
+
+        // 格式化日期
+        function formatDate(date) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(today - 24 * 60 * 60 * 1000);
+            const itemDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+            if (itemDate.getTime() === today.getTime()) {
+                return '今天';
+            } else if (itemDate.getTime() === yesterday.getTime()) {
+                return '昨天';
+            } else {
+                return `${date.getMonth() + 1}月${date.getDate()}日`;
+            }
+        }
+
+        // 渲染历史组
+        function renderHistoryGroup(group) {
+            return `
+                <div class="history-group">
+                    <div class="history-date">
+                        <span class="date-label">${group.date}</span>
+                        <span class="date-count">${group.items.length} 条记录</span>
+                    </div>
+                    <div class="history-list">
+                        ${group.items.map(item => renderHistoryItem(item)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染历史项
+        function renderHistoryItem(item) {
+            const novel = item.novel || {};
+            const progress = item.progress || 0;
+            const readTime = formatDuration(item.duration_minutes || 0);
+            const readAt = new Date(item.read_at).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+
+            return `
+                <div class="history-item">
+                    <div class="history-item-cover">
+                        <img src="${novel.cover || 'https://picsum.photos/200/267'}" alt="${novel.title || '小说'}" loading="lazy">
+                    </div>
+                    <div class="history-item-info">
+                        <div class="history-item-header">
+                            <h3 class="history-item-title">${novel.title || '未知小说'}</h3>
+                            <span class="history-item-time">${readAt}</span>
+                        </div>
+                        <p class="history-item-chapter">${item.chapter_title || '未知章节'}</p>
+                        <div class="history-item-meta">
+                            <span class="history-item-author">${novel.author || '未知作者'}</span>
+                            <span class="history-item-duration">阅读 ${readTime}</span>
+                        </div>
+                        <div class="history-item-progress">
+                            <div class="progress-bar progress-bar-small">
+                                <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                            </div>
+                            <span class="progress-text">${progress}%</span>
+                        </div>
+                    </div>
+                    <div class="history-item-actions">
+                        <button class="btn-primary btn-sm" onclick="continueReading('${item.novel_id}', '${item.chapter_id}')">继续阅读</button>
+                        <button class="btn-ghost btn-sm" onclick="addToBookshelf('${item.novel_id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            加入书架
+                        </button>
+                        <button class="btn-icon btn-sm" onclick="deleteHistoryItem('${item.id}')" title="删除记录">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 格式化时长
+        function formatDuration(minutes) {
+            if (minutes < 1) {
+                return '1分钟';
+            } else if (minutes < 60) {
+                return `${minutes}分钟`;
+            } else {
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                return mins > 0 ? `${hours}小时${mins}分钟` : `${hours}小时`;
+            }
+        }
+
+        // 时间筛选
+        function initTimeFilter() {
+            const tabs = document.querySelectorAll('.time-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    const period = this.dataset.period;
+                    renderHistory(period);
+                });
+            });
+        }
+
+        // 清空历史
+        function initClearHistory() {
+            const btn = document.getElementById('clearHistoryBtn');
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    if (confirm('确定要清空所有阅读历史吗？此操作不可恢复。')) {
+                        showToast('阅读历史已清空', 'success');
+                        renderHistory();
+                        updateStats();
+                    }
+                });
+            }
+        }
+
+        // 继续阅读
+        function continueReading(novelId, chapterId) {
+            if (!chapterId) {
+                showToast('无法定位阅读位置', 'warning');
+                return;
+            }
+            window.location.href = `../reader/reading.html?novel=${novelId}&chapter=${chapterId}`;
+        }
+
+        // 加入书架
+        function addToBookshelf(novelId) {
+            showToast('已加入书架', 'success');
+        }
+
+        // 删除历史记录
+        function deleteHistoryItem(itemId) {
+            if (confirm('确定要删除这条阅读记录吗？')) {
+                showToast('已删除阅读记录', 'success');
+                const currentPeriod = document.querySelector('.time-tab.active')?.dataset.period || 'all';
+                renderHistory(currentPeriod);
+                updateStats();
+            }
+        }
+
+        // 显示Toast
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+                <span class="toast-message">${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+
+    <style>
+        /* 页面布局 */
+        .history-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        /* 左侧边栏 */
+        .history-sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .user-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            margin-bottom: 0.75rem;
+            border: 3px solid var(--color-primary-light);
+        }
+
+        .user-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .user-level {
+            font-size: 0.875rem;
+            color: var(--color-primary);
+        }
+
+        .sidebar-nav {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: all var(--duration-fast);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .sidebar-nav-item:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-nav-item:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .sidebar-nav-item.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .sidebar-nav-item svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            padding: 0.125rem 0.5rem;
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .nav-badge.badge-error {
+            background: var(--color-error-light);
+            color: var(--color-error);
+        }
+
+        /* 主内容区 */
+        .history-main {
+            min-height: 600px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .page-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* 统计卡片 */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            transition: all var(--duration-fast);
+        }
+
+        .stat-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* 时间筛选 */
+        .time-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .time-tab {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .time-tab:hover {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .time-tab.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        /* 历史列表 */
+        .history-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .history-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .history-date {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .date-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .date-count {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            padding: 0.125rem 0.5rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-full);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all var(--duration-fast);
+        }
+
+        .history-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .history-item-cover {
+            width: 80px;
+            height: 107px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .history-item-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .history-item-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-item-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-item-time {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            flex-shrink: 0;
+        }
+
+        .history-item-chapter {
+            font-size: 0.875rem;
+            color: var(--color-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-item-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .history-item-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-bar-small {
+            flex: 1;
+            height: 4px;
+            background: var(--color-bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--color-primary);
+            border-radius: var(--radius-full);
+            transition: width var(--duration-base);
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            min-width: 2.5rem;
+            text-align: right;
+        }
+
+        .history-item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-ghost {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn-ghost svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .btn-icon:hover {
+            border-color: var(--color-error);
+            color: var(--color-error);
+        }
+
+        .btn-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-desc {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .history-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .history-sidebar {
+                position: static;
+                display: flex;
+                gap: 1rem;
+                overflow-x: auto;
+            }
+
+            .user-card {
+                display: none;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                min-width: max-content;
+            }
+
+            .sidebar-nav-item {
+                border-bottom: none;
+                border-right: 1px solid var(--color-border);
+            }
+
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .history-item {
+                flex-direction: column;
+            }
+
+            .history-item-cover {
+                width: 100%;
+                height: 200px;
+            }
+
+            .history-item-actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .time-filter {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

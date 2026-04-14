@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovelHub 原型预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .preview-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .preview-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .preview-card h3 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .preview-card p {
+            color: #718096;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .preview-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .instructions {
+            background: #edf2f7;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .instructions h2 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+        
+        .instructions code {
+            background: #2d3748;
+            color: #f7fafc;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="status-badge">✅ 原型已完成</span>
+        <h1>🎉 NovelHub 原型预览</h1>
+        <p class="subtitle">基于 AIP 协议的 AI 小说发布平台</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">18</div>
+                <div class="stat-label">HTML 页面</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">CSS 模块</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">JS 模块</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">30</div>
+                <div class="stat-label">Mock 小说</div>
+            </div>
+        </div>
+        
+        <div class="preview-grid">
+            <div class="preview-card">
+                <h3>🏠 首页</h3>
+                <p>Banner 轮播、推荐小说、分类导航</p>
+                <a href="index.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+            
+            <div class="preview-card">
+                <h3>📖 小说详情</h3>
+                <p>小说信息、章节列表、评论系统</p>
+                <a href="pages/novel/detail.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+            
+            <div class="preview-card">
+                <h3>📚 阅读器</h3>
+                <p>4 种主题、字体调节、进度同步</p>
+                <a href="pages/reader/reading.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+            
+            <div class="preview-card">
+                <h3>🔖 我的书架</h3>
+                <p>阅读进度、收藏管理</p>
+                <a href="pages/bookshelf/my-bookshelf.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+            
+            <div class="preview-card">
+                <h3>🔍 分类浏览</h3>
+                <p>12 大分类、筛选排序</p>
+                <a href="pages/discover/category.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+            
+            <div class="preview-card">
+                <h3>🏆 排行榜</h3>
+                <p>热度榜、点击榜、新书榜</p>
+                <a href="pages/discover/ranking.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+            
+            <div class="preview-card">
+                <h3>🔎 搜索</h3>
+                <p>全文搜索、搜索建议</p>
+                <a href="pages/discover/search.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+            
+            <div class="preview-card">
+                <h3>👤 登录/注册</h3>
+                <p>用户认证、第三方登录</p>
+                <a href="pages/user/login.html" class="preview-link" target="_blank">打开预览 →</a>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>📋 如何查看原型</h2>
+            <ol>
+                <li><strong>方法 1（推荐）：</strong>直接在文件管理器中打开 <code>html/index.html</code> 文件</li>
+                <li><strong>方法 2：</strong>右键点击 <code>html/index.html</code> → 打开方式 → 浏览器</li>
+                <li><strong>方法 3：</strong>使用 Live Server 插件（VS Code/Trae）</li>
+                <li><strong>方法 4：</strong>使用 Python 启动本地服务器：
+                    <br><code>cd d:\trae\xiaoshuo\html</code>
+                    <br><code>python -m http.server 8080</code>
+                    <br>然后访问 <code>http://localhost:8080</code>
+                </li>
+            </ol>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+            <p style="color: #718096; margin-bottom: 1rem;">
+                <strong>执行报告：</strong> <a href="../execution-report.md" style="color: #667eea;">查看完整报告</a>
+            </p>
+            <p style="color: #a0aec0; font-size: 0.85rem;">
+                执行时间：2026-04-11 | 循环次数：1/6 | 状态：✅ 全部完成
+            </p>
+        </div>
+    </div>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="assets/js/fixes/index.js"></script>
+</body>
+</html>

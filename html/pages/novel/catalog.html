@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>目录 - NovelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/layout.css">
+    <link rel="stylesheet" href="../../assets/css/themes.css">
+</head>
+<body class="theme-light">
+    <!-- 页面加载器 -->
+    <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-label="页面加载中">
+        <div class="loader-spinner" aria-hidden="true"></div>
+        <p class="loader-text">正在加载...</p>
+    </div>
+
+    <!-- 跳过导航 -->
+    <a href="#mainContent" class="skip-link sr-only">跳转到主要内容</a>
+
+    <div id="toastContainer" class="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <header class="navbar" role="banner">
+        <div class="navbar-inner">
+            <a href="../../index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span class="logo-text">NovelHub</span>
+            </a>
+            <nav class="nav-menu">
+                <a href="../../index.html" class="nav-link">首页</a>
+                <a href="../discover/category.html" class="nav-link">分类</a>
+                <a href="../discover/ranking.html" class="nav-link">排行</a>
+                <a href="../bookshelf/my-bookshelf.html" class="nav-link">书架</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="btn-icon search-btn" aria-label="搜索" onclick="window.location.href='../discover/search.html'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+                <div class="user-menu" id="userMenu">
+                    <button class="btn-primary" id="loginBtn" onclick="window.location.href='../user/auth.html'">登录</button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content" id="mainContent" role="main">
+        <div class="container">
+            <div class="catalog-header" id="catalogHeader" role="region" aria-label="小说信息">
+                <!-- 动态填充小说信息 -->
+            </div>
+
+            <div class="catalog-toolbar" role="toolbar" aria-label="目录工具栏">
+                <div class="catalog-info">
+                    <span class="catalog-chapter-count">共 <strong id="totalChapters">0</strong> 章</span>
+                    <span class="catalog-progress" id="readProgress" aria-live="polite"></span>
+                </div>
+                <div class="catalog-controls">
+                    <div class="filter-section">
+                        <label for="statusFilter" class="sr-only">筛选章节</label>
+                        <select class="filter-select" id="statusFilter" aria-label="筛选章节">
+                            <option value="all">全部章节</option>
+                            <option value="published">已发布</option>
+                            <option value="vip">VIP章节</option>
+                        </select>
+                    </div>
+                    <div class="jump-section">
+                        <label for="jumpInput" class="sr-only">跳转到章节</label>
+                        <input type="number" id="jumpInput" class="jump-input" placeholder="章号" min="1" aria-label="章节号">
+                        <button class="btn-secondary btn-small" id="jumpBtn" aria-label="跳转">跳转</button>
+                    </div>
+                    <div class="sort-controls" role="group" aria-label="排序方式">
+                        <button class="sort-btn active" id="sortAsc" title="正序" aria-label="正序排列" aria-pressed="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <polyline points="19 12 12 19 5 12"></polyline>
+                            </svg>
+                        </button>
+                        <button class="sort-btn" id="sortDesc" title="倒序" aria-label="倒序排列" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <line x1="12" y1="19" x2="12" y2="5"></line>
+                                <polyline points="5 12 12 5 19 12"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="catalog-list" id="catalogList" role="list" aria-label="章节目录">
+                <!-- 动态填充章节列表 -->
+            </div>
+
+            <nav class="pagination" id="pagination" role="navigation" aria-label="分页导航">
+                <!-- 动态填充分页 -->
+            </nav>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <span class="logo-text">NovelHub</span>
+                    </div>
+                    <p class="footer-desc">AI 驱动的小说创作与阅读平台</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4 class="footer-title">阅读</h4>
+                        <a href="../discover/category.html" class="footer-link">分类浏览</a>
+                        <a href="../discover/ranking.html" class="footer-link">排行榜</a>
+                        <a href="#" class="footer-link">完本小说</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-title">我的</h4>
+                        <a href="../bookshelf/my-bookshelf.html" class="footer-link">我的书架</a>
+                        <a href="../user/history.html" class="footer-link">阅读历史</a>
+                        <a href="../user/settings.html" class="footer-link">个人设置</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4 class="footer-title">关于</h4>
+                        <a href="#" class="footer-link" onclick="event.preventDefault(); alert('关于我们页面即将上线');">关于我们</a>
+                        <a href="#" class="footer-link" onclick="event.preventDefault(); alert('使用条款页面即将上线');">使用条款</a>
+                        <a href="#" class="footer-link" onclick="event.preventDefault(); alert('隐私政策页面即将上线');">隐私政策</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NovelHub. All rights reserved. Powered by OpenClaw AI</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../assets/js/mock/data-global.js"></script>
+    
+    <!-- NovelHub 统一修复模块：空状态、移动端菜单、图片占位符、表单验证、页面标题 -->
+    <script src="../../assets/js/fixes/index.js"></script>
+    
+    <script>
+        // 全局函数定义
+        let initCommon, showToast;
+        
+        initCommon = function() {
+            const saved = localStorage.getItem('novelhub-theme');
+            if (saved) document.body.className = saved;
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) toggle.addEventListener('click', () => {
+                const themes = ['theme-light', 'theme-paper', 'theme-dark', 'theme-eye-care'];
+                const current = themes.findIndex(t => document.body.classList.contains(t));
+                document.body.className = themes[(current + 1) % themes.length];
+                localStorage.setItem('novelhub-theme', document.body.className);
+            });
+        };
+        
+        showToast = function(msg, type) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-' + (type || 'info');
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        };
+
+        // 数据变量
+        let NOVELS, CHAPTERS, READING_HISTORY;
+        let currentNovel = null;
+        let allChapters = [];
+        let filteredChapters = [];
+        let currentPage = 1;
+        let pageSize = 20;
+        let isAscending = true;
+        
+        // 初始化数据
+        function initData() {
+            if (window.MockData) {
+                NOVELS = window.MockData.NOVELS || [];
+                CHAPTERS = window.MockData.CHAPTERS || [];
+                READING_HISTORY = window.MockData.READING_HISTORY || [];
+            } else if (window.NOVELS) {
+                NOVELS = window.NOVELS || [];
+                CHAPTERS = window.CHAPTERS || [];
+                READING_HISTORY = window.READING_HISTORY || [];
+            } else {
+                console.error('无法找到数据');
+                NOVELS = [];
+                CHAPTERS = [];
+                READING_HISTORY = [];
+            }
+        }
+        let currentFilter = 'all';
+        let lastReadChapter = null;
+
+        // 格式化字数
+        function formatWordCount(count) {
+            if (count >= 10000) {
+                return (count / 10000).toFixed(1) + '万';
+            }
+            return count.toString();
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('zh-CN');
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                'completed': '已完结',
+                'published': '连载中',
+                'draft': '草稿'
+            };
+            return statusMap[status] || status;
+        }
+
+        // 获取状态样式类
+        function getStatusClass(status) {
+            const classMap = {
+                'completed': 'badge-success',
+                'published': 'badge-primary',
+                'draft': 'badge-warning'
+            };
+            return classMap[status] || 'badge-secondary';
+        }
+
+        // 渲染头部
+        function renderHeader() {
+            const header = document.getElementById('catalogHeader');
+            const statusText = getStatusText(currentNovel.status);
+            const statusClass = getStatusClass(currentNovel.status);
+
+            header.innerHTML = `
+                <div class="catalog-novel-info">
+                    <div class="catalog-cover">
+                        <img src="${currentNovel.cover}" alt="${currentNovel.title}" loading="lazy">
+                    </div>
+                    <div class="catalog-novel-meta">
+                        <div class="catalog-title-row">
+                            <h1 class="catalog-title">${currentNovel.title}</h1>
+                            <span class="badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <p class="catalog-author">
+                            <span class="author-label">作者：</span>
+                            <a href="detail.html?novel=${currentNovel.id}" class="author-name">${currentNovel.author}</a>
+                        </p>
+                        <div class="catalog-tags">
+                            <span class="tag">${currentNovel.category}</span>
+                            ${currentNovel.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="catalog-stats">
+                            <span class="catalog-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                                ${formatWordCount(currentNovel.wordCount)}字
+                            </span>
+                            <span class="catalog-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                ${currentNovel.chapterCount}章
+                            </span>
+                            <span class="catalog-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                ${currentNovel.rating}分
+                            </span>
+                            <span class="catalog-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                ${formatWordCount(currentNovel.view_count)}阅读
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-actions">
+                    <button class="btn-primary" id="continueReadingBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        ${lastReadChapter ? '继续阅读' : '开始阅读'}
+                    </button>
+                    <button class="btn-secondary" id="favoriteBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        收藏
+                    </button>
+                    <a href="detail.html?novel=${currentNovel.id}" class="btn-secondary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        详情
+                    </a>
+                </div>
+            `;
+
+            // 绑定按钮事件
+            document.getElementById('continueReadingBtn').addEventListener('click', () => {
+                if (lastReadChapter) {
+                    window.location.href = `../reader/reading.html?novel=${currentNovel.id}&chapter=${lastReadChapter.chapter_id}`;
+                } else if (filteredChapters.length > 0) {
+                    const firstChapter = isAscending ? filteredChapters[0] : filteredChapters[filteredChapters.length - 1];
+                    window.location.href = `../reader/reading.html?novel=${currentNovel.id}&chapter=${firstChapter.id}`;
+                }
+            });
+
+            document.getElementById('favoriteBtn').addEventListener('click', function() {
+                this.classList.toggle('active');
+                const isActive = this.classList.contains('active');
+                showToast(isActive ? '已添加到书架' : '已取消收藏', isActive ? 'success' : 'info');
+            });
+        }
+
+        // 渲染章节列表
+        function renderChapterList() {
+            const list = document.getElementById('catalogList');
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pageChapters = filteredChapters.slice(start, end);
+
+            if (pageChapters.length === 0) {
+                list.innerHTML = '<div class="empty-state">暂无章节</div>';
+                return;
+            }
+
+            list.innerHTML = pageChapters.map((chapter, index) => {
+                const isRead = lastReadChapter && lastReadChapter.order_index >= chapter.order_index;
+                const isLocked = chapter.isVip;
+                const statusClass = chapter.status === 'published' ? 'badge-success' : 'badge-warning';
+                const statusText = chapter.status === 'published' ? '已发布' : '待发布';
+                const actualIndex = isAscending ? start + index + 1 : filteredChapters.length - start - index;
+
+                return `
+                    <div class="chapter-item ${isRead ? 'read' : ''} ${isLocked ? 'vip' : ''}" data-index="${chapter.order_index}" data-id="${chapter.id}">
+                        <div class="chapter-number">第${chapter.order_index}章</div>
+                        <div class="chapter-content">
+                            <h3 class="chapter-title">${chapter.title.replace(/^第\d+章\s*/, '')}</h3>
+                            <div class="chapter-meta">
+                                <span class="chapter-words">${formatWordCount(chapter.word_count)}字</span>
+                                <span class="chapter-date">${formatDate(chapter.published_at || chapter.created_at)}</span>
+                                ${isLocked ? '<span class="chapter-status badge-primary">VIP</span>' : `<span class="chapter-status ${statusClass}">${statusText}</span>`}
+                            </div>
+                        </div>
+                        ${isRead ? '<span class="chapter-read-mark">已读</span>' : ''}
+                        <button class="btn-icon chapter-read-btn" title="阅读" ${chapter.status === 'draft' ? 'disabled' : ''} data-chapter="${chapter.id}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            // 绑定阅读按钮事件
+            list.querySelectorAll('.chapter-read-btn:not([disabled])').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const chapterId = btn.dataset.chapter;
+                    window.location.href = `../reader/reading.html?novel=${currentNovel.id}&chapter=${chapterId}`;
+                });
+            });
+
+            // 点击整行也可以跳转
+            list.querySelectorAll('.chapter-item').forEach(item => {
+                if (!item.classList.contains('vip')) {
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.closest('.chapter-read-btn')) {
+                            const chapterId = item.dataset.id;
+                            window.location.href = `../reader/reading.html?novel=${currentNovel.id}&chapter=${chapterId}`;
+                        }
+                    });
+                }
+            });
+        }
+
+        // 渲染分页
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(filteredChapters.length / pageSize);
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} id="prevPage">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+            `;
+
+            // 页码按钮
+            const maxButtons = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+            let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+            if (endPage - startPage < maxButtons - 1) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+
+            if (startPage > 1) {
+                html += `<button class="page-btn" data-page="1">1</button>`;
+                if (startPage > 2) {
+                    html += `<span class="page-ellipsis">...</span>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    html += `<span class="page-ellipsis">...</span>`;
+                }
+                html += `<button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
+            }
+
+            html += `
+                <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} id="nextPage">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            `;
+
+            pagination.innerHTML = html;
+
+            // 绑定分页事件
+            pagination.querySelectorAll('.page-btn[data-page]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentPage = parseInt(btn.dataset.page);
+                    renderChapterList();
+                    renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            document.getElementById('prevPage')?.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderChapterList();
+                    renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            document.getElementById('nextPage')?.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderChapterList();
+                    renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        // 过滤章节
+        function filterChapters() {
+            filteredChapters = allChapters.filter(chapter => {
+                if (currentFilter === 'all') return true;
+                if (currentFilter === 'published') return chapter.status === 'published';
+                if (currentFilter === 'vip') return chapter.isVip;
+                return true;
+            });
+
+            // 排序
+            filteredChapters.sort((a, b) => {
+                return isAscending ? a.order_index - b.order_index : b.order_index - a.order_index;
+            });
+
+            // 更新总数显示
+            document.getElementById('totalChapters').textContent = filteredChapters.length;
+
+            // 重置到第一页
+            currentPage = 1;
+
+            renderChapterList();
+            renderPagination();
+        }
+
+        // 跳转章节
+        function jumpToChapter() {
+            const input = document.getElementById('jumpInput');
+            const chapterNum = parseInt(input.value);
+
+            if (!chapterNum || chapterNum < 1 || chapterNum > allChapters.length) {
+                showToast(`请输入有效的章节号 (1-${allChapters.length})`, 'warning');
+                return;
+            }
+
+            const targetChapter = allChapters.find(c => c.order_index === chapterNum);
+            if (targetChapter) {
+                // 计算目标章节在哪一页
+                const targetIndex = filteredChapters.findIndex(c => c.id === targetChapter.id);
+                if (targetIndex === -1) {
+                    showToast('该章节在当前筛选条件下不可用', 'warning');
+                    return;
+                }
+
+                currentPage = Math.floor(targetIndex / pageSize) + 1;
+                renderChapterList();
+                renderPagination();
+
+                // 高亮目标章节
+                setTimeout(() => {
+                    const targetItem = document.querySelector(`.chapter-item[data-index="${chapterNum}"]`);
+                    if (targetItem) {
+                        targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetItem.classList.add('highlight');
+                        setTimeout(() => targetItem.classList.remove('highlight'), 2000);
+                    }
+                }, 100);
+            }
+
+            input.value = '';
+        }
+
+        // 初始化页面
+        function initPage() {
+            // 从URL获取小说ID（支持 'novel' 和 'id' 两种参数名）
+            const urlParams = new URLSearchParams(window.location.search);
+            const novelId = urlParams.get('novel') || urlParams.get('id') || NOVELS[0].id;
+
+            // 查找小说数据
+            currentNovel = NOVELS.find(n => n.id === novelId) || NOVELS[0];
+
+            // 获取该小说的章节
+            allChapters = CHAPTERS.filter(c => c.novel_id === currentNovel.id);
+
+            // 获取阅读进度
+            const history = READING_HISTORY.find(h => h.novel_id === currentNovel.id);
+            if (history) {
+                lastReadChapter = {
+                    chapter_id: history.chapter_id,
+                    order_index: history.chapterId,
+                    title: history.chapterTitle
+                };
+            }
+
+            // 更新页面标题
+            document.title = `目录 - ${currentNovel.title} | NovelHub`;
+
+            // 更新跳转输入框的最大值
+            document.getElementById('jumpInput').max = allChapters.length;
+
+            // 渲染页面
+            renderHeader();
+            filterChapters();
+
+            // 更新阅读进度显示
+            if (lastReadChapter) {
+                const progress = Math.round((lastReadChapter.order_index / allChapters.length) * 100);
+                document.getElementById('readProgress').textContent = `已读 ${progress}%`;
+            }
+        }
+
+        // 更新排序按钮的 aria-pressed 状态
+        function updateSortButtonAria() {
+            const sortAsc = document.getElementById('sortAsc');
+            const sortDesc = document.getElementById('sortDesc');
+            sortAsc.setAttribute('aria-pressed', isAscending ? 'true' : 'false');
+            sortDesc.setAttribute('aria-pressed', isAscending ? 'false' : 'true');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initData(); // 初始化数据
+            initCommon();
+            initPage();
+
+            // 绑定排序按钮
+            document.getElementById('sortAsc').addEventListener('click', () => {
+                isAscending = true;
+                document.getElementById('sortAsc').classList.add('active');
+                document.getElementById('sortDesc').classList.remove('active');
+                updateSortButtonAria();
+                filterChapters();
+            });
+
+            document.getElementById('sortDesc').addEventListener('click', () => {
+                isAscending = false;
+                document.getElementById('sortDesc').classList.add('active');
+                document.getElementById('sortAsc').classList.remove('active');
+                updateSortButtonAria();
+                filterChapters();
+            });
+
+            // 绑定筛选器
+            document.getElementById('statusFilter').addEventListener('change', (e) => {
+                currentFilter = e.target.value;
+                filterChapters();
+            });
+
+            // 绑定跳转按钮
+            document.getElementById('jumpBtn').addEventListener('click', jumpToChapter);
+
+            document.getElementById('jumpInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    jumpToChapter();
+                }
+            });
+
+            // 隐藏页面加载器
+            setTimeout(() => {
+                const loader = document.getElementById('pageLoader');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 500);
+        });
+    </script>
+
+    <style>
+        /* 页面加载器样式 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s var(--ease-default), visibility 0.3s var(--ease-default);
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid var(--color-bg-tertiary);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            margin-top: 1rem;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* 跳过导航链接 */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-md);
+            z-index: 10000;
+            font-weight: 500;
+            transition: top 0.2s var(--ease-default);
+        }
+
+        .skip-link:focus {
+            top: 1rem;
+        }
+
+        /* 骨架屏加载 */
+        .skeleton-loader {
+            background: linear-gradient(90deg, var(--color-bg-tertiary) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-md);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 增强焦点样式 */
+        *:focus-visible {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 5px var(--color-primary-light);
+        }
+
+        /* 空状态组件 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-muted);
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: var(--text-h4);
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-description {
+            font-size: var(--text-body);
+            color: var(--color-text-secondary);
+            max-width: 400px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 目录页样式 */
+        .catalog-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-bg-secondary) 100%);
+            border-radius: var(--radius-xl);
+            margin-bottom: 2rem;
+        }
+
+        .catalog-novel-info {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .catalog-cover {
+            width: 8rem;
+            height: 10.67rem;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            flex-shrink: 0;
+        }
+
+        .catalog-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .catalog-novel-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .catalog-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .catalog-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .catalog-author {
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .author-label {
+            color: var(--color-text-muted);
+        }
+
+        .author-name {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+
+        .author-name:hover {
+            text-decoration: underline;
+        }
+
+        .catalog-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .catalog-tags .tag {
+            padding: 0.25rem 0.625rem;
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+        }
+
+        .catalog-stats {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .catalog-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .catalog-stat svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .catalog-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .catalog-actions .btn-primary,
+        .catalog-actions .btn-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            white-space: nowrap;
+        }
+
+        .catalog-actions .btn-primary svg,
+        .catalog-actions .btn-secondary svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+
+        .catalog-actions .btn-secondary.active {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .catalog-actions .btn-secondary.active svg {
+            fill: currentColor;
+        }
+
+        .catalog-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            margin-bottom: 1.5rem;
+        }
+
+        .catalog-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .catalog-chapter-count {
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+        }
+
+        .catalog-chapter-count strong {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .catalog-progress {
+            font-size: 0.875rem;
+            color: var(--color-success);
+        }
+
+        .catalog-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 0.5rem 2rem 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+        }
+
+        .filter-select:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+
+        .jump-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .jump-input {
+            width: 4rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            text-align: center;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+        }
+
+        .jump-input:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.875rem;
+            font-size: 0.875rem;
+        }
+
+        .sort-controls {
+            display: flex;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .sort-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.25rem;
+            background: var(--color-bg-primary);
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-default);
+        }
+
+        .sort-btn:first-child {
+            border-right: 1px solid var(--color-border);
+        }
+
+        .sort-btn:hover {
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+        }
+
+        .sort-btn.active {
+            background: var(--color-primary);
+            color: var(--color-text-inverse);
+        }
+
+        .sort-btn svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+
+        .catalog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all var(--duration-fast) var(--ease-default);
+            cursor: pointer;
+        }
+
+        .chapter-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chapter-item.read {
+            background: var(--color-bg-tertiary);
+        }
+
+        .chapter-item.vip {
+            background: linear-gradient(90deg, var(--color-primary-light) 0%, var(--color-bg-secondary) 100%);
+        }
+
+        .chapter-item.highlight {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.01); }
+        }
+
+        .chapter-number {
+            min-width: 3.5rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .chapter-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chapter-title {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chapter-item.read .chapter-title {
+            color: var(--color-text-muted);
+        }
+
+        .chapter-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.8125rem;
+        }
+
+        .chapter-words {
+            color: var(--color-text-muted);
+        }
+
+        .chapter-date {
+            color: var(--color-text-muted);
+        }
+
+        .chapter-status {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .chapter-read-mark {
+            font-size: 0.75rem;
+            color: var(--color-success);
+            padding: 0.125rem 0.5rem;
+            background: var(--color-success-light);
+            border-radius: var(--radius-sm);
+        }
+
+        .chapter-read-btn {
+            width: 2.25rem;
+            height: 2.25rem;
+            color: var(--color-text-muted);
+            flex-shrink: 0;
+        }
+
+        .chapter-read-btn:hover:not(:disabled) {
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+        }
+
+        .chapter-read-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .chapter-read-btn svg {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-default);
+        }
+
+        .page-btn:hover:not(:disabled):not(.active) {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .page-btn.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: var(--color-text-inverse);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .page-ellipsis {
+            color: var(--color-text-muted);
+            padding: 0 0.5rem;
+        }
+
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: var(--color-text-muted);
+            font-size: 0.9375rem;
+        }
+
+        @media (max-width: 768px) {
+            .catalog-header {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+
+            .catalog-novel-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .catalog-cover {
+                width: 6rem;
+                height: 8rem;
+            }
+
+            .catalog-title {
+                font-size: 1.5rem;
+            }
+
+            .catalog-tags {
+                justify-content: center;
+            }
+
+            .catalog-stats {
+                justify-content: center;
+            }
+
+            .catalog-actions {
+                flex-direction: row;
+                width: 100%;
+            }
+
+            .catalog-actions .btn-primary,
+            .catalog-actions .btn-secondary {
+                flex: 1;
+            }
+
+            .catalog-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .catalog-controls {
+                justify-content: space-between;
+            }
+
+            .chapter-item {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                padding: 0.875rem 1rem;
+            }
+
+            .chapter-number {
+                min-width: 3rem;
+                font-size: 0.875rem;
+            }
+
+            .chapter-content {
+                flex: 1 1 calc(100% - 4rem);
+                order: 1;
+            }
+
+            .chapter-read-mark {
+                order: 2;
+            }
+
+            .chapter-read-btn {
+                order: 3;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .catalog-cover {
+                width: 5rem;
+                height: 6.67rem;
+            }
+
+            .catalog-title {
+                font-size: 1.25rem;
+            }
+
+            .catalog-stat {
+                font-size: 0.8125rem;
+            }
+
+            .catalog-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .filter-section,
+            .jump-section,
+            .sort-controls {
+                width: 100%;
+            }
+
+            .filter-select,
+            .jump-input,
+            .sort-btn {
+                width: 100%;
+            }
+
+            .jump-section {
+                justify-content: space-between;
+            }
+
+            .jump-input {
+                flex: 1;
+            }
+        }
+
+        /* 折叠屏适配 */
+        @media (spanning: single-fold) {
+            .catalog-header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .catalog-actions {
+                flex-direction: row;
+                width: 100%;
+            }
+        }
+
+        /* 平板横屏优化 */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .catalog-header {
+                padding: 1.5rem;
+            }
+
+            .catalog-cover {
+                width: 6rem;
+                height: 8rem;
+            }
+
+            .catalog-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* 触控友好 */
+        @media (pointer: coarse) {
+            .chapter-item {
+                min-height: 44px;
+            }
+
+            .chapter-read-btn {
+                min-width: 44px;
+                min-height: 44px;
+            }
+
+            .sort-btn {
+                min-width: 44px;
+                min-height: 44px;
+            }
+
+            .page-btn {
+                min-width: 44px;
+                min-height: 44px;
+            }
+
+            .btn-primary, .btn-secondary {
+                min-height: 44px;
+            }
+        }
+
+        /* 超小屏幕适配 */
+        @media (max-width: 319px) {
+            .catalog-header {
+                padding: 1rem;
+            }
+
+            .catalog-cover {
+                width: 4rem;
+                height: 5.33rem;
+            }
+
+            .catalog-title {
+                font-size: 1.125rem;
+            }
+
+            .chapter-number {
+                min-width: 2.5rem;
+                font-size: 0.875rem;
+            }
+
+            .chapter-title {
+                font-size: 0.875rem;
+            }
+        }
+
+        /* 高对比度模式支持 */
+        @media (prefers-contrast: high) {
+            .catalog-header {
+                border: 2px solid var(--color-text-primary);
+            }
+
+            .catalog-toolbar {
+                border: 2px solid var(--color-border);
+            }
+
+            .chapter-item {
+                border: 2px solid var(--color-border);
+            }
+
+            .page-btn {
+                border: 2px solid var(--color-border);
+            }
+        }
+
+        /* 减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            .loader-spinner {
+                animation: none;
+            }
+
+            .skeleton-loader {
+                animation: none;
+            }
+
+            .chapter-item.highlight {
+                animation: none;
+            }
+
+            * {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        /* 屏幕阅读器专用 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</body>
+</html>
