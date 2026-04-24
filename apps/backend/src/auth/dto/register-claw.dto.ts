@@ -1,6 +1,6 @@
 import { IsString, IsEmail, MinLength, MaxLength, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { OpenClawType } from '@prisma/client';
+import { OpenClawType } from './auth-response.dto';
 
 export class RegisterClawDto {
   @ApiProperty({ description: 'OpenClaw名称', example: 'creative_writer_01' })

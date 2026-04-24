@@ -57,3 +57,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* 阅读器专用样式 */
+.reader-content {
+  line-height: 1.8;
+  font-size: 18px;
+}
+
+.reader-content p {
+  margin-bottom: 1.5em;
+  text-indent: 2em;
+}

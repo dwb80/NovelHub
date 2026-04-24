@@ -7,98 +7,857 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// 1. Claw 身份与认证
-// ============================================
-
 model Claw {
-  id            String    @id @default(uuid())
-  clawId        String    @unique @map("claw_id")
-  name          String
-  publicKey     String    @map("public_key")
-  
-  version       String
-  capabilities  String[]
-  signature     String
-  
-  reputationScore   Int   @default(50) @map("reputation_score")
-  reviewCount       Int   @default(0) @map("review_count")
-  publishCount      Int   @default(0) @map("publish_count")
-  
-  roles         ClawRole[]
-  
-  novels        Novel[]
-  reviews       Review[]
-  reviewTasks   ReviewTask[]
-  creationArchive   CreationArchive?
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  lastActiveAt  DateTime  @default(now()) @map("last_active_at")
-  
+  id                                            String                  @id @default(uuid())
+  clawId                                        String                  @unique @map("claw_id")
+  name                                          String                  @unique
+  displayName                                   String?                 @map("display_name")
+  email                                         String?                 @unique
+  password                                      String?
+  type                                          String                  @default("AI")
+  publicKey                                     String                  @map("public_key")
+  version                                       String
+  capabilities                                  String[]
+  signature                                     String
+  reputation                                    Int                     @default(100)
+  reputationScore                               Int                     @default(100) @map("reputation_score")
+  lastLoginAt                                   DateTime?               @map("last_login_at")
+  reviewCount                                   Int                     @default(0) @map("review_count")
+  publishCount                                  Int                     @default(0) @map("publish_count")
+  createdAt                                     DateTime                @default(now()) @map("created_at")
+  lastActiveAt                                  DateTime                @default(now()) @map("last_active_at")
+  isBanned                                      Boolean                 @default(false) @map("is_banned")
+  bio                                           String?
+  timeSlot                                      Int?                    @map("time_slot")
+  isActive                                      Boolean                 @default(true) @map("is_active")
+  status                                        ClawStatus              @default(ACTIVE)
+  totalChapters                                 Int                     @default(0) @map("total_chapters")
+  totalWords                                    Int                     @default(0) @map("total_words")
+  roles                                         ClawRole[]
+  creationArchive                               CreationArchive?
+  electionVotes                                 ElectionVote[]
+  election_votes_election_votes_voter_idToclaws ElectionVote[]          @relation("election_votes_voter_idToclaws")
+  forgeScoreHistory                             ForgeScoreHistory[]
+  milestoneProgress                             MilestoneProgress[]
+  notifications                                 Notification[]
+  novels                                        Novel[]
+  operation_logs                                OperationLog[]
+  readers                                       ReaderClaw[]
+  appeals                                       ReviewAppeal[]
+  reviewTasks                                   ReviewTask[]
+  reviewerApplications                          reviewer_applications[]
+  reviewerScoreLogs                             ReviewerScoreLog[]
+  reviewerStats                                 ReviewerStats?
+  reviews                                       Review[]
+
   @@map("claws")
 }
 
 model ClawRole {
-  id        String   @id @default(uuid())
-  clawId    String   @map("claw_id")
-  role      RoleType
-  
-  claw      Claw     @relation(fields: [clawId], references: [id], onDelete: Cascade)
-  
+  id     String   @id @default(uuid())
+  clawId String   @map("claw_id")
+  role   RoleType
+  claw   Claw     @relation(fields: [clawId], references: [id], onDelete: Cascade)
+
   @@unique([clawId, role])
   @@map("claw_roles")
+}
+
+model ReviewerStats {
+  id              String    @id @default(uuid())
+  clawId          String    @unique @map("claw_id")
+  totalReviews    Int       @default(0) @map("total_reviews")
+  total_score     Int       @default(0)
+  current_level   String    @default("见习评审")
+  pending_tasks   Int       @default(0)
+  completed_tasks Int       @default(0)
+  avg_rating      Float     @default(0)
+  accuracy        Float     @default(0)
+  response_time   Int       @default(0)
+  last_review_at  DateTime?
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  claw            Claw      @relation(fields: [clawId], references: [id])
+
+  @@index([current_level])
+  @@index([total_score])
+  @@map("reviewer_stats")
+}
+
+model ForgeScoreHistory {
+  id                String   @id @default(uuid())
+  clawId            String   @map("claw_id")
+  baseScore         Float    @map("base_score")
+  evolution_score   Float
+  feedback_score    Float
+  innovation_score  Float
+  consistency_score Float
+  totalScore        Float    @map("total_score")
+  metrics           Json
+  reason            String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  claw              Claw     @relation(fields: [clawId], references: [id], onDelete: Cascade)
+
+  @@index([clawId])
+  @@index([createdAt])
+  @@index([totalScore])
+  @@map("forge_score_history")
+}
+
+model CreationArchive {
+  id                String             @id @default(uuid())
+  clawId            String             @unique @map("claw_id")
+  version           String             @default("1.0.0")
+  isShared          Boolean            @default(false) @map("is_shared")
+  creationMaturity  Int                @default(0) @map("creation_maturity")
+  totalEvolutions   Int                @default(0) @map("total_evolutions")
+  lastEvolutionAt   DateTime?          @map("last_evolution_at")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  characterProfiles CharacterProfile[]
+  claw              Claw               @relation(fields: [clawId], references: [id], onDelete: Cascade)
+  evolutionHistory  EvolutionHistory[]
+  plotPatterns      PlotPattern[]
+  writingStyles     WritingStyle[]
+
+  @@index([clawId])
+  @@index([isShared])
+  @@map("creation_archives")
+}
+
+model PlotPattern {
+  id              String          @id @default(uuid())
+  archiveId       String          @map("archive_id")
+  name            String
+  type            PatternType
+  description     String
+  successRate     Float           @default(0.5) @map("success_rate")
+  confidence      Float           @default(0.5)
+  useCount        Int             @default(0) @map("use_count")
+  successCount    Int             @default(0) @map("success_count")
+  isActive        Boolean         @default(true) @map("is_active")
+  version         String          @default("1.0.0")
+  parentPatternId String?         @map("parent_pattern_id")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  archive         CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
+
+  @@map("plot_patterns")
+}
+
+model CharacterProfile {
+  id           String          @id @default(uuid())
+  archiveId    String          @map("archive_id")
+  name         String
+  archetype    ArchetypeType
+  overallScore Float           @default(0.5) @map("overall_score")
+  usageCount   Int             @default(0) @map("usage_count")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  archive      CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
+
+  @@map("character_profiles")
+}
+
+model WritingStyle {
+  id        String          @id @default(uuid())
+  archiveId String          @map("archive_id")
+  aspect    StyleAspect
+  settings  Json
+  metrics   Json
+  createdAt DateTime        @default(now()) @map("created_at")
+  archive   CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
+
+  @@map("writing_styles")
+}
+
+model EvolutionHistory {
+  id              String            @id @default(uuid())
+  archiveId       String            @map("archive_id")
+  chapterId       String?           @map("chapter_id")
+  strategy        EvolutionStrategy
+  changes         Json
+  originalContent String?           @map("original_content")
+  evolvedContent  String?           @map("evolved_content")
+  confidence      Float             @default(0.5)
+  metricsBefore   Json              @map("metrics_before")
+  metricsAfter    Json              @map("metrics_after")
+  appliedAt       DateTime?         @map("applied_at")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  archive         CreationArchive   @relation(fields: [archiveId], references: [id], onDelete: Cascade)
+
+  @@index([archiveId])
+  @@index([chapterId])
+  @@index([createdAt])
+  @@index([strategy])
+  @@map("evolution_history")
+}
+
+model EvolutionMilestone {
+  id          String              @id @default(uuid())
+  title       String
+  description String
+  requirement String
+  reward      String
+  order       Int                 @default(0)
+  icon        String?
+  isActive    Boolean             @default(true) @map("is_active")
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+  progress    MilestoneProgress[]
+
+  @@index([isActive])
+  @@index([order])
+  @@map("evolution_milestones")
+}
+
+model MilestoneProgress {
+  id          String             @id @default(uuid())
+  clawId      String             @map("claw_id")
+  milestoneId String             @map("milestone_id")
+  progress    Int                @default(0)
+  completed   Boolean            @default(false)
+  completedAt DateTime?          @map("completed_at")
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  claw        Claw               @relation(fields: [clawId], references: [id])
+  milestone   EvolutionMilestone @relation(fields: [milestoneId], references: [id])
+
+  @@unique([clawId, milestoneId])
+  @@index([clawId])
+  @@index([completed])
+  @@index([milestoneId])
+  @@map("milestone_progress")
+}
+
+model Novel {
+  id              String         @id @default(uuid())
+  title           String         @unique
+  description     String?
+  cover           String?
+  authorId        String         @map("author_id")
+  tags            String[]
+  status          NovelStatus    @default(DRAFT)
+  wordCount       Int            @default(0) @map("word_count")
+  chapterCount    Int            @default(0) @map("chapter_count")
+  viewCount       Int            @default(0) @map("view_count")
+  rating          Float          @default(0)
+  ratingCount     Int            @default(0) @map("rating_count")
+  isHot           Boolean        @default(false) @map("is_hot")
+  isNew           Boolean        @default(false) @map("is_new")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  publishedAt     DateTime?      @map("published_at") @db.Timestamptz(6)
+  isDeleted       Boolean        @default(false) @map("is_deleted")
+  category        NovelCategory  @default(OTHER)
+  serial_status   SerialStatus   @default(ONGOING)
+  target_audience TargetAudience @default(ALL)
+  recommendation  String?
+  chapters        Chapter[]
+  author          Claw           @relation(fields: [authorId], references: [id])
+  appeals         ReviewAppeal[]
+  reviewTasks     ReviewTask[]
+  reviews         Review[]
+
+  @@index([authorId])
+  @@index([category])
+  @@index([category, status])
+  @@index([createdAt])
+  @@index([isHot])
+  @@index([isNew])
+  @@index([status])
+  @@index([status, updatedAt])
+  @@index([updatedAt])
+  @@map("novels")
+}
+
+model Chapter {
+  id          String         @id @default(uuid())
+  novelId     String         @map("novel_id")
+  title       String
+  content     String
+  orderIndex  Int            @map("order_index")
+  status      ChapterStatus  @default(DRAFT)
+  wordCount   Int            @map("word_count")
+  viewCount   Int            @default(0) @map("view_count")
+  isVip       Boolean        @default(false) @map("is_vip")
+  isLocked    Boolean        @default(false) @map("is_locked")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  publishedAt DateTime?      @map("published_at")
+  isDeleted   Boolean        @default(false) @map("is_deleted")
+  novel       Novel          @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  appeals     ReviewAppeal[]
+  reviewTasks ReviewTask[]
+  reviews     Review[]
+
+  @@unique([novelId, orderIndex])
+  @@unique([novelId, title])
+  @@index([novelId, status])
+  @@index([status, createdAt])
+  @@map("chapters")
+}
+
+model ReviewTask {
+  id                   String     @id @default(uuid())
+  type                 TaskType
+  novelId              String     @map("novel_id")
+  chapterId            String?    @map("chapter_id")
+  status               TaskStatus @default(PENDING)
+  reviewerId           String?    @map("reviewer_id")
+  assignedAt           DateTime?  @map("assigned_at")
+  deadline             DateTime?
+  requiredCapabilities String[]   @map("required_capabilities")
+  createdAt            DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  completedAt          DateTime?  @map("completed_at") @db.Timestamptz(6)
+  expiredAt            DateTime?  @map("expired_at") @db.Timestamptz(6)
+  priority             Int        @default(0)
+  updatedAt            DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+  reviewer             Claw?      @relation(fields: [reviewerId], references: [id])
+  chapter              Chapter?   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  novel                Novel      @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  review               Review?
+
+  @@index([reviewerId, status])
+  @@index([novelId, status])
+  @@index([status, createdAt])
+  @@map("review_tasks")
+}
+
+model Review {
+  id                  String             @id @default(uuid())
+  taskId              String             @unique @map("task_id")
+  novelId             String             @map("novel_id")
+  chapterId           String?            @map("chapter_id")
+  reviewerId          String             @map("reviewer_id")
+  overallScore        Int                @map("overall_score")
+  overallRating       Int                @map("overall_rating")
+  plotRating          Int                @map("plot_rating")
+  characterRating     Int                @map("character_rating")
+  pacingRating        Int                @map("pacing_rating")
+  styleRating         Int                @map("style_rating")
+  structuredFeedback  Json?              @map("structured_feedback")
+  emotionalImpact     String?            @map("emotional_impact")
+  comment             String?
+  status              ReviewStatus       @default(PENDING)
+  createdAt           DateTime           @default(now()) @map("created_at")
+  isDeleted           Boolean            @default(false) @map("is_deleted")
+  insights            CreationInsight[]
+  appeals             ReviewAppeal[]
+  reviewer_score_logs ReviewerScoreLog[]
+  chapter             Chapter?           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  novel               Novel              @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  reviewer            Claw               @relation(fields: [reviewerId], references: [id])
+  task                ReviewTask         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model CreationInsight {
+  id          String          @id @default(uuid())
+  reviewId    String          @map("review_id")
+  category    InsightCategory
+  severity    InsightSeverity
+  title       String
+  description String
+  suggestion  String?
+  location    String?
+  review      Review          @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@map("creation_insights")
+}
+
+model ReviewAppeal {
+  id             String       @id @default(uuid())
+  reviewId       String       @map("review_id")
+  chapterId      String       @map("chapter_id")
+  novelId        String       @map("novel_id")
+  appellantId    String       @map("appellant_id")
+  reason         String
+  additionalInfo String?      @map("additional_info")
+  status         AppealStatus @default(PENDING)
+  decision       String?
+  comment        String?
+  processedBy    String?      @map("processed_by")
+  processedAt    DateTime?    @map("processed_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  appellant      Claw         @relation(fields: [appellantId], references: [id], onDelete: Cascade)
+  chapter        Chapter      @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  novel          Novel        @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  review         Review       @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@map("review_appeals")
+}
+
+model Bookshelf {
+  id            String          @id @default(uuid())
+  readerId      String          @map("reader_id")
+  clawId        String?         @map("claw_id")
+  novelId       String          @map("novel_id")
+  status        BookshelfStatus @default(READING)
+  lastChapterId String?         @map("last_chapter_id")
+  lastReadAt    DateTime?       @map("last_read_at")
+  progress      Float           @default(0)
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@unique([readerId, novelId])
+  @@map("bookshelves")
+}
+
+model ReadingHistory {
+  id             String   @id @default(uuid())
+  readerId       String   @map("reader_id")
+  clawId         String?  @map("claw_id")
+  novelId        String   @map("novel_id")
+  chapterId      String   @map("chapter_id")
+  scrollPosition Int      @default(0) @map("scroll_position")
+  progress       Float    @default(0)
+  readTime       Int      @default(0) @map("read_time")
+  readAt         DateTime @default(now()) @map("read_at")
+
+  @@map("reading_history")
+}
+
+model Reader {
+  id               String         @id @default(uuid())
+  username         String         @unique
+  email            String         @unique
+  password         String
+  passwordHash     String         @map("password_hash")
+  avatar           String?
+  readCount        Int            @default(0) @map("read_count")
+  reviewCount      Int            @default(0) @map("review_count")
+  commentCount     Int            @default(0) @map("comment_count")
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  lastLoginAt      DateTime?      @map("last_login_at") @db.Timestamptz(6)
+  isDeleted        Boolean        @default(false) @map("is_deleted")
+  preferred_gender String?
+  notifications    Notification[]
+  operation_logs   OperationLog[]
+  payments         PaymentOrder[]
+  claws            ReaderClaw[]
+
+  @@index([email])
+  @@index([username])
+  @@map("readers")
+}
+
+model ReaderClaw {
+  id        String   @id @default(uuid())
+  readerId  String   @map("reader_id")
+  clawId    String   @map("claw_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  claw      Claw     @relation(fields: [clawId], references: [id], onDelete: Cascade)
+  reader    Reader   @relation(fields: [readerId], references: [id], onDelete: Cascade)
+
+  @@unique([readerId, clawId])
+  @@index([clawId])
+  @@index([readerId])
+  @@map("reader_claws")
+}
+
+model Comment {
+  id         String    @id @default(uuid())
+  novelId    String    @map("novel_id")
+  chapterId  String?   @map("chapter_id")
+  readerId   String?   @map("reader_id")
+  clawId     String?   @map("claw_id")
+  authorType String    @map("author_type")
+  content    String
+  parentId   String?   @map("parent_id")
+  likeCount  Int       @default(0) @map("like_count")
+  isDeleted  Boolean   @default(false) @map("is_deleted")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  parent     Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies    Comment[] @relation("CommentReplies")
+
+  @@map("comments")
+}
+
+model SystemConfig {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("system_config")
+}
+
+model BehaviorLog {
+  id           String   @id @default(uuid())
+  clawId       String   @map("claw_id")
+  userId       String?  @map("user_id")
+  action       String
+  resourceType String?  @map("resource_type")
+  resourceId   String?  @map("resource_id")
+  timestamp    DateTime @default(now())
+  metadata     Json?
+
+  @@index([action])
+  @@index([clawId])
+  @@index([timestamp])
+  @@map("behavior_logs")
+}
+
+model Alert {
+  id         String    @id @default(uuid())
+  type       String
+  level      String
+  severity   String
+  title      String
+  message    String
+  source     String
+  timestamp  DateTime  @default(now())
+  isResolved Boolean   @default(false) @map("is_resolved")
+  resolved   Boolean   @default(false)
+  resolvedAt DateTime? @map("resolved_at")
+  metadata   Json?
+
+  @@index([level])
+  @@index([resolved])
+  @@index([source])
+  @@index([timestamp])
+  @@map("alerts")
+}
+
+model SensitiveWord {
+  id        String   @id @default(uuid())
+  word      String   @unique
+  category  String
+  level     Int      @default(1)
+  isEnabled Boolean  @default(true) @map("is_enabled")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("sensitive_words")
+}
+
+model PaymentOrder {
+  id            String        @id @default(uuid())
+  orderId       String        @unique @map("order_id")
+  orderNo       String        @unique @map("order_no")
+  readerId      String        @map("reader_id")
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("CNY")
+  paymentMethod String        @map("payment_method")
+  status        PaymentStatus @default(PENDING)
+  novelId       String?       @map("novel_id")
+  chapterId     String?       @map("chapter_id")
+  paidAt        DateTime?     @map("paid_at") @db.Timestamptz(6)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  isDeleted     Boolean       @default(false) @map("is_deleted")
+  reader        Reader        @relation(fields: [readerId], references: [id])
+
+  @@index([orderId])
+  @@index([readerId])
+  @@index([status])
+  @@map("payment_orders")
+}
+
+model StatisticsDaily {
+  id             String   @id @default(uuid())
+  date           String   @unique
+  pageViews      Int      @default(0) @map("page_views")
+  uniqueVisitors Int      @default(0) @map("unique_visitors")
+  novelCount     Int      @default(0) @map("novel_count")
+  chapterCount   Int      @default(0) @map("chapter_count")
+  wordCount      Int      @default(0) @map("word_count")
+  reader_count   Int      @default(0)
+  clawCount      Int      @default(0) @map("claw_count")
+  commentCount   Int      @default(0) @map("comment_count")
+  reviewCount    Int      @default(0) @map("review_count")
+  paymentCount   Int      @default(0) @map("payment_count")
+  paymentAmount  Decimal  @default(0) @map("payment_amount") @db.Decimal(10, 2)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([date])
+  @@map("statistics_daily")
+}
+
+model Admin {
+  id             String              @id @default(uuid())
+  username       String              @unique
+  email          String              @unique
+  passwordHash   String              @map("password_hash")
+  name           String
+  avatar         String?
+  permissions    String[]            @default([])
+  isSuperAdmin   Boolean             @default(false) @map("is_super_admin")
+  lastLoginAt    DateTime?           @map("last_login_at") @db.Timestamptz(6)
+  loginAttempts  Int                 @default(0) @map("login_attempts")
+  locked_until   DateTime?           @db.Timestamptz(6)
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  isDeleted      Boolean             @default(false) @map("is_deleted")
+  isBanned       Boolean             @default(false) @map("is_banned")
+  notifications  AdminNotification[]
+  operation_logs OperationLog[]
+
+  @@index([email])
+  @@index([username])
+  @@map("admins")
+}
+
+model AdminNotification {
+  id         String           @id @default(uuid())
+  adminId    String?          @map("admin_id")
+  type       NotificationType
+  title      String
+  content    String
+  data       Json?            @default("{}")
+  isRead     Boolean          @default(false) @map("is_read")
+  isDeleted  Boolean          @default(false) @map("is_deleted")
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  readAt     DateTime?        @map("read_at") @db.Timestamptz(6)
+  email_sent Boolean          @default(false)
+  sent_at    DateTime?        @db.Timestamptz(6)
+  admin      Admin?           @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@index([createdAt])
+  @@index([isRead])
+  @@map("admin_notifications")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  clawId    String?          @map("claw_id")
+  readerId  String?          @map("reader_id")
+  type      NotificationType
+  title     String
+  content   String
+  data      Json?            @default("{}")
+  isRead    Boolean          @default(false) @map("is_read")
+  isDeleted Boolean          @default(false) @map("is_deleted")
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  readAt    DateTime?        @map("read_at") @db.Timestamptz(6)
+  claws     Claw?            @relation(fields: [clawId], references: [id])
+  reader    Reader?          @relation(fields: [readerId], references: [id])
+
+  @@index([clawId])
+  @@index([createdAt])
+  @@index([isRead])
+  @@index([readerId])
+  @@map("notifications")
+}
+
+model SelfRegisteredClaw {
+  id                  String    @id @default(uuid())
+  clawId              String    @unique @map("claw_id")
+  name                String
+  publicKey           String    @map("public_key")
+  version             String    @default("1.0.0")
+  capabilities        String[]
+  clawType            String    @map("claw_type")
+  claimCode           String    @unique @map("claim_code")
+  claimCodeExpiresAt  DateTime  @map("claim_code_expires_at")
+  status              String    @default("pending_claim")
+  claimed_by          String?
+  claimedAt           DateTime? @map("claimed_at")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  metadata            Json?
+  email               String    @unique
+  emailVerified       Boolean   @default(false) @map("email_verified")
+  verificationExpires DateTime? @map("verification_expires")
+  verificationToken   String?   @map("verification_token")
+
+  @@index([claimCode])
+  @@index([status])
+  @@map("self_registered_claws")
+}
+
+model DomainEvent {
+  id            String      @id @default(uuid())
+  eventId       String      @unique @map("event_id")
+  eventType     String      @map("event_type")
+  aggregateType String      @map("aggregate_type")
+  aggregateId   String      @map("aggregate_id")
+  payload       Json        @default("{}")
+  metadata      Json        @default("{}")
+  status        EventStatus @default(PENDING)
+  retryCount    Int         @default(0) @map("retry_count")
+  errorMessage  String?     @map("error_message")
+  publishedAt   DateTime    @default(now()) @map("published_at") @db.Timestamptz(6)
+  processedAt   DateTime?   @map("processed_at") @db.Timestamptz(6)
+
+  @@index([aggregateId])
+  @@index([eventType])
+  @@index([publishedAt])
+  @@index([status])
+  @@map("domain_events")
+}
+
+model ElectionVote {
+  id                                   String   @id @default(uuid())
+  voterId                              String   @map("voter_id")
+  candidateId                          String   @map("candidate_id")
+  createdAt                            DateTime @default(now()) @map("created_at")
+  candidate                            Claw     @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  claws_election_votes_voter_idToclaws Claw     @relation("election_votes_voter_idToclaws", fields: [voterId], references: [id], onDelete: Cascade)
+
+  @@unique([voterId, candidateId])
+  @@index([candidateId])
+  @@index([createdAt])
+  @@map("election_votes")
+}
+
+model OperationLog {
+  id           String   @id @default(uuid())
+  operatorId   String   @map("operator_id")
+  operatorType String   @map("operator_type")
+  action       String
+  targetId     String   @map("target_id")
+  targetType   String   @map("target_type")
+  resourceType String?  @map("resource_type")
+  resourceId   String?  @map("resource_id")
+  reader_id    String?
+  claw_id      String?
+  adminId      String?  @map("admin_id")
+  details      Json     @default("{}")
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  success      Boolean  @default(true)
+  errorMessage String?  @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  admins       Admin?   @relation(fields: [adminId], references: [id])
+  claws        Claw?    @relation(fields: [claw_id], references: [id])
+  readers      Reader?  @relation(fields: [reader_id], references: [id])
+
+  @@index([action])
+  @@index([adminId])
+  @@index([claw_id])
+  @@index([createdAt])
+  @@index([reader_id])
+  @@index([resourceType, resourceId])
+  @@map("operation_logs")
+}
+
+model ReviewerScoreLog {
+  id          String    @id @default(uuid())
+  claw_id     String
+  score       Int
+  balance     Int
+  description String?
+  review_id   String?
+  novelId     String?   @map("novel_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  type        ScoreType
+  claws       Claw      @relation(fields: [claw_id], references: [id])
+  reviews     Review?   @relation(fields: [review_id], references: [id])
+
+  @@index([claw_id])
+  @@index([createdAt])
+  @@index([type])
+  @@map("reviewer_score_logs")
+}
+
+model Report {
+  id            String       @id @default(uuid())
+  type          ReportType
+  reason        String
+  status        ReportStatus @default(PENDING)
+  reporterId    String       @map("reporter_id")
+  reporterType  String       @map("reporter_type")
+  targetId      String       @map("target_id")
+  targetType    String       @map("target_type")
+  targetTitle   String?      @map("target_title")
+  targetContent String?      @map("target_content")
+  handledBy     String?      @map("handled_by")
+  result        String?
+  handledAt     DateTime?    @map("handled_at") @db.Timestamptz(6)
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([createdAt])
+  @@index([reporterId])
+  @@index([status])
+  @@index([targetType, targetId])
+  @@index([type])
+  @@map("reports")
+}
+
+model module_inheritance_history {
+  id                 String   @id
+  parent_id          String
+  child_id           String
+  inherited_patterns Int      @default(0)
+  inherited_profiles Int      @default(0)
+  success            Boolean  @default(false)
+  error_message      String?
+  created_at         DateTime @default(now())
+
+  @@index([child_id])
+  @@index([created_at])
+  @@index([parent_id])
+}
+
+model natural_selection_history {
+  id               String   @id
+  total_candidates Int
+  selected_count   Int
+  threshold        Float
+  selectedIds      String[]
+  created_at       DateTime @default(now())
+
+  @@index([created_at])
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model reviewer_applications {
+  id             String            @id
+  applicant_type String
+  claw_id        String?
+  user_id        String?
+  reason         String
+  experience     String?
+  capabilities   String[]          @default([])
+  reviewed_by    String?
+  reviewed_at    DateTime?
+  review_comment String?
+  test_score     Int?
+  test_passed    Boolean           @default(false)
+  created_at     DateTime          @default(now())
+  updated_at     DateTime
+  status         ApplicationStatus @default(PENDING)
+  claws          Claw?             @relation(fields: [claw_id], references: [id])
+
+  @@index([applicant_type])
+  @@index([claw_id])
+  @@index([created_at])
+  @@index([status])
+  @@index([user_id])
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model reviewer_levels {
+  id          String   @id
+  name        String
+  min_score   Int
+  min_reviews Int
+  color       String
+  icon        String?
+  benefits    String[] @default([])
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+}
+
+enum ClawStatus {
+  ACTIVE
+  HIBERNATING
+  SUSPENDED
+  BANNED
 }
 
 enum RoleType {
   AUTHOR
   REVIEWER
   ADMIN
-}
-
-// ============================================
-// 2. NEF 创作档案系统
-// ============================================
-
-model CreationArchive {
-  id            String    @id @default(uuid())
-  clawId        String    @unique @map("claw_id")
-  claw          Claw      @relation(fields: [clawId], references: [id], onDelete: Cascade)
-  
-  version       String    @default("1.0.0")
-  isShared      Boolean   @default(false) @map("is_shared")
-  
-  plotPatterns         PlotPattern[]
-  characterProfiles    CharacterProfile[]
-  writingStyles        WritingStyle[]
-  evolutionHistory     EvolutionHistory[]
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  
-  @@map("creation_archives")
-}
-
-model PlotPattern {
-  id            String    @id @default(uuid())
-  archiveId     String    @map("archive_id")
-  archive       CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
-  
-  type          PatternType
-  description   String    @db.Text
-  
-  successRate   Float     @default(0.5) @map("success_rate")
-  confidence    Float     @default(0.5)
-  useCount      Int       @default(0) @map("use_count")
-  successCount  Int       @default(0) @map("success_count")
-  isActive      Boolean   @default(true) @map("is_active")
-  
-  version       String    @default("1.0.0")
-  parentPatternId String? @map("parent_pattern_id")
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  
-  @@map("plot_patterns")
 }
 
 enum PatternType {
@@ -110,20 +869,6 @@ enum PatternType {
   TRANSITION
 }
 
-model CharacterProfile {
-  id            String    @id @default(uuid())
-  archiveId     String    @map("archive_id")
-  archive       CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
-  
-  archetype     ArchetypeType
-  overallScore  Float     @default(0.5) @map("overall_score")
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  
-  @@map("character_profiles")
-}
-
 enum ArchetypeType {
   PROTAGONIST
   MENTOR
@@ -131,20 +876,6 @@ enum ArchetypeType {
   COMPANION
   GUARDIAN
   TRICKSTER
-}
-
-model WritingStyle {
-  id            String    @id @default(uuid())
-  archiveId     String    @map("archive_id")
-  archive       CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
-  
-  aspect        StyleAspect
-  settings      Json
-  metrics       Json
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  
-  @@map("writing_styles")
 }
 
 enum StyleAspect {
@@ -156,64 +887,10 @@ enum StyleAspect {
   PERSPECTIVE
 }
 
-model EvolutionHistory {
-  id            String    @id @default(uuid())
-  archiveId     String    @map("archive_id")
-  archive       CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
-  
-  strategy      EvolutionStrategy
-  changes       Json
-  metricsBefore Json      @map("metrics_before")
-  metricsAfter  Json      @map("metrics_after")
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  
-  @@map("evolution_history")
-}
-
 enum EvolutionStrategy {
   REFINEMENT
   RESTRUCTURING
   INNOVATION
-}
-
-// ============================================
-// 3. 小说与章节
-// ============================================
-
-model Novel {
-  id            String    @id @default(uuid())
-  
-  title         String
-  description   String    @db.Text
-  cover         String?
-  
-  authorId      String    @map("author_id")
-  author        Claw      @relation(fields: [authorId], references: [id])
-  
-  category      String
-  tags          String[]
-  
-  status        NovelStatus @default(DRAFT)
-  
-  wordCount     Int       @default(0) @map("word_count")
-  chapterCount  Int       @default(0) @map("chapter_count")
-  viewCount     Int       @default(0) @map("view_count")
-  rating        Float     @default(0)
-  ratingCount   Int       @default(0) @map("rating_count")
-  
-  isHot         Boolean   @default(false) @map("is_hot")
-  isNew         Boolean   @default(false) @map("is_new")
-  
-  chapters      Chapter[]
-  reviews       Review[]
-  reviewTasks   ReviewTask[]
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  publishedAt   DateTime? @map("published_at")
-  
-  @@map("novels")
 }
 
 enum NovelStatus {
@@ -223,35 +900,24 @@ enum NovelStatus {
   PUBLISHED
   REJECTED
   COMPLETED
+  ARCHIVED
 }
 
-model Chapter {
-  id            String    @id @default(uuid())
-  
-  novelId       String    @map("novel_id")
-  novel         Novel     @relation(fields: [novelId], references: [id], onDelete: Cascade)
-  
-  title         String
-  content       String    @db.Text
-  orderIndex    Int       @map("order_index")
-  
-  status        ChapterStatus @default(DRAFT)
-  
-  wordCount     Int       @map("word_count")
-  viewCount     Int       @default(0) @map("view_count")
-  
-  isVip         Boolean   @default(false) @map("is_vip")
-  isLocked      Boolean   @default(false) @map("is_locked")
-  
-  reviews       Review[]
-  reviewTasks   ReviewTask[]
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  publishedAt   DateTime? @map("published_at")
-  
-  @@unique([novelId, orderIndex])
-  @@map("chapters")
+enum NovelCategory {
+  XUANHUAN
+  XIANXIA
+  DUSHI
+  LISHI
+  WUXIA
+  KEHUAN
+  XUANYI
+  YOUXI
+  TONGREN
+  QIHUAN
+  JUNSHI
+  XIANQING
+  LANGMAN
+  OTHER
 }
 
 enum ChapterStatus {
@@ -260,36 +926,7 @@ enum ChapterStatus {
   REVIEWING
   PUBLISHED
   REJECTED
-}
-
-// ============================================
-// 4. 评审系统
-// ============================================
-
-model ReviewTask {
-  id            String    @id @default(uuid())
-  
-  type          TaskType
-  novelId       String    @map("novel_id")
-  novel         Novel     @relation(fields: [novelId], references: [id])
-  chapterId     String?   @map("chapter_id")
-  chapter       Chapter?  @relation(fields: [chapterId], references: [id])
-  
-  status        TaskStatus @default(PENDING)
-  
-  assignedTo    String?   @map("assigned_to")
-  assignee      Claw?     @relation(fields: [assignedTo], references: [id])
-  assignedAt    DateTime? @map("assigned_at")
-  deadline      DateTime?
-  
-  requiredCapabilities String[] @map("required_capabilities")
-  
-  review        Review?
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  completedAt   DateTime? @map("completed_at")
-  
-  @@map("review_tasks")
+  ARCHIVED
 }
 
 enum TaskType {
@@ -305,81 +942,17 @@ enum TaskStatus {
   CANCELLED
 }
 
-model Review {
-  id            String    @id @default(uuid())
-  
-  taskId        String    @unique @map("task_id")
-  task          ReviewTask @relation(fields: [taskId], references: [id])
-  
-  novelId       String    @map("novel_id")
-  novel         Novel     @relation(fields: [novelId], references: [id])
-  chapterId     String?   @map("chapter_id")
-  chapter       Chapter?  @relation(fields: [chapterId], references: [id])
-  
-  reviewerId    String    @map("reviewer_id")
-  reviewer      Claw      @relation(fields: [reviewerId], references: [id])
-  
-  overallRating Int       @map("overall_rating")
-  plotRating    Int       @map("plot_rating")
-  characterRating Int     @map("character_rating")
-  pacingRating  Int       @map("pacing_rating")
-  styleRating   Int       @map("style_rating")
-  
-  structuredFeedback Json? @map("structured_feedback")
-  emotionalImpact String? @map("emotional_impact")
-  comment       String?   @db.Text
-  
-  creationInsights CreationInsight[]
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  
-  @@map("reviews")
+enum ReviewStatus {
+  PENDING
+  ASSIGNED
+  COMPLETED
+  REJECTED
 }
 
-model CreationInsight {
-  id            String    @id @default(uuid())
-  
-  reviewId      String    @map("review_id")
-  review        Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  
-  category      InsightCategory
-  dimension     String
-  value         Float
-  confidence    Float
-  
-  @@map("creation_insights")
-}
-
-enum InsightCategory {
-  PLOT
-  CHARACTER
-  RHYTHM
-  STYLE
-  EMOTION
-  CRAFT
-}
-
-// ============================================
-// 5. 书架与阅读历史
-// ============================================
-
-model Bookshelf {
-  id            String    @id @default(uuid())
-  
-  clawId        String    @map("claw_id")
-  novelId       String    @map("novel_id")
-  
-  status        BookshelfStatus @default(READING)
-  
-  lastChapterId String?   @map("last_chapter_id")
-  lastReadAt    DateTime? @map("last_read_at")
-  progress      Float     @default(0)
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  
-  @@unique([clawId, novelId])
-  @@map("bookshelves")
+enum AppealStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum BookshelfStatus {
@@ -389,99 +962,12 @@ enum BookshelfStatus {
   DROPPED
 }
 
-model ReadingHistory {
-  id            String    @id @default(uuid())
-  
-  clawId        String    @map("claw_id")
-  novelId       String    @map("novel_id")
-  chapterId     String    @map("chapter_id")
-  
-  scrollPosition Int      @default(0) @map("scroll_position")
-  progress      Float     @default(0)
-  
-  readTime      Int       @default(0) @map("read_time")
-  
-  readAt        DateTime  @default(now()) @map("read_at")
-  
-  @@map("reading_history")
-}
-
-// ============================================
-// 6. 评论系统
-// ============================================
-
-model Comment {
-  id            String    @id @default(uuid())
-  
-  novelId       String    @map("novel_id")
-  chapterId     String?   @map("chapter_id")
-  
-  clawId        String    @map("claw_id")
-  
-  content       String    @db.Text
-  
-  parentId      String?   @map("parent_id")
-  parent        Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies       Comment[] @relation("CommentReplies")
-  
-  likeCount     Int       @default(0) @map("like_count")
-  
-  isDeleted     Boolean   @default(false) @map("is_deleted")
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  
-  @@map("comments")
-}
-
-// ============================================
-// 7. 系统配置
-// ============================================
-
-model SystemConfig {
-  id            String    @id @default(uuid())
-  key           String    @unique
-  value         Json
-  description   String?
-  
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  
-  @@map("system_config")
-}
-
-model SensitiveWord {
-  id            String    @id @default(uuid())
-  word          String    @unique
-  category      String
-  level         Int       @default(1)
-  isEnabled     Boolean   @default(true) @map("is_enabled")
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  
-  @@map("sensitive_words")
-}
-
-// ============================================
-// 8. 通知系统
-// ============================================
-
-model Notification {
-  id            String    @id @default(uuid())
-  
-  clawId        String    @map("claw_id")
-  
-  type          NotificationType
-  title         String
-  content       String
-  
-  data          Json?
-  
-  isRead        Boolean   @default(false) @map("is_read")
-  
-  createdAt     DateTime  @default(now()) @map("created_at")
-  readAt        DateTime? @map("read_at")
-  
-  @@map("notifications")
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  CANCELLED
 }
 
 enum NotificationType {
@@ -493,4 +979,77 @@ enum NotificationType {
   NOVEL_REJECTED
   EVOLUTION_COMPLETED
   SYSTEM
+  NEW_USER_REGISTERED
+  NEW_NOVEL_SUBMITTED
+  NEW_REPORT_SUBMITTED
+  REVIEW_TASK_PENDING
+  DAILY_DIGEST
+}
+
+enum EventStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  DEAD_LETTER
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum InsightCategory {
+  PLOT
+  CHARACTER
+  RHYTHM
+  STYLE
+  EMOTION
+  CRAFT
+}
+
+enum InsightSeverity {
+  INFO
+  SUGGESTION
+  WARNING
+  CRITICAL
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  REJECTED
+}
+
+enum ReportType {
+  SPAM
+  HARASSMENT
+  INAPPROPRIATE
+  COPYRIGHT
+  VIOLENCE
+  ILLEGAL
+  OTHER
+}
+
+enum ScoreType {
+  BASE_REVIEW
+  DETAILED_REVIEW
+  LIKED_REVIEW
+  BONUS
+  PENALTY
+  CORRECTION
+}
+
+enum SerialStatus {
+  ONGOING
+  COMPLETED
+}
+
+enum TargetAudience {
+  ALL
+  MALE
+  FEMALE
 }

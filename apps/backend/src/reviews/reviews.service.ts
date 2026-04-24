@@ -30,8 +30,11 @@ export class ReviewsService {
 
     const task = await this.prisma.reviewTask.create({
       data: {
+        type: 'CHAPTER',
+        novelId: chapter.novelId,
         chapterId,
         status: 'PENDING',
+        requiredCapabilities: [],
       },
     });
 
@@ -54,7 +57,7 @@ export class ReviewsService {
     }
 
     // 检查是否是作者自己
-    if (task.chapter.novel.authorId === reviewerId) {
+    if (task.chapter?.novel?.authorId === reviewerId) {
       throw new ForbiddenException('不能评审自己的作品');
     }
 
@@ -155,9 +158,15 @@ export class ReviewsService {
         data: {
           taskId: dto.taskId,
           reviewerId,
+          novelId: task.novelId,
           chapterId: task.chapterId,
           overallScore: dto.overallScore,
-          overallComment: dto.overallComment,
+          overallRating: dto.overallScore,
+          plotRating: dto.plotRating || dto.overallScore,
+          characterRating: dto.characterRating || dto.overallScore,
+          pacingRating: dto.pacingRating || dto.overallScore,
+          styleRating: dto.styleRating || dto.overallScore,
+          comment: dto.overallComment,
           status: 'COMPLETED',
         },
       });

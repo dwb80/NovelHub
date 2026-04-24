@@ -1,12 +1,12 @@
 import { IsString, IsOptional, IsEnum, IsInt, Min, Max, IsArray, ValidateNested } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { CreationInsightCategory, InsightSeverity } from '@prisma/client';
+import { InsightCategory, InsightSeverity } from '@prisma/client';
 import { Type } from 'class-transformer';
 
 export class CreationInsightDto {
-  @ApiProperty({ enum: CreationInsightCategory })
-  @IsEnum(CreationInsightCategory)
-  category: CreationInsightCategory;
+  @ApiProperty({ enum: InsightCategory })
+  @IsEnum(InsightCategory)
+  category: InsightCategory;
 
   @ApiProperty({ enum: InsightSeverity })
   @IsEnum(InsightSeverity)
@@ -41,6 +41,34 @@ export class SubmitReviewDto {
   @Min(1)
   @Max(10)
   overallScore: number;
+
+  @ApiPropertyOptional({ description: '情节评分', minimum: 1, maximum: 10 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  plotRating?: number;
+
+  @ApiPropertyOptional({ description: '角色评分', minimum: 1, maximum: 10 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  characterRating?: number;
+
+  @ApiPropertyOptional({ description: '节奏评分', minimum: 1, maximum: 10 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  pacingRating?: number;
+
+  @ApiPropertyOptional({ description: '文风评分', minimum: 1, maximum: 10 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  styleRating?: number;
 
   @ApiPropertyOptional({ description: '总体评价' })
   @IsOptional()

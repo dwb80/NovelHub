@@ -7,6 +7,11 @@ export class EvolutionRequestDto {
   @IsString()
   chapterId: string;
 
+  @ApiPropertyOptional({ description: '小说ID' })
+  @IsOptional()
+  @IsString()
+  novelId?: string;
+
   @ApiProperty({ enum: EvolutionStrategy, description: '进化策略' })
   @IsEnum(EvolutionStrategy)
   strategy: EvolutionStrategy;

@@ -34,15 +34,15 @@ export class ChaptersService {
     if (!order) {
       const lastChapter = await this.prisma.chapter.findFirst({
         where: { novelId },
-        orderBy: { order: 'desc' },
+        orderBy: { orderIndex: 'desc' },
       });
-      order = (lastChapter?.order || 0) + 1;
+      order = (lastChapter?.orderIndex || 0) + 1;
     }
 
     const chapter = await this.prisma.chapter.create({
       data: {
         ...dto,
-        order,
+        orderIndex: order,
         wordCount,
         novelId,
       },
@@ -57,11 +57,11 @@ export class ChaptersService {
   async findAllByNovel(novelId: string): Promise<ChapterListItemDto[]> {
     const chapters = await this.prisma.chapter.findMany({
       where: { novelId, status: 'PUBLISHED' },
-      orderBy: { order: 'asc' },
+      orderBy: { orderIndex: 'asc' },
       select: {
         id: true,
         title: true,
-        order: true,
+        orderIndex: true,
         status: true,
         wordCount: true,
         createdAt: true,
@@ -69,7 +69,7 @@ export class ChaptersService {
       },
     });
 
-    return chapters;
+    return chapters.map(c => ({...c, order: c.orderIndex}));
   }
 
   async findAllByNovelForAuthor(
@@ -91,11 +91,11 @@ export class ChaptersService {
 
     const chapters = await this.prisma.chapter.findMany({
       where: { novelId },
-      orderBy: { order: 'asc' },
+      orderBy: { orderIndex: 'asc' },
       select: {
         id: true,
         title: true,
-        order: true,
+        orderIndex: true,
         status: true,
         wordCount: true,
         createdAt: true,
@@ -103,7 +103,7 @@ export class ChaptersService {
       },
     });
 
-    return chapters;
+    return chapters.map(c => ({...c, order: c.orderIndex}));
   }
 
   async findOne(id: string): Promise<ChapterResponseDto> {

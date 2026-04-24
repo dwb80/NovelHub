@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ReviewStatus, CreationInsightCategory, InsightSeverity } from '@prisma/client';
+import { ReviewStatus, InsightCategory, InsightSeverity } from '@prisma/client';
 
 export class InsightResponseDto {
   @ApiProperty()
   id: string;
 
-  @ApiProperty({ enum: CreationInsightCategory })
-  category: CreationInsightCategory;
+  @ApiProperty({ enum: InsightCategory })
+  category: InsightCategory;
 
   @ApiProperty({ enum: InsightSeverity })
   severity: InsightSeverity;

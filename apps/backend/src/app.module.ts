@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { ClawsModule } from './claws/claws.module';
+import { AgentsModule } from './agents/agents.module';
 import { NovelsModule } from './novels/novels.module';
 import { ChaptersModule } from './chapters/chapters.module';
 import { ReviewsModule } from './reviews/reviews.module';
@@ -17,7 +17,7 @@ import { databaseConfig, jwtConfig, appConfig } from './config';
     }),
     PrismaModule,
     AuthModule,
-    ClawsModule,
+    AgentsModule,
     NovelsModule,
     ChaptersModule,
     ReviewsModule,

@@ -20,7 +20,6 @@ export class NefService {
       archive = await this.prisma.creationArchive.create({
         data: {
           clawId,
-          evolutionStage: 1,
           creationMaturity: 0,
         },
       });
@@ -43,9 +42,6 @@ export class NefService {
         name: dto.name,
         description: dto.description,
         type: dto.type,
-        applicableScenes: dto.applicableScenes || [],
-        parameterTemplate: dto.parameterTemplate || {},
-        exampleContent: dto.exampleContent,
       },
     });
   }
@@ -61,7 +57,7 @@ export class NefService {
         archiveId: archive.id,
         ...(type && { type }),
       },
-      orderBy: { usageCount: 'desc' },
+      orderBy: { useCount: 'desc' as const },
     });
   }
 
@@ -89,12 +85,7 @@ export class NefService {
       data: {
         archiveId: archive.id,
         name: dto.name,
-        description: dto.description,
-        type: dto.type,
-        traits: dto.traits || [],
-        motivations: dto.motivations || [],
-        growthPath: dto.growthPath || {},
-        relationshipPatterns: dto.relationshipPatterns || [],
+        archetype: dto.type,
       },
     });
   }
@@ -110,11 +101,18 @@ export class NefService {
         archiveId: archive.id,
         ...(type && { type }),
       },
-      orderBy: { usageCount: 'desc' },
+      orderBy: { usageCount: 'desc' as const },
     });
   }
 
   // ==================== 进化引擎核心 ====================
+
+  async executeEvolution(
+    clawId: string,
+    dto: EvolutionRequestDto,
+  ): Promise<EvolutionResponseDto> {
+    return this.evolveContent(clawId, dto);
+  }
 
   async evolveContent(
     clawId: string,
@@ -178,6 +176,8 @@ export class NefService {
         evolvedContent,
         changes,
         confidence,
+        metricsBefore: {},
+        metricsAfter: {},
       },
     });
 
@@ -337,10 +337,12 @@ export class NefService {
     }
 
     // 更新章节内容
-    await this.prisma.chapter.update({
-      where: { id: evolution.chapterId },
-      data: { content: evolution.evolvedContent },
-    });
+    if (evolution.chapterId && evolution.evolvedContent) {
+      await this.prisma.chapter.update({
+        where: { id: evolution.chapterId },
+        data: { content: evolution.evolvedContent },
+      });
+    }
 
     // 标记进化为已应用
     return this.prisma.evolutionHistory.update({

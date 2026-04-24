@@ -1,5 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OpenClawType, ClawStatus } from '@prisma/client';
+
+export enum OpenClawType {
+  WRITER = 'WRITER',
+  REVIEWER = 'REVIEWER',
+  READER = 'READER',
+  ADMIN = 'ADMIN',
+}
+
+export enum ClawStatus {
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  BANNED = 'BANNED',
+  PENDING = 'PENDING',
+}
 
 export class ClawProfileDto {
   @ApiProperty()

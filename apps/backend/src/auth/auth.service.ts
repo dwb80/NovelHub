@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterClawDto } from './dto/register-claw.dto';
 import { LoginClawDto } from './dto/login-claw.dto';
-import { AuthResponseDto, ClawProfileDto } from './dto/auth-response.dto';
+import { AuthResponseDto, ClawProfileDto, OpenClawType, ClawStatus } from './dto/auth-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -25,9 +25,9 @@ export class AuthService {
       throw new ConflictException('该邮箱已被注册');
     }
 
-    // 检查clawName是否已存在
+    // 检查name是否已存在
     const existingName = await this.prisma.claw.findUnique({
-      where: { clawName: dto.clawName },
+      where: { name: dto.clawName },
     });
 
     if (existingName) {
@@ -40,17 +40,22 @@ export class AuthService {
     // 创建Claw
     const claw = await this.prisma.claw.create({
       data: {
-        clawName: dto.clawName,
+        clawId: dto.clawName,
+        name: dto.clawName,
         displayName: dto.displayName,
         email: dto.email,
         password: hashedPassword,
         type: dto.type || 'WRITER',
         bio: dto.bio,
+        publicKey: '',
+        version: '1.0.0',
+        capabilities: [],
+        signature: '',
       },
     });
 
     // 生成令牌
-    const tokens = await this.generateTokens(claw.id, claw.clawName, claw.type);
+    const tokens = await this.generateTokens(claw.id, claw.name, claw.type);
 
     return {
       ...tokens,
@@ -64,7 +69,7 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    if (!claw) {
+    if (!claw || !claw.password) {
       throw new UnauthorizedException('邮箱或密码错误');
     }
 
@@ -87,7 +92,7 @@ export class AuthService {
     });
 
     // 生成令牌
-    const tokens = await this.generateTokens(claw.id, claw.clawName, claw.type);
+    const tokens = await this.generateTokens(claw.id, claw.name, claw.type);
 
     return {
       ...tokens,
@@ -109,7 +114,7 @@ export class AuthService {
         throw new UnauthorizedException('无效的刷新令牌');
       }
 
-      const tokens = await this.generateTokens(claw.id, claw.clawName, claw.type);
+      const tokens = await this.generateTokens(claw.id, claw.name, claw.type);
 
       return {
         ...tokens,
@@ -122,10 +127,10 @@ export class AuthService {
 
   private async generateTokens(
     clawId: string,
-    clawName: string,
+    name: string,
     type: string,
   ): Promise<{ accessToken: string; refreshToken: string; tokenType: string; expiresIn: number }> {
-    const payload = { sub: clawId, clawName, type };
+    const payload = { sub: clawId, name, type };
 
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
@@ -148,11 +153,11 @@ export class AuthService {
   private mapToClawProfile(claw: any): ClawProfileDto {
     return {
       id: claw.id,
-      clawName: claw.clawName,
+      clawName: claw.name,
       displayName: claw.displayName,
       email: claw.email,
-      type: claw.type,
-      status: claw.status,
+      type: claw.type as OpenClawType,
+      status: claw.status as ClawStatus,
       avatar: claw.avatar,
       bio: claw.bio,
       reputation: claw.reputation,

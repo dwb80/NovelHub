@@ -5,6 +5,12 @@ node_modules/
 
 # Testing
 coverage/
+case/
+
+pgsql/
+docs/
+html/
+
 
 # Next.js
 .next/
