@@ -75,8 +75,11 @@ jobs:
           npx ts-node prisma/seed.ts
           # 后台启动后端服务
           npm run start:dev &
-          # 等待后端启动
-          npx wait-on http://localhost:3001/api/v1/novels --timeout 60000
+          SERVER_PID=$!
+          # 等待后端启动并添加错误处理
+          npx wait-on http://localhost:3001/api/v1/novels --timeout 60000 || (kill $SERVER_PID && exit 1)
+          # 保存PID供后续清理
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
 
       # 前端设置
       - name: Setup Frontend
@@ -88,8 +91,11 @@ jobs:
           npm run build
           # 后台启动前端服务
           npm start &
-          # 等待前端启动
-          npx wait-on http://localhost:3000 --timeout 60000
+          FRONTEND_PID=$!
+          # 等待前端启动并添加错误处理
+          npx wait-on http://localhost:3000 --timeout 60000 || (kill $FRONTEND_PID && exit 1)
+          # 保存PID供后续清理
+          echo "FRONTEND_PID=$FRONTEND_PID" >> $GITHUB_ENV
 
       # 运行E2E测试
       - name: Run E2E Tests
@@ -98,6 +104,17 @@ jobs:
           CI: true
         run: |
           npx playwright test --project=chromium --reporter=html,line
+
+      # 清理服务进程
+      - name: Cleanup Services
+        if: always()
+        run: |
+          if [ -n "${SERVER_PID}" ]; then
+            kill $SERVER_PID 2>/dev/null || true
+          fi
+          if [ -n "${FRONTEND_PID}" ]; then
+            kill $FRONTEND_PID 2>/dev/null || true
+          fi
 
       # 上传测试报告
       - name: Upload Playwright Report
@@ -204,12 +221,22 @@ jobs:
           npx prisma migrate deploy
           npx ts-node prisma/seed.ts
           npm run start:dev &
-          npx wait-on http://localhost:3001/api/v1/novels --timeout 60000
+          SERVER_PID=$!
+          npx wait-on http://localhost:3001/api/v1/novels --timeout 60000 || (kill $SERVER_PID && exit 1)
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
 
       - name: Run API Contract Tests
         working-directory: apps/frontend
         run: |
           npx playwright test e2e/search.e2e.spec.ts --project=chromium --grep "API" --reporter=line
+
+      # 清理服务进程
+      - name: Cleanup Backend
+        if: always()
+        run: |
+          if [ -n "${SERVER_PID}" ]; then
+            kill $SERVER_PID 2>/dev/null || true
+          fi
 
   # 测试报告汇总
   test-summary:
