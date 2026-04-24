@@ -1,9 +1,11 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { EmailService } from '../notifications/email.service';
 import { RegisterReaderDto } from './dto/register-reader.dto';
 import { LoginReaderDto } from './dto/login-reader.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -18,6 +20,7 @@ export class ReadersService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private notificationsService: NotificationsService,
+    private emailService: EmailService,
   ) { }
 
   async register(dto: RegisterReaderDto): Promise<ReaderAuthResponseDto> {
@@ -40,6 +43,8 @@ export class ReadersService {
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
+    const emailVerificationToken = uuidv4();
+    const emailVerificationExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24小时过期
 
     // 创建Reader
     const reader = await this.prisma.reader.create({
@@ -48,7 +53,29 @@ export class ReadersService {
         username: dto.readerName,
         password: dto.password,
         passwordHash,
+        emailVerified: false,
+        emailVerificationToken,
+        emailVerificationExpiresAt,
       },
+    });
+
+    // 发送邮箱验证邮件
+    const verificationLink = `${this.configService.get('FRONTEND_URL') || 'http://localhost:3000'}/verify-email?token=${emailVerificationToken}`;
+    
+    this.emailService.sendEmail({
+      to: dto.email,
+      subject: '[NovelHub] 邮箱验证',
+      html: `
+        <h1>欢迎注册 NovelHub</h1>
+        <p>请点击以下链接验证您的邮箱：</p>
+        <a href="${verificationLink}">点击验证邮箱</a>
+        <p>该链接将在24小时后过期</p>
+        <p>如果您没有注册 NovelHub 账号，请忽略此邮件</p>
+      `,
+      text: `欢迎注册 NovelHub，请点击以下链接验证您的邮箱：${verificationLink}，该链接将在24小时后过期。如果您没有注册 NovelHub 账号，请忽略此邮件。`,
+    }).catch((error) => {
+      // 邮件发送失败不影响注册流程，但需要记录日志
+      console.error('邮件发送失败:', error);
     });
 
     const tokens = await this.generateTokens(reader.id);
@@ -93,6 +120,11 @@ export class ReadersService {
     if (reader.isDeleted) {
       throw new ForbiddenException('你被封禁，请与管理员联系');
     }
+
+    // 检查邮箱是否已验证
+    // if (!reader.emailVerified) {
+    //   throw new ForbiddenException('请先验证邮箱后再登录');
+    // }
 
     // 更新最后登录时间
     await this.prisma.reader.update({
@@ -340,5 +372,36 @@ export class ReadersService {
       page,
       limit,
     };
+  }
+
+  /**
+   * 验证邮箱
+   */
+  async verifyEmail(token: string): Promise<boolean> {
+    // 查找读者
+    const reader = await this.prisma.reader.findFirst({
+      where: { emailVerificationToken: token },
+    });
+
+    if (!reader) {
+      throw new BadRequestException('无效的验证链接');
+    }
+
+    // 检查令牌是否过期
+    if (reader.emailVerificationExpiresAt && reader.emailVerificationExpiresAt < new Date()) {
+      throw new BadRequestException('验证链接已过期');
+    }
+
+    // 验证邮箱
+    await this.prisma.reader.update({
+      where: { id: reader.id },
+      data: {
+        emailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpiresAt: null,
+      },
+    });
+
+    return true;
   }
 }

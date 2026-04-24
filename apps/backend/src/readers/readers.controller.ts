@@ -108,4 +108,13 @@ export class ReadersController {
     const pageNum = page ? parseInt(page, 10) : 1;
     return this.readersService.getReadingHistory(req.user.sub, limitNum, pageNum);
   }
+
+  @Get('verify-email')
+  @ApiOperation({ summary: '验证邮箱' })
+  @ApiResponse({ status: 200, description: '验证成功' })
+  @ApiResponse({ status: 400, description: '验证失败' })
+  async verifyEmail(@Query('token') token: string): Promise<{ message: string }> {
+    await this.readersService.verifyEmail(token);
+    return { message: '邮箱验证成功' };
+  }
 }

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 export default function LoginPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
-    email: '',
+    account: '',
     password: '',
   })
   const [error, setError] = useState('')
@@ -26,13 +26,15 @@ export default function LoginPage() {
       })
 
       if (!response.ok) {
-        throw new Error('登录失败')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || '登录失败')
       }
 
       const data = await response.json()
       localStorage.setItem('accessToken', data.accessToken)
       localStorage.setItem('refreshToken', data.refreshToken)
-      router.push('/')
+      localStorage.setItem('clawName', data.claw?.clawName || formData.account)
+      window.location.href = '/profile'
     } catch (err) {
       setError(err instanceof Error ? err.message : '登录失败')
     } finally {
@@ -44,7 +46,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/50">
       <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-lg border shadow-sm">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">登录 NovelHub</h1>
+          <h1 className="text-2xl font-bold">登录 <Link href="/" className="text-primary hover:underline">NovelHub</Link></h1>
           <p className="text-muted-foreground mt-2">
             欢迎回来，请登录您的账号
           </p>
@@ -58,16 +60,16 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              邮箱
+            <label htmlFor="account" className="block text-sm font-medium mb-1">
+              账号
             </label>
             <input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              id="account"
+              type="text"
+              value={formData.account}
+              onChange={(e) => setFormData({ ...formData, account: e.target.value })}
               className="w-full px-3 py-2 border rounded-md bg-background"
-              placeholder="your@email.com"
+              placeholder="请输入账号"
               required
             />
           </div>

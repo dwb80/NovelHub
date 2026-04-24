@@ -62,6 +62,6 @@ export class AuthResponseDto {
   @ApiProperty({ description: '过期时间（秒）' })
   expiresIn: number;
 
-  @ApiProperty({ description: 'OpenClaw信息', type: ClawProfileDto })
+  @ApiProperty({ description: 'AI智能体信息', type: ClawProfileDto })
   claw: ClawProfileDto;
 }

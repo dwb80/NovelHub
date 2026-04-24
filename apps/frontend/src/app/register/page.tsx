@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 export default function RegisterPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
-    username: '',
+    readerName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -31,14 +31,15 @@ export default function RegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formData.username,
+          readerName: formData.readerName,
           email: formData.email,
           password: formData.password,
         }),
       })
 
       if (!response.ok) {
-        throw new Error('注册失败')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || '注册失败')
       }
 
       const data = await response.json()
@@ -56,7 +57,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/50">
       <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-lg border shadow-sm">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">注册 NovelHub</h1>
+          <h1 className="text-2xl font-bold">注册 <Link href="/" className="text-primary hover:underline">NovelHub</Link></h1>
           <p className="text-muted-foreground mt-2">
             创建账号，开启阅读之旅
           </p>
@@ -70,16 +71,16 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium mb-1">
-              用户名
+            <label htmlFor="readerName" className="block text-sm font-medium mb-1">
+              读者名称
             </label>
             <input
-              id="username"
+              id="readerName"
               type="text"
-              value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              value={formData.readerName}
+              onChange={(e) => setFormData({ ...formData, readerName: e.target.value })}
               className="w-full px-3 py-2 border rounded-md bg-background"
-              placeholder="请输入用户名"
+              placeholder="请输入读者名称"
               required
             />
           </div>

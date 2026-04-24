@@ -7,12 +7,14 @@ import { NotificationProcessor } from './processors/notification.processor';
 import { QueueService } from './queue.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { NefModule } from '../nef/nef.module';
 
 @Global()
 @Module({
   imports: [
     PrismaModule,
     NotificationsModule,
+    NefModule,
     BullModule.forRootAsync({
       useFactory: () => ({
         redis: queueConfig.redis,

@@ -1,62 +1,93 @@
 import api from '@/lib/api';
 import { AIAgent } from '@/types';
 
-export interface GenerateIdentityData {
-  displayName: string;
+export interface BindAgentRequest {
+  claimCode: string;
+  agentId: string;
 }
 
-export interface RegisterWriterData {
+export interface BindAgentResponse {
+  message: string;
+  agent: {
+    id: string;
+    agentId: string;
+    name: string;
+    type: 'WRITER' | 'REVIEWER';
+    level?: string;
+  };
+}
+
+export interface GenerateIdentityResponse {
+  identityCode: string;
+  mnemonic: string;
+}
+
+export interface RegisterWriterRequest {
   identityCode: string;
   displayName: string;
   signature: string;
 }
 
-export interface RegisterReviewerData {
+export interface RegisterReviewerRequest {
   identityCode: string;
   displayName: string;
   expertise: string[];
 }
 
 export const AgentService = {
-  async generateIdentity(data: GenerateIdentityData): Promise<{ identityCode: string; mnemonic: string }> {
-    const response = await api.post('/agents/identity', data);
+  // 获取已绑定的AI智能体列表
+  async getBoundAgents(): Promise<AIAgent[]> {
+    const response = await api.get('/readers/me/agents');
     return response.data;
   },
 
-  async registerWriter(data: RegisterWriterData): Promise<AIAgent> {
+  // 获取我的AI智能体列表（用于AI智能体管理页面）
+  async getMyAgents(): Promise<AIAgent[]> {
+    const response = await api.get('/agents/me');
+    return response.data;
+  },
+
+  // 领取AI智能体
+  async bindAgent(data: BindAgentRequest): Promise<BindAgentResponse> {
+    const response = await api.post('/agents/bind', data);
+    return response.data;
+  },
+
+  // 申请成为AI作家
+  async applyWriter(agentId: string): Promise<void> {
+    await api.post(`/agents/${agentId}/apply-writer`);
+  },
+
+  // 申请成为AI评审员
+  async applyReviewer(agentId: string): Promise<void> {
+    await api.post(`/agents/${agentId}/apply-reviewer`);
+  },
+
+  // 生成身份标识
+  async generateIdentity(data: { displayName: string }): Promise<GenerateIdentityResponse> {
+    const response = await api.post('/agents/generate-identity', data);
+    return response.data;
+  },
+
+  // 注册AI作家
+  async registerWriter(data: RegisterWriterRequest): Promise<AIAgent> {
     const response = await api.post('/agents/register-writer', data);
     return response.data;
   },
 
-  async registerReviewer(data: RegisterReviewerData): Promise<AIAgent> {
+  // 注册AI评审员
+  async registerReviewer(data: RegisterReviewerRequest): Promise<AIAgent> {
     const response = await api.post('/agents/register-reviewer', data);
     return response.data;
   },
 
-  async getMyAgents(): Promise<AIAgent[]> {
-    const response = await api.get('/agents');
-    return response.data;
+  // 停用AI智能体
+  async deactivateAgent(agentId: string): Promise<void> {
+    await api.post(`/agents/${agentId}/deactivate`);
   },
 
-  async getAgentById(id: string): Promise<AIAgent> {
-    const response = await api.get(`/agents/${id}`);
-    return response.data;
-  },
-
-  async activateAgent(id: string): Promise<void> {
-    await api.post(`/agents/${id}/activate`);
-  },
-
-  async deactivateAgent(id: string): Promise<void> {
-    await api.post(`/agents/${id}/deactivate`);
-  },
-
-  async bindAgent(agentId: string): Promise<void> {
-    await api.post('/agents/bind', { agentId });
-  },
-
-  async getBindStatus(agentId: string): Promise<{ isBound: boolean; boundTo?: string }> {
-    const response = await api.get(`/agents/${agentId}/bind-status`);
-    return response.data;
+  // 激活AI智能体
+  async activateAgent(agentId: string): Promise<void> {
+    await api.post(`/agents/${agentId}/activate`);
   },
 };

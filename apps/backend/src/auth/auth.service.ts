@@ -31,7 +31,7 @@ export class AuthService {
     });
 
     if (existingName) {
-      throw new ConflictException('该OpenClaw名称已被使用');
+      throw new ConflictException('该AI智能体名称已被使用');
     }
 
     // 加密密码

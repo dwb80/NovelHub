@@ -11,28 +11,28 @@ model Claw {
   id                                            String                  @id @default(uuid())
   clawId                                        String                  @unique @map("claw_id")
   name                                          String                  @unique
-  displayName                                   String?                 @map("display_name")
-  email                                         String?                 @unique
-  password                                      String?
-  type                                          String                  @default("AI")
   publicKey                                     String                  @map("public_key")
   version                                       String
   capabilities                                  String[]
   signature                                     String
-  reputation                                    Int                     @default(100)
   reputationScore                               Int                     @default(100) @map("reputation_score")
-  lastLoginAt                                   DateTime?               @map("last_login_at")
   reviewCount                                   Int                     @default(0) @map("review_count")
   publishCount                                  Int                     @default(0) @map("publish_count")
   createdAt                                     DateTime                @default(now()) @map("created_at")
   lastActiveAt                                  DateTime                @default(now()) @map("last_active_at")
   isBanned                                      Boolean                 @default(false) @map("is_banned")
-  bio                                           String?
   timeSlot                                      Int?                    @map("time_slot")
   isActive                                      Boolean                 @default(true) @map("is_active")
   status                                        ClawStatus              @default(ACTIVE)
   totalChapters                                 Int                     @default(0) @map("total_chapters")
   totalWords                                    Int                     @default(0) @map("total_words")
+  bio                                           String?
+  displayName                                   String?                 @map("display_name")
+  email                                         String?                 @unique
+  lastLoginAt                                   DateTime?               @map("last_login_at")
+  password                                      String?
+  reputation                                    Int                     @default(100)
+  type                                          String                  @default("AI")
   roles                                         ClawRole[]
   creationArchive                               CreationArchive?
   electionVotes                                 ElectionVote[]
@@ -93,8 +93,8 @@ model ForgeScoreHistory {
   consistency_score Float
   totalScore        Float    @map("total_score")
   metrics           Json
-  reason            String?
   createdAt         DateTime @default(now()) @map("created_at")
+  reason            String?
   claw              Claw     @relation(fields: [clawId], references: [id], onDelete: Cascade)
 
   @@index([clawId])
@@ -108,11 +108,11 @@ model CreationArchive {
   clawId            String             @unique @map("claw_id")
   version           String             @default("1.0.0")
   isShared          Boolean            @default(false) @map("is_shared")
-  creationMaturity  Int                @default(0) @map("creation_maturity")
-  totalEvolutions   Int                @default(0) @map("total_evolutions")
-  lastEvolutionAt   DateTime?          @map("last_evolution_at")
   createdAt         DateTime           @default(now()) @map("created_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
+  creationMaturity  Int                @default(0) @map("creation_maturity")
+  lastEvolutionAt   DateTime?          @map("last_evolution_at")
+  totalEvolutions   Int                @default(0) @map("total_evolutions")
   characterProfiles CharacterProfile[]
   claw              Claw               @relation(fields: [clawId], references: [id], onDelete: Cascade)
   evolutionHistory  EvolutionHistory[]
@@ -127,7 +127,6 @@ model CreationArchive {
 model PlotPattern {
   id              String          @id @default(uuid())
   archiveId       String          @map("archive_id")
-  name            String
   type            PatternType
   description     String
   successRate     Float           @default(0.5) @map("success_rate")
@@ -139,6 +138,7 @@ model PlotPattern {
   parentPatternId String?         @map("parent_pattern_id")
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
+  name            String
   archive         CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
 
   @@map("plot_patterns")
@@ -147,12 +147,12 @@ model PlotPattern {
 model CharacterProfile {
   id           String          @id @default(uuid())
   archiveId    String          @map("archive_id")
-  name         String
   archetype    ArchetypeType
   overallScore Float           @default(0.5) @map("overall_score")
-  usageCount   Int             @default(0) @map("usage_count")
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
+  name         String
+  usageCount   Int             @default(0) @map("usage_count")
   archive      CreationArchive @relation(fields: [archiveId], references: [id], onDelete: Cascade)
 
   @@map("character_profiles")
@@ -173,16 +173,16 @@ model WritingStyle {
 model EvolutionHistory {
   id              String            @id @default(uuid())
   archiveId       String            @map("archive_id")
-  chapterId       String?           @map("chapter_id")
   strategy        EvolutionStrategy
   changes         Json
-  originalContent String?           @map("original_content")
-  evolvedContent  String?           @map("evolved_content")
-  confidence      Float             @default(0.5)
   metricsBefore   Json              @map("metrics_before")
   metricsAfter    Json              @map("metrics_after")
-  appliedAt       DateTime?         @map("applied_at")
   createdAt       DateTime          @default(now()) @map("created_at")
+  appliedAt       DateTime?         @map("applied_at")
+  chapterId       String?           @map("chapter_id")
+  confidence      Float             @default(0.5)
+  evolvedContent  String?           @map("evolved_content")
+  originalContent String?           @map("original_content")
   archive         CreationArchive   @relation(fields: [archiveId], references: [id], onDelete: Cascade)
 
   @@index([archiveId])
@@ -303,7 +303,6 @@ model ReviewTask {
   novelId              String     @map("novel_id")
   chapterId            String?    @map("chapter_id")
   status               TaskStatus @default(PENDING)
-  reviewerId           String?    @map("reviewer_id")
   assignedAt           DateTime?  @map("assigned_at")
   deadline             DateTime?
   requiredCapabilities String[]   @map("required_capabilities")
@@ -312,9 +311,10 @@ model ReviewTask {
   expiredAt            DateTime?  @map("expired_at") @db.Timestamptz(6)
   priority             Int        @default(0)
   updatedAt            DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
-  reviewer             Claw?      @relation(fields: [reviewerId], references: [id])
+  reviewerId           String?    @map("reviewer_id")
   chapter              Chapter?   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   novel                Novel      @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  reviewer             Claw?      @relation(fields: [reviewerId], references: [id])
   review               Review?
 
   @@index([reviewerId, status])
@@ -329,7 +329,6 @@ model Review {
   novelId             String             @map("novel_id")
   chapterId           String?            @map("chapter_id")
   reviewerId          String             @map("reviewer_id")
-  overallScore        Int                @map("overall_score")
   overallRating       Int                @map("overall_rating")
   plotRating          Int                @map("plot_rating")
   characterRating     Int                @map("character_rating")
@@ -338,9 +337,10 @@ model Review {
   structuredFeedback  Json?              @map("structured_feedback")
   emotionalImpact     String?            @map("emotional_impact")
   comment             String?
-  status              ReviewStatus       @default(PENDING)
   createdAt           DateTime           @default(now()) @map("created_at")
   isDeleted           Boolean            @default(false) @map("is_deleted")
+  overallScore        Int                @map("overall_score")
+  status              ReviewStatus       @default(PENDING)
   insights            CreationInsight[]
   appeals             ReviewAppeal[]
   reviewer_score_logs ReviewerScoreLog[]
@@ -356,11 +356,11 @@ model CreationInsight {
   id          String          @id @default(uuid())
   reviewId    String          @map("review_id")
   category    InsightCategory
-  severity    InsightSeverity
-  title       String
   description String
-  suggestion  String?
   location    String?
+  severity    InsightSeverity
+  suggestion  String?
+  title       String
   review      Review          @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 
   @@map("creation_insights")
@@ -392,7 +392,6 @@ model ReviewAppeal {
 model Bookshelf {
   id            String          @id @default(uuid())
   readerId      String          @map("reader_id")
-  clawId        String?         @map("claw_id")
   novelId       String          @map("novel_id")
   status        BookshelfStatus @default(READING)
   lastChapterId String?         @map("last_chapter_id")
@@ -400,6 +399,7 @@ model Bookshelf {
   progress      Float           @default(0)
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
+  clawId        String?         @map("claw_id")
 
   @@unique([readerId, novelId])
   @@map("bookshelves")
@@ -408,36 +408,39 @@ model Bookshelf {
 model ReadingHistory {
   id             String   @id @default(uuid())
   readerId       String   @map("reader_id")
-  clawId         String?  @map("claw_id")
   novelId        String   @map("novel_id")
   chapterId      String   @map("chapter_id")
   scrollPosition Int      @default(0) @map("scroll_position")
   progress       Float    @default(0)
   readTime       Int      @default(0) @map("read_time")
   readAt         DateTime @default(now()) @map("read_at")
+  clawId         String?  @map("claw_id")
 
   @@map("reading_history")
 }
 
 model Reader {
-  id               String         @id @default(uuid())
-  username         String         @unique
-  email            String         @unique
-  password         String
-  passwordHash     String         @map("password_hash")
-  avatar           String?
-  readCount        Int            @default(0) @map("read_count")
-  reviewCount      Int            @default(0) @map("review_count")
-  commentCount     Int            @default(0) @map("comment_count")
-  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
-  lastLoginAt      DateTime?      @map("last_login_at") @db.Timestamptz(6)
-  isDeleted        Boolean        @default(false) @map("is_deleted")
-  preferred_gender String?
-  notifications    Notification[]
-  operation_logs   OperationLog[]
-  payments         PaymentOrder[]
-  claws            ReaderClaw[]
+  id                         String         @id @default(uuid())
+  username                   String         @unique
+  email                      String         @unique
+  passwordHash               String         @map("password_hash")
+  avatar                     String?
+  readCount                  Int            @default(0) @map("read_count")
+  reviewCount                Int            @default(0) @map("review_count")
+  commentCount               Int            @default(0) @map("comment_count")
+  createdAt                  DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                  DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  lastLoginAt                DateTime?      @map("last_login_at") @db.Timestamptz(6)
+  isDeleted                  Boolean        @default(false) @map("is_deleted")
+  preferred_gender           String?
+  password                   String
+  emailVerificationExpiresAt DateTime?      @map("email_verification_expires_at") @db.Timestamptz(6)
+  emailVerificationToken     String?        @map("email_verification_token")
+  emailVerified              Boolean        @default(false) @map("email_verified")
+  notifications              Notification[]
+  operation_logs             OperationLog[]
+  payments                   PaymentOrder[]
+  claws                      ReaderClaw[]
 
   @@index([email])
   @@index([username])
@@ -490,12 +493,12 @@ model SystemConfig {
 model BehaviorLog {
   id           String   @id @default(uuid())
   clawId       String   @map("claw_id")
-  userId       String?  @map("user_id")
   action       String
-  resourceType String?  @map("resource_type")
-  resourceId   String?  @map("resource_id")
   timestamp    DateTime @default(now())
   metadata     Json?
+  resourceId   String?  @map("resource_id")
+  resourceType String?  @map("resource_type")
+  userId       String?  @map("user_id")
 
   @@index([action])
   @@index([clawId])
@@ -505,17 +508,17 @@ model BehaviorLog {
 
 model Alert {
   id         String    @id @default(uuid())
-  type       String
   level      String
-  severity   String
   title      String
   message    String
   source     String
   timestamp  DateTime  @default(now())
-  isResolved Boolean   @default(false) @map("is_resolved")
   resolved   Boolean   @default(false)
   resolvedAt DateTime? @map("resolved_at")
   metadata   Json?
+  isResolved Boolean   @default(false) @map("is_resolved")
+  severity   String
+  type       String
 
   @@index([level])
   @@index([resolved])
@@ -538,7 +541,6 @@ model SensitiveWord {
 model PaymentOrder {
   id            String        @id @default(uuid())
   orderId       String        @unique @map("order_id")
-  orderNo       String        @unique @map("order_no")
   readerId      String        @map("reader_id")
   amount        Decimal       @db.Decimal(10, 2)
   currency      String        @default("CNY")
@@ -550,6 +552,7 @@ model PaymentOrder {
   createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
   isDeleted     Boolean       @default(false) @map("is_deleted")
+  orderNo       String        @unique @map("order_no")
   reader        Reader        @relation(fields: [readerId], references: [id])
 
   @@index([orderId])
@@ -673,7 +676,6 @@ model SelfRegisteredClaw {
 
 model DomainEvent {
   id            String      @id @default(uuid())
-  eventId       String      @unique @map("event_id")
   eventType     String      @map("event_type")
   aggregateType String      @map("aggregate_type")
   aggregateId   String      @map("aggregate_id")
@@ -684,6 +686,7 @@ model DomainEvent {
   errorMessage  String?     @map("error_message")
   publishedAt   DateTime    @default(now()) @map("published_at") @db.Timestamptz(6)
   processedAt   DateTime?   @map("processed_at") @db.Timestamptz(6)
+  eventId       String      @unique @map("event_id")
 
   @@index([aggregateId])
   @@index([eventType])
@@ -708,11 +711,7 @@ model ElectionVote {
 
 model OperationLog {
   id           String   @id @default(uuid())
-  operatorId   String   @map("operator_id")
-  operatorType String   @map("operator_type")
   action       String
-  targetId     String   @map("target_id")
-  targetType   String   @map("target_type")
   resourceType String?  @map("resource_type")
   resourceId   String?  @map("resource_id")
   reader_id    String?
@@ -724,6 +723,10 @@ model OperationLog {
   success      Boolean  @default(true)
   errorMessage String?  @map("error_message")
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  operatorId   String   @map("operator_id")
+  operatorType String   @map("operator_type")
+  targetId     String   @map("target_id")
+  targetType   String   @map("target_type")
   admins       Admin?   @relation(fields: [adminId], references: [id])
   claws        Claw?    @relation(fields: [claw_id], references: [id])
   readers      Reader?  @relation(fields: [reader_id], references: [id])

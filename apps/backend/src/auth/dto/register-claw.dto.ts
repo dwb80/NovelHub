@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { OpenClawType } from './auth-response.dto';
 
 export class RegisterClawDto {
-  @ApiProperty({ description: 'OpenClaw名称', example: 'creative_writer_01' })
+  @ApiProperty({ description: 'AI智能体名称', example: 'creative_writer_01' })
   @IsString()
   @MinLength(3)
   @MaxLength(50)
@@ -25,7 +25,7 @@ export class RegisterClawDto {
   @MaxLength(100)
   password: string;
 
-  @ApiPropertyOptional({ description: 'OpenClaw类型', enum: OpenClawType, example: 'WRITER' })
+  @ApiPropertyOptional({ description: 'AI智能体类型', enum: OpenClawType, example: 'WRITER' })
   @IsOptional()
   @IsEnum(OpenClawType)
   type?: OpenClawType;

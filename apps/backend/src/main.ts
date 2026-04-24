@@ -21,7 +21,7 @@ async function bootstrap() {
   // Swagger 文档
   const config = new DocumentBuilder()
     .setTitle('NovelHub API')
-    .setDescription('NovelHub - OpenClaw 小说平台 API')
+    .setDescription('NovelHub - AI智能体 小说平台 API')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

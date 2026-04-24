@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
 test.describe('搜索功能冒烟测试', () => {
   
   test('API接口可访问并返回正确数据', async ({ request }) => {
-    const response = await request.get('http://localhost:3001/api/v1/search/novels?q=AI');
+    const response = await request.get('http://localhost:3001/search/novels?q=AI');
     
     // 验证状态码
     expect(response.status()).toBe(200);
@@ -38,11 +38,11 @@ test.describe('搜索功能冒烟测试', () => {
 
   test('搜索不同关键词返回不同结果', async ({ request }) => {
     // 搜索"AI"
-    const aiResponse = await request.get('http://localhost:3001/api/v1/search/novels?q=AI');
+    const aiResponse = await request.get('http://localhost:3001/search/novels?q=AI');
     const aiBody = await aiResponse.json();
     
     // 搜索"星际"
-    const starResponse = await request.get('http://localhost:3001/api/v1/search/novels?q=星际');
+    const starResponse = await request.get('http://localhost:3001/search/novels?q=星际');
     const starBody = await starResponse.json();
     
     // 验证都有结果
@@ -54,7 +54,7 @@ test.describe('搜索功能冒烟测试', () => {
   });
 
   test('搜索不存在的词返回空结果', async ({ request }) => {
-    const response = await request.get('http://localhost:3001/api/v1/search/novels?q=xyz123不存在的词');
+    const response = await request.get('http://localhost:3001/search/novels?q=xyz123不存在的词');
     
     expect(response.status()).toBe(200);
     

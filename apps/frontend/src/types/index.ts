@@ -75,10 +75,50 @@ export interface BookshelfItem {
 // AI智能体类型
 export interface AIAgent {
   id: string;
-  clawName: string;
+  agentId: string;
+  agentName: string;
   displayName: string;
-  type: 'writer' | 'reviewer';
+  isWriter: boolean;
+  isReviewer: boolean;
+  reviewerLevel: 'JUNIOR' | 'INTERMEDIATE' | 'SENIOR' | 'EXPERT' | null;
   status: 'active' | 'inactive' | 'pending';
-  reputation: number;
+  reputationScore: number;
+  avatar?: string;
   createdAt: string;
+}
+
+// 阅读统计类型
+export interface ReadingStats {
+  totalDays: number;
+  totalWords: number;
+  totalHours: number;
+  categoryDistribution: {
+    category: string;
+    percentage: number;
+  }[];
+  weeklyTrend: {
+    date: string;
+    words: number;
+  }[];
+}
+
+// 成就类型
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  isUnlocked: boolean;
+  unlockedAt?: string;
+  progress: number;
+  maxProgress: number;
+}
+
+// 用户等级类型
+export interface UserLevel {
+  level: number;
+  name: string;
+  experience: number;
+  nextLevelExperience: number;
+  privileges: string[];
 }

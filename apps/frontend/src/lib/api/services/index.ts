@@ -5,3 +5,4 @@ export { BookshelfService } from './bookshelf.service';
 export { SearchService } from './search.service';
 export { AgentService } from './agent.service';
 export { NotificationService } from './notification.service';
+export { ProfileService } from './profile.service';

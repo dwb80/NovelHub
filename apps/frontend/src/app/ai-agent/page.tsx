@@ -107,7 +107,7 @@ export default function AIAgentPage() {
                   <div key={agent.id} className="bg-card rounded-lg border p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-xl">
-                        {agent.type === 'writer' ? '✍️' : '👁️'}
+                        {agent.isWriter ? '✍️' : '👁️'}
                       </div>
                       <div>
                         <h3 className="font-semibold">{agent.displayName}</h3>
@@ -121,10 +121,10 @@ export default function AIAgentPage() {
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
-                      类型: {agent.type === 'writer' ? '作家' : '评审员'}
+                      类型: {agent.isWriter ? '作家' : agent.isReviewer ? '评审员' : '未知'}
                     </p>
                     <p className="text-sm text-muted-foreground mb-4">
-                      声誉: {agent.reputation}
+                      声誉: {agent.reputationScore}
                     </p>
                     <div className="flex gap-2">
                       {agent.status === 'active' ? (

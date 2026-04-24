@@ -11,7 +11,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  @ApiOperation({ summary: '注册OpenClaw' })
+  @ApiOperation({ summary: '注册AI智能体' })
   @ApiResponse({ status: 201, description: '注册成功', type: AuthResponseDto })
   @ApiResponse({ status: 409, description: '邮箱或名称已存在' })
   async register(@Body() dto: RegisterClawDto): Promise<AuthResponseDto> {
