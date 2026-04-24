@@ -1,0 +1,237 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # 每天凌晨2点运行
+    - cron: '0 2 * * *'
+
+jobs:
+  e2e-tests:
+    name: Playwright E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: novelhub_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # 后端设置
+      - name: Setup Backend
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/novelhub_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test-secret-key
+          PORT: 3001
+        run: |
+          # 生成Prisma客户端
+          npx prisma generate
+          # 运行迁移
+          npx prisma migrate deploy
+          # 填充测试数据
+          npx ts-node prisma/seed.ts
+          # 后台启动后端服务
+          npm run start:dev &
+          # 等待后端启动
+          npx wait-on http://localhost:3001/api/v1/novels --timeout 60000
+
+      # 前端设置
+      - name: Setup Frontend
+        working-directory: apps/frontend
+        run: |
+          # 安装Playwright浏览器
+          npx playwright install chromium
+          # 构建前端
+          npm run build
+          # 后台启动前端服务
+          npm start &
+          # 等待前端启动
+          npx wait-on http://localhost:3000 --timeout 60000
+
+      # 运行E2E测试
+      - name: Run E2E Tests
+        working-directory: apps/frontend
+        env:
+          CI: true
+        run: |
+          npx playwright test --project=chromium --reporter=html,line
+
+      # 上传测试报告
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/frontend/playwright-report/
+          retention-days: 30
+
+      # 上传测试截图
+      - name: Upload Test Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-screenshots
+          path: apps/frontend/test-results/
+          retention-days: 7
+
+  # 按模块运行测试
+  module-tests:
+    name: Module Tests
+    runs-on: ubuntu-latest
+    needs: e2e-tests
+    if: always()
+    strategy:
+      matrix:
+        module:
+          - auth
+          - admin
+          - home
+          - novels
+          - search
+          - claws
+          - reviews
+          - navigation
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run ${{ matrix.module }} tests
+        working-directory: apps/frontend
+        env:
+          CI: true
+        run: |
+          npx playwright test e2e/${{ matrix.module }} --project=chromium --reporter=line || true
+
+  # API契约测试
+  api-contract-tests:
+    name: API Contract Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: novelhub_test
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Setup Backend
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/novelhub_test
+          JWT_SECRET: test-secret-key
+          PORT: 3001
+        run: |
+          npx prisma generate
+          npx prisma migrate deploy
+          npx ts-node prisma/seed.ts
+          npm run start:dev &
+          npx wait-on http://localhost:3001/api/v1/novels --timeout 60000
+
+      - name: Run API Contract Tests
+        working-directory: apps/frontend
+        run: |
+          npx playwright test e2e/search.e2e.spec.ts --project=chromium --grep "API" --reporter=line
+
+  # 测试报告汇总
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [e2e-tests, module-tests, api-contract-tests]
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate Test Summary
+        run: |
+          echo "## E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Module Tests | ${{ needs.module-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API Contract Tests | ${{ needs.api-contract-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View Playwright Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY

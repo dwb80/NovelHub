@@ -1,0 +1,871 @@
+2026-04-18T13:12:15.230187Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies"), AnchoredSystemPathBuf(".turbo\\cookies\\1.cookie")}
+2026-04-18T13:12:15.233547Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:12:15.328873Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-04-18T13:12:15.345574Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies\\.turbo-cookie")}
+2026-04-18T13:12:15.345597Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:12:15.921496Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\daemon"), AnchoredSystemPathBuf(".turbo"), AnchoredSystemPathBuf(".turbo\\cookies")}
+2026-04-18T13:12:15.921523Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:12:16.432538Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\daemon\\48917105fbb35b55-turbo.log.2026-04-18")}
+2026-04-18T13:12:16.432563Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:12:43.032287Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies\\2.cookie")}
+2026-04-18T13:12:43.032343Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:12:43.227881Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\cookies")}
+2026-04-18T13:12:43.227908Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:12:49.757797Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:12:49.757829Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:12:52.133651Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:12:52.133679Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:12:52.571145Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:12:52.571508Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:12:52.571521Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:12:52.571658Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:12:52.629764Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:12:52.629828Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:12:53.022612Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:21:09.230394Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding\\page-link-check.spec.ts"), AnchoredSystemPathBuf("case\\coding")}
+2026-04-18T13:21:09.230440Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:21:25.342372Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\bb78fbc658a94a6d5873dd00046c9f331ae7ba8e.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\32a1711c226162b0782a04b41a65518098694b56.md"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\757db7354ce6f48bd82811c326d52c7ce2646c7a.md"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\18fce96ada8a15296b057a1a25f4abd885fbb50f.png"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\43ac5a8d19c6d530cc14b216343315a7f3953693.png"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\f109fe172a671af7dab00ec48479b6b2fb24ccf9.webm"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\index.html")}
+2026-04-18T13:21:25.342452Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:21:26.017023Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\playwright-report"), AnchoredSystemPathBuf("apps\\frontend"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\index.html"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json")}
+2026-04-18T13:21:26.017051Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:21:26.017248Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:21:35.632397Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\playwright-report"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\index.html"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json")}
+2026-04-18T13:21:35.632425Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:21:36.046654Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\index.html")}
+2026-04-18T13:21:36.046718Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:21:36.054180Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:22:59.529146Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\e2e"), AnchoredSystemPathBuf("apps\\frontend\\e2e\\page-link-check.spec.ts")}
+2026-04-18T13:22:59.529170Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:09.823973Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json"), AnchoredSystemPathBuf("apps\\frontend\\test-results")}
+2026-04-18T13:23:09.823997Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:10.042898Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend")}
+2026-04-18T13:23:10.042921Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:10.043029Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:23:10.334697Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0"), AnchoredSystemPathBuf("apps\\frontend\\test-results")}
+2026-04-18T13:23:10.334719Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:10.670862Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:23:10.671034Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend")}
+2026-04-18T13:23:10.671050Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:10.671164Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:23:16.837588Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@34a8be775eb3663a4e8d49384e15b4ed.webm")}
+2026-04-18T13:23:16.837615Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:17.353382Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0")}
+2026-04-18T13:23:17.353408Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:17.353565Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:23:44.322415Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium")}
+2026-04-18T13:23:44.322451Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:45.183805Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@34a8be775eb3663a4e8d49384e15b4ed.webm")}
+2026-04-18T13:23:45.183836Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:45.183968Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:23:46.452004Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium\\test-failed-1.png")}
+2026-04-18T13:23:46.452063Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:48.553979Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@34a8be775eb3663a4e8d49384e15b4ed.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium")}
+2026-04-18T13:23:48.554037Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:48.554208Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:23:57.921359Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@34a8be775eb3663a4e8d49384e15b4ed.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:23:57.921385Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:58.836238Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results")}
+2026-04-18T13:23:58.836271Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:23:58.836454Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:07.036344Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@154b9bdaa18d9a8f9d0aa5afd57443e3.webm")}
+2026-04-18T13:24:07.036401Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:07.513414Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:24:07.513438Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:07.513608Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:15.432157Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium")}
+2026-04-18T13:24:15.432195Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:16.599661Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@154b9bdaa18d9a8f9d0aa5afd57443e3.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\test-failed-1.png")}
+2026-04-18T13:24:16.599792Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:16.599949Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:17.427823Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@154b9bdaa18d9a8f9d0aa5afd57443e3.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2")}
+2026-04-18T13:24:17.427847Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:24.225867Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@4a9f63315aa5add3966a1d9946dd0e50.webm")}
+2026-04-18T13:24:24.225890Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:24.595493Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2")}
+2026-04-18T13:24:24.595516Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:24.595683Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:40.531424Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\33b05c37019db391100bf7304fffe100.png")}
+2026-04-18T13:24:40.531444Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:42.197114Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@4a9f63315aa5add3966a1d9946dd0e50.webm")}
+2026-04-18T13:24:42.197173Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:42.197422Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:42.546948Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@e86a188445fd30e94d4ba8e9474d7c91.webm")}
+2026-04-18T13:24:42.546975Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:42.829108Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2")}
+2026-04-18T13:24:42.829133Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:42.829295Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:43.142343Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\7d57b96e1c6b918b2307489600123f52.png")}
+2026-04-18T13:24:43.142371Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:43.670612Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@e86a188445fd30e94d4ba8e9474d7c91.webm")}
+2026-04-18T13:24:43.670642Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:43.670835Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:46.139610Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@f80cdb1624a4b8c4743e5034910c07d8.webm")}
+2026-04-18T13:24:46.139641Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:46.481039Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2")}
+2026-04-18T13:24:46.481059Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:46.481165Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:46.834701Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium")}
+2026-04-18T13:24:46.834736Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:47.324222Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium\\test-failed-1.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium")}
+2026-04-18T13:24:47.324277Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:47.324478Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:47.530608Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@f80cdb1624a4b8c4743e5034910c07d8.webm")}
+2026-04-18T13:24:47.530657Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:47.866168Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium")}
+2026-04-18T13:24:47.866205Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:47.866409Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:48.936039Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@f80cdb1624a4b8c4743e5034910c07d8.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\33b05c37019db391100bf7304fffe100.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-3"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\7d57b96e1c6b918b2307489600123f52.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@e86a188445fd30e94d4ba8e9474d7c91.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-2\\page@4a9f63315aa5add3966a1d9946dd0e50.webm")}
+2026-04-18T13:24:48.936163Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:49.173784Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results")}
+2026-04-18T13:24:49.173810Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:49.173935Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:54.433020Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium")}
+2026-04-18T13:24:54.433051Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:56.228478Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-3"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-3\\page@bc3048b2c46dc42c88c13228c6df44aa.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium\\test-failed-1.png")}
+2026-04-18T13:24:56.228540Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:24:56.228715Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:24:56.633385Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-3\\page@bc3048b2c46dc42c88c13228c6df44aa.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-3")}
+2026-04-18T13:24:56.633409Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:01.848839Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\page@777f08d57f4f8bc7ed8ffbd51e9727b5.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\3b13ba3a8f7ea222dad6860fc3171e5e.png")}
+2026-04-18T13:25:01.848869Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:02.618175Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\page@777f08d57f4f8bc7ed8ffbd51e9727b5.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4")}
+2026-04-18T13:25:02.618202Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:02.618370Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:25:03.024676Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\page@c46ad1fccaea7e0706fc424a256127a2.webm")}
+2026-04-18T13:25:03.024698Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:03.329724Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4")}
+2026-04-18T13:25:03.329746Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:03.329889Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:25:03.628418Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\354bd5f8d11563cf25e114dec6446462.png")}
+2026-04-18T13:25:03.628441Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:04.169883Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\354bd5f8d11563cf25e114dec6446462.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\page@c46ad1fccaea7e0706fc424a256127a2.webm")}
+2026-04-18T13:25:04.169908Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:04.170055Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:25:04.322811Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\index.html"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\page@c46ad1fccaea7e0706fc424a256127a2.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\3b13ba3a8f7ea222dad6860fc3171e5e.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\page@777f08d57f4f8bc7ed8ffbd51e9727b5.webm"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-4\\354bd5f8d11563cf25e114dec6446462.png")}
+2026-04-18T13:25:04.322842Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:05.040739Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\3cc7be6a31e9ca32d69af680c53bb925c8afcd2f.webm"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\1f8593627cfc42f4209db96fe8b0695ccb076b2b.png"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\999c17cbb3aee57e8b6eb307618b54702937f566.md"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\index.html"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\22bd09d009a5fb17a315a21154bbf5e94c042a2d.md"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\4ba4e719ba8768098abe238ec478f7c1409d6b63.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\b9fe678373db5acb482e8800ef04745dd5bcdb51.webm"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\6aa7a08f0d9f7bbd769d1658d4c2ccd6eae5ce49.md"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\18683f9afaad26c03dc63248f0d6354787d8b278.webm"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\9cdd9daac376c629b2ef0fee8af23ce6c44a7596.webm"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\160a822212913a7f5fa163310d13b02a5ee91dc6.md"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report"), AnchoredSystemPathBuf("apps\\frontend"), AnchoredSystemPathBuf("apps\\frontend\\playwright-report\\data\\50755df4048739cf292371aa8649dc9bd4cc29c2.png")}
+2026-04-18T13:25:05.040768Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:25:05.040955Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:27:49.123983Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\notifications\\page.tsx")}
+2026-04-18T13:27:49.124006Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:28:22.536039Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\category\\page.tsx")}
+2026-04-18T13:28:22.536140Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:28:46.625963Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\ai-writers\\page.tsx")}
+2026-04-18T13:28:46.626000Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:28:53.221682Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\ai-writers\\page.tsx")}
+2026-04-18T13:28:53.221706Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:29:33.634028Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding\\check-api-data.js")}
+2026-04-18T13:29:33.634050Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:29:33.748195Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding"), AnchoredSystemPathBuf("case\\coding\\check-api-data.js")}
+2026-04-18T13:29:33.748363Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:29:33.936375Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding\\check-api-data.js")}
+2026-04-18T13:29:33.936396Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:29:52.751520Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:29:52.751577Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:29:52.983588Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:29:53.637964Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:29:53.637991Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:29:53.789005Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:02.334344Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\test-failed-1.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium\\test-failed-1.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium\\test-failed-1.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-category-页面-mock-数据-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\error-context.md"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-Mock-数据页面修复验证-检查-notifications-页面-mock-数据-chromium\\test-failed-1.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-检查所有公开页面可访问-chromium")}
+2026-04-18T13:30:02.334573Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:02.724936Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0")}
+2026-04-18T13:30:02.724971Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:02.725186Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:11.024555Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@3136ce081afd88971d40cacd75467aa5.webm")}
+2026-04-18T13:30:11.024582Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:11.477071Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0")}
+2026-04-18T13:30:11.477096Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:11.477290Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:26.721986Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@3136ce081afd88971d40cacd75467aa5.webm")}
+2026-04-18T13:30:26.722048Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:27.730704Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\81f3a98ce5c1c725cf37127226c05acb.png")}
+2026-04-18T13:30:27.730739Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:28.316534Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@3136ce081afd88971d40cacd75467aa5.webm")}
+2026-04-18T13:30:28.316559Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:28.316736Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:29.751247Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@ae5d7941745b5fdee7687b9e071fe544.webm")}
+2026-04-18T13:30:29.751274Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:30.252709Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0")}
+2026-04-18T13:30:30.252736Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:30.252878Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:35.022876Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium")}
+2026-04-18T13:30:35.022912Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:35.874647Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\test-failed-1.png")}
+2026-04-18T13:30:35.874696Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:35.874924Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:35.953925Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@ae5d7941745b5fdee7687b9e071fe544.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\video.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium\\error-context.md")}
+2026-04-18T13:30:35.954025Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:36.307569Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\page-link-check-页面链接检查-识别需要登录的页面（除-profile-外）-chromium")}
+2026-04-18T13:30:36.307607Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:36.307814Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:36.927542Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\81f3a98ce5c1c725cf37127226c05acb.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@ae5d7941745b5fdee7687b9e071fe544.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0\\page@3136ce081afd88971d40cacd75467aa5.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-0")}
+2026-04-18T13:30:36.927568Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:37.238932Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results")}
+2026-04-18T13:30:37.238954Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:37.239122Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:30:45.223981Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@a04619a8029182e32fcdb62ec4542bcf.webm")}
+2026-04-18T13:30:45.224007Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:45.478458Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:30:45.478479Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:30:45.478624Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:01.438943Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\af73914e8fe932d96760e31a7bf8e8dd.png")}
+2026-04-18T13:31:01.439004Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:02.024204Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@a04619a8029182e32fcdb62ec4542bcf.webm")}
+2026-04-18T13:31:02.024239Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:02.024475Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:02.650293Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@47355cfb59db9a70ee58e117e5f62cda.webm")}
+2026-04-18T13:31:02.650320Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:03.581387Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:31:03.581418Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:03.581642Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:03.826653Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\cffd6129c3dc27bc749ab6fe1b705a48.png")}
+2026-04-18T13:31:03.826684Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:04.323647Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@47355cfb59db9a70ee58e117e5f62cda.webm")}
+2026-04-18T13:31:04.323676Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:04.323849Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:04.935921Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@09db0b9dfd2279928ed5da0a36e83a5e.webm")}
+2026-04-18T13:31:04.935946Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:05.258071Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:31:05.258089Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:05.258210Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:05.737833Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\1c197da64e3db420d448b677bad8bac5.png")}
+2026-04-18T13:31:05.737861Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:06.231145Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@09db0b9dfd2279928ed5da0a36e83a5e.webm")}
+2026-04-18T13:31:06.231164Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:06.231284Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:06.633985Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@b1bb51832ccac47c4417589986a4c53b.webm")}
+2026-04-18T13:31:06.634085Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:06.888450Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:31:06.888469Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:06.888592Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:07.428317Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\834d11888f9305dda8205e628e6cf8d5.png")}
+2026-04-18T13:31:07.428371Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:07.921361Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@b1bb51832ccac47c4417589986a4c53b.webm")}
+2026-04-18T13:31:07.921386Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:07.921560Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:09.025051Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@2c414f64d622c8747086eb564a6e1257.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\338dbb8d385f77d69223bbdb90a62f45.png")}
+2026-04-18T13:31:09.025110Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:09.445646Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@2c414f64d622c8747086eb564a6e1257.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:31:09.445665Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:09.445783Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:09.730662Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@92e33a865a38430a363d8b25d1b25f16.webm")}
+2026-04-18T13:31:09.730686Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:09.994425Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:31:09.994443Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:09.994551Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:10.558107Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\e5f7eec6223773a957391c6f76b29ef0.png")}
+2026-04-18T13:31:10.558157Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:10.950228Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1")}
+2026-04-18T13:31:10.950249Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:10.950400Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:31:11.024773Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@92e33a865a38430a363d8b25d1b25f16.webm")}
+2026-04-18T13:31:11.024803Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:31:11.630526Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\af73914e8fe932d96760e31a7bf8e8dd.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@a04619a8029182e32fcdb62ec4542bcf.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@09db0b9dfd2279928ed5da0a36e83a5e.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\338dbb8d385f77d69223bbdb90a62f45.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.last-run.json"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\cffd6129c3dc27bc749ab6fe1b705a48.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@92e33a865a38430a363d8b25d1b25f16.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\834d11888f9305dda8205e628e6cf8d5.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@47355cfb59db9a70ee58e117e5f62cda.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\1c197da64e3db420d448b677bad8bac5.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@2c414f64d622c8747086eb564a6e1257.webm"), AnchoredSystemPathBuf("apps\\frontend\\test-results"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\e5f7eec6223773a957391c6f76b29ef0.png"), AnchoredSystemPathBuf("apps\\frontend\\test-results\\.playwright-artifacts-1\\page@b1bb51832ccac47c4417589986a4c53b.webm")}
+2026-04-18T13:31:11.630593Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:32:20.026362Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\report"), AnchoredSystemPathBuf("case\\report\\page-link-check-report.md")}
+2026-04-18T13:32:20.026417Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:33:09.122716Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\frontend\\navigation\\page-link-check-test-cases.md")}
+2026-04-18T13:33:09.122736Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:33:09.236868Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\frontend\\navigation"), AnchoredSystemPathBuf("case\\frontend\\navigation\\page-link-check-test-cases.md")}
+2026-04-18T13:33:09.236898Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:35:21.933625Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:35:21.933653Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:35:22.008801Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:35:22.832381Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:35:22.832432Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:35:22.908746Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:35:30.651201Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:35:30.651405Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:35:31.064578Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:35:31.064959Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:35:31.064972Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:35:31.065121Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:35:33.824517Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:35:33.824543Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:35:35.423521Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:35:35.424589Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:35:35.424608Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:35:35.424878Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:38:27.177809Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\layout\\footer.tsx")}
+2026-04-18T13:38:27.177860Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:41:55.937391Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:41:55.937450Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:41:56.025597Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:41:56.726119Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:41:56.726146Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:41:56.805877Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:42:03.127443Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:42:03.127469Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:42:03.425203Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:42:03.425538Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:42:03.425551Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:42:03.425686Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:42:05.025721Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:42:05.025747Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:42:05.455945Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:42:05.456256Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:42:05.456267Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:42:05.456425Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:42:05.626386Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:42:05.626423Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:42:05.713250Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:44:06.791733Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\report\\document-sync-report-2026-04-18.md"), AnchoredSystemPathBuf("case\\report")}
+2026-04-18T13:44:06.791805Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:06.943381Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\report\\document-sync-report-2026-04-18.md")}
+2026-04-18T13:44:06.943398Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:11.837047Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:11.837097Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:12.036357Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:12.036383Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:13.046508Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:13.046534Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:13.354598Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:13.354750Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:15.271360Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:15.271416Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:16.565870Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:16.565890Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:16.818220Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:16.818237Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:17.328673Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:17.328692Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:18.080897Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:18.080996Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:18.767477Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:18.767522Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:19.360629Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:19.360655Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:19.826032Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:19.826056Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:20.141558Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:20.141576Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:20.272821Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:20.272838Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:20.559186Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:20.559357Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:20.841371Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:20.841419Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:21.131041Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:21.131086Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:21.331235Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:21.331261Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:21.628985Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:21.629039Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:22.121950Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:22.122009Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:22.428541Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:22.428597Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:22.828160Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:22.828183Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:23.235034Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:23.235346Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:23.439304Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:23.439330Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:23.828447Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:23.828510Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:24.155107Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:24.155134Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:24.722067Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:24.722093Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:25.325751Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:25.325788Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:25.954779Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:25.954868Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:26.122355Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:26.122374Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:26.224618Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:26.224651Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:26.546414Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:26.546440Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:26.829004Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:26.829060Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:27.124091Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:27.124166Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:27.431968Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:27.432026Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:28.330235Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:28.330265Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:28.935970Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:28.935998Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:29.324344Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:29.324407Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:29.525095Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:29.525119Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:29.724896Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:29.724927Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:30.133395Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:30.133420Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:30.250473Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:30.250493Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:30.941457Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:30.941483Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:31.224344Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:31.224398Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:31.528568Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:31.528596Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:32.033197Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:32.033400Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:32.235984Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:32.236585Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:32.328159Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:32.328191Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:32.729893Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:32.729958Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:33.132715Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:33.132743Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:33.533838Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:33.533866Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:33.735938Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:33.736103Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:34.135279Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:34.135303Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:34.537433Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:34.537466Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:34.833247Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:34.833281Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:35.128784Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:35.128810Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:35.424983Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:35.425012Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:36.031534Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:36.031558Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:36.327421Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:36.327443Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:36.622411Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:36.622437Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:36.823877Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:36.823902Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:37.130927Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:37.130954Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:37.336216Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:37.336302Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:37.527993Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:37.528039Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:37.627497Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:37.627526Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:38.327557Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:38.327616Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:38.626388Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:38.626448Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:38.921424Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:38.921450Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:39.323423Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:39.323536Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:39.836368Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:39.836426Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:40.158562Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:40.158607Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:40.224045Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:40.224093Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:40.764072Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\navigation-requirements.md")}
+2026-04-18T13:44:40.764124Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:49.527655Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:49.527675Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:49.634954Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:49.635004Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:49.833011Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:49.833034Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:49.927469Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:49.927519Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:50.132710Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:50.132737Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:50.328361Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:50.328388Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:50.735020Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:50.735089Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:51.031688Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:51.031730Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:51.227088Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:51.227108Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:51.325164Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:51.325199Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:51.523460Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:51.523487Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:51.827508Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:51.827533Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:52.430337Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:52.430386Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:52.856075Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:52.856137Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:53.126553Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:53.126574Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:53.546919Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:53.546957Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:53.692645Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:53.692660Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:53.997547Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:53.997575Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:54.240323Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:54.240343Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:54.525044Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:54.525066Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:54.832479Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:54.832506Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:55.137674Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:55.137725Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:55.442548Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:55.442597Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:55.928136Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:55.928165Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:56.222785Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:56.222810Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:56.739102Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:56.739129Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:57.031969Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:57.031992Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:57.123112Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:57.123140Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:57.326458Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:57.326481Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:57.724597Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:57.724640Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:57.923826Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:57.923849Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:58.324191Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:58.324223Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:58.634897Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:58.634964Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:59.024239Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:59.024291Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:59.224875Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:59.225589Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:44:59.722292Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:44:59.722358Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:00.042308Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:00.042332Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:00.627759Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:00.627788Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:01.522486Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:01.522512Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:01.827810Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:01.827837Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:02.028077Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:02.028131Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:02.336492Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:02.336563Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:03.551334Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:03.551490Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:04.375994Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:04.376124Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:05.233998Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:05.234057Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:05.428219Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:05.428245Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:05.831203Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:05.831239Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:06.027884Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:06.027960Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:06.323549Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:06.323577Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:06.631965Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:06.631986Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:06.728328Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:06.728355Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:06.929838Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:06.930005Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:07.223673Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:07.223698Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:07.523912Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:07.523940Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:07.624210Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:07.624237Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:07.826204Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:07.826269Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:08.028183Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:08.028208Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:08.523627Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:08.523938Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:08.924332Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:08.924363Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:09.327954Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:09.327990Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:09.622681Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:09.622749Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:10.229646Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:10.229713Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:10.631323Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:10.631343Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:10.830214Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:10.830241Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:10.926877Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:10.926904Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:11.127380Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:11.127408Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:11.435199Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:11.435243Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:11.624121Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:11.624148Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:11.930559Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:11.930624Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:12.129082Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:12.129105Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:12.422758Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:12.422802Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:14.158884Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:14.158935Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:14.428815Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:14.428911Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:15.132777Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:15.132874Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:15.425167Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:15.425189Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:15.726566Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:15.726595Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:16.032896Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:16.032961Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:16.637634Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:16.638635Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:16.927588Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:16.927615Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:17.226753Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:17.226814Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:17.624409Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:17.624436Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:17.825586Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:17.825654Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:18.135833Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:18.135869Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:18.522026Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:18.522052Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:18.832491Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:18.832540Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:19.124489Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:19.124512Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:19.532118Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:19.532143Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:19.826247Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:19.826276Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:20.030014Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:20.030079Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:20.323882Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:20.323907Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:20.633710Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:20.633737Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:21.033958Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:21.034019Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:21.235010Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:21.235039Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:21.636207Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:21.636224Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:21.732534Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:21.732567Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:22.133899Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:22.133929Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:22.347516Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:22.347539Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:22.429167Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:22.429219Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:22.723398Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:22.723425Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:23.145455Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:23.145481Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:23.421265Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:23.421297Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:23.736808Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:23.736890Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:23.923287Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:23.923312Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:24.233464Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:24.233553Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:24.436363Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:24.436399Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:24.730988Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:24.731017Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:24.929868Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:24.929892Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:25.330299Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:25.330322Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:25.622677Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:25.622711Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:26.135420Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:26.135447Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:26.723055Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:26.723232Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:27.034603Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:27.034654Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:27.326120Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:27.326143Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:27.840739Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:27.840955Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:28.495839Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:28.495862Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:29.226470Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:29.226494Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:29.401674Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:29.401742Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:29.543647Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:29.543668Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:29.630126Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:29.630149Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:29.831100Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:29.831180Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:30.235648Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:30.235709Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:30.727066Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:30.727090Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:31.126275Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:31.126304Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:31.527352Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:31.527802Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:31.821749Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:31.821781Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:32.131922Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:32.131983Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:32.332852Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:32.332928Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:33.932996Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:33.933066Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:34.223755Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:34.223943Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:34.527546Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:34.527590Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:34.630622Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:34.630671Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:34.833475Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:34.833548Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:34.929165Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:34.929202Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:35.233309Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:35.233338Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:35.636033Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:35.636056Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:36.333072Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:36.333107Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:45:36.433425Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design\\navigation-design.md")}
+2026-04-18T13:45:36.433469Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:46:50.134156Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\author\\page.tsx")}
+2026-04-18T13:46:50.134180Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:47:06.475214Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\providers\\auth-provider.tsx")}
+2026-04-18T13:47:06.475301Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:47:32.429853Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\providers\\auth-provider.tsx")}
+2026-04-18T13:47:32.429922Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:47:43.644210Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\providers\\auth-provider.tsx")}
+2026-04-18T13:47:43.644242Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:48:36.023369Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding"), AnchoredSystemPathBuf("case\\coding\\test-author-logout.js")}
+2026-04-18T13:48:36.023427Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T13:49:06.528701Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:49:06.528756Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:49:06.607851Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:49:07.221447Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:49:07.221470Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:49:07.349668Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:49:17.253672Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:49:17.253703Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:49:17.571703Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:49:17.730376Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:49:17.730434Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:49:18.073928Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:49:22.430854Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:49:22.430906Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:49:28.888005Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:49:28.888409Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:49:28.888422Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:49:28.888583Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:50:35.134007Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\privacy\\page.tsx")}
+2026-04-18T13:50:35.134028Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:50:45.526713Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\terms\\page.tsx")}
+2026-04-18T13:50:45.526749Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:51:13.828949Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\reviews\\page.tsx")}
+2026-04-18T13:51:13.829013Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:52:48.488890Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\login\\page.tsx")}
+2026-04-18T13:52:48.489387Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:53:08.931704Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\author\\page.tsx")}
+2026-04-18T13:53:08.931762Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:53:21.943957Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\author\\page.tsx")}
+2026-04-18T13:53:21.944020Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:53:58.138711Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:53:58.138743Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:53:58.563277Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:54:01.529073Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:54:01.529106Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:54:02.441438Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:54:12.838661Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:54:12.838724Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:54:13.281742Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:54:13.426869Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:54:13.426923Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:54:13.598779Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:54:15.731166Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:54:15.731196Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:54:16.375374Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:54:16.375726Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:54:16.375741Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:54:16.375975Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:54:16.445374Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T13:54:16.445459Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T13:54:17.305340Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T13:59:43.342496Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\providers\\auth-provider.tsx")}
+2026-04-18T13:59:43.342593Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:00:03.923835Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\login\\page.tsx")}
+2026-04-18T14:00:03.923859Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:00:17.724082Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\login\\page.tsx")}
+2026-04-18T14:00:17.724151Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:03:51.945283Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T14:03:51.945313Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:03:52.281436Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T14:03:56.334225Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T14:03:56.334257Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:03:56.595050Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T14:04:04.030851Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T14:04:04.030887Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:04:04.556415Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T14:04:05.443024Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T14:04:05.443056Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:04:05.695067Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T14:04:08.028958Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T14:04:08.029035Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:04:09.510678Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T14:04:09.511115Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\.next")}
+2026-04-18T14:04:09.511130Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:04:09.511371Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T14:07:12.342117Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\layout\\header.tsx")}
+2026-04-18T14:07:12.342142Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:07:25.823431Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\layout\\header.tsx")}
+2026-04-18T14:07:25.823457Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:07:42.238988Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\providers\\auth-provider.tsx")}
+2026-04-18T14:07:42.239045Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:07:56.146603Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\providers\\auth-provider.tsx")}
+2026-04-18T14:07:56.146635Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:08:14.234655Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\components\\providers\\auth-provider.tsx")}
+2026-04-18T14:08:14.234805Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:08:33.121778Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\login\\page.tsx")}
+2026-04-18T14:08:33.121800Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:12:15.530350Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\profile\\page.tsx")}
+2026-04-18T14:12:15.530371Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:12:24.824086Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\profile\\page.tsx")}
+2026-04-18T14:12:24.824129Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:12:41.079164Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\profile\\page.tsx")}
+2026-04-18T14:12:41.079192Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:12:56.331821Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\profile\\page.tsx")}
+2026-04-18T14:12:56.331883Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:12:57.491385Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\profile\\page.tsx")}
+2026-04-18T14:12:57.491439Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:12:57.492466Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2026-04-18T14:14:46.473488Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\frontend\\src\\app\\profile\\page.tsx")}
+2026-04-18T14:14:46.473555Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/frontend"), path: AnchoredSystemPathBuf("apps\\frontend") }}))
+2026-04-18T14:17:54.626780Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements\\profile-claw-binding-requirements.md")}
+2026-04-18T14:17:54.626808Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:17:54.733831Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\requirements"), AnchoredSystemPathBuf("case\\requirements\\profile-claw-binding-requirements.md")}
+2026-04-18T14:17:54.733857Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:19:08.534933Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\design"), AnchoredSystemPathBuf("case\\design\\profile-claw-binding-design.md")}
+2026-04-18T14:19:08.534960Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:20:46.631968Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\frontend\\profile\\profile-claw-binding-test-cases.md"), AnchoredSystemPathBuf("case\\frontend\\profile")}
+2026-04-18T14:20:46.631993Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:22:03.829968Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\report\\document-sync-report-2026-04-18-claw-binding.md"), AnchoredSystemPathBuf("case\\report")}
+2026-04-18T14:22:03.830023Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:22:03.924991Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\report\\document-sync-report-2026-04-18-claw-binding.md")}
+2026-04-18T14:22:03.925018Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:24:21.138997Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\backend\\src\\readers\\readers.service.ts")}
+2026-04-18T14:24:21.139050Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/backend"), path: AnchoredSystemPathBuf("apps\\backend") }}))
+2026-04-18T14:24:37.405646Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\backend\\src\\readers\\readers.controller.ts")}
+2026-04-18T14:24:37.405672Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/backend"), path: AnchoredSystemPathBuf("apps\\backend") }}))
+2026-04-18T14:25:10.828701Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\backend\\src\\claws\\claws.service.ts")}
+2026-04-18T14:25:10.828750Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/backend"), path: AnchoredSystemPathBuf("apps\\backend") }}))
+2026-04-18T14:25:23.926938Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\backend\\src\\claws\\claws.controller.ts")}
+2026-04-18T14:25:23.926964Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@novelhub/backend"), path: AnchoredSystemPathBuf("apps\\backend") }}))
+2026-04-18T14:26:00.627975Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding\\profile-claw-binding"), AnchoredSystemPathBuf("case\\coding\\profile-claw-binding\\profile-claw-binding.spec.ts")}
+2026-04-18T14:26:00.628000Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:26:00.722252Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding\\profile-claw-binding\\profile-claw-binding.spec.ts")}
+2026-04-18T14:26:00.722276Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2026-04-18T14:26:05.423482Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("case\\coding")}
+2026-04-18T14:26:05.423512Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
