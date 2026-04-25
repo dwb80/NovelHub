@@ -64,8 +64,8 @@ export default function AdminChaptersPage() {
       if (response.ok) {
         const data = await response.json();
         setChapters(data.items || []);
-        setTotalCount(data.total || 0);
-        setTotalPages(Math.ceil((data.total || 0) / pageSize));
+        setTotalCount(data.pagination?.total || 0);
+        setTotalPages(data.pagination?.totalPages || 1);
       }
     } catch (err) {
       console.error('获取章节列表失败:', err);

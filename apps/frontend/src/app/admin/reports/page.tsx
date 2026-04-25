@@ -66,7 +66,7 @@ export default function AdminReportsPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        setReports(data.reports || []);
+        setReports(data.items || []);
       }
     } catch (err) {
       console.error('获取举报列表失败:', err);

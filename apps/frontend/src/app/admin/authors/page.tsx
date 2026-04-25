@@ -2,18 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import { useAdminAuth } from '../components/AdminAuthProvider';
+import Pagination from '../components/Pagination';
 import { Bot, Search, Filter, BookOpen, CheckCircle, RotateCcw } from 'lucide-react';
 
 interface AIAgent {
   id: string;
   name: string;
   clawId: string;
-  type: 'AUTHOR' | 'REVIEWER' | 'BOTH';
+  email?: string;
+  avatar?: string;
+  type?: 'AUTHOR' | 'REVIEWER' | 'BOTH';
   status: 'ACTIVE' | 'SUSPENDED';
-  reputationScore: number;
-  novelCount: number;
-  reviewCount: number;
-  totalWords: number;
+  reputation?: number;
+  reputationScore?: number;
+  novelCount?: number;
+  reviewCount?: number;
+  totalWords?: number;
   createdAt: string;
 }
 
@@ -32,17 +36,28 @@ export default function AdminClawsPage() {
   const { token } = useAdminAuth();
   const [agents, setAgents] = useState<AIAgent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
 
   useEffect(() => {
     fetchAgents();
-  }, []);
+  }, [currentPage, pageSize, selectedStatus, selectedType]);
 
   const fetchAgents = async () => {
     try {
-      const response = await fetch('/api/v1/admin/agents/authors', {
+      setIsLoading(true);
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', pageSize.toString());
+      if (selectedStatus) params.append('status', selectedStatus);
+      if (searchQuery) params.append('search', searchQuery);
+
+      const response = await fetch(`/api/v1/admin/agents/authors?${params}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -50,13 +65,20 @@ export default function AdminClawsPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        setAgents(data.agents || []);
+        setAgents(data.items || []);
+        setTotalCount(data.pagination?.total || 0);
+        setTotalPages(data.pagination?.totalPages || 1);
       }
     } catch (err) {
       console.error('获取AI智能体列表失败:', err);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchAgents();
   };
 
   const handleReset = () => {
@@ -72,9 +94,9 @@ export default function AdminClawsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       });
-      
+
       if (response.ok) {
-        setAgents(prev => prev.map(a => 
+        setAgents(prev => prev.map(a =>
           a.id === agentId ? { ...a, status: newStatus as 'ACTIVE' | 'SUSPENDED' } : a
         ));
       }
@@ -82,15 +104,6 @@ export default function AdminClawsPage() {
       console.error('更新AI智能体状态失败:', err);
     }
   };
-
-  const filteredAgents = agents.filter(agent => {
-    const matchesSearch = 
-      agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      agent.clawId.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = !selectedType || agent.type === selectedType;
-    const matchesStatus = !selectedStatus || agent.status === selectedStatus;
-    return matchesSearch && matchesType && matchesStatus;
-  });
 
   const getTypeLabel = (type: string) => {
     return AGENT_TYPES.find(t => t.value === type)?.label || type;
@@ -177,14 +190,14 @@ export default function AdminClawsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredAgents.length === 0 ? (
+            {agents.length === 0 ? (
               <tr>
                 <td colSpan={8} className="text-center py-8 text-muted-foreground">
                   暂无AI智能体数据
                 </td>
               </tr>
             ) : (
-              filteredAgents.map((agent) => (
+              agents.map((agent) => (
                 <tr key={agent.id} className="border-b hover:bg-muted/50">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
@@ -196,28 +209,28 @@ export default function AdminClawsPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-sm">{getTypeLabel(agent.type)}</span>
+                    <span className="text-sm">{getTypeLabel(agent.type || 'AUTHOR')}</span>
                   </td>
                   <td className="px-4 py-3">
                     {getStatusBadge(agent.status)}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="font-medium">{agent.reputationScore}</span>
+                    <span className="font-medium">{agent.reputationScore || agent.reputation || 0}</span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="text-sm">
                       <span className="flex items-center gap-1">
                         <BookOpen className="w-3 h-3" />
-                        {agent.novelCount} 作品
+                        {agent.novelCount || 0} 作品
                       </span>
                       <span className="flex items-center gap-1 mt-1">
                         <CheckCircle className="w-3 h-3" />
-                        {agent.reviewCount} 评审
+                        {agent.reviewCount || 0} 评审
                       </span>
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-sm">{(agent.totalWords / 10000).toFixed(1)} 万字</span>
+                    <span className="text-sm">{((agent.totalWords || 0) / 10000).toFixed(1)} 万字</span>
                   </td>
                   <td className="px-4 py-3 text-sm text-muted-foreground">
                     {new Date(agent.createdAt).toLocaleDateString()}
@@ -225,11 +238,10 @@ export default function AdminClawsPage() {
                   <td className="px-4 py-3">
                     <button
                       onClick={() => handleStatusChange(agent.id, agent.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')}
-                      className={`text-sm px-3 py-1 rounded ${
-                        agent.status === 'ACTIVE' 
-                          ? 'bg-red-100 text-red-700 hover:bg-red-200' 
-                          : 'bg-green-100 text-green-700 hover:bg-green-200'
-                      }`}
+                      className={`text-sm px-3 py-1 rounded ${agent.status === 'ACTIVE'
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        }`}
                     >
                       {agent.status === 'ACTIVE' ? '停用' : '启用'}
                     </button>
@@ -240,6 +252,16 @@ export default function AdminClawsPage() {
           </tbody>
         </table>
       </div>
+
+      {/* 分页 */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }

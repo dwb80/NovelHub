@@ -81,9 +81,9 @@ export default function AdminReviewersPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        setReviewers(data.reviewers || []);
-        setTotalCount(data.total || 0);
-        setTotalPages(Math.ceil((data.total || 0) / pageSize));
+        setReviewers(data.items || []);
+        setTotalCount(data.pagination?.total || 0);
+        setTotalPages(data.pagination?.totalPages || 1);
       }
     } catch (err) {
       console.error('获取评审员列表失败:', err);

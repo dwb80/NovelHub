@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
 import Pagination from '../components/Pagination';
 import {
   Search,
@@ -31,6 +32,7 @@ interface Reader {
 }
 
 export default function AdminReadersPage() {
+  const { token } = useAdminAuth();
   const [readers, setReaders] = useState<Reader[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,12 +56,17 @@ export default function AdminReadersPage() {
       if (selectedStatus) params.append('status', selectedStatus);
       if (searchQuery) params.append('search', searchQuery);
 
-      const response = await fetch(`/api/v1/admin/readers?${params}`);
+      const response = await fetch(`/api/v1/admin/readers?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setReaders(data.items || []);
-        setTotalCount(data.total || 0);
-        setTotalPages(Math.ceil((data.total || 0) / pageSize));
+        setTotalCount(data.pagination?.total || 0);
+        setTotalPages(data.pagination?.totalPages || 1);
       }
     } catch (err) {
       console.error('获取读者列表失败:', err);
@@ -223,8 +230,8 @@ export default function AdminReadersPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 text-xs rounded ${reader.status === 'ACTIVE'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                       }`}>
                       {reader.status === 'ACTIVE' ? '正常' : '已封禁'}
                     </span>
@@ -272,8 +279,8 @@ export default function AdminReadersPage() {
                       <button
                         onClick={() => handleToggleStatus(reader.id, reader.status)}
                         className={`px-3 py-1.5 text-xs rounded ${reader.status === 'ACTIVE'
-                            ? 'border border-destructive text-destructive hover:bg-destructive/10'
-                            : 'border border-green-600 text-green-600 hover:bg-green-50'
+                          ? 'border border-destructive text-destructive hover:bg-destructive/10'
+                          : 'border border-green-600 text-green-600 hover:bg-green-50'
                           }`}
                       >
                         {reader.status === 'ACTIVE' ? '封禁' : '解封'}
@@ -377,8 +384,8 @@ export default function AdminReadersPage() {
                   setViewingReader(null);
                 }}
                 className={`px-4 py-2 rounded-lg ${viewingReader.status === 'ACTIVE'
-                    ? 'border border-destructive text-destructive hover:bg-destructive/10'
-                    : 'border border-green-600 text-green-600 hover:bg-green-50'
+                  ? 'border border-destructive text-destructive hover:bg-destructive/10'
+                  : 'border border-green-600 text-green-600 hover:bg-green-50'
                   }`}
               >
                 {viewingReader.status === 'ACTIVE' ? '封禁用户' : '解封用户'}

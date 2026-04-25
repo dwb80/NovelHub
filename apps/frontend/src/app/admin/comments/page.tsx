@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
+import Pagination from '../components/Pagination';
 import { Search, MessageSquare } from 'lucide-react';
 
 interface Comment {
@@ -13,33 +15,40 @@ interface Comment {
 }
 
 export default function AdminCommentsPage() {
+  const { token } = useAdminAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchComments();
-  }, [filter]);
-
-  const filteredComments = comments.filter(comment => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      comment.content.toLowerCase().includes(query) ||
-      comment.username.toLowerCase().includes(query) ||
-      comment.novelTitle.toLowerCase().includes(query)
-    );
-  });
+  }, [currentPage, pageSize, filter]);
 
   const fetchComments = async () => {
     try {
+      setIsLoading(true);
       const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', pageSize.toString());
       if (filter !== 'all') params.append('status', filter === 'pending' ? 'PENDING' : 'APPROVED');
-      const response = await fetch(`/api/v1/admin/comments?${params}`);
+      if (searchQuery) params.append('search', searchQuery);
+
+      const response = await fetch(`/api/v1/admin/comments?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setComments(data.items || []);
+        setTotalCount(data.pagination?.total || 0);
+        setTotalPages(data.pagination?.totalPages || 1);
       }
     } catch (err) {
       console.error('获取评论列表失败:', err);
@@ -48,11 +57,19 @@ export default function AdminCommentsPage() {
     }
   };
 
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchComments();
+  };
+
   const handleApprove = async (id: string) => {
     try {
       await fetch(`/api/v1/admin/comments/${id}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ isDeleted: false }),
       });
       fetchComments();
@@ -64,7 +81,13 @@ export default function AdminCommentsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('确定要删除这条评论吗？')) return;
     try {
-      await fetch(`/api/v1/admin/comments/${id}`, { method: 'DELETE' });
+      await fetch(`/api/v1/admin/comments/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       fetchComments();
     } catch (err) {
       console.error('删除失败:', err);
@@ -109,6 +132,7 @@ export default function AdminCommentsPage() {
           placeholder="搜索评论内容、用户名或小说名..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background"
         />
       </div>
@@ -120,7 +144,7 @@ export default function AdminCommentsPage() {
             <MessageSquare className="w-4 h-4" />
             <span className="text-sm">全部评论</span>
           </div>
-          <p className="text-2xl font-bold">{comments.length}</p>
+          <p className="text-2xl font-bold">{totalCount}</p>
         </div>
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-1">
@@ -130,23 +154,22 @@ export default function AdminCommentsPage() {
             {comments.filter(c => c.status === 0).length}
           </p>
         </div>
-        <div className="bg-card rounded-lg border p-4">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+        <div className="bg-card rounded-lg border p-4">ssName="flex items-center gap-2 text-muted-foreground mb-1">
             <span className="text-sm">已通过</span>
           </div>
-          <p className="text-2xl font-bold text-green-600">
+                  ssName="text-2xl font-bold text-green-600">
             {comments.filter(c => c.status !== 0).length}
           </p>
         </div>
       </div>
 
       <div className="space-y-4">
-        {filteredComments.length === 0 ? (
+        {comments.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             {searchQuery ? '没有找到匹配的评论' : '暂无评论数据'}
           </div>
         ) : (
-          filteredComments.map((comment) => (
+          comments.map((comment) => (
             <div key={comment.id} className="bg-card rounded-lg border p-4">
               <div className="flex justify-between items-start mb-2">
                 <div className="flex items-center gap-2">
@@ -188,6 +211,16 @@ export default function AdminCommentsPage() {
           ))
         )}
       </div>
+
+      {/* 分页 */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
     </div>
   );
 }
