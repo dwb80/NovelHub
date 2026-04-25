@@ -244,7 +244,7 @@ export default function AdminNovelsPage() {
               <th className="text-left px-4 py-3 font-medium">作者</th>
               <th className="text-left px-4 py-3 font-medium">分类</th>
               <th className="text-left px-4 py-3 font-medium">状态</th>
-              <th className="text-left px-4 py-3 font-medium">数据</th>
+              <th className="text-left px-4 py-3 font-medium">创建时间</th>
               <th className="text-left px-4 py-3 font-medium">操作</th>
             </tr>
           </thead>
@@ -259,21 +259,7 @@ export default function AdminNovelsPage() {
               novels.map((novel) => (
                 <tr key={novel.id} className="border-b hover:bg-muted/50">
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-14 bg-muted rounded overflow-hidden flex-shrink-0">
-                        {novel.cover ? (
-                          <img src={novel.cover} alt={novel.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">无</div>
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-medium">{novel.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(novel.createdAt).toLocaleDateString('zh-CN')}
-                        </p>
-                      </div>
-                    </div>
+                    <p className="font-medium">{novel.title}</p>
                   </td>
                   <td className="px-4 py-3 text-sm">{novel.authorName}</td>
                   <td className="px-4 py-3 text-sm">{novel.category}</td>
@@ -288,23 +274,8 @@ export default function AdminNovelsPage() {
                       ))}
                     </select>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="text-xs text-muted-foreground space-y-1">
-                      <div className="flex items-center gap-1">
-                        <BookOpen className="w-3 h-3" />
-                        {novel.chapterCount || 0} 章
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MessageSquare className="w-3 h-3" />
-                        {novel.commentCount || 0} 评
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Heart className="w-3 h-3" />
-                        {novel.likeCount || 0} 赞
-                      </div>
-                      <div>{novel.wordCount?.toLocaleString() || 0} 字</div>
-                      <div>{novel.viewCount?.toLocaleString() || 0} 阅读</div>
-                    </div>
+                  <td className="px-4 py-3 text-sm text-muted-foreground">
+                    {new Date(novel.createdAt).toLocaleDateString('zh-CN')}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
