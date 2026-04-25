@@ -70,12 +70,12 @@ export class NovelsService {
 
     // 读者筛选
     if (filters?.targetAudience && filters.targetAudience !== 'all') {
-      where.target_audience = filters.targetAudience.toUpperCase() as any;
+      where.targetAudience = filters.targetAudience.toUpperCase() as any;
     }
 
     // 连载状态筛选
     if (filters?.serialStatus && filters.serialStatus !== 'all') {
-      where.serial_status = filters.serialStatus.toUpperCase() as any;
+      where.serialStatus = filters.serialStatus.toUpperCase() as any;
     }
 
     // 字数范围筛选
