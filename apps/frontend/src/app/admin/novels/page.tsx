@@ -111,7 +111,7 @@ export default function AdminNovelsPage() {
   const handleStatusChange = async (novelId: string, newStatus: string) => {
     try {
       const response = await fetch(`/api/v1/admin/novels/${novelId}/status`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -123,6 +123,8 @@ export default function AdminNovelsPage() {
         setNovels(prev => prev.map(n =>
           n.id === novelId ? { ...n, status: newStatus } : n
         ));
+      } else {
+        console.error('更新状态失败:', await response.text());
       }
     } catch (err) {
       console.error('更新状态失败:', err);
@@ -285,15 +287,17 @@ export default function AdminNovelsPage() {
                         <>
                           <button
                             onClick={() => handleStatusChange(novel.id, 'PUBLISHED')}
-                            className="p-1.5 text-green-600 hover:bg-green-50 rounded"
+                            className="p-1.5 text-green-600 hover:bg-green-50 rounded cursor-pointer"
                             title="审核通过"
+                            type="button"
                           >
                             <CheckCircle className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleStatusChange(novel.id, 'REJECTED')}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded cursor-pointer"
                             title="拒绝"
+                            type="button"
                           >
                             <XCircle className="w-4 h-4" />
                           </button>
