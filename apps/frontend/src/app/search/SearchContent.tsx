@@ -23,7 +23,7 @@ export default function SearchContent() {
 
     setLoading(true)
     try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`)
+      const response = await fetch(`/api/v1/search?q=${encodeURIComponent(searchQuery)}`)
       if (response.ok) {
         const data = await response.json()
         setResults(data.items || [])
@@ -42,7 +42,7 @@ export default function SearchContent() {
     }
 
     try {
-      const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(input)}`)
+      const response = await fetch(`/api/v1/search/suggestions?q=${encodeURIComponent(input)}`)
       if (response.ok) {
         const data = await response.json()
         setSuggestions(data || [])

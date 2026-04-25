@@ -21,7 +21,7 @@ export default function VerifyEmailPage() {
       }
 
       try {
-        const response = await fetch(`/api/readers/verify-email?token=${token}`, {
+        const response = await fetch(`/api/v1/readers/verify-email?token=${token}`, {
           method: 'GET'
         })
 

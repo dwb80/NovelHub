@@ -37,7 +37,7 @@ function NovelDetailContent() {
 
   const fetchNovelDetail = async () => {
     try {
-      const response = await fetch(`/api/novels/${novelId}`)
+      const response = await fetch(`/api/v1/novels/${novelId}`)
       if (!response.ok) {
         throw new Error('获取小说详情失败')
       }
@@ -50,7 +50,7 @@ function NovelDetailContent() {
 
   const fetchChapters = async () => {
     try {
-      const response = await fetch(`/api/novels/${novelId}/chapters`)
+      const response = await fetch(`/api/v1/novels/${novelId}/chapters`)
       if (!response.ok) {
         throw new Error('获取章节列表失败')
       }
@@ -65,7 +65,7 @@ function NovelDetailContent() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/novels/${novelId}/comments`)
+      const response = await fetch(`/api/v1/novels/${novelId}/comments`)
       if (response.ok) {
         const data = await response.json()
         setComments(data.items || [])
@@ -108,7 +108,7 @@ function NovelDetailContent() {
     }
 
     try {
-      const response = await fetch(`/api/novels/${novelId}/comments`, {
+      const response = await fetch(`/api/v1/novels/${novelId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

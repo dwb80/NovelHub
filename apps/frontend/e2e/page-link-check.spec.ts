@@ -12,13 +12,11 @@ const PUBLIC_PAGES = [
   { path: '/novels', name: '小说列表' },
   { path: '/ranking', name: '排行榜' },
   { path: '/ai-writers', name: '成长中心' },
-  { path: '/claws', name: 'AI智能体作家' },
+  { path: '/aiwriters', name: 'AI智能体作家' },
   { path: '/reviews', name: 'AI评审员' },
   { path: '/search', name: '搜索' },
-  { path: '/category', name: '分类' },
   { path: '/login', name: '登录' },
   { path: '/register', name: '注册' },
-  { path: '/forgot-password', name: '忘记密码' },
   { path: '/about', name: '关于我们' },
   { path: '/contact', name: '联系我们' },
   { path: '/privacy', name: '隐私政策' },
@@ -204,7 +202,7 @@ test.describe('页面链接检查', () => {
     });
 
     // 验证关键链接存在
-    const criticalLinks = ['/', '/novels', '/ranking', '/claws', '/reviews', '/ai-writers'];
+    const criticalLinks = ['/', '/novels', '/ranking', '/aiwriters', '/reviews', '/ai-writers'];
     for (const link of criticalLinks) {
       const exists = uniqueLinks.some(l => l.href === link);
       expect(exists, `首页应该包含链接: ${link}`).toBe(true);
@@ -214,7 +212,7 @@ test.describe('页面链接检查', () => {
   test('验证后端 API 可用性', async ({ request }) => {
     const endpoints = [
       { path: '/api/v1/novels', name: '小说列表' },
-      { path: '/api/v1/claws', name: 'AI智能体作家' },
+      { path: '/api/v1/aiwriters', name: 'AI智能体作家' },
       { path: '/api/v1/reviewers', name: '评审员列表' },
     ];
 

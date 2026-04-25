@@ -27,7 +27,7 @@ export default function AdminSettingsPage() {
     setIsSaving(true);
     setMessage('');
     try {
-      await fetch('/api/admin/settings', {
+      await fetch('/api/v1/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),

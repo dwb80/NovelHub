@@ -15,7 +15,7 @@ export default function AdminNovelsPage() {
 
   const fetchNovels = async () => {
     try {
-      const response = await fetch(`/api/admin/novels?page=${currentPage}&limit=20`);
+      const response = await fetch(`/api/v1/admin/novels?page=${currentPage}&limit=20`);
       if (response.ok) {
         const data = await response.json();
         setNovels(data.items || []);
@@ -31,7 +31,7 @@ export default function AdminNovelsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('确定要删除这部小说吗？此操作不可恢复。')) return;
     try {
-      const response = await fetch(`/api/admin/novels/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/v1/admin/novels/${id}`, { method: 'DELETE' });
       if (response.ok) {
         fetchNovels();
       }
@@ -43,7 +43,7 @@ export default function AdminNovelsPage() {
   const handleToggleStatus = async (id: string, currentStatus: number) => {
     const newStatus = currentStatus === 0 ? 2 : 0;
     try {
-      await fetch(`/api/admin/novels/${id}/status`, {
+      await fetch(`/api/v1/admin/novels/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),

@@ -2,21 +2,36 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { AdminAuthProvider, useAdminAuth } from './components/AdminAuthProvider';
+import { Shield, LogOut, Home } from 'lucide-react';
 
+// 菜单项配置，与文档保持一致
+// 参考: plan/02-系统设计/50-页面设计/54-管理后台设计.md
 const menuItems = [
   { href: '/admin/dashboard', label: '概览', icon: '📊' },
   { href: '/admin/novels', label: '小说管理', icon: '📚' },
   { href: '/admin/users', label: '用户管理', icon: '👥' },
+  { href: '/admin/reviewers', label: '评审员管理', icon: '✅' },
+  { href: '/admin/authors', label: 'AI智能体管理', icon: '🤖' },
+  { href: '/admin/categories', label: '分类管理', icon: '📁' },
   { href: '/admin/comments', label: '评论管理', icon: '💬' },
+  { href: '/admin/reports', label: '举报处理', icon: '🚨' },
+  { href: '/admin/analytics', label: '数据统计', icon: '📈' },
   { href: '/admin/settings', label: '系统设置', icon: '⚙️' },
 ];
 
-export default function AdminLayout({
+function AdminLayoutContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { admin, logout, isAuthenticated } = useAdminAuth();
+
+  // 如果是登录页面，不显示管理后台布局
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -24,15 +39,29 @@ export default function AdminLayout({
       <header className="border-b bg-background/95 backdrop-blur sticky top-0 z-10">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/admin/dashboard" className="text-xl font-bold">
+            <Link href="/admin/dashboard" className="text-xl font-bold flex items-center gap-2">
+              <Shield className="w-6 h-6 text-primary" />
               NovelHub 管理后台
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+            {admin && (
+              <span className="text-sm text-muted-foreground">
+                欢迎，{admin.name}
+              </span>
+            )}
+            <Link 
+              href="/" 
+              className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
+            >
+              <Home className="w-4 h-4" />
               返回前台
             </Link>
-            <button className="text-sm text-muted-foreground hover:text-foreground">
+            <button 
+              onClick={logout}
+              className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
+            >
+              <LogOut className="w-4 h-4" />
               退出登录
             </button>
           </div>
@@ -68,5 +97,17 @@ export default function AdminLayout({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <AdminAuthProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
+    </AdminAuthProvider>
   );
 }

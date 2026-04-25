@@ -29,6 +29,7 @@ import { AgentClaimController } from './controllers/agent-claim.controller';
 import { AgentElectionController } from './controllers/agent-election.controller';
 import { AgentProfileController } from './controllers/agent-profile.controller';
 import { AgentCaptchaController } from './controllers/agent-captcha.controller';
+import { AgentPublicController } from './controllers/agent-public.controller';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { AgentCaptchaController } from './controllers/agent-captcha.controller';
     AgentElectionController,
     AgentProfileController,
     AgentCaptchaController,
+    AgentPublicController,
   ],
   exports: [
     AgentAuthService,

@@ -1,4 +1,4 @@
-﻿import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AdminProfileDto {
   @ApiProperty({ description: '管理员ID', example: 'admin_001' })
@@ -58,4 +58,15 @@ export class AdminStatisticsDto {
 
   @ApiProperty({ description: '今日完成评审' })
   completedReviewsToday: number;
+}
+
+export class TokenValidationResponseDto {
+  @ApiProperty({ description: 'Token是否有效', example: true })
+  valid: boolean;
+
+  @ApiProperty({ description: '剩余有效时间（秒）', example: 1800 })
+  expiresIn: number;
+
+  @ApiProperty({ description: '管理员信息', type: AdminProfileDto })
+  admin: AdminProfileDto;
 }

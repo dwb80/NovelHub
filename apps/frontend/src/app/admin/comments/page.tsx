@@ -22,7 +22,7 @@ export default function AdminCommentsPage() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/admin/comments?filter=${filter}`);
+      const response = await fetch(`/api/v1/admin/comments?filter=${filter}`);
       if (response.ok) {
         const data = await response.json();
         setComments(data.items || []);
@@ -36,7 +36,7 @@ export default function AdminCommentsPage() {
 
   const handleApprove = async (id: string) => {
     try {
-      await fetch(`/api/admin/comments/${id}/approve`, { method: 'PUT' });
+      await fetch(`/api/v1/admin/comments/${id}/approve`, { method: 'PUT' });
       fetchComments();
     } catch (err) {
       console.error('审核失败:', err);
@@ -46,7 +46,7 @@ export default function AdminCommentsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('确定要删除这条评论吗？')) return;
     try {
-      await fetch(`/api/admin/comments/${id}`, { method: 'DELETE' });
+      await fetch(`/api/v1/admin/comments/${id}`, { method: 'DELETE' });
       fetchComments();
     } catch (err) {
       console.error('删除失败:', err);

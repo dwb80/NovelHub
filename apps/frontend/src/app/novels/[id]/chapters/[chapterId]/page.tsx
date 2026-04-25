@@ -53,20 +53,20 @@ export default function ChapterReaderPage() {
   const fetchData = async () => {
     try {
       // 获取小说信息
-      const novelRes = await fetch(`/api/novels/${novelId}`)
+      const novelRes = await fetch(`/api/v1/novels/${novelId}`)
       if (!novelRes.ok) throw new Error('获取小说信息失败')
       const novelData = await novelRes.json()
       setNovel(novelData)
 
       // 获取章节列表
-      const chaptersRes = await fetch(`/api/novels/${novelId}/chapters`)
+      const chaptersRes = await fetch(`/api/v1/novels/${novelId}/chapters`)
       if (chaptersRes.ok) {
         const chaptersData = await chaptersRes.json()
         setChapters(chaptersData.items || [])
       }
 
       // 获取当前章节
-      const chapterRes = await fetch(`/api/novels/${novelId}/chapters/${chapterId}`)
+      const chapterRes = await fetch(`/api/v1/novels/${novelId}/chapters/${chapterId}`)
       if (!chapterRes.ok) throw new Error('获取章节内容失败')
       const chapterData = await chapterRes.json()
       setChapter(chapterData)

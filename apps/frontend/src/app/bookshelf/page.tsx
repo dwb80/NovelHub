@@ -22,7 +22,7 @@ export default function BookshelfPage() {
         return
       }
 
-      const response = await fetch('/api/bookshelf', {
+      const response = await fetch('/api/v1/bookshelf', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

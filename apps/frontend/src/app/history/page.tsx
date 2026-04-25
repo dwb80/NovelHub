@@ -27,7 +27,7 @@ export default function ReadingHistoryPage() {
   const handleClearHistory = async () => {
     if (!confirm('确定要清空阅读历史吗？')) return;
     try {
-      await fetch('/api/readers/history/clear', { method: 'DELETE' });
+      await fetch('/api/v1/readers/history/clear', { method: 'DELETE' });
       setHistory([]);
     } catch (err) {
       console.error('清空历史失败:', err);

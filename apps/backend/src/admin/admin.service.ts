@@ -148,7 +148,7 @@ export class AdminService {
     return this.mapToAdminProfile(admin);
   }
 
-  private mapToAdminProfile(admin: Admin & { permissions?: string[] }): AdminProfileDto {
+  mapToAdminProfile(admin: Admin & { permissions?: string[] }): AdminProfileDto {
     return {
       id: admin.id,
       username: admin.username,

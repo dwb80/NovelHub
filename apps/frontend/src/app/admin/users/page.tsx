@@ -22,7 +22,7 @@ export default function AdminUsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/admin/users');
+      const response = await fetch('/api/v1/admin/users');
       if (response.ok) {
         const data = await response.json();
         setUsers(data.items || []);
@@ -37,7 +37,7 @@ export default function AdminUsersPage() {
   const handleToggleStatus = async (id: string, currentStatus: number) => {
     const newStatus = currentStatus === 0 ? 1 : 0;
     try {
-      await fetch(`/api/admin/users/${id}/status`, {
+      await fetch(`/api/v1/admin/users/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),

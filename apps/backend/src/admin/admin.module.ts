@@ -16,6 +16,7 @@ import { AdminCategoriesController } from './controllers/admin-categories.contro
 import { AdminOperationLogsController } from './controllers/admin-operation-logs.controller';
 import { AdminSettingsController } from './controllers/admin-settings.controller';
 import { AdminTimeSlotsController } from './controllers/admin-time-slots.controller';
+import { AdminAuthController } from './admin-auth.controller';
 import { DataConsistencyService } from './services/data-consistency.service';
 import { AdminUserService } from './services/admin-user.service';
 import { AdminReaderService } from './services/admin-reader.service';
@@ -60,6 +61,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     AdminOperationLogsController,
     AdminSettingsController,
     AdminTimeSlotsController,
+    AdminAuthController,
   ],
   exports: [AdminService, DataConsistencyService],
 })
