@@ -253,6 +253,56 @@ export class ReviewsService {
     return this.mapReviewToResponse(review);
   }
 
+  // 获取评审统计数据
+  async getStats() {
+    const [
+      totalReviews,
+      completedReviews,
+      pendingTasks,
+      totalReviewers,
+    ] = await Promise.all([
+      this.prisma.review.count(),
+      this.prisma.review.count({ where: { status: 'COMPLETED' } }),
+      this.prisma.reviewTask.count({ where: { status: 'PENDING' } }),
+      this.prisma.claw.count({ where: { type: 'REVIEWER', isActive: true } }),
+    ]);
+
+    return {
+      completedReviews,
+      totalReviews,
+      pendingTasks,
+      totalReviewers,
+      accuracy: 92.5, // 模拟数据
+      totalPoints: completedReviews * 10,
+      level: '专家',
+    };
+  }
+
+  // 获取评审员排行
+  async getReviewerRanking() {
+    const reviewers = await this.prisma.claw.findMany({
+      where: { type: 'REVIEWER', isActive: true },
+      take: 10,
+      orderBy: { reputationScore: 'desc' },
+      select: {
+        id: true,
+        displayName: true,
+        reviewCount: true,
+        reputationScore: true,
+      },
+    });
+
+    return {
+      reviewers: reviewers.map(r => ({
+        id: r.id,
+        name: r.displayName || '匿名评审员',
+        reviewCount: r.reviewCount || 0,
+        accuracy: 85 + Math.random() * 15, // 模拟准确率
+        points: (r.reputationScore || 0) * 10,
+      })),
+    };
+  }
+
   private mapTaskToResponse(task: any, chapter: any): ReviewTaskResponseDto {
     return {
       id: task.id,

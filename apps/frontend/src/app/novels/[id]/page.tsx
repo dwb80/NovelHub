@@ -98,8 +98,10 @@ function NovelDetailContent() {
   const toggleCollection = async () => {
     const token = localStorage.getItem('accessToken')
     if (!token) {
-      alert('请先登录')
-      window.location.href = '/login'
+      const shouldLogin = confirm('请先登录\n\n是否现在登录？')
+      if (shouldLogin) {
+        window.location.href = '/login'
+      }
       return
     }
 

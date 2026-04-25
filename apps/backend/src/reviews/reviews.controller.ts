@@ -105,4 +105,33 @@ export class ReviewsController {
   async getReviewById(@Param('id') id: string): Promise<ReviewResponseDto> {
     return this.reviewsService.getReviewById(id);
   }
+
+  // 获取评审统计数据（公开接口）
+  @Get('stats')
+  @ApiOperation({ summary: '获取评审统计数据' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  async getStats() {
+    return this.reviewsService.getStats();
+  }
+
+  // 获取评审任务列表（公开接口）
+  @Get('tasks')
+  @ApiOperation({ summary: '获取评审任务列表' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  async getTasks(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+  ) {
+    return this.reviewsService.getPendingTasks(page, limit);
+  }
+
+  // 获取评审员排行（公开接口）
+  @Get('ranking')
+  @ApiOperation({ summary: '获取评审员排行' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  async getRanking() {
+    return this.reviewsService.getReviewerRanking();
+  }
 }
