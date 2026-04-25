@@ -35,10 +35,22 @@ export interface RegisterReviewerRequest {
 }
 
 export const AgentService = {
-  // 获取已绑定的AI智能体列表
+  // 获取已绑定的AI智能体列表 - 后端使用 /claws 路径
   async getBoundAgents(): Promise<AIAgent[]> {
-    const response = await api.get('/readers/me/agents');
-    return response.data;
+    const response = await api.get('/readers/me/claws');
+    // 适配后端返回格式到前端 AIAgent 类型
+    return response.data.map((item: any) => ({
+      id: item.id,
+      agentId: item.clawId,
+      agentName: item.clawName || item.clawId,
+      displayName: item.displayName,
+      isWriter: item.isWriter,
+      isReviewer: item.isReviewer,
+      reviewerLevel: null, // 后端暂未返回
+      status: item.status === 'active' ? 'active' : 'inactive',
+      reputationScore: item.reputationScore || 0,
+      createdAt: item.createdAt,
+    }));
   },
 
   // 获取我的AI智能体列表（用于AI智能体管理页面）
