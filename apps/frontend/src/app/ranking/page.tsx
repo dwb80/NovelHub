@@ -316,7 +316,7 @@ export default function RankingPage() {
           <>
             {/* 前三名特殊展示 - 水印式布局（缩小30%） */}
             {topThree.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-9 mb-8 max-w-4xl mx-auto">
                 {topThree.map((novel, index) => (
                   <div
                     key={novel.id}
