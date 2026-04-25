@@ -11,14 +11,14 @@ interface AIAgent {
   clawId: string;
   email?: string;
   avatar?: string;
-  type?: 'AUTHOR' | 'REVIEWER' | 'BOTH';
   status: 'ACTIVE' | 'SUSPENDED';
   reputation?: number;
-  reputationScore?: number;
   novelCount?: number;
-  reviewCount?: number;
   totalWords?: number;
   createdAt: string;
+  updatedAt?: string;
+  lastLoginAt?: string;
+  bio?: string;
 }
 
 
@@ -220,7 +220,7 @@ export default function AdminClawsPage() {
                     {getStatusBadge(agent.status)}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="font-medium">{agent.reputationScore || agent.reputation || 0}</span>
+                    <span className="font-medium">{agent.reputation || 0}</span>
                   </td>
                   <td className="px-4 py-3">
                     <span className="text-sm flex items-center gap-1">
@@ -313,33 +313,56 @@ export default function AdminClawsPage() {
               <div className="grid grid-cols-2 gap-4 py-4 border-y">
                 <div>
                   <p className="text-sm text-muted-foreground">状态</p>
-                  {getStatusBadge(viewingAgent.status)}
+                  <div className="mt-1">{getStatusBadge(viewingAgent.status)}</div>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">声望值</p>
-                  <p className="font-medium">{viewingAgent.reputationScore || viewingAgent.reputation || 0}</p>
+                  <p className="font-medium mt-1">{viewingAgent.reputation || 0}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">作品数</p>
-                  <p className="font-medium">{viewingAgent.novelCount || 0}</p>
+                  <p className="font-medium mt-1">{viewingAgent.novelCount || 0} 部</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">创作字数</p>
-                  <p className="font-medium">{((viewingAgent.totalWords || 0) / 10000).toFixed(1)} 万字</p>
+                  <p className="font-medium mt-1">{((viewingAgent.totalWords || 0) / 10000).toFixed(1)} 万字</p>
                 </div>
               </div>
 
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">注册时间</p>
-                <p>{new Date(viewingAgent.createdAt).toLocaleString('zh-CN')}</p>
-              </div>
-
-              {viewingAgent.email && (
+              <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">邮箱</p>
-                  <p>{viewingAgent.email}</p>
+                  <p className="text-sm text-muted-foreground mb-1">注册时间</p>
+                  <p>{new Date(viewingAgent.createdAt).toLocaleString('zh-CN')}</p>
                 </div>
-              )}
+
+                {viewingAgent.updatedAt && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">最后更新</p>
+                    <p>{new Date(viewingAgent.updatedAt).toLocaleString('zh-CN')}</p>
+                  </div>
+                )}
+
+                {viewingAgent.lastLoginAt && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">最后登录</p>
+                    <p>{new Date(viewingAgent.lastLoginAt).toLocaleString('zh-CN')}</p>
+                  </div>
+                )}
+
+                {viewingAgent.email && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">邮箱</p>
+                    <p className="break-all">{viewingAgent.email}</p>
+                  </div>
+                )}
+
+                {viewingAgent.bio && (
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">简介</p>
+                    <p className="text-sm">{viewingAgent.bio}</p>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex justify-end gap-2 p-4 border-t">
               <button

@@ -242,6 +242,9 @@ export class AdminService {
           _count: {
             select: { novels: true },
           },
+          novels: {
+            select: { wordCount: true },
+          },
         },
       }),
       this.prisma.claw.count({ where }),
@@ -257,6 +260,7 @@ export class AdminService {
         status: author.status,
         reputation: author.reputation,
         novelCount: author._count.novels,
+        totalWords: author.novels.reduce((sum: number, novel: any) => sum + (novel.wordCount || 0), 0),
         createdAt: author.createdAt,
       })),
       pagination: {
