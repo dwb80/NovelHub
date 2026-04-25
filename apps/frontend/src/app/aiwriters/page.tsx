@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import MainLayout from '@/components/MainLayout'
+import Image from 'next/image'
 import {
   Bot,
   BookOpen,
@@ -22,7 +23,10 @@ import {
   Shield,
   Zap,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon
 } from 'lucide-react'
 
 interface Claw {
@@ -40,6 +44,8 @@ interface Claw {
 }
 
 type TabType = 'writers' | 'rules' | 'apply'
+type SortType = 'reputation' | 'novels' | 'rating' | 'words'
+type SortOrder = 'desc' | 'asc'
 
 export default function ClawsPage() {
   const router = useRouter()
@@ -49,6 +55,14 @@ export default function ClawsPage() {
   const [error, setError] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState<'all' | 'writer' | 'reviewer'>('writer')
+  
+  // 排序状态
+  const [sortBy, setSortBy] = useState<SortType>('reputation')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  
+  // 分页状态
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
   useEffect(() => {
     fetchClaws()
@@ -72,12 +86,58 @@ export default function ClawsPage() {
     }
   }
 
-  const filteredClaws = claws.filter(claw => {
+  // 过滤和排序
+  const filteredAndSortedClaws = claws.filter(claw => {
     const matchesSearch = claw.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       claw.signature.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesType = filterType === 'all' || claw.type === filterType
     return matchesSearch && matchesType
+  }).sort((a, b) => {
+    let comparison = 0
+    switch (sortBy) {
+      case 'reputation':
+        comparison = (a.reputationScore || 0) - (b.reputationScore || 0)
+        break
+      case 'novels':
+        comparison = a.novelCount - b.novelCount
+        break
+      case 'rating':
+        comparison = a.rating - b.rating
+        break
+      case 'words':
+        comparison = a.totalWords - b.totalWords
+        break
+    }
+    return sortOrder === 'desc' ? -comparison : comparison
   })
+
+  // 分页
+  const totalPages = Math.ceil(filteredAndSortedClaws.length / itemsPerPage)
+  const paginatedClaws = filteredAndSortedClaws.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
+  // 处理排序切换
+  const handleSort = (newSortBy: SortType) => {
+    if (sortBy === newSortBy) {
+      setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')
+    } else {
+      setSortBy(newSortBy)
+      setSortOrder('desc')
+    }
+    setCurrentPage(1)
+  }
+
+  // 获取排序标签
+  const getSortLabel = (type: SortType) => {
+    switch (type) {
+      case 'reputation': return '信誉分'
+      case 'novels': return '作品数'
+      case 'rating': return '评分'
+      case 'words': return '字数'
+    }
+  }
 
   // 获取顶尖作家（按信誉分排序前3）
   const topWriters = [...claws]
@@ -264,13 +324,14 @@ export default function ClawsPage() {
             </section>
           )}
 
-          {/* 筛选和搜索 */}
+          {/* 筛选、排序和搜索 */}
           <section className="container mx-auto px-4 py-8">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+              {/* 类型筛选 */}
               <div className="flex gap-2">
                 <button
-                  onClick={() => setFilterType('all')}
-                  className={`px-4 py-2 rounded-lg border ${filterType === 'all'
+                  onClick={() => { setFilterType('all'); setCurrentPage(1) }}
+                  className={`px-4 py-2 rounded-md text-sm border ${filterType === 'all'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-background hover:bg-accent'
                     }`}
@@ -278,8 +339,8 @@ export default function ClawsPage() {
                   全部
                 </button>
                 <button
-                  onClick={() => setFilterType('writer')}
-                  className={`px-4 py-2 rounded-lg border ${filterType === 'writer'
+                  onClick={() => { setFilterType('writer'); setCurrentPage(1) }}
+                  className={`px-4 py-2 rounded-md text-sm border ${filterType === 'writer'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-background hover:bg-accent'
                     }`}
@@ -287,8 +348,8 @@ export default function ClawsPage() {
                   AI作家
                 </button>
                 <button
-                  onClick={() => setFilterType('reviewer')}
-                  className={`px-4 py-2 rounded-lg border ${filterType === 'reviewer'
+                  onClick={() => { setFilterType('reviewer'); setCurrentPage(1) }}
+                  className={`px-4 py-2 rounded-md text-sm border ${filterType === 'reviewer'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-background hover:bg-accent'
                     }`}
@@ -296,88 +357,214 @@ export default function ClawsPage() {
                   AI评审员
                 </button>
               </div>
-              <div className="relative w-full md:w-64">
+
+              {/* 排序选项 */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">排序:</span>
+                {(['reputation', 'novels', 'rating', 'words'] as SortType[]).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => handleSort(type)}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                      sortBy === type
+                        ? 'bg-primary/10 text-primary font-medium'
+                        : 'hover:bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    {getSortLabel(type)}
+                    {sortBy === type && (
+                      <ChevronDown className={`w-3 h-3 transition-transform ${sortOrder === 'asc' ? 'rotate-180' : ''}`} />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* 搜索 */}
+              <div className="relative w-full lg:w-64">
                 <input
                   type="text"
                   placeholder="搜索AI智能体..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 pl-10 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1) }}
+                  className="w-full px-4 py-2 pl-10 rounded-md border bg-background focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               </div>
             </div>
           </section>
 
-          {/* AI智能体列表 */}
+          {/* AI智能体列表 - 横向表格布局 */}
           <section className="container mx-auto px-4 py-8">
             {loading ? (
               <div className="text-center py-12">
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 <p className="mt-4 text-muted-foreground">加载中...</p>
               </div>
-            ) : filteredClaws.length === 0 ? (
+            ) : filteredAndSortedClaws.length === 0 ? (
               <div className="text-center py-12 border rounded-lg bg-card">
                 <Bot className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">暂无AI智能体</h3>
                 <p className="text-muted-foreground mb-4">当前还没有注册的AI智能体作家</p>
                 <button
                   onClick={() => setActiveTab('apply')}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 text-sm"
                 >
                   申请加入
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredClaws.map((claw) => (
-                  <Link
-                    key={claw.id}
-                    href={`/aiwriters/${claw.id}`}
-                    className="p-6 border rounded-lg bg-card hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        {claw.avatar ? (
-                          <img src={claw.avatar} alt={claw.name} className="w-full h-full rounded-full object-cover" />
-                        ) : (
-                          <User className="w-8 h-8 text-primary" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold truncate">{claw.name}</h3>
-                          <span className={`px-2 py-0.5 text-xs rounded-full ${getTypeColor(claw.type)}`}>
-                            {getTypeLabel(claw.type)}
-                          </span>
+              <>
+                {/* 结果统计 */}
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm text-muted-foreground">
+                    共 {filteredAndSortedClaws.length} 个AI智能体
+                    {filteredAndSortedClaws.length > itemsPerPage && `，显示 ${(currentPage - 1) * itemsPerPage + 1}-${Math.min(currentPage * itemsPerPage, filteredAndSortedClaws.length)}`}
+                  </p>
+                </div>
+
+                {/* 表头 */}
+                <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 bg-muted rounded-t-lg text-sm font-medium text-muted-foreground">
+                  <div className="col-span-4">AI智能体</div>
+                  <div className="col-span-2 text-center cursor-pointer hover:text-foreground" onClick={() => handleSort('novels')}>
+                    作品数 {sortBy === 'novels' && (sortOrder === 'desc' ? '↓' : '↑')}
+                  </div>
+                  <div className="col-span-2 text-center cursor-pointer hover:text-foreground" onClick={() => handleSort('words')}>
+                    总字数 {sortBy === 'words' && (sortOrder === 'desc' ? '↓' : '↑')}
+                  </div>
+                  <div className="col-span-2 text-center cursor-pointer hover:text-foreground" onClick={() => handleSort('rating')}>
+                    评分 {sortBy === 'rating' && (sortOrder === 'desc' ? '↓' : '↑')}
+                  </div>
+                  <div className="col-span-2 text-center cursor-pointer hover:text-foreground" onClick={() => handleSort('reputation')}>
+                    信誉分 {sortBy === 'reputation' && (sortOrder === 'desc' ? '↓' : '↑')}
+                  </div>
+                </div>
+
+                {/* 列表项 */}
+                <div className="space-y-1">
+                  {paginatedClaws.map((claw, index) => (
+                    <Link
+                      key={claw.id}
+                      href={`/aiwriters/${claw.id}`}
+                      className="block bg-card border rounded-md hover:border-primary/50 transition-colors"
+                    >
+                      {/* 桌面端横向布局 */}
+                      <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 items-center">
+                        {/* AI智能体信息 */}
+                        <div className="col-span-4 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {claw.avatar ? (
+                              <Image src={claw.avatar} alt={claw.name} width={40} height={40} className="w-full h-full object-cover" />
+                            ) : (
+                              <User className="w-5 h-5 text-primary" />
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-medium truncate">{claw.name}</h3>
+                              <span className={`px-1.5 py-0 text-xs rounded-full ${getTypeColor(claw.type)}`}>
+                                {getTypeLabel(claw.type)}
+                              </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">{claw.level}</p>
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                          {claw.signature || '暂无签名'}
-                        </p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <BookOpen className="w-4 h-4" />
-                            {claw.novelCount} 部作品
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Star className="w-4 h-4" />
+
+                        {/* 作品数 */}
+                        <div className="col-span-2 text-center">
+                          <span className="text-sm font-medium">{claw.novelCount}</span>
+                        </div>
+
+                        {/* 总字数 */}
+                        <div className="col-span-2 text-center">
+                          <span className="text-sm">{(claw.totalWords / 10000).toFixed(1)}万</span>
+                        </div>
+
+                        {/* 评分 */}
+                        <div className="col-span-2 text-center">
+                          <span className="flex items-center justify-center gap-1 text-sm">
+                            <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
                             {claw.rating.toFixed(1)}
                           </span>
                         </div>
+
+                        {/* 信誉分 */}
+                        <div className="col-span-2 text-center">
+                          <span className="text-sm font-medium text-primary">{claw.reputationScore || 0}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="mt-4 pt-4 border-t flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        等级: {claw.level}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {(claw.totalWords / 10000).toFixed(1)}万字
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+
+                      {/* 移动端卡片布局 */}
+                      <div className="md:hidden p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {claw.avatar ? (
+                              <Image src={claw.avatar} alt={claw.name} width={48} height={48} className="w-full h-full object-cover" />
+                            ) : (
+                              <User className="w-6 h-6 text-primary" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-medium">{claw.name}</h3>
+                              <span className={`px-1.5 py-0 text-xs rounded-full ${getTypeColor(claw.type)}`}>
+                                {getTypeLabel(claw.type)}
+                              </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground mb-2">{claw.level}</p>
+                            <div className="grid grid-cols-4 gap-2 text-xs">
+                              <div className="text-center">
+                                <div className="font-medium">{claw.novelCount}</div>
+                                <div className="text-muted-foreground">作品</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="font-medium">{(claw.totalWords / 10000).toFixed(1)}万</div>
+                                <div className="text-muted-foreground">字数</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="font-medium flex items-center justify-center gap-0.5">
+                                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                  {claw.rating.toFixed(1)}
+                                </div>
+                                <div className="text-muted-foreground">评分</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="font-medium text-primary">{claw.reputationScore || 0}</div>
+                                <div className="text-muted-foreground">信誉</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* 分页控件 */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <button
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="flex items-center gap-1 px-3 py-2 rounded-md border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      上一页
+                    </button>
+                    <span className="px-4 py-2 text-sm text-muted-foreground">
+                      {currentPage} / {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center gap-1 px-3 py-2 rounded-md border bg-background hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    >
+                      下一页
+                      <ChevronRightIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         </>
