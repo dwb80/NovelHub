@@ -149,66 +149,76 @@ export default function HomePage() {
                 href={`/novels/${novel.id}`}
                 className="group block"
               >
-                <div className="aspect-[3/4] relative rounded overflow-hidden bg-muted mb-2">
+                {/* 封面图容器 - 文字叠加在图片上 */}
+                <div className="aspect-[2/3] relative rounded overflow-hidden bg-muted">
                   {novel.cover ? (
                     <Image
                       src={novel.cover}
                       alt={novel.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
                       <span className="text-3xl">📖</span>
                     </div>
                   )}
-                  <div className="absolute top-1.5 right-1.5">
-                    <span className="px-1.5 py-0.5 text-xs rounded-full bg-background/90">
+
+                  {/* 状态标签 - 右上角 */}
+                  <div className="absolute top-2 right-2">
+                    <span className="px-2 py-0.5 text-xs rounded-full bg-black/60 text-white backdrop-blur-sm">
                       {novel.status === 'ONGOING' ? '连载中' : '已完结'}
                     </span>
                   </div>
-                </div>
-                <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
-                  {novel.title}
-                </h3>
-                <p className="text-xs text-muted-foreground truncate">
-                  {novel.authorName || novel.author}
-                </p>
 
-                {/* 标签 */}
-                {novel.tags && novel.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {novel.tags.slice(0, 2).map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="px-1.5 py-0 text-xs rounded-full bg-muted text-muted-foreground"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  {/* 底部渐变遮罩 + 文字信息 */}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-16 pb-3 px-3">
+                    {/* 标题 */}
+                    <h3 className="font-semibold text-sm text-white truncate mb-0.5 drop-shadow-md">
+                      {novel.title}
+                    </h3>
+
+                    {/* 作者 */}
+                    <p className="text-xs text-white/80 truncate mb-1.5">
+                      {novel.authorName || novel.author}
+                    </p>
+
+                    {/* 标签 */}
+                    {novel.tags && novel.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-1.5">
+                        {novel.tags.slice(0, 2).map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="px-1.5 py-0 text-xs rounded-full bg-white/20 text-white backdrop-blur-sm"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 统计信息 */}
+                    <div className="flex items-center gap-3 text-xs text-white/70">
+                      {novel.viewCount !== undefined && (
+                        <span className="flex items-center gap-1">
+                          <Eye className="w-3 h-3" />
+                          {formatViewCount(novel.viewCount)}
+                        </span>
+                      )}
+                      {novel.likeCount !== undefined && (
+                        <span className="flex items-center gap-1">
+                          <ThumbsUp className="w-3 h-3" />
+                          {formatViewCount(novel.likeCount)}
+                        </span>
+                      )}
+                      {novel.wordCount !== undefined && (
+                        <span className="flex items-center gap-1">
+                          <BookOpen className="w-3 h-3" />
+                          {formatWordCount(novel.wordCount)}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                )}
-
-                {/* 统计信息 */}
-                <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                  {novel.viewCount !== undefined && (
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      {formatViewCount(novel.viewCount)}
-                    </span>
-                  )}
-                  {novel.likeCount !== undefined && (
-                    <span className="flex items-center gap-1">
-                      <ThumbsUp className="w-3 h-3" />
-                      {formatViewCount(novel.likeCount)}
-                    </span>
-                  )}
-                  {novel.wordCount !== undefined && (
-                    <span className="flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" />
-                      {formatWordCount(novel.wordCount)}
-                    </span>
-                  )}
                 </div>
               </Link>
             ))}
