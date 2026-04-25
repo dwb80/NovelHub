@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import MainLayout from '@/components/MainLayout';
 import { Novel } from '@/types';
 import { SearchService } from '@/lib/api/services';
+import Image from 'next/image';
 import {
   Trophy,
   TrendingUp,
@@ -19,7 +20,10 @@ import {
   Check,
   X,
   MessageCircle,
-  Twitter
+  Twitter,
+  Eye,
+  BookOpen,
+  Star
 } from 'lucide-react';
 
 type RankingType = 'hot' | 'new' | 'rating';
@@ -237,6 +241,20 @@ export default function RankingPage() {
     }
   };
 
+  const formatViewCount = (count: number): string => {
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + '万';
+    }
+    return count.toString();
+  };
+
+  const formatWordCount = (count: number): string => {
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + '万字';
+    }
+    return count.toString() + '字';
+  };
+
   return (
     <MainLayout>
       {/* 主要内容 */}
@@ -257,8 +275,8 @@ export default function RankingPage() {
               key={type}
               onClick={() => setActiveTab(type)}
               className={`px-6 py-3 font-medium transition-colors relative ${activeTab === type
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
+                ? 'text-primary'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               {rankingLabels[type]}
@@ -276,8 +294,8 @@ export default function RankingPage() {
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.id
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-background border hover:bg-accent'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-background border hover:bg-accent'
                 }`}
             >
               {category.name}
@@ -296,70 +314,92 @@ export default function RankingPage() {
           </div>
         ) : (
           <>
-            {/* 前三名特殊展示 */}
+            {/* 前三名特殊展示 - 水印式布局 */}
             {topThree.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
                 {topThree.map((novel, index) => (
                   <div
                     key={novel.id}
-                    className="group relative p-6 bg-card rounded-xl border hover:shadow-lg transition-all"
+                    className="group relative"
                   >
-                    {/* 排名徽章 */}
-                    <div className={`absolute -top-3 -left-3 w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${getRankStyle(index + 1)}`}>
-                      {getRankIcon(index + 1)}
-                    </div>
-
-                    {/* 分享按钮 */}
-                    <button
-                      onClick={(e) => handleShare(novel, e)}
-                      className="absolute top-4 right-4 p-2 rounded-full bg-muted hover:bg-primary hover:text-primary-foreground transition-colors z-10"
-                      title="分享"
-                    >
-                      <Share2 className="w-4 h-4" />
-                    </button>
-
-                    {/* 趋势指示器（仅评分榜） */}
-                    {activeTab === 'rating' && novel.trend !== undefined && (
-                      <div className={`absolute top-4 right-14 flex items-center gap-1 text-sm ${novel.trend > 0 ? 'text-green-600' : novel.trend < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
-                        <TrendingUp className={`w-4 h-4 ${novel.trend < 0 ? 'rotate-180' : ''}`} />
-                        {novel.trend > 0 ? '+' : ''}{novel.trend}
-                      </div>
-                    )}
-
-                    {/* 增长率（仅评分榜） */}
-                    {activeTab === 'rating' && novel.growthRate && (
-                      <div className="absolute top-4 right-14 mt-6 text-sm font-medium text-green-600">
-                        +{novel.growthRate}%
-                      </div>
-                    )}
-
                     <Link href={`/novels/${novel.id}`}>
-                      {/* 封面 */}
-                      <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden mb-4">
+                      {/* 封面图容器 - 文字叠加在图片上 */}
+                      <div className="aspect-[4/5] relative rounded-xl overflow-hidden bg-muted shadow-lg">
                         {novel.cover ? (
-                          <img
+                          <Image
                             src={novel.cover}
                             alt={novel.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            暂无封面
+                          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                            <span className="text-4xl">📖</span>
                           </div>
                         )}
-                      </div>
 
-                      {/* 信息 */}
-                      <h3 className="text-lg font-semibold mb-2 line-clamp-1 group-hover:text-primary transition-colors">
-                        {novel.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-3">{novel.authorName}</p>
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                        {novel.summary}
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>{novel.category}</span>
-                        <span>{novel.wordCount.toLocaleString()} 字</span>
+                        {/* 排名徽章 - 左上角 */}
+                        <div className={`absolute -top-0 -left-0 w-14 h-14 rounded-br-2xl flex items-center justify-center shadow-lg z-10 ${getRankStyle(index + 1)}`}>
+                          {getRankIcon(index + 1)}
+                        </div>
+
+                        {/* 分享按钮 - 右上角 */}
+                        <button
+                          onClick={(e) => handleShare(novel, e)}
+                          className="absolute top-2 right-2 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors z-10 backdrop-blur-sm"
+                          title="分享"
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </button>
+
+                        {/* 趋势指示器（仅评分榜） */}
+                        {activeTab === 'rating' && novel.trend !== undefined && (
+                          <div className={`absolute top-2 right-12 flex items-center gap-1 px-2 py-0.5 rounded-full text-xs backdrop-blur-sm ${novel.trend > 0 ? 'bg-green-500/80 text-white' : novel.trend < 0 ? 'bg-red-500/80 text-white' : 'bg-muted/80'}`}>
+                            <TrendingUp className={`w-3 h-3 ${novel.trend < 0 ? 'rotate-180' : ''}`} />
+                            {novel.trend > 0 ? '+' : ''}{novel.trend}
+                          </div>
+                        )}
+
+                        {/* 底部渐变遮罩 + 文字信息 */}
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-20 pb-4 px-4">
+                          {/* 标题 */}
+                          <h3 className="text-lg font-bold text-white truncate mb-1 drop-shadow-md">
+                            {novel.title}
+                          </h3>
+
+                          {/* 作者 */}
+                          <p className="text-sm text-white/80 truncate mb-2">
+                            {novel.authorName}
+                          </p>
+
+                          {/* 分类标签 */}
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-white/20 text-white backdrop-blur-sm">
+                              {novel.category}
+                            </span>
+                            {activeTab === 'rating' && novel.growthRate && (
+                              <span className="px-2 py-0.5 text-xs rounded-full bg-green-500/80 text-white backdrop-blur-sm">
+                                +{novel.growthRate}%
+                              </span>
+                            )}
+                          </div>
+
+                          {/* 统计信息 */}
+                          <div className="flex items-center gap-3 text-xs text-white/70">
+                            <span className="flex items-center gap-1">
+                              <Eye className="w-3 h-3" />
+                              {formatViewCount(novel.viewCount || 0)}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <BookOpen className="w-3 h-3" />
+                              {formatWordCount(novel.wordCount)}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                              {novel.rating?.toFixed(1) || '0.0'}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </Link>
                   </div>
@@ -367,70 +407,90 @@ export default function RankingPage() {
               </div>
             )}
 
-            {/* 其余排名列表 */}
-            <div className="space-y-3">
+            {/* 其余排名列表 - 水印式卡片布局 */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {paginatedNovels.map((novel) => (
-                <div
-                  key={novel.id}
-                  className="flex gap-4 p-4 bg-card rounded-lg border hover:shadow-md transition-shadow"
-                >
-                  {/* 排名 */}
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${getRankStyle(novel.rank)}`}>
-                    {novel.rank}
-                  </div>
+                <div key={novel.id} className="group relative">
+                  <Link href={`/novels/${novel.id}`}>
+                    {/* 封面图容器 - 文字叠加在图片上 */}
+                    <div className="aspect-[4/5] relative rounded-lg overflow-hidden bg-muted">
+                      {novel.cover ? (
+                        <Image
+                          src={novel.cover}
+                          alt={novel.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                          <span className="text-3xl">📖</span>
+                        </div>
+                      )}
 
-                  {/* 封面 */}
-                  <Link href={`/novels/${novel.id}`} className="w-16 h-24 bg-muted rounded overflow-hidden flex-shrink-0">
-                    {novel.cover ? (
-                      <img src={novel.cover} alt={novel.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
-                        暂无封面
+                      {/* 排名徽章 - 左上角 */}
+                      <div className={`absolute top-1.5 left-1.5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-lg z-10 ${getRankStyle(novel.rank)}`}>
+                        {novel.rank}
                       </div>
-                    )}
-                  </Link>
 
-                  {/* 信息 */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
-                      <Link href={`/novels/${novel.id}`} className="flex-1">
-                        <h3 className="text-base font-semibold mb-1 hover:text-primary transition-colors">
+                      {/* 分享按钮 - 右上角 */}
+                      <button
+                        onClick={(e) => handleShare(novel, e)}
+                        className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors z-10 backdrop-blur-sm"
+                        title="分享"
+                      >
+                        <Share2 className="w-3 h-3" />
+                      </button>
+
+                      {/* 趋势指示器（仅评分榜） */}
+                      {activeTab === 'rating' && novel.trend !== undefined && (
+                        <div className={`absolute top-1.5 right-10 flex items-center gap-0.5 px-1.5 py-0 rounded-full text-xs backdrop-blur-sm ${novel.trend > 0 ? 'bg-green-500/80 text-white' : novel.trend < 0 ? 'bg-red-500/80 text-white' : 'bg-muted/80'}`}>
+                          <TrendingUp className={`w-3 h-3 ${novel.trend < 0 ? 'rotate-180' : ''}`} />
+                          {novel.trend > 0 ? '+' : ''}{novel.trend}
+                        </div>
+                      )}
+
+                      {/* 底部渐变遮罩 + 文字信息 */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-2 px-2">
+                        {/* 标题 */}
+                        <h3 className="font-semibold text-sm text-white truncate mb-0 drop-shadow-md">
                           {novel.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground mb-2">{novel.authorName}</p>
-                      </Link>
-                      <div className="flex items-center gap-2">
-                        {/* 趋势（仅评分榜） */}
-                        {activeTab === 'rating' && novel.trend !== undefined && (
-                          <div className={`flex items-center gap-1 text-sm ${novel.trend > 0 ? 'text-green-600' : novel.trend < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
-                            <TrendingUp className={`w-4 h-4 ${novel.trend < 0 ? 'rotate-180' : ''}`} />
-                            {novel.trend > 0 ? '+' : ''}{novel.trend}
-                          </div>
-                        )}
-                        {/* 分享按钮 */}
-                        <button
-                          onClick={(e) => handleShare(novel, e)}
-                          className="p-2 rounded-full hover:bg-muted transition-colors"
-                          title="分享"
-                        >
-                          <Share2 className="w-4 h-4" />
-                        </button>
+
+                        {/* 作者 */}
+                        <p className="text-xs text-white/80 truncate mb-1">
+                          {novel.authorName}
+                        </p>
+
+                        {/* 分类标签 */}
+                        <div className="flex flex-wrap gap-1 mb-1">
+                          <span className="px-1 py-0 text-xs rounded-full bg-white/20 text-white backdrop-blur-sm">
+                            {novel.category}
+                          </span>
+                          {activeTab === 'rating' && novel.growthRate && (
+                            <span className="px-1 py-0 text-xs rounded-full bg-green-500/80 text-white backdrop-blur-sm">
+                              +{novel.growthRate}%
+                            </span>
+                          )}
+                        </div>
+
+                        {/* 统计信息 */}
+                        <div className="flex items-center gap-2 text-xs text-white/70">
+                          <span className="flex items-center gap-0.5">
+                            <Eye className="w-3 h-3" />
+                            {formatViewCount(novel.viewCount || 0)}
+                          </span>
+                          <span className="flex items-center gap-0.5">
+                            <BookOpen className="w-3 h-3" />
+                            {formatWordCount(novel.wordCount)}
+                          </span>
+                          <span className="flex items-center gap-0.5">
+                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                            {novel.rating?.toFixed(1) || '0.0'}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <Link href={`/novels/${novel.id}`}>
-                      <p className="text-sm text-muted-foreground line-clamp-1 mb-2">
-                        {novel.summary}
-                      </p>
-                      <div className="flex gap-4 text-xs text-muted-foreground">
-                        <span>{novel.category}</span>
-                        <span>{novel.wordCount.toLocaleString()} 字</span>
-                        <span>评分: {novel.rating.toFixed(1)}</span>
-                        {activeTab === 'rating' && novel.growthRate && (
-                          <span className="text-green-600 font-medium">+{novel.growthRate}%</span>
-                        )}
-                      </div>
-                    </Link>
-                  </div>
+                  </Link>
                 </div>
               ))}
             </div>
