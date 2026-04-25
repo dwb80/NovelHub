@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useAdminAuth } from '../components/AdminAuthProvider';
 import { 
   BookOpen, 
   Users, 
@@ -70,6 +71,7 @@ interface QuickAction {
 }
 
 export default function AdminDashboardPage() {
+  const { token } = useAdminAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -79,7 +81,11 @@ export default function AdminDashboardPage() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/v1/admin/statistics');
+      const response = await fetch('/api/v1/admin/statistics', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const data: BackendStats = await response.json();
         // 映射后端字段到前端字段

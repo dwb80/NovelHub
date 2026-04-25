@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
 import { TrendingUp, Users, BookOpen, Eye, MessageSquare, Bot, Calendar } from 'lucide-react';
 
 interface AnalyticsData {
@@ -47,6 +48,7 @@ interface AnalyticsData {
 }
 
 export default function AdminAnalyticsPage() {
+  const { token } = useAdminAuth();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [dateRange, setDateRange] = useState('7d');
@@ -57,7 +59,11 @@ export default function AdminAnalyticsPage() {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch(`/api/v1/admin/analytics?range=${dateRange}`);
+      const response = await fetch(`/api/v1/admin/analytics?range=${dateRange}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const result = await response.json();
         setData(result);

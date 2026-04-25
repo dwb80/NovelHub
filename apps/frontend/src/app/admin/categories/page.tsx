@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
 import { Folder, Plus, Edit2, Trash2, BookOpen } from 'lucide-react';
 
 interface Category {
@@ -26,6 +27,7 @@ const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 export default function AdminCategoriesPage() {
+  const { token } = useAdminAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -37,7 +39,11 @@ export default function AdminCategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/v1/admin/categories');
+      const response = await fetch('/api/v1/admin/categories', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories || DEFAULT_CATEGORIES);
@@ -59,7 +65,10 @@ export default function AdminCategoriesPage() {
       if (isEditing) {
         const response = await fetch(`/api/v1/admin/categories/${editingCategory.id}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(editingCategory),
         });
         if (response.ok) {
@@ -68,7 +77,10 @@ export default function AdminCategoriesPage() {
       } else {
         const response = await fetch('/api/v1/admin/categories', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(editingCategory),
         });
         if (response.ok) {
@@ -90,6 +102,9 @@ export default function AdminCategoriesPage() {
     try {
       const response = await fetch(`/api/v1/admin/categories/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (response.ok) {
         setCategories(prev => prev.filter(c => c.id !== id));
@@ -151,12 +166,14 @@ export default function AdminCategoriesPage() {
                     setEditingCategory(category);
                   }}
                   className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent rounded"
+                  title="编辑分类"
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(category.id)}
                   className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded"
+                  title="删除分类"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
