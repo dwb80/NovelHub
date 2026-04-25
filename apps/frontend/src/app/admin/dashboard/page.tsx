@@ -14,10 +14,36 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+// 后端返回的数据结构
+interface BackendStats {
+  // 基础统计
+  totalNovels: number;
+  totalReaders: number;
+  totalChapters?: number;
+  totalComments?: number;
+  // AI智能体统计
+  totalAIAgents?: number;
+  totalClaws?: number;
+  aiAuthors?: number;
+  authorClaws?: number;
+  aiReviewers?: number;
+  reviewerClaws?: number;
+  // 审核统计
+  totalReviews?: number;
+  pendingReviews: number;
+  pendingNovels: number;
+  // 今日数据
+  todayNewNovels?: number;
+  newReadersToday?: number;
+  todayViews?: number;
+  completedReviewsToday?: number;
+}
+
+// 前端使用的数据结构
 interface DashboardStats {
   // 基础统计
   totalNovels: number;
-  totalUsers: number;
+  totalReaders: number;
   totalChapters: number;
   totalComments: number;
   // AI智能体统计
@@ -30,9 +56,9 @@ interface DashboardStats {
   pendingNovels: number;
   // 今日数据
   todayNewNovels: number;
-  todayNewUsers: number;
+  newReadersToday: number;
   todayViews: number;
-  todayCompletedReviews: number;
+  completedReviewsToday: number;
 }
 
 interface QuickAction {
@@ -55,8 +81,28 @@ export default function AdminDashboardPage() {
     try {
       const response = await fetch('/api/v1/admin/statistics');
       if (response.ok) {
-        const data = await response.json();
-        setStats(data);
+        const data: BackendStats = await response.json();
+        // 映射后端字段到前端字段
+        setStats({
+          // 基础统计
+          totalNovels: data.totalNovels || 0,
+          totalReaders: data.totalReaders || 0,
+          totalChapters: data.totalChapters || 0,
+          totalComments: data.totalComments || 0,
+          // AI智能体统计
+          totalAIAgents: data.totalAIAgents || data.totalClaws || 0,
+          aiAuthors: data.aiAuthors || data.authorClaws || 0,
+          aiReviewers: data.aiReviewers || data.reviewerClaws || 0,
+          // 审核统计
+          totalReviews: data.totalReviews || 0,
+          pendingReviews: data.pendingReviews || 0,
+          pendingNovels: data.pendingNovels || 0,
+          // 今日数据
+          todayNewNovels: data.todayNewNovels || 0,
+          newReadersToday: data.newReadersToday || 0,
+          todayViews: data.todayViews || 0,
+          completedReviewsToday: data.completedReviewsToday || 0,
+        });
       }
     } catch (err) {
       console.error('获取统计数据失败:', err);
@@ -76,14 +122,14 @@ export default function AdminDashboardPage() {
     {
       title: '待处理评审',
       description: '查看待处理的评审任务',
-      href: '/admin/reviews?status=pending',
+      href: '/admin/reviewers',
       icon: <ClipboardCheck className="w-5 h-5" />,
       badge: stats?.pendingReviews,
     },
     {
-      title: '用户管理',
-      description: '管理用户账号和权限',
-      href: '/admin/users',
+      title: '读者管理',
+      description: '管理读者账号和权限',
+      href: '/admin/readers',
       icon: <Users className="w-5 h-5" />,
     },
     {
@@ -126,10 +172,10 @@ export default function AdminDashboardPage() {
             <Users className="w-4 h-4" />
             总读者数
           </div>
-          <div className="text-3xl font-bold">{stats?.totalUsers?.toLocaleString() || 0}</div>
+          <div className="text-3xl font-bold">{stats?.totalReaders?.toLocaleString() || 0}</div>
           <div className="text-xs text-green-600 mt-2 flex items-center gap-1">
             <TrendingUp className="w-3 h-3" />
-            +{stats?.todayNewUsers || 0} 今日新增
+            +{stats?.newReadersToday || 0} 今日新增
           </div>
         </div>
 
@@ -175,7 +221,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="text-3xl font-bold">{stats?.totalReviews?.toLocaleString() || 0}</div>
           <div className="text-xs text-blue-600 mt-2">
-            今日完成 {stats?.todayCompletedReviews || 0}
+            今日完成 {stats?.completedReviewsToday || 0}
           </div>
         </div>
 

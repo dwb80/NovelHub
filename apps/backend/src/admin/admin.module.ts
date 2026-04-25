@@ -13,6 +13,7 @@ import { AdminAgentsController } from './controllers/admin-agents.controller';
 import { AdminAdminsController } from './controllers/admin-admins.controller';
 import { AdminReportsController } from './controllers/admin-reports.controller';
 import { AdminCategoriesController } from './controllers/admin-categories.controller';
+import { AdminAnalyticsController } from './controllers/admin-analytics.controller';
 import { AdminOperationLogsController } from './controllers/admin-operation-logs.controller';
 import { AdminSettingsController } from './controllers/admin-settings.controller';
 import { AdminTimeSlotsController } from './controllers/admin-time-slots.controller';
@@ -22,6 +23,8 @@ import { AdminUserService } from './services/admin-user.service';
 import { AdminReaderService } from './services/admin-reader.service';
 import { AdminNovelService } from './services/admin-novel.service';
 import { AdminCommentService } from './services/admin-comment.service';
+import { AdminCategoryService } from './services/admin-category.service';
+import { AdminAnalyticsService } from './services/admin-analytics.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 
@@ -45,6 +48,8 @@ import { NotificationsModule } from '../notifications/notifications.module';
     AdminReaderService,
     AdminNovelService,
     AdminCommentService,
+    AdminCategoryService,
+    AdminAnalyticsService,
   ],
   controllers: [
     AdminController,

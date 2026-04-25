@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
 import { AlertTriangle, CheckCircle, XCircle, Eye, MessageSquare, BookOpen, User } from 'lucide-react';
 
 interface Report {
@@ -41,6 +42,7 @@ const REPORT_REASONS: Record<string, string> = {
 };
 
 export default function AdminReportsPage() {
+  const { token } = useAdminAuth();
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedType, setSelectedType] = useState('');
@@ -56,7 +58,12 @@ export default function AdminReportsPage() {
       if (selectedType) params.append('type', selectedType);
       if (selectedStatus) params.append('status', selectedStatus);
 
-      const response = await fetch(`/api/v1/admin/reports?${params.toString()}`);
+      const response = await fetch(`/api/v1/admin/reports?${params.toString()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setReports(data.reports || []);
@@ -70,10 +77,10 @@ export default function AdminReportsPage() {
 
   const handleResolve = async (reportId: string, action: 'RESOLVED' | 'REJECTED') => {
     try {
-      const response = await fetch(`/api/v1/admin/reports/${reportId}/resolve`, {
-        method: 'POST',
+      const response = await fetch(`/api/v1/admin/reports/${reportId}/status`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify({ status: action }),
       });
 
       if (response.ok) {

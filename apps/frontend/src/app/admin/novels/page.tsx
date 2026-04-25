@@ -1,25 +1,93 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Novel } from '@/types';
+import { useRouter } from 'next/navigation';
+import { useAdminAuth } from '../components/AdminAuthProvider';
+import Pagination from '../components/Pagination';
+import {
+  Search,
+  Filter,
+  Eye,
+  CheckCircle,
+  XCircle,
+  Trash2,
+  BookOpen,
+  MessageSquare,
+  Heart
+} from 'lucide-react';
+
+// 小说状态定义 - 与文档一致
+const NOVEL_STATUS = [
+  { value: 'DRAFT', label: '草稿', color: 'bg-gray-100 text-gray-700' },
+  { value: 'PENDING', label: '待审核', color: 'bg-yellow-100 text-yellow-700' },
+  { value: 'REVIEWING', label: '审核中', color: 'bg-blue-100 text-blue-700' },
+  { value: 'PUBLISHED', label: '已发布', color: 'bg-green-100 text-green-700' },
+  { value: 'REJECTED', label: '已拒绝', color: 'bg-red-100 text-red-700' },
+  { value: 'ARCHIVED', label: '已下架', color: 'bg-purple-100 text-purple-700' },
+  { value: 'COMPLETED', label: '已完成', color: 'bg-indigo-100 text-indigo-700' },
+];
+
+interface Novel {
+  id: string;
+  title: string;
+  authorName: string;
+  authorId: string;
+  category: string;
+  status: string;
+  chapterCount: number;
+  commentCount: number;
+  viewCount: number;
+  likeCount: number;
+  wordCount: number;
+  cover?: string;
+  summary?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function AdminNovelsPage() {
+  const router = useRouter();
+  const { token } = useAdminAuth();
   const [novels, setNovels] = useState<Novel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
 
   useEffect(() => {
     fetchNovels();
-  }, [currentPage]);
+  }, [currentPage, pageSize, selectedStatus]);
 
   const fetchNovels = async () => {
     try {
-      const response = await fetch(`/api/v1/admin/novels?page=${currentPage}&limit=20`);
+      setIsLoading(true);
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('limit', pageSize.toString());
+      if (selectedStatus) params.append('status', selectedStatus);
+      if (searchQuery) params.append('search', searchQuery);
+
+      const response = await fetch(`/api/v1/admin/novels?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
-        setNovels(data.items || []);
-        setTotalPages(Math.ceil((data.total || 0) / 20));
+        // 适配后端返回的数据结构
+        const novelsData = data.novels || data.items || [];
+        const pagination = data.pagination || {};
+        setNovels(novelsData.map((novel: any) => ({
+          ...novel,
+          authorName: novel.author?.name || novel.authorName || '未知作者',
+          authorId: novel.author?.id || novel.authorId || '',
+        })));
+        setTotalCount(pagination.total || data.total || 0);
+        setTotalPages(pagination.totalPages || Math.ceil((pagination.total || data.total || 0) / pageSize));
       }
     } catch (err) {
       console.error('获取小说列表失败:', err);
@@ -28,10 +96,41 @@ export default function AdminNovelsPage() {
     }
   };
 
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchNovels();
+  };
+
+  const handleStatusChange = async (novelId: string, newStatus: string) => {
+    try {
+      const response = await fetch(`/api/v1/admin/novels/${novelId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setNovels(prev => prev.map(n =>
+          n.id === novelId ? { ...n, status: newStatus } : n
+        ));
+      }
+    } catch (err) {
+      console.error('更新状态失败:', err);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('确定要删除这部小说吗？此操作不可恢复。')) return;
     try {
-      const response = await fetch(`/api/v1/admin/novels/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/v1/admin/novels/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         fetchNovels();
       }
@@ -40,131 +139,228 @@ export default function AdminNovelsPage() {
     }
   };
 
-  const handleToggleStatus = async (id: string, currentStatus: number) => {
-    const newStatus = currentStatus === 0 ? 2 : 0;
-    try {
-      await fetch(`/api/v1/admin/novels/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
-      });
-      fetchNovels();
-    } catch (err) {
-      console.error('更新状态失败:', err);
-    }
+  const getStatusLabel = (status: string) => {
+    return NOVEL_STATUS.find(s => s.value === status) || { label: status, color: 'bg-gray-100' };
   };
 
   if (isLoading) {
-    return <div className="text-center py-16">加载中...</div>;
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span className="ml-3 text-muted-foreground">加载中...</span>
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">小说管理</h1>
-        <div className="flex gap-2">
+      </div>
+
+      {/* 筛选和搜索栏 */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        <div className="relative flex-1 min-w-[200px] max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="搜索小说..."
-            className="px-3 py-2 border rounded-md text-sm"
+            placeholder="搜索小说标题..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background"
           />
-          <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm">
-            搜索
-          </button>
+        </div>
+        <select
+          value={selectedStatus}
+          onChange={(e) => {
+            setSelectedStatus(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="px-4 py-2 border rounded-lg bg-background"
+        >
+          <option value="">所有状态</option>
+          {NOVEL_STATUS.map(status => (
+            <option key={status.value} value={status.value}>{status.label}</option>
+          ))}
+        </select>
+        <button
+          onClick={handleSearch}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+        >
+          搜索
+        </button>
+      </div>
+
+      {/* 统计卡片 */}
+      <div className="grid grid-cols-5 gap-4 mb-6">
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <BookOpen className="w-4 h-4" />
+            <span className="text-sm">总小说</span>
+          </div>
+          <p className="text-2xl font-bold">{totalCount}</p>
+        </div>
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <span className="text-sm">待审核</span>
+          </div>
+          <p className="text-2xl font-bold text-yellow-600">
+            {novels.filter(n => n.status === 'PENDING').length}
+          </p>
+        </div>
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <span className="text-sm">已发布</span>
+          </div>
+          <p className="text-2xl font-bold text-green-600">
+            {novels.filter(n => n.status === 'PUBLISHED').length}
+          </p>
+        </div>
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <span className="text-sm">已拒绝</span>
+          </div>
+          <p className="text-2xl font-bold text-red-600">
+            {novels.filter(n => n.status === 'REJECTED').length}
+          </p>
+        </div>
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <span className="text-sm">已完成</span>
+          </div>
+          <p className="text-2xl font-bold text-indigo-600">
+            {novels.filter(n => n.status === 'COMPLETED').length}
+          </p>
         </div>
       </div>
 
+      {/* 小说列表 */}
       <div className="bg-card rounded-lg border overflow-hidden">
         <table className="w-full">
-          <thead className="bg-muted">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium">小说</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">作者</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">分类</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">状态</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">数据</th>
-              <th className="px-4 py-3 text-left text-sm font-medium">操作</th>
+          <thead>
+            <tr className="border-b bg-muted/50">
+              <th className="text-left px-4 py-3 font-medium">小说</th>
+              <th className="text-left px-4 py-3 font-medium">作者</th>
+              <th className="text-left px-4 py-3 font-medium">分类</th>
+              <th className="text-left px-4 py-3 font-medium">状态</th>
+              <th className="text-left px-4 py-3 font-medium">数据</th>
+              <th className="text-left px-4 py-3 font-medium">操作</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
-            {novels.map((novel) => (
-              <tr key={novel.id} className="hover:bg-muted/50">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-14 bg-muted rounded overflow-hidden">
-                      {novel.cover ? (
-                        <img src={novel.cover} alt={novel.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xs">无</div>
-                      )}
-                    </div>
-                    <div>
-                      <div className="font-medium">{novel.title}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(novel.createdAt).toLocaleDateString('zh-CN')}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-sm">{novel.authorName}</td>
-                <td className="px-4 py-3 text-sm">{novel.category}</td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-1 text-xs rounded ${
-                    novel.status === 0
-                      ? 'bg-green-100 text-green-700'
-                      : novel.status === 1
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
-                    {novel.status === 0 ? '连载' : novel.status === 1 ? '完结' : '暂停'}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-sm">
-                  <div className="text-xs text-muted-foreground">
-                    <div>{novel.wordCount.toLocaleString()} 字</div>
-                    <div>{novel.viewCount.toLocaleString()} 阅读</div>
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleToggleStatus(novel.id, novel.status)}
-                      className="px-2 py-1 text-xs border rounded hover:bg-accent"
-                    >
-                      {novel.status === 2 ? '恢复' : '暂停'}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(novel.id)}
-                      className="px-2 py-1 text-xs border border-destructive text-destructive rounded hover:bg-destructive/10"
-                    >
-                      删除
-                    </button>
-                  </div>
+          <tbody>
+            {novels.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-muted-foreground">
+                  暂无小说数据
                 </td>
               </tr>
-            ))}
+            ) : (
+              novels.map((novel) => (
+                <tr key={novel.id} className="border-b hover:bg-muted/50">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-14 bg-muted rounded overflow-hidden flex-shrink-0">
+                        {novel.cover ? (
+                          <img src={novel.cover} alt={novel.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">无</div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium">{novel.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(novel.createdAt).toLocaleDateString('zh-CN')}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-sm">{novel.authorName}</td>
+                  <td className="px-4 py-3 text-sm">{novel.category}</td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={novel.status}
+                      onChange={(e) => handleStatusChange(novel.id, e.target.value)}
+                      className={`px-2 py-1 text-xs rounded border-0 cursor-pointer ${getStatusLabel(novel.status).color}`}
+                    >
+                      {NOVEL_STATUS.map(status => (
+                        <option key={status.value} value={status.value}>{status.label}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="text-xs text-muted-foreground space-y-1">
+                      <div className="flex items-center gap-1">
+                        <BookOpen className="w-3 h-3" />
+                        {novel.chapterCount || 0} 章
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MessageSquare className="w-3 h-3" />
+                        {novel.commentCount || 0} 评
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Heart className="w-3 h-3" />
+                        {novel.likeCount || 0} 赞
+                      </div>
+                      <div>{novel.wordCount?.toLocaleString() || 0} 字</div>
+                      <div>{novel.viewCount?.toLocaleString() || 0} 阅读</div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => router.push(`/admin/novels/${novel.id}`)}
+                        className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent rounded"
+                        title="查看详情"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      {novel.status === 'PENDING' && (
+                        <>
+                          <button
+                            onClick={() => handleStatusChange(novel.id, 'PUBLISHED')}
+                            className="p-1.5 text-green-600 hover:bg-green-50 rounded"
+                            title="审核通过"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleStatusChange(novel.id, 'REJECTED')}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded"
+                            title="拒绝"
+                          >
+                            <XCircle className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
+                      <button
+                        onClick={() => handleDelete(novel.id)}
+                        className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded"
+                        title="删除"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
 
       {/* 分页 */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded ${
-                currentPage === page
-                  ? 'bg-primary text-primary-foreground'
-                  : 'border hover:bg-accent'
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setCurrentPage(1);
+        }}
+      />
     </div>
   );
 }

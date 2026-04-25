@@ -11,6 +11,7 @@ import {
   Mail,
   AlertTriangle
 } from 'lucide-react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
 
 interface SystemSettings {
   // 站点信息
@@ -83,6 +84,7 @@ const defaultSettings: SystemSettings = {
 };
 
 export default function AdminSettingsPage() {
+  const { token } = useAdminAuth();
   const [settings, setSettings] = useState<SystemSettings>(defaultSettings);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -95,7 +97,12 @@ export default function AdminSettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/v1/admin/settings');
+      const response = await fetch('/api/v1/admin/settings', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setSettings({ ...defaultSettings, ...data });
@@ -112,8 +119,11 @@ export default function AdminSettingsPage() {
     setMessage('');
     try {
       const response = await fetch('/api/v1/admin/settings', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(settings),
       });
       if (response.ok) {
@@ -148,17 +158,82 @@ export default function AdminSettingsPage() {
       <button
         onClick={() => onChange(!checked)}
         className={`relative w-12 h-6 rounded-full transition-colors ${
-          checked ? 'bg-primary' : 'bg-muted'
+          checked ? 'bg-primary' : 'bg-gray-200'
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+          className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
             checked ? 'translate-x-6' : 'translate-x-0'
           }`}
         />
       </button>
     </div>
   );
+
+  const InputField = ({
+    label,
+    value,
+    onChange,
+    type = 'text',
+    placeholder,
+    description,
+  }: {
+    label: string;
+    value: string | number;
+    onChange: (value: string) => void;
+    type?: string;
+    placeholder?: string;
+    description?: string;
+  }) => (
+    <div className="py-3">
+      <label className="block font-medium mb-1">{label}</label>
+      {description && <div className="text-sm text-muted-foreground mb-2">{description}</div>}
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full px-3 py-2 border rounded-lg bg-background"
+      />
+    </div>
+  );
+
+  const TextAreaField = ({
+    label,
+    value,
+    onChange,
+    placeholder,
+    description,
+    rows = 3,
+  }: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+    description?: string;
+    rows?: number;
+  }) => (
+    <div className="py-3">
+      <label className="block font-medium mb-1">{label}</label>
+      {description && <div className="text-sm text-muted-foreground mb-2">{description}</div>}
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        rows={rows}
+        className="w-full px-3 py-2 border rounded-lg bg-background resize-none"
+      />
+    </div>
+  );
+
+  const tabs = [
+    { id: 'general', label: '基本设置', icon: Globe },
+    { id: 'users', label: '用户设置', icon: Users },
+    { id: 'content', label: '内容设置', icon: Shield },
+    { id: 'files', label: '文件设置', icon: FileImage },
+    { id: 'notifications', label: '通知设置', icon: Bell },
+    { id: 'maintenance', label: '系统维护', icon: AlertTriangle },
+  ];
 
   if (isLoading) {
     return (
@@ -168,14 +243,6 @@ export default function AdminSettingsPage() {
       </div>
     );
   }
-
-  const tabs = [
-    { id: 'general', label: '站点信息', icon: Globe },
-    { id: 'users', label: '用户设置', icon: Users },
-    { id: 'content', label: '内容设置', icon: FileImage },
-    { id: 'maintenance', label: '系统维护', icon: AlertTriangle },
-    { id: 'notifications', label: '通知设置', icon: Bell },
-  ];
 
   return (
     <div>
@@ -192,7 +259,7 @@ export default function AdminSettingsPage() {
       </div>
 
       {message && (
-        <div className={`p-4 rounded-lg mb-6 ${
+        <div className={`mb-6 p-4 rounded-lg ${
           message.includes('成功') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
         }`}>
           {message}
@@ -200,242 +267,240 @@ export default function AdminSettingsPage() {
       )}
 
       <div className="flex gap-6">
-        {/* 左侧标签栏 */}
+        {/* 左侧标签页 */}
         <div className="w-48 flex-shrink-0">
-          <nav className="space-y-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </nav>
+          <div className="bg-card rounded-lg border overflow-hidden">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-primary/10 text-primary border-l-4 border-primary'
+                      : 'hover:bg-accent border-l-4 border-transparent'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="font-medium">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* 右侧内容区 */}
+        {/* 右侧内容 */}
         <div className="flex-1 bg-card rounded-lg border p-6">
-          {/* 站点信息 */}
           {activeTab === 'general' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
+            <div>
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Globe className="w-5 h-5" />
-                站点信息
+                基本设置
               </h2>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">站点名称</label>
-                  <input
-                    type="text"
-                    value={settings.siteName}
-                    onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">站点描述</label>
-                  <textarea
-                    value={settings.siteDescription}
-                    onChange={(e) => setSettings({ ...settings, siteDescription: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background min-h-[80px]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">站点关键词</label>
-                  <input
-                    type="text"
-                    value={settings.siteKeywords}
-                    onChange={(e) => setSettings({ ...settings, siteKeywords: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                    placeholder="用逗号分隔"
-                  />
-                </div>
-              </div>
+              <InputField
+                label="站点名称"
+                value={settings.siteName}
+                onChange={(value) => setSettings({ ...settings, siteName: value })}
+                placeholder="NovelHub"
+              />
+              <TextAreaField
+                label="站点描述"
+                value={settings.siteDescription}
+                onChange={(value) => setSettings({ ...settings, siteDescription: value })}
+                placeholder="发现精彩小说，开启阅读之旅"
+                description="用于SEO和首页展示"
+              />
+              <InputField
+                label="站点关键词"
+                value={settings.siteKeywords}
+                onChange={(value) => setSettings({ ...settings, siteKeywords: value })}
+                placeholder="小说,网络小说,AI写作,阅读"
+                description="多个关键词用逗号分隔"
+              />
+              <InputField
+                label="站点Logo"
+                value={settings.siteLogo}
+                onChange={(value) => setSettings({ ...settings, siteLogo: value })}
+                placeholder="/logo.png"
+              />
+              <InputField
+                label="站点图标"
+                value={settings.favicon}
+                onChange={(value) => setSettings({ ...settings, favicon: value })}
+                placeholder="/favicon.ico"
+              />
             </div>
           )}
 
-          {/* 用户设置 */}
           {activeTab === 'users' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
+            <div>
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 用户设置
               </h2>
-              <div className="divide-y">
-                <ToggleSwitch
-                  label="允许注册"
-                  description="是否开放新用户注册"
-                  checked={settings.allowRegistration}
-                  onChange={(v) => setSettings({ ...settings, allowRegistration: v })}
-                />
-                <ToggleSwitch
-                  label="邮箱验证"
-                  description="注册时是否需要验证邮箱"
-                  checked={settings.requireEmailVerification}
-                  onChange={(v) => setSettings({ ...settings, requireEmailVerification: v })}
-                />
-                <ToggleSwitch
-                  label="允许游客访问"
-                  description="未登录用户是否可以浏览内容"
-                  checked={settings.allowGuestAccess}
-                  onChange={(v) => setSettings({ ...settings, allowGuestAccess: v })}
-                />
-                <div className="py-3">
-                  <label className="block text-sm font-medium mb-1">默认用户角色</label>
-                  <select
-                    value={settings.defaultUserRole}
-                    onChange={(e) => setSettings({ ...settings, defaultUserRole: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                  >
-                    <option value="AUTHOR">作者</option>
-                    <option value="READER">读者</option>
-                  </select>
-                </div>
-                <div className="py-3">
-                  <label className="block text-sm font-medium mb-1">用户最大小说数</label>
-                  <input
-                    type="number"
-                    value={settings.maxNovelsPerUser}
-                    onChange={(e) => setSettings({ ...settings, maxNovelsPerUser: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                  />
-                </div>
-              </div>
+              <ToggleSwitch
+                label="允许新用户注册"
+                checked={settings.allowRegistration}
+                onChange={(value) => setSettings({ ...settings, allowRegistration: value })}
+                description="关闭后新用户将无法注册"
+              />
+              <ToggleSwitch
+                label="需要邮箱验证"
+                checked={settings.requireEmailVerification}
+                onChange={(value) => setSettings({ ...settings, requireEmailVerification: value })}
+                description="新用户注册后需要验证邮箱才能使用"
+              />
+              <ToggleSwitch
+                label="允许游客访问"
+                checked={settings.allowGuestAccess}
+                onChange={(value) => setSettings({ ...settings, allowGuestAccess: value })}
+                description="未登录用户是否可以浏览内容"
+              />
+              <InputField
+                label="默认用户角色"
+                value={settings.defaultUserRole}
+                onChange={(value) => setSettings({ ...settings, defaultUserRole: value })}
+                placeholder="AUTHOR"
+                description="新注册用户的默认角色"
+              />
             </div>
           )}
 
-          {/* 内容设置 */}
           {activeTab === 'content' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
-                <FileImage className="w-5 h-5" />
+            <div>
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Shield className="w-5 h-5" />
                 内容设置
               </h2>
-              <div className="divide-y">
-                <ToggleSwitch
-                  label="需要审核"
-                  description="发布的小说是否需要审核"
-                  checked={settings.requireReview}
-                  onChange={(v) => setSettings({ ...settings, requireReview: v })}
-                />
-                <ToggleSwitch
-                  label="允许评论"
-                  description="是否开启评论功能"
-                  checked={settings.allowComments}
-                  onChange={(v) => setSettings({ ...settings, allowComments: v })}
-                />
-                <ToggleSwitch
-                  label="评论需要审核"
-                  description="评论是否需要审核后才显示"
-                  checked={settings.requireCommentApproval}
-                  onChange={(v) => setSettings({ ...settings, requireCommentApproval: v })}
-                />
-                <div className="py-3">
-                  <label className="block text-sm font-medium mb-1">最大上传大小 (MB)</label>
-                  <input
-                    type="number"
-                    value={settings.maxUploadSize}
-                    onChange={(e) => setSettings({ ...settings, maxUploadSize: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                  />
-                </div>
-                <div className="py-3">
-                  <label className="block text-sm font-medium mb-1">封面最大大小 (MB)</label>
-                  <input
-                    type="number"
-                    value={settings.maxCoverSize}
-                    onChange={(e) => setSettings({ ...settings, maxCoverSize: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                  />
-                </div>
-              </div>
+              <ToggleSwitch
+                label="小说需要审核"
+                checked={settings.requireReview}
+                onChange={(value) => setSettings({ ...settings, requireReview: value })}
+                description="新发布的小说是否需要管理员审核"
+              />
+              <ToggleSwitch
+                label="允许评论"
+                checked={settings.allowComments}
+                onChange={(value) => setSettings({ ...settings, allowComments: value })}
+                description="是否开启评论功能"
+              />
+              <ToggleSwitch
+                label="评论需要审核"
+                checked={settings.requireCommentApproval}
+                onChange={(value) => setSettings({ ...settings, requireCommentApproval: value })}
+                description="新评论是否需要管理员审核"
+              />
+              <InputField
+                label="每用户最大小说数"
+                value={settings.maxNovelsPerUser}
+                onChange={(value) => setSettings({ ...settings, maxNovelsPerUser: parseInt(value) || 0 })}
+                type="number"
+                placeholder="10"
+                description="每个用户最多可以创建的小说数量"
+              />
             </div>
           )}
 
-          {/* 系统维护 */}
-          {activeTab === 'maintenance' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" />
-                系统维护
+          {activeTab === 'files' && (
+            <div>
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <FileImage className="w-5 h-5" />
+                文件设置
               </h2>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-2 text-yellow-800">
-                  <AlertTriangle className="w-5 h-5" />
-                  <span className="font-medium">警告</span>
-                </div>
-                <p className="text-sm text-yellow-700 mt-1">
-                  开启维护模式后，普通用户将无法访问网站，只有管理员可以登录。
-                </p>
-              </div>
-              <div className="divide-y">
-                <ToggleSwitch
-                  label="维护模式"
-                  description="开启后网站进入维护状态"
-                  checked={settings.maintenanceMode}
-                  onChange={(v) => setSettings({ ...settings, maintenanceMode: v })}
-                />
-                <div className="py-3">
-                  <label className="block text-sm font-medium mb-1">维护提示信息</label>
-                  <textarea
-                    value={settings.maintenanceMessage}
-                    onChange={(e) => setSettings({ ...settings, maintenanceMessage: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background min-h-[80px]"
-                  />
-                </div>
-              </div>
+              <InputField
+                label="最大上传大小"
+                value={settings.maxUploadSize}
+                onChange={(value) => setSettings({ ...settings, maxUploadSize: parseInt(value) || 0 })}
+                type="number"
+                placeholder="10"
+                description="单位：MB"
+              />
+              <InputField
+                label="允许的文件类型"
+                value={settings.allowedFileTypes.join(', ')}
+                onChange={(value) => setSettings({ ...settings, allowedFileTypes: value.split(',').map(s => s.trim()) })}
+                placeholder="jpg, jpeg, png, gif, webp"
+                description="多个类型用逗号分隔"
+              />
+              <InputField
+                label="允许的封面类型"
+                value={settings.allowedCoverTypes.join(', ')}
+                onChange={(value) => setSettings({ ...settings, allowedCoverTypes: value.split(',').map(s => s.trim()) })}
+                placeholder="jpg, jpeg, png, webp"
+                description="多个类型用逗号分隔"
+              />
+              <InputField
+                label="最大封面大小"
+                value={settings.maxCoverSize}
+                onChange={(value) => setSettings({ ...settings, maxCoverSize: parseInt(value) || 0 })}
+                type="number"
+                placeholder="5"
+                description="单位：MB"
+              />
             </div>
           )}
 
-          {/* 通知设置 */}
           {activeTab === 'notifications' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-semibold flex items-center gap-2">
+            <div>
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Bell className="w-5 h-5" />
                 通知设置
               </h2>
-              <div className="divide-y">
-                <ToggleSwitch
-                  label="启用邮件通知"
-                  description="是否发送邮件通知"
-                  checked={settings.enableEmailNotifications}
-                  onChange={(v) => setSettings({ ...settings, enableEmailNotifications: v })}
-                />
-                <div className="py-3">
-                  <label className="block text-sm font-medium mb-1">管理员邮箱</label>
-                  <input
-                    type="email"
-                    value={settings.adminEmail}
-                    onChange={(e) => setSettings({ ...settings, adminEmail: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg bg-background"
-                  />
-                </div>
-                <ToggleSwitch
-                  label="新用户通知"
-                  description="有新用户注册时发送通知"
-                  checked={settings.notifyOnNewUser}
-                  onChange={(v) => setSettings({ ...settings, notifyOnNewUser: v })}
-                />
-                <ToggleSwitch
-                  label="新小说通知"
-                  description="有新小说发布时发送通知"
-                  checked={settings.notifyOnNewNovel}
-                  onChange={(v) => setSettings({ ...settings, notifyOnNewNovel: v })}
-                />
-                <ToggleSwitch
-                  label="举报通知"
-                  description="有用户举报时发送通知"
-                  checked={settings.notifyOnReport}
-                  onChange={(v) => setSettings({ ...settings, notifyOnReport: v })}
-                />
-              </div>
+              <ToggleSwitch
+                label="启用邮件通知"
+                checked={settings.enableEmailNotifications}
+                onChange={(value) => setSettings({ ...settings, enableEmailNotifications: value })}
+                description="是否发送邮件通知"
+              />
+              <InputField
+                label="管理员邮箱"
+                value={settings.adminEmail}
+                onChange={(value) => setSettings({ ...settings, adminEmail: value })}
+                type="email"
+                placeholder="admin@novelhub.com"
+                description="接收系统通知的邮箱地址"
+              />
+              <ToggleSwitch
+                label="新用户通知"
+                checked={settings.notifyOnNewUser}
+                onChange={(value) => setSettings({ ...settings, notifyOnNewUser: value })}
+                description="有新用户注册时发送通知"
+              />
+              <ToggleSwitch
+                label="新小说通知"
+                checked={settings.notifyOnNewNovel}
+                onChange={(value) => setSettings({ ...settings, notifyOnNewNovel: value })}
+                description="有新小说发布时发送通知"
+              />
+              <ToggleSwitch
+                label="举报通知"
+                checked={settings.notifyOnReport}
+                onChange={(value) => setSettings({ ...settings, notifyOnReport: value })}
+                description="有新的举报时发送通知"
+              />
+            </div>
+          )}
+
+          {activeTab === 'maintenance' && (
+            <div>
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5" />
+                系统维护
+              </h2>
+              <ToggleSwitch
+                label="维护模式"
+                checked={settings.maintenanceMode}
+                onChange={(value) => setSettings({ ...settings, maintenanceMode: value })}
+                description="开启后只有管理员可以访问系统"
+              />
+              <TextAreaField
+                label="维护提示信息"
+                value={settings.maintenanceMessage}
+                onChange={(value) => setSettings({ ...settings, maintenanceMessage: value })}
+                placeholder="系统正在维护中，请稍后再试。"
+                description="维护模式下显示给用户的提示信息"
+              />
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { NovelStatus } from '@prisma/client';
+import { NovelStatus, ChapterStatus } from '@prisma/client';
 
 @Injectable()
 export class AdminNovelService {
@@ -264,6 +264,116 @@ export class AdminNovelService {
         total,
         totalPages: Math.ceil(total / limit),
       },
+    };
+  }
+
+  async getChapters(params: { page?: number; limit?: number; status?: string; novelId?: string; search?: string }) {
+    const { page = 1, limit = 20, status, novelId, search } = params;
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+    if (status) where.status = status;
+    if (novelId) where.novelId = novelId;
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { novel: { title: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+
+    const [chapters, total] = await Promise.all([
+      this.prisma.chapter.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          novel: {
+            select: { id: true, title: true, author: { select: { id: true, name: true } } },
+          },
+        },
+      }),
+      this.prisma.chapter.count({ where }),
+    ]);
+
+    return {
+      items: chapters.map(chapter => ({
+        id: chapter.id,
+        title: chapter.title,
+        chapterNumber: chapter.orderIndex,
+        novelId: chapter.novelId,
+        novelTitle: chapter.novel?.title || '未知小说',
+        authorName: chapter.novel?.author?.name || '未知作者',
+        wordCount: chapter.wordCount,
+        status: chapter.status,
+        isVIP: chapter.isVip,
+        viewCount: chapter.viewCount,
+        createdAt: chapter.createdAt,
+        updatedAt: chapter.updatedAt,
+      })),
+      total,
+      page,
+      limit,
+    };
+  }
+
+  async getChapterDetail(chapterId: string) {
+    const chapter = await this.prisma.chapter.findUnique({
+      where: { id: chapterId },
+      include: {
+        novel: {
+          select: { id: true, title: true, author: { select: { id: true, name: true } } },
+        },
+        reviews: {
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+          select: { id: true, comment: true, createdAt: true },
+        },
+      },
+    });
+
+    if (!chapter) {
+      throw new UnauthorizedException('章节不存在');
+    }
+
+    return {
+      id: chapter.id,
+      title: chapter.title,
+      content: chapter.content,
+      chapterNumber: chapter.orderIndex,
+      novelId: chapter.novelId,
+      novelTitle: chapter.novel?.title || '未知小说',
+      authorName: chapter.novel?.author?.name || '未知作者',
+      wordCount: chapter.wordCount,
+      status: chapter.status,
+      isVIP: chapter.isVip,
+      viewCount: chapter.viewCount,
+      createdAt: chapter.createdAt,
+      updatedAt: chapter.updatedAt,
+      publishedAt: chapter.publishedAt,
+      reviews: chapter.reviews,
+    };
+  }
+
+  async updateChapterStatus(chapterId: string, status: string) {
+    const chapter = await this.prisma.chapter.findUnique({
+      where: { id: chapterId },
+    });
+
+    if (!chapter) {
+      throw new UnauthorizedException('章节不存在');
+    }
+
+    const updatedChapter = await this.prisma.chapter.update({
+      where: { id: chapterId },
+      data: { status: status as ChapterStatus },
+    });
+
+    return {
+      success: true,
+      message: '章节状态已更新',
+      chapter: updatedChapter,
     };
   }
 

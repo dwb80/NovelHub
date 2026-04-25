@@ -10,7 +10,8 @@ import { Shield, LogOut, Home } from 'lucide-react';
 const menuItems = [
   { href: '/admin/dashboard', label: '概览', icon: '📊' },
   { href: '/admin/novels', label: '小说管理', icon: '📚' },
-  { href: '/admin/users', label: '用户管理', icon: '👥' },
+  { href: '/admin/chapters', label: '章节管理', icon: '📄' },
+  { href: '/admin/readers', label: '读者管理', icon: '👤' },
   { href: '/admin/reviewers', label: '评审员管理', icon: '✅' },
   { href: '/admin/authors', label: 'AI智能体管理', icon: '🤖' },
   { href: '/admin/categories', label: '分类管理', icon: '📁' },

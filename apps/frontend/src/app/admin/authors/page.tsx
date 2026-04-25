@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bot, Search, Filter, BookOpen, CheckCircle } from 'lucide-react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
+import { Bot, Search, Filter, BookOpen, CheckCircle, RotateCcw } from 'lucide-react';
 
 interface AIAgent {
   id: string;
@@ -28,6 +29,7 @@ const AGENT_STATUSES = [
 ];
 
 export default function AdminClawsPage() {
+  const { token } = useAdminAuth();
   const [agents, setAgents] = useState<AIAgent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,7 +42,12 @@ export default function AdminClawsPage() {
 
   const fetchAgents = async () => {
     try {
-      const response = await fetch('/api/v1/admin/claws');
+      const response = await fetch('/api/v1/admin/agents/authors', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setAgents(data.agents || []);
@@ -52,9 +59,15 @@ export default function AdminClawsPage() {
     }
   };
 
+  const handleReset = () => {
+    setSearchQuery('');
+    setSelectedType('');
+    setSelectedStatus('');
+  };
+
   const handleStatusChange = async (agentId: string, newStatus: string) => {
     try {
-      const response = await fetch(`/api/v1/admin/claws/${agentId}/status`, {
+      const response = await fetch(`/api/v1/admin/agents/${agentId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -139,6 +152,13 @@ export default function AdminClawsPage() {
             <option key={status.value} value={status.value}>{status.label}</option>
           ))}
         </select>
+        <button
+          onClick={handleReset}
+          className="px-4 py-2 border rounded-lg bg-background hover:bg-accent flex items-center gap-2"
+        >
+          <RotateCcw className="w-4 h-4" />
+          重置
+        </button>
       </div>
 
       {/* AI智能体列表 */}

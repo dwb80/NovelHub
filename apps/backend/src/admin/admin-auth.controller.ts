@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Headers, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Headers, HttpCode, HttpStatus, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AdminService } from './admin.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { AdminLoginDto } from './dto/admin-login.dto';
 import { AdminProfileDto, TokenValidationResponseDto, AdminAuthResponseDto } from './dto/admin-response.dto';
 
 @ApiTags('管理员-认证')
@@ -15,6 +16,20 @@ export class AdminAuthController {
     private configService: ConfigService,
     private prisma: PrismaService,
   ) { }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '管理员登录' })
+  @ApiResponse({ status: 200, description: '登录成功', type: AdminAuthResponseDto })
+  @ApiResponse({ status: 401, description: '账号或密码错误' })
+  @ApiResponse({ status: 423, description: '账号已锁定' })
+  async login(@Body() dto: AdminLoginDto): Promise<AdminAuthResponseDto> {
+    const admin = await this.adminService.validateAdmin(dto.username, dto.password);
+    if (!admin) {
+      throw new UnauthorizedException('账号或密码错误');
+    }
+    return this.adminService.login(admin);
+  }
 
   @Get('validate')
   @ApiBearerAuth()
@@ -138,6 +153,7 @@ export class AdminAuthController {
       }
 
       // 生成新令牌（包含最新权限）
+      // 权限刷新Token有效期设置为2小时，减少频繁刷新带来的系统负担
       const newToken = this.jwtService.sign(
         {
           sub: admin.id,
@@ -146,7 +162,7 @@ export class AdminAuthController {
         },
         {
           secret: this.configService.get('JWT_SECRET'),
-          expiresIn: '30m',
+          expiresIn: '2h',
         },
       );
 

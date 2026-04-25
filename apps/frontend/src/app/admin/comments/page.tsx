@@ -34,7 +34,9 @@ export default function AdminCommentsPage() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/v1/admin/comments?filter=${filter}`);
+      const params = new URLSearchParams();
+      if (filter !== 'all') params.append('status', filter === 'pending' ? 'PENDING' : 'APPROVED');
+      const response = await fetch(`/api/v1/admin/comments?${params}`);
       if (response.ok) {
         const data = await response.json();
         setComments(data.items || []);
@@ -48,7 +50,11 @@ export default function AdminCommentsPage() {
 
   const handleApprove = async (id: string) => {
     try {
-      await fetch(`/api/v1/admin/comments/${id}/approve`, { method: 'PUT' });
+      await fetch(`/api/v1/admin/comments/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isDeleted: false }),
+      });
       fetchComments();
     } catch (err) {
       console.error('审核失败:', err);
@@ -141,45 +147,46 @@ export default function AdminCommentsPage() {
           </div>
         ) : (
           filteredComments.map((comment) => (
-          <div key={comment.id} className="bg-card rounded-lg border p-4">
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{comment.username}</span>
-                <span className="text-muted-foreground">评论</span>
-                <span className="font-medium">《{comment.novelTitle}》</span>
+            <div key={comment.id} className="bg-card rounded-lg border p-4">
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{comment.username}</span>
+                  <span className="text-muted-foreground">评论</span>
+                  <span className="font-medium">《{comment.novelTitle}》</span>
+                </div>
+                <span className={`px-2 py-1 text-xs rounded ${
+                  comment.status === 0
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : 'bg-green-100 text-green-700'
+                }`}>
+                  {comment.status === 0 ? '待审核' : '已通过'}
+                </span>
               </div>
-              <span className={`px-2 py-1 text-xs rounded ${
-                comment.status === 0
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-green-100 text-green-700'
-              }`}>
-                {comment.status === 0 ? '待审核' : '已通过'}
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-3">{comment.content}</p>
-            <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">
-                {new Date(comment.createdAt).toLocaleString('zh-CN')}
-              </span>
-              <div className="flex gap-2">
-                {comment.status === 0 && (
+              <p className="text-sm text-muted-foreground mb-3">{comment.content}</p>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">
+                  {new Date(comment.createdAt).toLocaleString('zh-CN')}
+                </span>
+                <div className="flex gap-2">
+                  {comment.status === 0 && (
+                    <button
+                      onClick={() => handleApprove(comment.id)}
+                      className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
+                    >
+                      通过
+                    </button>
+                  )}
                   <button
-                    onClick={() => handleApprove(comment.id)}
-                    className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
+                    onClick={() => handleDelete(comment.id)}
+                    className="px-3 py-1 text-xs border border-destructive text-destructive rounded hover:bg-destructive/10"
                   >
-                    通过
+                    删除
                   </button>
-                )}
-                <button
-                  onClick={() => handleDelete(comment.id)}
-                  className="px-3 py-1 text-xs border border-destructive text-destructive rounded hover:bg-destructive/10"
-                >
-                  删除
-                </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
