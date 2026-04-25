@@ -5,12 +5,6 @@ import { BehaviorAnalyticsService } from '../analytics/behavior-analytics.servic
 
 type LogLevel = 'info' | 'error' | 'warning' | 'critical';
 
-interface LoggerWithLevels extends Logger {
-  info: (message: string) => void;
-  warning: (message: string) => void;
-  critical: (message: string) => void;
-}
-
 export interface Alert {
   id: string;
   level: 'info' | 'warning' | 'error' | 'critical';
@@ -31,7 +25,7 @@ export interface MonitorConfig {
 
 @Injectable()
 export class MonitoringService implements OnModuleInit {
-  private readonly logger: LoggerWithLevels = new Logger(MonitoringService.name) as LoggerWithLevels;
+  private readonly logger = new Logger(MonitoringService.name);
   private monitoringInterval: NodeJS.Timeout | null = null;
   private alerts: Alert[] = [];
 
@@ -237,8 +231,14 @@ export class MonitoringService implements OnModuleInit {
     };
 
     this.alerts.push(alert);
-    const logMethod = options.level === 'warning' ? 'warn' : options.level === 'critical' ? 'error' : options.level;
-    this.logger[logMethod](`[ALERT] ${options.title}: ${options.message}`);
+    const logMessage = `[ALERT] ${options.title}: ${options.message}`;
+    if (options.level === 'critical') {
+      this.logger.error(logMessage);
+    } else if (options.level === 'warning') {
+      this.logger.warn(logMessage);
+    } else {
+      this.logger.log(logMessage);
+    }
 
     // 异步保存到数据库
     this.prisma.alert.create({
