@@ -23,12 +23,17 @@ export const BookshelfService = {
     return response.data;
   },
 
+  // 从书架移除 - 使用状态更新接口
   async removeFromBookshelf(bookId: string): Promise<void> {
-    await api.delete(`/bookshelf/${bookId}`);
+    await api.put(`/bookshelf/${bookId}/status`, { status: 'REMOVED' });
   },
 
+  // 更新阅读进度 - 使用正确的路由
   async updateProgress(data: UpdateProgressData): Promise<void> {
-    await api.put('/bookshelf/progress', data);
+    await api.put(`/bookshelf/${data.bookId}/progress`, {
+      chapterId: data.chapterId,
+      progress: data.progress,
+    });
   },
 
   async getReadingHistory(): Promise<BookshelfItem[]> {
