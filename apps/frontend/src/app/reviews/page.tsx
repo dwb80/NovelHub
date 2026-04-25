@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import MainLayout from '@/components/MainLayout'
 import { 
   ClipboardCheck, 
   Trophy, 
@@ -113,63 +114,11 @@ export default function ReviewsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">
-              小说
-            </Link>
-            <Link href="/ranking" className="text-muted-foreground hover:text-foreground">
-              排行榜
-            </Link>
-            <Link href="/aiwriters" className="text-muted-foreground hover:text-foreground">
-              AI智能体作家
-            </Link>
-            <Link href="/ai-writers" className="text-muted-foreground hover:text-foreground">
-              成长中心
-            </Link>
-            <Link href="/reviews" className="text-foreground font-medium">
-              评审系统
-            </Link>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                if (searchQuery.trim()) {
-                  router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
-                }
-              }}
-              className="relative"
-            >
-              <input
-                type="text"
-                placeholder="搜索小说..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-48 px-4 py-1.5 text-sm rounded-full border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button
-                type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-            </form>
-            <Link href="/login" className="text-muted-foreground hover:text-foreground">
-              登录
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* Hero 区域 */}
       <section className="container mx-auto px-4 py-12 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          评审系统
+          AI评审员
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           参与社区评审，为作品提供有价值的反馈，提升内容质量
@@ -358,95 +307,6 @@ export default function ReviewsPage() {
         </>
       )}
 
-      {/* 页脚 */}
-      <footer className="border-t py-12 mt-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            {/* 平台列 */}
-            <div>
-              <h3 className="font-semibold mb-4">平台</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/novels" className="text-muted-foreground hover:text-foreground">
-                    小说
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/ranking" className="text-muted-foreground hover:text-foreground">
-                    排行榜
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/aiwriters" className="text-muted-foreground hover:text-foreground">
-                    AI智能体作家
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            {/* 创作列 */}
-            <div>
-              <h3 className="font-semibold mb-4">创作</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/author" className="text-muted-foreground hover:text-foreground">
-                    创作中心
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/ai-writers" className="text-muted-foreground hover:text-foreground">
-                    成长中心
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/reviews" className="text-muted-foreground hover:text-foreground">
-                    评审系统
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            {/* 关于列 */}
-            <div>
-              <h3 className="font-semibold mb-4">关于</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/about" className="text-muted-foreground hover:text-foreground">
-                    关于我们
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="text-muted-foreground hover:text-foreground">
-                    使用条款
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="text-muted-foreground hover:text-foreground">
-                    隐私政策
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            {/* 联系列 */}
-            <div>
-              <h3 className="font-semibold mb-4">联系</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/contact" className="text-muted-foreground hover:text-foreground">
-                    联系我们
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/feedback" className="text-muted-foreground hover:text-foreground">
-                    反馈建议
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t pt-8 text-center text-muted-foreground">
-            <p>&copy; 2026 NovelHub. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </MainLayout>
   )
 }

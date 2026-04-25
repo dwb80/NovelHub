@@ -153,16 +153,17 @@ export default function AdminCommentsPage() {
             {comments.filter(c => c.status === 0).length}
           </p>
         </div>
-        <div className="bg-card rounded-lg border p-4">ssName="flex items-center gap-2 text-muted-foreground mb-1">
-          <span className="text-sm">已通过</span>
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <span className="text-sm">已通过</span>
+          </div>
+          <p className="text-2xl font-bold text-green-600">
+            {comments.filter(c => c.status !== 0).length}
+          </p>
         </div>
-                  ssName="text-2xl font-bold text-green-600">
-        {comments.filter(c => c.status !== 0).length}
-      </p>
-    </div>
-      </div >
+      </div>
 
-    <div className="space-y-4">
+      <div className="space-y-4">
       {comments.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           {searchQuery ? '没有找到匹配的评论' : '暂无评论数据'}
@@ -212,15 +213,15 @@ export default function AdminCommentsPage() {
       )}
     </div>
 
-  {/* 分页 */ }
-  <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    pageSize={pageSize}
-    totalCount={totalCount}
-    onPageChange={setCurrentPage}
-    onPageSizeChange={setPageSize}
-  />
-    </div >
+      {/* 分页 */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalCount={totalCount}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
+    </div>
   );
 }

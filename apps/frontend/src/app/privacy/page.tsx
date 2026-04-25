@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import MainLayout from '@/components/MainLayout'
 import { Shield, Lock, Eye, Database, Share2, UserCheck, Baby, RefreshCw, MessageCircle, List, ChevronRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
@@ -22,7 +23,7 @@ export default function PrivacyPage() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100
-      
+
       for (const section of sections) {
         const element = document.getElementById(section.id)
         if (element) {
@@ -54,22 +55,7 @@ export default function PrivacyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">小说</Link>
-            <Link href="/ranking" className="text-muted-foreground hover:text-foreground">排行榜</Link>
-            <Link href="/aiwriters" className="text-muted-foreground hover:text-foreground">AI智能体作家</Link>
-            <Link href="/login" className="text-muted-foreground hover:text-foreground">登录</Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
@@ -88,11 +74,10 @@ export default function PrivacyPage() {
                       <button
                         key={section.id}
                         onClick={() => scrollToSection(section.id)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
-                          activeSection === section.id
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm transition-colors ${activeSection === section.id
                             ? 'bg-primary text-primary-foreground'
                             : 'hover:bg-muted'
-                        }`}
+                          }`}
                       >
                         <Icon className="w-4 h-4" />
                         {section.title}
@@ -109,8 +94,8 @@ export default function PrivacyPage() {
                   <p className="text-sm text-muted-foreground mb-3">
                     如有隐私相关疑问，请联系我们
                   </p>
-                  <Link 
-                    href="/contact" 
+                  <Link
+                    href="/contact"
                     className="text-sm text-primary hover:underline flex items-center gap-1"
                   >
                     联系客服
@@ -138,11 +123,10 @@ export default function PrivacyPage() {
                       <button
                         key={section.id}
                         onClick={() => scrollToSection(section.id)}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
-                          activeSection === section.id
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-colors ${activeSection === section.id
                             ? 'bg-primary text-primary-foreground'
                             : 'hover:bg-muted'
-                        }`}
+                          }`}
                       >
                         {section.title}
                       </button>
@@ -155,7 +139,7 @@ export default function PrivacyPage() {
             {/* 右侧内容 */}
             <div className="flex-1 min-w-0">
               <h1 className="text-4xl font-bold mb-8 text-center">隐私政策</h1>
-              
+
               <div className="prose prose-slate max-w-none">
                 <div className="bg-card border rounded-lg p-8 mb-8">
                   <p className="text-muted-foreground mb-4">
@@ -353,45 +337,6 @@ export default function PrivacyPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t py-12 mt-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="font-semibold mb-4">平台</h3>
-              <ul className="space-y-2">
-                <li><Link href="/novels" className="text-muted-foreground hover:text-foreground">小说</Link></li>
-                <li><Link href="/ranking" className="text-muted-foreground hover:text-foreground">排行榜</Link></li>
-                <li><Link href="/aiwriters" className="text-muted-foreground hover:text-foreground">AI智能体作家</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">创作</h3>
-              <ul className="space-y-2">
-                <li><Link href="/author" className="text-muted-foreground hover:text-foreground">创作中心</Link></li>
-                <li><Link href="/reviews" className="text-muted-foreground hover:text-foreground">评审系统</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">关于</h3>
-              <ul className="space-y-2">
-                <li><Link href="/about" className="text-muted-foreground hover:text-foreground">关于我们</Link></li>
-                <li><Link href="/terms" className="text-muted-foreground hover:text-foreground">使用条款</Link></li>
-                <li><Link href="/privacy" className="text-muted-foreground hover:text-foreground">隐私政策</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">联系</h3>
-              <ul className="space-y-2">
-                <li><Link href="/contact" className="text-muted-foreground hover:text-foreground">联系我们</Link></li>
-                <li><Link href="/feedback" className="text-muted-foreground hover:text-foreground">反馈建议</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t pt-8 text-center text-muted-foreground">
-            <p>&copy; 2026 NovelHub. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </MainLayout>
   )
 }

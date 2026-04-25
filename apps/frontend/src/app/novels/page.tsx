@@ -3,13 +3,14 @@
 import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
+import MainLayout from '@/components/MainLayout'
 import { Novel } from '@/types'
 import CategoryNav from '@/components/CategoryNav'
 import { ChevronLeft, ChevronRight, Star, TrendingUp, Clock, ThumbsUp } from 'lucide-react'
 
 type SortType = 'hot' | 'new' | 'rating'
 
-function NovelsContent() {
+function NovelsContentInner({ category }: { category: string | null }) {
   const router = useRouter()
   const [novels, setNovels] = useState<Novel[]>([])
   const [loading, setLoading] = useState(true)
@@ -18,9 +19,7 @@ function NovelsContent() {
   const [totalPages, setTotalPages] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
   const [sortBy, setSortBy] = useState<SortType>('hot')
-  const searchParams = useSearchParams()
-  const category = searchParams.get('category')
-  
+
   const itemsPerPage = 12
 
   useEffect(() => {
@@ -35,7 +34,7 @@ function NovelsContent() {
       params.append('page', currentPage.toString())
       params.append('limit', itemsPerPage.toString())
       params.append('sort', sortBy)
-      
+
       const url = `/api/v1/novels?${params.toString()}`
       const response = await fetch(url)
       if (!response.ok) {
@@ -94,7 +93,7 @@ function NovelsContent() {
           <h1 className="text-3xl font-bold">
             {category ? '分类浏览' : '全部小说'}
           </h1>
-          
+
           {/* 排序选项 */}
           <div className="flex items-center gap-4">
             <span className="text-muted-foreground text-sm">
@@ -189,7 +188,7 @@ function NovelsContent() {
                   <ChevronLeft className="w-4 h-4" />
                   上一页
                 </button>
-                
+
                 {/* 页码 */}
                 <div className="flex items-center gap-1">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -203,7 +202,7 @@ function NovelsContent() {
                     } else {
                       pageNum = currentPage - 2 + i
                     }
-                    
+
                     return (
                       <button
                         key={pageNum}
@@ -242,32 +241,16 @@ function NovelsContent() {
   )
 }
 
+function NovelsContent() {
+  const searchParams = useSearchParams()
+  const category = searchParams.get('category')
+
+  return <NovelsContentInner category={category} />
+}
+
 export default function NovelsPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-foreground font-medium">
-              小说
-            </Link>
-            <Link href="/ranking" className="text-muted-foreground hover:text-foreground">
-              排行榜
-            </Link>
-            <Link href="/bookshelf" className="text-muted-foreground hover:text-foreground">
-              书架
-            </Link>
-            <Link href="/search" className="text-muted-foreground hover:text-foreground">
-              搜索
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       <Suspense fallback={
         <div className="text-center py-16">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -276,6 +259,6 @@ export default function NovelsPage() {
       }>
         <NovelsContent />
       </Suspense>
-    </div>
+    </MainLayout>
   )
 }

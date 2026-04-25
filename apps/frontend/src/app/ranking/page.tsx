@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import MainLayout from '@/components/MainLayout';
 import { Novel } from '@/types';
 import { SearchService } from '@/lib/api/services';
-import { 
-  Trophy, 
-  TrendingUp, 
-  Clock, 
+import {
+  Trophy,
+  TrendingUp,
+  Clock,
   ChevronRight,
   Search,
   Medal,
@@ -62,10 +63,10 @@ function ShareModal({ isOpen, onClose, novel, rankingType }: ShareModalProps) {
 
   if (!isOpen || !novel) return null;
 
-  const shareUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/novels/${novel.id}` 
+  const shareUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/novels/${novel.id}`
     : `/novels/${novel.id}`;
-  
+
   const shareText = `我在NovelHub${rankingLabels[rankingType]}发现了《${novel.title}》，快来一起阅读吧！`;
 
   const handleCopyLink = async () => {
@@ -236,22 +237,7 @@ export default function RankingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">小说</Link>
-            <Link href="/ranking" className="text-foreground font-medium">排行榜</Link>
-            <Link href="/aiwriters" className="text-muted-foreground hover:text-foreground">AI智能体作家</Link>
-            <Link href="/login" className="text-muted-foreground hover:text-foreground">登录</Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
         {/* 页面标题和更新时间 */}
@@ -269,11 +255,10 @@ export default function RankingPage() {
             <button
               key={type}
               onClick={() => setActiveTab(type)}
-              className={`px-6 py-3 font-medium transition-colors relative ${
-                activeTab === type
+              className={`px-6 py-3 font-medium transition-colors relative ${activeTab === type
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
-              }`}
+                }`}
             >
               {rankingLabels[type]}
               {activeTab === type && (
@@ -289,11 +274,10 @@ export default function RankingPage() {
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                selectedCategory === category.id
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.id
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-background border hover:bg-accent'
-              }`}
+                }`}
             >
               {category.name}
             </button>
@@ -323,7 +307,7 @@ export default function RankingPage() {
                     <div className={`absolute -top-3 -left-3 w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${getRankStyle(index + 1)}`}>
                       {getRankIcon(index + 1)}
                     </div>
-                    
+
                     {/* 分享按钮 */}
                     <button
                       onClick={(e) => handleShare(novel, e)}
@@ -352,10 +336,10 @@ export default function RankingPage() {
                       {/* 封面 */}
                       <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden mb-4">
                         {novel.cover ? (
-                          <img 
-                            src={novel.cover} 
-                            alt={novel.title} 
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
+                          <img
+                            src={novel.cover}
+                            alt={novel.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-muted-foreground">
@@ -483,47 +467,6 @@ export default function RankingPage() {
         novel={selectedNovel}
         rankingType={activeTab}
       />
-
-      {/* Footer */}
-      <footer className="border-t py-12 mt-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="font-semibold mb-4">平台</h3>
-              <ul className="space-y-2">
-                <li><Link href="/novels" className="text-muted-foreground hover:text-foreground">小说</Link></li>
-                <li><Link href="/ranking" className="text-muted-foreground hover:text-foreground">排行榜</Link></li>
-                <li><Link href="/aiwriters" className="text-muted-foreground hover:text-foreground">AI智能体作家</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">创作</h3>
-              <ul className="space-y-2">
-                <li><Link href="/author" className="text-muted-foreground hover:text-foreground">创作中心</Link></li>
-                <li><Link href="/reviews" className="text-muted-foreground hover:text-foreground">评审系统</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">关于</h3>
-              <ul className="space-y-2">
-                <li><Link href="/about" className="text-muted-foreground hover:text-foreground">关于我们</Link></li>
-                <li><Link href="/terms" className="text-muted-foreground hover:text-foreground">使用条款</Link></li>
-                <li><Link href="/privacy" className="text-muted-foreground hover:text-foreground">隐私政策</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">联系</h3>
-              <ul className="space-y-2">
-                <li><Link href="/contact" className="text-muted-foreground hover:text-foreground">联系我们</Link></li>
-                <li><Link href="/feedback" className="text-muted-foreground hover:text-foreground">反馈建议</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t pt-8 text-center text-muted-foreground">
-            <p>&copy; 2026 NovelHub. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </MainLayout>
   );
 }
