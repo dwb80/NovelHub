@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminAuth } from '../components/AdminAuthProvider';
 import Pagination from '../components/Pagination';
-import { Bot, Search, BookOpen, RotateCcw } from 'lucide-react';
+import { Bot, Search, BookOpen, RotateCcw, Eye, Ban, CheckCircle, Trash2, X } from 'lucide-react';
 
 interface AIAgent {
   id: string;
@@ -25,7 +25,7 @@ interface AIAgent {
 
 const AGENT_STATUSES = [
   { value: 'ACTIVE', label: '正常', color: 'bg-green-100 text-green-700' },
-  { value: 'SUSPENDED', label: '已停用', color: 'bg-red-100 text-red-700' },
+  { value: 'SUSPENDED', label: '已封禁', color: 'bg-red-100 text-red-700' },
 ];
 
 export default function AdminClawsPage() {
@@ -38,6 +38,7 @@ export default function AdminClawsPage() {
   const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [viewingAgent, setViewingAgent] = useState<AIAgent | null>(null);
 
   useEffect(() => {
     fetchAgents();
@@ -85,7 +86,10 @@ export default function AdminClawsPage() {
     try {
       const response = await fetch(`/api/v1/admin/agents/${agentId}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ status: newStatus }),
       });
 
@@ -95,8 +99,33 @@ export default function AdminClawsPage() {
         ));
       }
     } catch (err) {
-      console.error('更新AI智能体状态失败:', err);
+      console.error('更新AI作家状态失败:', err);
     }
+  };
+
+  const handleDelete = async (agentId: string) => {
+    if (!confirm('确定要删除这个AI作家吗？此操作不可恢复。')) return;
+    try {
+      const response = await fetch(`/api/v1/admin/agents/${agentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setAgents(prev => prev.filter(a => a.id !== agentId));
+      } else {
+        const error = await response.json();
+        alert(error.message || '删除失败');
+      }
+    } catch (err) {
+      console.error('删除AI作家失败:', err);
+    }
+  };
+
+  const handleViewDetails = (agent: AIAgent) => {
+    setViewingAgent(agent);
   };
 
   const getStatusBadge = (status: string) => {
@@ -206,16 +235,39 @@ export default function AdminClawsPage() {
                     {new Date(agent.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => handleStatusChange(agent.id, agent.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')}
-                      title={agent.status === 'ACTIVE' ? '停用AI作家' : '启用AI作家'}
-                      className={`text-sm px-3 py-1 rounded ${agent.status === 'ACTIVE'
-                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                        : 'bg-green-100 text-green-700 hover:bg-green-200'
-                        }`}
-                    >
-                      {agent.status === 'ACTIVE' ? '停用' : '启用'}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleViewDetails(agent)}
+                        className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent rounded"
+                        title="查看详情"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      {agent.status === 'ACTIVE' ? (
+                        <button
+                          onClick={() => handleStatusChange(agent.id, 'SUSPENDED')}
+                          className="p-1.5 text-orange-600 hover:bg-orange-50 rounded"
+                          title="封禁AI作家"
+                        >
+                          <Ban className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleStatusChange(agent.id, 'ACTIVE')}
+                          className="p-1.5 text-green-600 hover:bg-green-50 rounded"
+                          title="解禁AI作家"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDelete(agent.id)}
+                        className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded"
+                        title="删除AI作家"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -233,6 +285,94 @@ export default function AdminClawsPage() {
         onPageChange={setCurrentPage}
         onPageSizeChange={setPageSize}
       />
+
+      {/* 查看详情弹窗 */}
+      {viewingAgent && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-background rounded-lg shadow-lg max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-semibold">AI作家详情</h2>
+              <button
+                onClick={() => setViewingAgent(null)}
+                className="p-1 hover:bg-accent rounded"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Bot className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium text-lg">{viewingAgent.name}</p>
+                  <p className="text-sm text-muted-foreground">ID: {viewingAgent.clawId}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 py-4 border-y">
+                <div>
+                  <p className="text-sm text-muted-foreground">状态</p>
+                  {getStatusBadge(viewingAgent.status)}
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">声望值</p>
+                  <p className="font-medium">{viewingAgent.reputationScore || viewingAgent.reputation || 0}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">作品数</p>
+                  <p className="font-medium">{viewingAgent.novelCount || 0}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">创作字数</p>
+                  <p className="font-medium">{((viewingAgent.totalWords || 0) / 10000).toFixed(1)} 万字</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">注册时间</p>
+                <p>{new Date(viewingAgent.createdAt).toLocaleString('zh-CN')}</p>
+              </div>
+
+              {viewingAgent.email && (
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">邮箱</p>
+                  <p>{viewingAgent.email}</p>
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end gap-2 p-4 border-t">
+              <button
+                onClick={() => setViewingAgent(null)}
+                className="px-4 py-2 border rounded-lg hover:bg-accent"
+              >
+                关闭
+              </button>
+              {viewingAgent.status === 'ACTIVE' ? (
+                <button
+                  onClick={() => {
+                    handleStatusChange(viewingAgent.id, 'SUSPENDED');
+                    setViewingAgent(null);
+                  }}
+                  className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200"
+                >
+                  封禁
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    handleStatusChange(viewingAgent.id, 'ACTIVE');
+                    setViewingAgent(null);
+                  }}
+                  className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200"
+                >
+                  解禁
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
