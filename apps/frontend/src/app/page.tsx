@@ -76,26 +76,26 @@ export default function HomePage() {
   return (
     <MainLayout>
       {/* Hero 区域 */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      <section className="container mx-auto px-4 py-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">
           NovelHub
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground mb-4">
+        <p className="text-lg md:text-xl text-muted-foreground mb-2">
           创作即进化，反馈即养分
         </p>
-        <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+        <p className="text-sm text-muted-foreground mb-6 max-w-2xl mx-auto">
           AI驱动的分布式小说创作平台
         </p>
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-3 justify-center">
           <Link
             href="/register"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-sm bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             开始创作
           </Link>
           <Link
             href="/ai-writers"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex items-center justify-center rounded-sm border border-input bg-background px-6 py-2.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
           >
             了解 AI智能体作家
           </Link>
@@ -104,7 +104,7 @@ export default function HomePage() {
 
       {/* 精选小说轮播 */}
       {featuredNovels.length > 0 && (
-        <section className="container mx-auto px-4 py-8">
+        <section className="container mx-auto px-4 py-6">
           <HeroCarousel
             items={featuredNovels.map(n => ({
               id: n.id,
@@ -120,36 +120,36 @@ export default function HomePage() {
       )}
 
       {/* 热门小说 */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">热门小说</h2>
-          <Link href="/novels" className="text-primary hover:underline">
+      <section className="container mx-auto px-4 py-10">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold">热门小说</h2>
+          <Link href="/novels" className="text-sm text-primary hover:underline">
             查看更多 →
           </Link>
         </div>
 
         {loading ? (
-          <div className="text-center py-12">
+          <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <p className="mt-4 text-muted-foreground">加载中...</p>
+            <p className="mt-3 text-sm text-muted-foreground">加载中...</p>
           </div>
         ) : error ? (
-          <div className="text-center py-12 text-destructive">
+          <div className="text-center py-8 text-destructive">
             {error}
           </div>
         ) : novels.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
+          <div className="text-center py-8 text-muted-foreground">
             暂无小说数据
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
             {novels.map((novel) => (
               <Link
                 key={novel.id}
                 href={`/novels/${novel.id}`}
                 className="group block"
               >
-                <div className="aspect-[3/4] relative rounded-lg overflow-hidden bg-muted mb-3">
+                <div className="aspect-[3/4] relative rounded overflow-hidden bg-muted mb-2">
                   {novel.cover ? (
                     <Image
                       src={novel.cover}
@@ -159,29 +159,29 @@ export default function HomePage() {
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                      <span className="text-4xl">📖</span>
+                      <span className="text-3xl">📖</span>
                     </div>
                   )}
-                  <div className="absolute top-2 right-2">
-                    <span className="px-2 py-1 text-xs rounded-full bg-background/90">
+                  <div className="absolute top-1.5 right-1.5">
+                    <span className="px-1.5 py-0.5 text-xs rounded-full bg-background/90">
                       {novel.status === 'ONGOING' ? '连载中' : '已完结'}
                     </span>
                   </div>
                 </div>
-                <h3 className="font-semibold truncate group-hover:text-primary transition-colors">
+                <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                   {novel.title}
                 </h3>
-                <p className="text-sm text-muted-foreground truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   {novel.authorName || novel.author}
                 </p>
 
                 {/* 标签 */}
                 {novel.tags && novel.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
+                  <div className="flex flex-wrap gap-1 mt-1">
                     {novel.tags.slice(0, 2).map((tag, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground"
+                        className="px-1.5 py-0 text-xs rounded-full bg-muted text-muted-foreground"
                       >
                         {tag}
                       </span>
@@ -190,7 +190,7 @@ export default function HomePage() {
                 )}
 
                 {/* 统计信息 */}
-                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                   {novel.viewCount !== undefined && (
                     <span className="flex items-center gap-1">
                       <Eye className="w-3 h-3" />
@@ -217,27 +217,27 @@ export default function HomePage() {
       </section>
 
       {/* 功能特色 */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-2xl font-bold text-center mb-12">平台特色</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="text-center p-6 rounded-lg border bg-card">
-            <div className="text-4xl mb-4">✨</div>
-            <h3 className="text-xl font-semibold mb-2">智能创作</h3>
-            <p className="text-muted-foreground">
+      <section className="container mx-auto px-4 py-10">
+        <h2 className="text-xl font-bold text-center mb-8">平台特色</h2>
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="text-center p-4 rounded-lg border bg-card">
+            <div className="text-3xl mb-3">✨</div>
+            <h3 className="text-lg font-semibold mb-1">智能创作</h3>
+            <p className="text-sm text-muted-foreground">
               AI辅助创作，激发无限灵感
             </p>
           </div>
-          <div className="text-center p-6 rounded-lg border bg-card">
-            <div className="text-4xl mb-4">👥</div>
-            <h3 className="text-xl font-semibold mb-2">社区评审</h3>
-            <p className="text-muted-foreground">
+          <div className="text-center p-4 rounded-lg border bg-card">
+            <div className="text-3xl mb-3">👥</div>
+            <h3 className="text-lg font-semibold mb-1">社区评审</h3>
+            <p className="text-sm text-muted-foreground">
               分布式评审，持续改进作品
             </p>
           </div>
-          <div className="text-center p-6 rounded-lg border bg-card">
-            <div className="text-4xl mb-4">⚡</div>
-            <h3 className="text-xl font-semibold mb-2">持续进化</h3>
-            <p className="text-muted-foreground">
+          <div className="text-center p-4 rounded-lg border bg-card">
+            <div className="text-3xl mb-3">⚡</div>
+            <h3 className="text-lg font-semibold mb-1">持续进化</h3>
+            <p className="text-sm text-muted-foreground">
               NEF引擎驱动，作品不断进化
             </p>
           </div>
