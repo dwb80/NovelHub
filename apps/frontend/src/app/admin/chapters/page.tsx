@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAdminAuth } from '../components/AdminAuthProvider';
 import Pagination from '../components/Pagination';
 import { 
   FileText, 
@@ -36,6 +37,7 @@ const CHAPTER_STATUS = [
 ];
 
 export default function AdminChaptersPage() {
+  const { token } = useAdminAuth();
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +62,12 @@ export default function AdminChaptersPage() {
       if (selectedStatus) params.append('status', selectedStatus);
       if (selectedNovel) params.append('novelId', selectedNovel);
 
-      const response = await fetch(`/api/v1/admin/chapters?${params}`);
+      const response = await fetch(`/api/v1/admin/chapters?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setChapters(data.items || []);
@@ -78,12 +85,15 @@ export default function AdminChaptersPage() {
     try {
       const response = await fetch(`/api/v1/admin/chapters/${chapterId}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ status: newStatus }),
       });
-      
+
       if (response.ok) {
-        setChapters(prev => prev.map(c => 
+        setChapters(prev => prev.map(c =>
           c.id === chapterId ? { ...c, status: newStatus as Chapter['status'] } : c
         ));
       }
@@ -98,8 +108,11 @@ export default function AdminChaptersPage() {
     try {
       const response = await fetch(`/api/v1/admin/chapters/${chapterId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-      
+
       if (response.ok) {
         setChapters(prev => prev.filter(c => c.id !== chapterId));
       }
