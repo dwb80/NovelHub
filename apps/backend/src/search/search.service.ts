@@ -84,7 +84,7 @@ export class SearchService {
       title: n.title,
       subtitle: n.subtitle,
       description: n.description,
-      coverImage: n.coverImage || undefined,
+      cover: n.cover || undefined,
       status: n.status,
       category: n.category,
       tags: n.tags,

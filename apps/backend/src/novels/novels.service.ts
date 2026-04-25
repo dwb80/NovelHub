@@ -7,7 +7,7 @@ import { NovelStatus, Prisma } from '@prisma/client';
 
 @Injectable()
 export class NovelsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(authorId: string, dto: CreateNovelDto): Promise<NovelResponseDto> {
     const novel = await this.prisma.novel.create({
@@ -248,7 +248,7 @@ export class NovelsService {
       title: novel.title,
       subtitle: novel.subtitle,
       description: novel.description,
-      coverImage: novel.coverImage,
+      cover: novel.cover,
       status: novel.status,
       category: novel.category,
       tags: novel.tags,

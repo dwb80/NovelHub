@@ -15,7 +15,7 @@ export class NovelResponseDto {
   description?: string;
 
   @ApiProperty({ required: false })
-  coverImage?: string;
+  cover?: string;
 
   @ApiProperty({ enum: NovelStatus })
   status: NovelStatus;
