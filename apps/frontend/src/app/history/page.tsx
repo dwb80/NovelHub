@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 import { BookshelfService } from '@/lib/api/services';
 import { BookshelfItem } from '@/types';
 
@@ -43,27 +44,7 @@ export default function ReadingHistoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">
-              小说
-            </Link>
-            <Link href="/bookshelf" className="text-muted-foreground hover:text-foreground">
-              书架
-            </Link>
-            <Link href="/history" className="text-foreground font-medium">
-              阅读历史
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
@@ -127,6 +108,6 @@ export default function ReadingHistoryPage() {
           </div>
         )}
       </main>
-    </div>
+    </MainLayout>
   );
 }

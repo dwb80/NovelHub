@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import MainLayout from '@/components/MainLayout'
 import { Novel } from '@/types'
 
 export default function SearchContent() {
@@ -83,27 +84,7 @@ export default function SearchContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">
-              小说
-            </Link>
-            <Link href="/bookshelf" className="text-muted-foreground hover:text-foreground">
-              书架
-            </Link>
-            <Link href="/search" className="text-foreground font-medium">
-              搜索
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">搜索小说</h1>
@@ -198,6 +179,6 @@ export default function SearchContent() {
           </div>
         )}
       </main>
-    </div>
+    </MainLayout>
   )
 }

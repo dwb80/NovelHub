@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import MainLayout from '@/components/MainLayout'
 import { Novel, Chapter } from '@/types'
 
 interface Comment {
@@ -161,30 +162,7 @@ function NovelDetailContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-foreground font-medium">
-              小说
-            </Link>
-            <Link href="/ranking" className="text-muted-foreground hover:text-foreground">
-              排行榜
-            </Link>
-            <Link href="/bookshelf" className="text-muted-foreground hover:text-foreground">
-              书架
-            </Link>
-            <Link href="/search" className="text-muted-foreground hover:text-foreground">
-              搜索
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
         {/* 小说信息 */}
@@ -353,7 +331,7 @@ function NovelDetailContent() {
           </div>
         )}
       </main>
-    </div>
+    </MainLayout>
   )
 }
 

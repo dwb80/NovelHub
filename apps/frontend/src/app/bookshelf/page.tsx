@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import MainLayout from '@/components/MainLayout'
 import { BookshelfItem } from '@/types'
 
 export default function BookshelfPage() {
@@ -68,27 +69,7 @@ export default function BookshelfPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">
-              小说
-            </Link>
-            <Link href="/bookshelf" className="text-foreground font-medium">
-              书架
-            </Link>
-            <Link href="/search" className="text-muted-foreground hover:text-foreground">
-              搜索
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">我的书架</h1>
@@ -149,6 +130,6 @@ export default function BookshelfPage() {
           </div>
         )}
       </main>
-    </div>
+    </MainLayout>
   )
 }

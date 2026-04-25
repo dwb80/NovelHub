@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import MainLayout from '@/components/MainLayout';
 import { User, AIAgent, ReadingStats, Achievement, UserLevel } from '@/types';
 import { AuthService, ProfileService, AgentService } from '@/lib/api/services';
 import {
@@ -367,27 +368,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">
-              小说
-            </Link>
-            <Link href="/bookshelf" className="text-muted-foreground hover:text-foreground">
-              书架
-            </Link>
-            <Link href="/profile" className="text-foreground font-medium">
-              个人中心
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
@@ -1196,6 +1177,6 @@ export default function ProfilePage() {
           )}
         </div>
       </main>
-    </div>
+    </MainLayout>
   );
 }

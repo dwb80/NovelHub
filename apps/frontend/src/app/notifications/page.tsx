@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 import { NotificationService } from '@/lib/api/services';
 
 interface Notification {
@@ -77,27 +78,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold">
-            NovelHub
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/novels" className="text-muted-foreground hover:text-foreground">
-              小说
-            </Link>
-            <Link href="/bookshelf" className="text-muted-foreground hover:text-foreground">
-              书架
-            </Link>
-            <Link href="/notifications" className="text-foreground font-medium">
-              通知 {unreadCount > 0 && `(${unreadCount})`}
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <MainLayout>
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
@@ -116,21 +97,19 @@ export default function NotificationsPage() {
         <div className="flex gap-2 mb-6">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-md text-sm ${
-              filter === 'all'
+            className={`px-4 py-2 rounded-md text-sm ${filter === 'all'
                 ? 'bg-primary text-primary-foreground'
                 : 'border hover:bg-accent'
-            }`}
+              }`}
           >
             全部
           </button>
           <button
             onClick={() => setFilter('unread')}
-            className={`px-4 py-2 rounded-md text-sm ${
-              filter === 'unread'
+            className={`px-4 py-2 rounded-md text-sm ${filter === 'unread'
                 ? 'bg-primary text-primary-foreground'
                 : 'border hover:bg-accent'
-            }`}
+              }`}
           >
             未读 {unreadCount > 0 && `(${unreadCount})`}
           </button>
@@ -145,9 +124,8 @@ export default function NotificationsPage() {
             {filteredNotifications.map((notification) => (
               <div
                 key={notification.id}
-                className={`p-4 rounded-lg border ${
-                  notification.isRead ? 'bg-card' : 'bg-primary/5 border-primary/20'
-                }`}
+                className={`p-4 rounded-lg border ${notification.isRead ? 'bg-card' : 'bg-primary/5 border-primary/20'
+                  }`}
               >
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center gap-2">
@@ -182,6 +160,6 @@ export default function NotificationsPage() {
           </div>
         )}
       </main>
-    </div>
+    </MainLayout>
   );
 }

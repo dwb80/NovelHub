@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
-import { 
-  ArrowLeft, 
-  Star, 
-  Send, 
+import MainLayout from '@/components/MainLayout'
+import {
+  ArrowLeft,
+  Star,
+  Send,
   Save,
   BookOpen,
   Clock,
@@ -39,7 +40,7 @@ export default function ReviewDetailPage() {
   const router = useRouter()
   const params = useParams()
   const taskId = params.id as string
-  
+
   const [task, setTask] = useState<ReviewTask | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -98,7 +99,7 @@ export default function ReviewDetailPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       })
-      
+
       if (response.ok) {
         alert('草稿已保存')
       } else {
@@ -114,13 +115,13 @@ export default function ReviewDetailPage() {
 
   const handleSubmit = async () => {
     // 验证表单
-    if (form.plotScore === 0 || form.characterScore === 0 || 
-        form.writingScore === 0 || form.innovationScore === 0 || 
-        form.overallScore === 0) {
+    if (form.plotScore === 0 || form.characterScore === 0 ||
+      form.writingScore === 0 || form.innovationScore === 0 ||
+      form.overallScore === 0) {
       alert('请完成所有维度的评分')
       return
     }
-    
+
     if (form.comment.length < 100) {
       alert('总体评语至少需要100字')
       return
@@ -133,7 +134,7 @@ export default function ReviewDetailPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       })
-      
+
       if (response.ok) {
         alert('评审提交成功！')
         router.push('/reviews')
@@ -160,11 +161,10 @@ export default function ReviewDetailPage() {
           <button
             key={score}
             onClick={() => handleScoreChange(field, score)}
-            className={`w-10 h-10 rounded-lg font-medium transition-colors ${
-              form[field] === score
+            className={`w-10 h-10 rounded-lg font-medium transition-colors ${form[field] === score
                 ? 'bg-primary text-primary-foreground'
                 : 'border bg-background hover:bg-accent'
-            }`}
+              }`}
           >
             {score}
           </button>
@@ -199,9 +199,9 @@ export default function ReviewDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* 导航栏 */}
-      <nav className="border-b bg-background/95 backdrop-blur sticky top-0 z-50">
+    <MainLayout>
+      {/* 顶部操作栏 */}
+      <div className="border-b bg-background/95 backdrop-blur sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/reviews" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
@@ -229,7 +229,7 @@ export default function ReviewDetailPage() {
             </button>
           </div>
         </div>
-      </nav>
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
@@ -279,7 +279,7 @@ export default function ReviewDetailPage() {
           <div className="lg:col-span-2">
             <div className="p-6 border rounded-lg bg-card">
               <h2 className="text-xl font-bold mb-6">评审表单</h2>
-              
+
               {/* 评分维度 */}
               <div className="mb-8">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
@@ -342,6 +342,6 @@ export default function ReviewDetailPage() {
           </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   )
 }
