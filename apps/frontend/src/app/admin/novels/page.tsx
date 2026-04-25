@@ -13,7 +13,8 @@ import {
   Trash2,
   BookOpen,
   MessageSquare,
-  Heart
+  Heart,
+  RotateCcw
 } from 'lucide-react';
 
 // 小说状态定义 - 与文档一致
@@ -101,6 +102,12 @@ export default function AdminNovelsPage() {
     fetchNovels();
   };
 
+  const handleReset = () => {
+    setSearchQuery('');
+    setSelectedStatus('');
+    setCurrentPage(1);
+  };
+
   const handleStatusChange = async (novelId: string, newStatus: string) => {
     try {
       const response = await fetch(`/api/v1/admin/novels/${novelId}/status`, {
@@ -171,24 +178,18 @@ export default function AdminNovelsPage() {
             className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background"
           />
         </div>
-        <select
-          value={selectedStatus}
-          onChange={(e) => {
-            setSelectedStatus(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="px-4 py-2 border rounded-lg bg-background"
-        >
-          <option value="">所有状态</option>
-          {NOVEL_STATUS.map(status => (
-            <option key={status.value} value={status.value}>{status.label}</option>
-          ))}
-        </select>
         <button
           onClick={handleSearch}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
         >
           搜索
+        </button>
+        <button
+          onClick={handleReset}
+          className="px-4 py-2 border rounded-lg bg-background hover:bg-accent flex items-center gap-2"
+        >
+          <RotateCcw className="w-4 h-4" />
+          重置
         </button>
       </div>
 
@@ -264,15 +265,9 @@ export default function AdminNovelsPage() {
                   <td className="px-4 py-3 text-sm">{novel.authorName}</td>
                   <td className="px-4 py-3 text-sm">{novel.category}</td>
                   <td className="px-4 py-3">
-                    <select
-                      value={novel.status}
-                      onChange={(e) => handleStatusChange(novel.id, e.target.value)}
-                      className={`px-2 py-1 text-xs rounded border-0 cursor-pointer ${getStatusLabel(novel.status).color}`}
-                    >
-                      {NOVEL_STATUS.map(status => (
-                        <option key={status.value} value={status.value}>{status.label}</option>
-                      ))}
-                    </select>
+                    <span className={`px-2 py-1 text-xs rounded ${getStatusLabel(novel.status).color}`}>
+                      {getStatusLabel(novel.status).label}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-muted-foreground">
                     {new Date(novel.createdAt).toLocaleDateString('zh-CN')}
