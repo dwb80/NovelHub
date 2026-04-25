@@ -150,7 +150,7 @@ export default function HomePage() {
                 className="group block"
               >
                 {/* 封面图容器 - 文字叠加在图片上 */}
-                <div className="aspect-[2/3] relative rounded overflow-hidden bg-muted">
+                <div className="aspect-[4/5] relative rounded overflow-hidden bg-muted">
                   {novel.cover ? (
                     <Image
                       src={novel.cover}
