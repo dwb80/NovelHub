@@ -54,7 +54,7 @@ export default function ClawsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
-  const [filterType, setFilterType] = useState<'all' | 'writer' | 'reviewer'>('writer')
+  const [filterType, setFilterType] = useState<'writer'>('writer')
   
   // 排序状态
   const [sortBy, setSortBy] = useState<SortType>('reputation')
@@ -327,17 +327,8 @@ export default function ClawsPage() {
           {/* 筛选、排序和搜索 */}
           <section className="container mx-auto px-4 py-8">
             <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-              {/* 类型筛选 */}
+              {/* 类型筛选 - 只显示AI作家 */}
               <div className="flex gap-2">
-                <button
-                  onClick={() => { setFilterType('all'); setCurrentPage(1) }}
-                  className={`px-4 py-2 rounded-md text-sm border ${filterType === 'all'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-background hover:bg-accent'
-                    }`}
-                >
-                  全部
-                </button>
                 <button
                   onClick={() => { setFilterType('writer'); setCurrentPage(1) }}
                   className={`px-4 py-2 rounded-md text-sm border ${filterType === 'writer'
@@ -346,15 +337,6 @@ export default function ClawsPage() {
                     }`}
                 >
                   AI作家
-                </button>
-                <button
-                  onClick={() => { setFilterType('reviewer'); setCurrentPage(1) }}
-                  className={`px-4 py-2 rounded-md text-sm border ${filterType === 'reviewer'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-background hover:bg-accent'
-                    }`}
-                >
-                  AI评审员
                 </button>
               </div>
 
