@@ -6,7 +6,8 @@ import { useSearchParams } from 'next/navigation'
 import MainLayout from '@/components/MainLayout'
 import { Novel } from '@/types'
 import CategoryNav from '@/components/CategoryNav'
-import { ChevronLeft, ChevronRight, Star, TrendingUp, Clock, ThumbsUp, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Star, TrendingUp, Clock, ThumbsUp, X, Eye, BookOpen } from 'lucide-react'
+import Image from 'next/image'
 
 type SortType = 'hot' | 'new' | 'rating'
 type TargetAudienceType = 'all' | 'male' | 'female'
@@ -42,7 +43,7 @@ function NovelsContentInner({ category }: { category: string | null }) {
   const [totalPages, setTotalPages] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
   const [sortBy, setSortBy] = useState<SortType>('hot')
-  
+
   const [targetAudience, setTargetAudience] = useState<TargetAudienceType>('all')
   const [serialStatus, setSerialStatus] = useState<SerialStatusType>('all')
   const [wordCountRange, setWordCountRange] = useState<WordCountRangeType>('all')
@@ -143,6 +144,13 @@ function NovelsContentInner({ category }: { category: string | null }) {
     return count.toString()
   }
 
+  const formatWordCount = (count: number): string => {
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + '万字'
+    }
+    return count.toString() + '字'
+  }
+
   return (
     <>
       <CategoryNav />
@@ -227,11 +235,10 @@ function NovelsContentInner({ category }: { category: string | null }) {
               <button
                 key={sort}
                 onClick={() => handleSortChange(sort)}
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  sortBy === sort
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-accent'
-                }`}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${sortBy === sort
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground hover:bg-accent'
+                  }`}
               >
                 {getSortIcon(sort)}
                 {getSortLabel(sort)}
@@ -257,50 +264,74 @@ function NovelsContentInner({ category }: { category: string | null }) {
         ) : (
           <>
             {/* 小说网格 */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mb-10">
               {novels.map((novel) => (
                 <Link
                   key={novel.id}
                   href={`/novels/${novel.id}`}
                   className="group block"
                 >
-                  <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden mb-3 relative">
+                  {/* 封面图容器 - 文字叠加在图片上 */}
+                  <div className="aspect-[4/5] relative rounded overflow-hidden bg-muted">
                     {novel.cover ? (
-                      <img
+                      <Image
                         src={novel.cover}
                         alt={novel.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                        暂无封面
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                        <span className="text-3xl">📖</span>
                       </div>
                     )}
+
+                    {/* 评分标签 - 右上角 */}
                     {novel.rating > 0 && (
-                      <div className="absolute top-2 right-2 flex items-center gap-0.5 bg-black/60 text-white px-2 py-0.5 rounded-full text-xs">
+                      <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 bg-black/60 text-white px-1.5 py-0 rounded-full text-xs backdrop-blur-sm">
                         <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                         {novel.rating.toFixed(1)}
                       </div>
                     )}
-                    <div className="absolute top-2 left-2 bg-primary/80 text-white px-2 py-0.5 rounded-full text-xs">
-                      {getSerialStatusLabel(novel.serialStatus)}
+
+                    {/* 状态标签 - 左上角 */}
+                    <div className="absolute top-1.5 left-1.5">
+                      <span className="px-1.5 py-0 text-xs rounded-full bg-primary/80 text-white backdrop-blur-sm">
+                        {getSerialStatusLabel(novel.serialStatus)}
+                      </span>
                     </div>
-                  </div>
-                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                    {novel.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-1">
-                    {novel.authorName}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                    <span>{novel.category}</span>
-                    <span>·</span>
-                    <span>{novel.wordCount.toLocaleString()} 字</span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                    <span>{formatViewCount(novel.viewCount)} 阅读</span>
-                    <span>·</span>
-                    <span>{new Date(novel.updatedAt).toLocaleDateString()}</span>
+
+                    {/* 底部渐变遮罩 + 文字信息 */}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-2 px-2">
+                      {/* 标题 */}
+                      <h3 className="font-semibold text-sm text-white truncate mb-0 drop-shadow-md">
+                        {novel.title}
+                      </h3>
+
+                      {/* 作者 */}
+                      <p className="text-xs text-white/80 truncate mb-1">
+                        {novel.authorName}
+                      </p>
+
+                      {/* 分类标签 */}
+                      <div className="flex flex-wrap gap-1 mb-1">
+                        <span className="px-1 py-0 text-xs rounded-full bg-white/20 text-white backdrop-blur-sm">
+                          {novel.category}
+                        </span>
+                      </div>
+
+                      {/* 统计信息 */}
+                      <div className="flex items-center gap-2 text-xs text-white/70">
+                        <span className="flex items-center gap-0.5">
+                          <Eye className="w-3 h-3" />
+                          {formatViewCount(novel.viewCount)}
+                        </span>
+                        <span className="flex items-center gap-0.5">
+                          <BookOpen className="w-3 h-3" />
+                          {formatWordCount(novel.wordCount)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -335,11 +366,10 @@ function NovelsContentInner({ category }: { category: string | null }) {
                       <button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
-                        className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
-                          currentPage === pageNum
-                            ? 'bg-primary text-primary-foreground'
-                            : 'border bg-background hover:bg-accent'
-                        }`}
+                        className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${currentPage === pageNum
+                          ? 'bg-primary text-primary-foreground'
+                          : 'border bg-background hover:bg-accent'
+                          }`}
                       >
                         {pageNum}
                       </button>
