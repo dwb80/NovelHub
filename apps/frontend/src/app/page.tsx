@@ -104,7 +104,7 @@ export default function HomePage() {
 
       {/* 精选小说轮播 */}
       {featuredNovels.length > 0 && (
-        <section className="container mx-auto px-4 py-6">
+        <section className="container mx-auto px-4 py-4">
           <HeroCarousel
             items={featuredNovels.map(n => ({
               id: n.id,
