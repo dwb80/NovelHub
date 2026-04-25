@@ -1,57 +1,33 @@
 @echo off
-chcp 65001 >nul
 echo ==========================================
-echo NovelHub 服务停止脚本
+echo NovelHub Service Stop Script
 echo ==========================================
 echo.
 
-:: 停止前端服务 (Next.js 默认端口 3000)
-echo [1/4] 正在停止前端服务 (端口 3000)...
+echo [1/3] Stopping frontend service (port 3000)...
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3000 ^| findstr LISTENING') do (
-    echo       找到进程 PID: %%a
+    echo     Found process PID: %%a
     taskkill /F /PID %%a 2>nul
-    if %errorlevel% equ 0 (
-        echo       前端服务已停止
-    ) else (
-        echo       前端服务未运行或无法停止
-    )
+    echo     Frontend service stopped
 )
 
-:: 停止后端服务 (NestJS 默认端口 3001)
-echo [2/4] 正在停止后端服务 (端口 3001)...
+echo [2/3] Stopping backend service (port 3001)...
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3001 ^| findstr LISTENING') do (
-    echo       找到进程 PID: %%a
+    echo     Found process PID: %%a
     taskkill /F /PID %%a 2>nul
-    if %errorlevel% equ 0 (
-        echo       后端服务已停止
-    ) else (
-        echo       后端服务未运行或无法停止
-    )
+    echo     Backend service stopped
 )
 
-:: 停止其他可能的开发服务器端口 (3002, 3003等)
-echo [3/4] 正在检查其他开发服务器端口...
-for %%p in (3002 3003 3004 3005) do (
-    for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%%p ^| findstr LISTENING') do (
-        echo       发现端口 %%p 的进程 PID: %%a
-        taskkill /F /PID %%a 2>nul
-        echo       端口 %%p 的服务已停止
-    )
-)
-
-:: 停止 Node.js 进程（以防有残留）
-echo [4/4] 正在清理残留的 Node.js 进程...
+echo [3/3] Cleaning up Node.js processes...
 taskkill /F /IM node.exe 2>nul
 if %errorlevel% equ 0 (
-    echo       Node.js 进程已清理
+    echo     Node.js processes cleaned
 ) else (
-    echo       没有残留的 Node.js 进程
+    echo     No Node.js processes found
 )
 
 echo.
 echo ==========================================
-echo 所有服务已停止
+echo All services stopped
 echo ==========================================
-echo.
-echo 按任意键退出...
-pause >nul
+pause

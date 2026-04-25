@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Search, MessageSquare } from 'lucide-react';
 
 interface Comment {
   id: string;
@@ -15,10 +16,21 @@ export default function AdminCommentsPage() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchComments();
   }, [filter]);
+
+  const filteredComments = comments.filter(comment => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      comment.content.toLowerCase().includes(query) ||
+      comment.username.toLowerCase().includes(query) ||
+      comment.novelTitle.toLowerCase().includes(query)
+    );
+  });
 
   const fetchComments = async () => {
     try {
@@ -54,12 +66,17 @@ export default function AdminCommentsPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-16">加载中...</div>;
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span className="ml-3 text-muted-foreground">加载中...</span>
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">评论管理</h1>
         <div className="flex gap-2">
           {(['all', 'pending', 'approved'] as const).map((f) => (
@@ -78,8 +95,52 @@ export default function AdminCommentsPage() {
         </div>
       </div>
 
+      {/* 搜索栏 */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="搜索评论内容、用户名或小说名..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background"
+        />
+      </div>
+
+      {/* 评论统计 */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <MessageSquare className="w-4 h-4" />
+            <span className="text-sm">全部评论</span>
+          </div>
+          <p className="text-2xl font-bold">{comments.length}</p>
+        </div>
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <span className="text-sm">待审核</span>
+          </div>
+          <p className="text-2xl font-bold text-yellow-600">
+            {comments.filter(c => c.status === 0).length}
+          </p>
+        </div>
+        <div className="bg-card rounded-lg border p-4">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <span className="text-sm">已通过</span>
+          </div>
+          <p className="text-2xl font-bold text-green-600">
+            {comments.filter(c => c.status !== 0).length}
+          </p>
+        </div>
+      </div>
+
       <div className="space-y-4">
-        {comments.map((comment) => (
+        {filteredComments.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            {searchQuery ? '没有找到匹配的评论' : '暂无评论数据'}
+          </div>
+        ) : (
+          filteredComments.map((comment) => (
           <div key={comment.id} className="bg-card rounded-lg border p-4">
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
