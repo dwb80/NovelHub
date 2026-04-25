@@ -4,30 +4,40 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import MainLayout from '@/components/MainLayout'
+import HeroCarousel from '@/components/HeroCarousel'
+import { Eye, BookOpen } from 'lucide-react'
 
 interface Novel {
   id: string
   title: string
   author: string
+  authorName?: string
   description: string
   cover?: string
   status: string
   totalChapters: number
   updatedAt: string
+  tags?: string[]
+  viewCount?: number
+  likeCount?: number
+  wordCount?: number
+  rating?: number
 }
 
 export default function HomePage() {
   const [novels, setNovels] = useState<Novel[]>([])
+  const [featuredNovels, setFeaturedNovels] = useState<Novel[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
     fetchNovels()
+    fetchFeaturedNovels()
   }, [])
 
   const fetchNovels = async () => {
     try {
-      const response = await fetch('/api/v1/novels?limit=12')
+      const response = await fetch('/api/v1/novels?limit=8&sort=hot')
       if (!response.ok) throw new Error('获取小说列表失败')
       const data = await response.json()
       setNovels(data.novels || [])
@@ -36,6 +46,31 @@ export default function HomePage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const fetchFeaturedNovels = async () => {
+    try {
+      const response = await fetch('/api/v1/novels?limit=5&sort=hot')
+      if (!response.ok) throw new Error('获取精选小说失败')
+      const data = await response.json()
+      setFeaturedNovels(data.novels || [])
+    } catch (err) {
+      console.error('获取精选小说失败:', err)
+    }
+  }
+
+  const formatViewCount = (count: number): string => {
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + '万'
+    }
+    return count.toString()
+  }
+
+  const formatWordCount = (count: number): string => {
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + '万字'
+    }
+    return count + '字'
   }
 
   return (
@@ -67,6 +102,23 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 精选小说轮播 */}
+      {featuredNovels.length > 0 && (
+        <section className="container mx-auto px-4 py-8">
+          <HeroCarousel
+            items={featuredNovels.map(n => ({
+              id: n.id,
+              title: n.title,
+              description: n.description,
+              cover: n.cover,
+              authorName: n.authorName || n.author
+            }))}
+            autoPlay={true}
+            interval={5000}
+          />
+        </section>
+      )}
+
       {/* 热门小说 */}
       <section className="container mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
@@ -90,7 +142,7 @@ export default function HomePage() {
             暂无小说数据
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
             {novels.map((novel) => (
               <Link
                 key={novel.id}
@@ -120,11 +172,38 @@ export default function HomePage() {
                   {novel.title}
                 </h3>
                 <p className="text-sm text-muted-foreground truncate">
-                  {novel.author}
+                  {novel.authorName || novel.author}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {novel.totalChapters} 章
-                </p>
+
+                {/* 标签 */}
+                {novel.tags && novel.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {novel.tags.slice(0, 2).map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-0.5 text-xs rounded-full bg-muted text-muted-foreground"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* 统计信息 */}
+                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                  {novel.viewCount !== undefined && (
+                    <span className="flex items-center gap-1">
+                      <Eye className="w-3 h-3" />
+                      {formatViewCount(novel.viewCount)}
+                    </span>
+                  )}
+                  {novel.wordCount !== undefined && (
+                    <span className="flex items-center gap-1">
+                      <BookOpen className="w-3 h-3" />
+                      {formatWordCount(novel.wordCount)}
+                    </span>
+                  )}
+                </div>
               </Link>
             ))}
           </div>
