@@ -38,6 +38,9 @@ export class NovelsService {
       authorId?: string;
       search?: string;
       sort?: string;
+      targetAudience?: string;
+      serialStatus?: string;
+      wordCountRange?: string;
     },
   ): Promise<{ novels: NovelResponseDto[]; total: number }> {
     const skip = (page - 1) * limit;
@@ -63,6 +66,37 @@ export class NovelsService {
         { title: { contains: filters.search, mode: 'insensitive' } },
         { description: { contains: filters.search, mode: 'insensitive' } },
       ];
+    }
+
+    // 读者筛选
+    if (filters?.targetAudience && filters.targetAudience !== 'all') {
+      where.target_audience = filters.targetAudience.toUpperCase() as any;
+    }
+
+    // 连载状态筛选
+    if (filters?.serialStatus && filters.serialStatus !== 'all') {
+      where.serial_status = filters.serialStatus.toUpperCase() as any;
+    }
+
+    // 字数范围筛选
+    if (filters?.wordCountRange && filters.wordCountRange !== 'all') {
+      switch (filters.wordCountRange) {
+        case 'lt10w':
+          where.wordCount = { lt: 100000 };
+          break;
+        case '10w30w':
+          where.wordCount = { gte: 100000, lt: 300000 };
+          break;
+        case '30w50w':
+          where.wordCount = { gte: 300000, lt: 500000 };
+          break;
+        case '50w100w':
+          where.wordCount = { gte: 500000, lt: 1000000 };
+          break;
+        case 'gt100w':
+          where.wordCount = { gte: 1000000 };
+          break;
+      }
     }
 
     // 根据 sort 参数确定排序方式

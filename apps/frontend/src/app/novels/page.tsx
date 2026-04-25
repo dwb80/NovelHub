@@ -6,9 +6,33 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import MainLayout from '@/components/MainLayout'
 import { Novel } from '@/types'
 import CategoryNav from '@/components/CategoryNav'
-import { ChevronLeft, ChevronRight, Star, TrendingUp, Clock, ThumbsUp } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Star, TrendingUp, Clock, ThumbsUp, X } from 'lucide-react'
 
 type SortType = 'hot' | 'new' | 'rating'
+type TargetAudienceType = 'all' | 'male' | 'female'
+type SerialStatusType = 'all' | 'ongoing' | 'completed'
+type WordCountRangeType = 'all' | 'lt10w' | '10w30w' | '30w50w' | '50w100w' | 'gt100w'
+
+const targetAudienceOptions = [
+  { value: 'all', label: '全部读者' },
+  { value: 'male', label: '男生' },
+  { value: 'female', label: '女生' },
+]
+
+const serialStatusOptions = [
+  { value: 'all', label: '全部状态' },
+  { value: 'ongoing', label: '连载中' },
+  { value: 'completed', label: '已完结' },
+]
+
+const wordCountRangeOptions = [
+  { value: 'all', label: '全部字数' },
+  { value: 'lt10w', label: '10万以下' },
+  { value: '10w30w', label: '10-30万' },
+  { value: '30w50w', label: '30-50万' },
+  { value: '50w100w', label: '50-100万' },
+  { value: 'gt100w', label: '100万以上' },
+]
 
 function NovelsContentInner({ category }: { category: string | null }) {
   const router = useRouter()
@@ -19,12 +43,17 @@ function NovelsContentInner({ category }: { category: string | null }) {
   const [totalPages, setTotalPages] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
   const [sortBy, setSortBy] = useState<SortType>('hot')
+  
+  // 筛选状态
+  const [targetAudience, setTargetAudience] = useState<TargetAudienceType>('all')
+  const [serialStatus, setSerialStatus] = useState<SerialStatusType>('all')
+  const [wordCountRange, setWordCountRange] = useState<WordCountRangeType>('all')
 
-  const itemsPerPage = 12
+  const itemsPerPage = 20
 
   useEffect(() => {
     fetchNovels()
-  }, [category, currentPage, sortBy])
+  }, [category, currentPage, sortBy, targetAudience, serialStatus, wordCountRange])
 
   const fetchNovels = async () => {
     try {
@@ -33,11 +62,10 @@ function NovelsContentInner({ category }: { category: string | null }) {
       if (category) params.append('category', category)
       params.append('page', currentPage.toString())
       params.append('limit', itemsPerPage.toString())
-      // TODO: 后端需要支持 sort 参数
-      // params.append('sort', sortBy)
-
-      // 添加 sort 参数
       if (sortBy) params.append('sort', sortBy)
+      if (targetAudience && targetAudience !== 'all') params.append('targetAudience', targetAudience)
+      if (serialStatus && serialStatus !== 'all') params.append('serialStatus', serialStatus)
+      if (wordCountRange && wordCountRange !== 'all') params.append('wordCountRange', wordCountRange)
 
       const url = `/api/v1/novels?${params.toString()}`
       const response = await fetch(url)
@@ -67,6 +95,33 @@ function NovelsContentInner({ category }: { category: string | null }) {
     setCurrentPage(1)
   }
 
+  const handleFilterChange = (
+    type: 'targetAudience' | 'serialStatus' | 'wordCountRange',
+    value: string
+  ) => {
+    setCurrentPage(1)
+    switch (type) {
+      case 'targetAudience':
+        setTargetAudience(value as TargetAudienceType)
+        break
+      case 'serialStatus':
+        setSerialStatus(value as SerialStatusType)
+        break
+      case 'wordCountRange':
+        setWordCountRange(value as WordCountRangeType)
+        break
+    }
+  }
+
+  const clearAllFilters = () => {
+    setTargetAudience('all')
+    setSerialStatus('all')
+    setWordCountRange('all')
+    setCurrentPage(1)
+  }
+
+  const hasActiveFilters = targetAudience !== 'all' || serialStatus !== 'all' || wordCountRange !== 'all'
+
   const getSortLabel = (sort: SortType) => {
     switch (sort) {
       case 'hot': return '最热'
@@ -85,6 +140,21 @@ function NovelsContentInner({ category }: { category: string | null }) {
     }
   }
 
+  const getSerialStatusLabel = (status: string) => {
+    switch (status) {
+      case 'ONGOING': return '连载中'
+      case 'COMPLETED': return '已完结'
+      default: return status
+    }
+  }
+
+  const formatViewCount = (count: number) => {
+    if (count >= 10000) {
+      return (count / 10000).toFixed(1) + '万'
+    }
+    return count.toString()
+  }
+
   return (
     <>
       {/* 分类导航 */}
@@ -92,33 +162,97 @@ function NovelsContentInner({ category }: { category: string | null }) {
 
       {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
+        {/* 筛选栏 */}
+        <div className="bg-card rounded-lg border p-4 mb-6">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* 读者筛选 */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">读者:</span>
+              <select
+                value={targetAudience}
+                onChange={(e) => handleFilterChange('targetAudience', e.target.value)}
+                className="px-3 py-1.5 text-sm rounded-md border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {targetAudienceOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 状态筛选 */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">状态:</span>
+              <select
+                value={serialStatus}
+                onChange={(e) => handleFilterChange('serialStatus', e.target.value)}
+                className="px-3 py-1.5 text-sm rounded-md border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {serialStatusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 字数筛选 */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">字数:</span>
+              <select
+                value={wordCountRange}
+                onChange={(e) => handleFilterChange('wordCountRange', e.target.value)}
+                className="px-3 py-1.5 text-sm rounded-md border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {wordCountRangeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+                        
+                        
+                        
+            {/* 清除全部 */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="flex items-center gap-1 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+                清除全部
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* 标题和排序 */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <h1 className="text-3xl font-bold">
-            {category ? '分类浏览' : '全部小说'}
-          </h1>
+          <div>
+            <h1 className="text-3xl font-bold">
+              {category ? '分类浏览' : '全部小说'}
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              共 {totalCount} 本小说
+            </p>
+          </div>
 
           {/* 排序选项 */}
-          <div className="flex items-center gap-4">
-            <span className="text-muted-foreground text-sm">
-              共 {totalCount} 本小说
-            </span>
-            <div className="flex gap-2">
-              {(['hot', 'new', 'rating'] as SortType[]).map((sort) => (
-                <button
-                  key={sort}
-                  onClick={() => handleSortChange(sort)}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    sortBy === sort
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-muted-foreground hover:bg-accent'
-                  }`}
-                >
-                  {getSortIcon(sort)}
-                  {getSortLabel(sort)}
-                </button>
-              ))}
-            </div>
+          <div className="flex gap-2">
+            {(['hot', 'new', 'rating'] as SortType[]).map((sort) => (
+              <button
+                key={sort}
+                onClick={() => handleSortChange(sort)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  sortBy === sort
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-accent'
+                }`}
+              >
+                {getSortIcon(sort)}
+                {getSortLabel(sort)}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -165,6 +299,10 @@ function NovelsContentInner({ category }: { category: string | null }) {
                         {novel.rating.toFixed(1)}
                       </div>
                     )}
+                    {/* 状态标签 */}
+                    <div className="absolute top-2 left-2 bg-primary/80 text-white px-2 py-0.5 rounded-full text-xs">
+                      {getSerialStatusLabel(novel.serialStatus)}
+                    </div>
                   </div>
                   <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                     {novel.title}
@@ -176,6 +314,12 @@ function NovelsContentInner({ category }: { category: string | null }) {
                     <span>{novel.category}</span>
                     <span>·</span>
                     <span>{novel.wordCount.toLocaleString()} 字</span>
+                  </div>
+                  {/* 阅读量和更新时间 */}
+                  <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                    <span>{formatViewCount(novel.viewCount)} 阅读</span>
+                    <span>·</span>
+                    <span>{new Date(novel.updatedAt).toLocaleDateString()}</span>
                   </div>
                 </Link>
               ))}
@@ -256,9 +400,11 @@ export default function NovelsPage() {
   return (
     <MainLayout>
       <Suspense fallback={
-        <div className="text-center py-16">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="mt-4 text-muted-foreground">加载中...</p>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-16">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <p className="mt-4 text-muted-foreground">加载中...</p>
+          </div>
         </div>
       }>
         <NovelsContent />

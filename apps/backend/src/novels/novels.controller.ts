@@ -44,6 +44,9 @@ export class NovelsController {
   @ApiQuery({ name: 'category', required: false, type: String })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({ name: 'sort', required: false, type: String, description: '排序方式: hot-最热, new-最新, rating-评分' })
+  @ApiQuery({ name: 'targetAudience', required: false, type: String, description: '读者筛选: all-全部, male-男生, female-女生' })
+  @ApiQuery({ name: 'serialStatus', required: false, type: String, description: '状态筛选: all-全部, ongoing-连载中, completed-已完结' })
+  @ApiQuery({ name: 'wordCountRange', required: false, type: String, description: '字数范围: all-全部, lt10w-10万以下, 10w30w-10-30万, 30w50w-30-50万, 50w100w-50-100万, gt100w-100万以上' })
   @ApiResponse({ status: 200, description: '小说列表' })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
@@ -51,8 +54,11 @@ export class NovelsController {
     @Query('category') category?: string,
     @Query('search') search?: string,
     @Query('sort') sort?: string,
+    @Query('targetAudience') targetAudience?: string,
+    @Query('serialStatus') serialStatus?: string,
+    @Query('wordCountRange') wordCountRange?: string,
   ): Promise<{ novels: NovelResponseDto[]; total: number }> {
-    return this.novelsService.findAll(page, limit, { category, search, sort });
+    return this.novelsService.findAll(page, limit, { category, search, sort, targetAudience, serialStatus, wordCountRange });
   }
 
   @Get('my-novels')
