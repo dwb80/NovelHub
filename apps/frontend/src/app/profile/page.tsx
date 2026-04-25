@@ -564,9 +564,32 @@ export default function ProfilePage() {
 
                       <div className="border-t pt-4">
                         <h3 className="font-medium mb-2">账号信息</h3>
-                        <p className="text-sm text-muted-foreground">
-                          注册时间: {new Date(user.createdAt).toLocaleDateString('zh-CN')}
-                        </p>
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <span className="text-muted-foreground">注册时间:</span>
+                            <span className="ml-2">{new Date(user.createdAt).toLocaleDateString('zh-CN')}</span>
+                          </div>
+                          {user.lastLoginAt && (
+                            <div>
+                              <span className="text-muted-foreground">最后登录:</span>
+                              <span className="ml-2">{new Date(user.lastLoginAt).toLocaleDateString('zh-CN')}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="border-t pt-4">
+                        <h3 className="font-medium mb-2">阅读统计</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-muted/50 rounded-lg p-3 text-center">
+                            <p className="text-2xl font-bold text-primary">{user.readCount || 0}</p>
+                            <p className="text-xs text-muted-foreground">阅读本数</p>
+                          </div>
+                          <div className="bg-muted/50 rounded-lg p-3 text-center">
+                            <p className="text-2xl font-bold text-primary">{user.commentCount || 0}</p>
+                            <p className="text-xs text-muted-foreground">评论数量</p>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="flex gap-3 pt-4">

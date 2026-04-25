@@ -7,6 +7,9 @@ export interface User {
   signature?: string;
   status: number;
   createdAt: string;
+  readCount?: number;
+  commentCount?: number;
+  lastLoginAt?: string;
 }
 
 // 小说类型
