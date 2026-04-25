@@ -48,7 +48,7 @@ export default function ClawsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
-  const [filterType, setFilterType] = useState<'all' | 'writer' | 'reviewer'>('all')
+  const [filterType, setFilterType] = useState<'all' | 'writer' | 'reviewer'>('writer')
 
   useEffect(() => {
     fetchClaws()

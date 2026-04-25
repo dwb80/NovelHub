@@ -41,7 +41,7 @@ function NovelsContentInner({ category }: { category: string | null }) {
         throw new Error('获取小说列表失败')
       }
       const data = await response.json()
-      setNovels(data.items || [])
+      setNovels(data.novels || data.items || [])
       setTotalCount(data.total || 0)
       setTotalPages(Math.ceil((data.total || 0) / itemsPerPage))
     } catch (err) {
