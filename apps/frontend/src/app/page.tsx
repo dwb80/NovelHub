@@ -165,31 +165,31 @@ export default function HomePage() {
                   )}
 
                   {/* 状态标签 - 右上角 */}
-                  <div className="absolute top-2 right-2">
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-black/60 text-white backdrop-blur-sm">
+                  <div className="absolute top-1.5 right-1.5">
+                    <span className="px-1.5 py-0 text-xs rounded-full bg-black/60 text-white backdrop-blur-sm">
                       {novel.status === 'ONGOING' ? '连载中' : '已完结'}
                     </span>
                   </div>
 
                   {/* 底部渐变遮罩 + 文字信息 */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-16 pb-3 px-3">
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-2 px-2">
                     {/* 标题 */}
-                    <h3 className="font-semibold text-sm text-white truncate mb-0.5 drop-shadow-md">
+                    <h3 className="font-semibold text-sm text-white truncate mb-0 drop-shadow-md">
                       {novel.title}
                     </h3>
 
                     {/* 作者 */}
-                    <p className="text-xs text-white/80 truncate mb-1.5">
+                    <p className="text-xs text-white/80 truncate mb-1">
                       {novel.authorName || novel.author}
                     </p>
 
                     {/* 标签 */}
                     {novel.tags && novel.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-1.5">
+                      <div className="flex flex-wrap gap-1 mb-1">
                         {novel.tags.slice(0, 2).map((tag, idx) => (
                           <span
                             key={idx}
-                            className="px-1.5 py-0 text-xs rounded-full bg-white/20 text-white backdrop-blur-sm"
+                            className="px-1 py-0 text-xs rounded-full bg-white/20 text-white backdrop-blur-sm"
                           >
                             {tag}
                           </span>
@@ -198,21 +198,21 @@ export default function HomePage() {
                     )}
 
                     {/* 统计信息 */}
-                    <div className="flex items-center gap-3 text-xs text-white/70">
+                    <div className="flex items-center gap-2 text-xs text-white/70">
                       {novel.viewCount !== undefined && (
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-0.5">
                           <Eye className="w-3 h-3" />
                           {formatViewCount(novel.viewCount)}
                         </span>
                       )}
                       {novel.likeCount !== undefined && (
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-0.5">
                           <ThumbsUp className="w-3 h-3" />
                           {formatViewCount(novel.likeCount)}
                         </span>
                       )}
                       {novel.wordCount !== undefined && (
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-0.5">
                           <BookOpen className="w-3 h-3" />
                           {formatWordCount(novel.wordCount)}
                         </span>
@@ -228,26 +228,26 @@ export default function HomePage() {
 
       {/* 功能特色 */}
       <section className="container mx-auto px-4 py-10">
-        <h2 className="text-xl font-bold text-center mb-8">平台特色</h2>
+        <h2 className="text-xl font-bold text-center mb-6">平台特色</h2>
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="text-center p-4 rounded-lg border bg-card">
-            <div className="text-3xl mb-3">✨</div>
-            <h3 className="text-lg font-semibold mb-1">智能创作</h3>
-            <p className="text-sm text-muted-foreground">
+          <div className="text-center p-3 rounded-lg border bg-card">
+            <div className="text-2xl mb-2">✨</div>
+            <h3 className="text-base font-semibold mb-0.5">智能创作</h3>
+            <p className="text-xs text-muted-foreground">
               AI辅助创作，激发无限灵感
             </p>
           </div>
-          <div className="text-center p-4 rounded-lg border bg-card">
-            <div className="text-3xl mb-3">👥</div>
-            <h3 className="text-lg font-semibold mb-1">社区评审</h3>
-            <p className="text-sm text-muted-foreground">
+          <div className="text-center p-3 rounded-lg border bg-card">
+            <div className="text-2xl mb-2">👥</div>
+            <h3 className="text-base font-semibold mb-0.5">社区评审</h3>
+            <p className="text-xs text-muted-foreground">
               分布式评审，持续改进作品
             </p>
           </div>
-          <div className="text-center p-4 rounded-lg border bg-card">
-            <div className="text-3xl mb-3">⚡</div>
-            <h3 className="text-lg font-semibold mb-1">持续进化</h3>
-            <p className="text-sm text-muted-foreground">
+          <div className="text-center p-3 rounded-lg border bg-card">
+            <div className="text-2xl mb-2">⚡</div>
+            <h3 className="text-base font-semibold mb-0.5">持续进化</h3>
+            <p className="text-xs text-muted-foreground">
               NEF引擎驱动，作品不断进化
             </p>
           </div>
