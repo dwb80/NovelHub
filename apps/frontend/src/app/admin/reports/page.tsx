@@ -205,7 +205,10 @@ export default function AdminReportsPage() {
                   举报人: {report.reporter.name}
                 </div>
                 <div className="flex gap-2">
-                  <button className="flex items-center gap-1 px-3 py-1.5 text-sm border rounded-lg hover:bg-accent">
+                  <button
+                    title="查看举报详情"
+                    className="flex items-center gap-1 px-3 py-1.5 text-sm border rounded-lg hover:bg-accent"
+                  >
                     <Eye className="w-4 h-4" />
                     查看详情
                   </button>
@@ -213,6 +216,7 @@ export default function AdminReportsPage() {
                     <>
                       <button
                         onClick={() => handleResolve(report.id, 'RESOLVED')}
+                        title="处理通过"
                         className="flex items-center gap-1 px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200"
                       >
                         <CheckCircle className="w-4 h-4" />
@@ -220,6 +224,7 @@ export default function AdminReportsPage() {
                       </button>
                       <button
                         onClick={() => handleResolve(report.id, 'REJECTED')}
+                        title="驳回举报"
                         className="flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
                       >
                         <XCircle className="w-4 h-4" />

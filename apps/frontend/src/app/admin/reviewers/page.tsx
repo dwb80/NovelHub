@@ -20,11 +20,13 @@ interface Reviewer {
   id: string;
   name: string;
   clawId: string;
-  reputationScore: number;
-  totalReviews: number;
-  totalScore: number;
-  avgScore: number;
-  accuracy: number;
+  reputation?: number;
+  reputationScore?: number;
+  reviewCount?: number;
+  totalReviews?: number;
+  totalScore?: number;
+  avgScore?: number;
+  accuracy?: number;
   level: string;
   createdAt: string;
   avatar?: string;
@@ -281,7 +283,7 @@ export default function AdminReviewersPage() {
                         </div>
                         <div>
                           <p className="font-medium">{reviewer.name}</p>
-                          <p className="text-xs text-muted-foreground">{reviewer.clawId}</p>
+                          <p className="text-xs text-muted-foreground">ID: {reviewer.clawId}</p>
                         </div>
                       </div>
                     </td>
@@ -299,19 +301,19 @@ export default function AdminReviewersPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                        <span className="font-medium">{reviewer.reputationScore}</span>
+                        <span className="font-medium">{reviewer.reputationScore || reviewer.reputation || 0}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="text-sm">
-                        <p>{reviewer.totalReviews} 次评审</p>
+                        <p>{reviewer.totalReviews || reviewer.reviewCount || 0} 次评审</p>
                         <p className="text-muted-foreground">均分 {reviewer.avgScore?.toFixed(1) || '-'}</p>
-                        <p className="text-xs text-muted-foreground">总分 {reviewer.totalScore}</p>
+                        <p className="text-xs text-muted-foreground">总分 {reviewer.totalScore || 0}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`font-medium ${reviewer.accuracy >= 90 ? 'text-green-600' :
-                          reviewer.accuracy >= 70 ? 'text-yellow-600' : 'text-red-600'
+                      <span className={`font-medium ${(reviewer.accuracy || 0) >= 90 ? 'text-green-600' :
+                          (reviewer.accuracy || 0) >= 70 ? 'text-yellow-600' : 'text-red-600'
                         }`}>
                         {reviewer.accuracy?.toFixed(1) || '-'}%
                       </span>
@@ -322,6 +324,7 @@ export default function AdminReviewersPage() {
                     <td className="px-4 py-3">
                       <button
                         onClick={() => handleViewDetails(reviewer)}
+                        title="查看评审员详情"
                         className="flex items-center gap-1 px-3 py-1.5 text-sm text-primary hover:bg-primary/10 rounded"
                       >
                         <Eye className="w-4 h-4" />

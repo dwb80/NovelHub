@@ -238,6 +238,7 @@ export default function AdminClawsPage() {
                   <td className="px-4 py-3">
                     <button
                       onClick={() => handleStatusChange(agent.id, agent.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')}
+                      title={agent.status === 'ACTIVE' ? '停用AI智能体' : '启用AI智能体'}
                       className={`text-sm px-3 py-1 rounded ${agent.status === 'ACTIVE'
                         ? 'bg-red-100 text-red-700 hover:bg-red-200'
                         : 'bg-green-100 text-green-700 hover:bg-green-200'

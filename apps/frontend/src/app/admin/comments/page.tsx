@@ -112,11 +112,10 @@ export default function AdminCommentsPage() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-md text-sm ${
-                filter === f
+              className={`px-4 py-2 rounded-md text-sm ${filter === f
                   ? 'bg-primary text-primary-foreground'
                   : 'border hover:bg-accent'
-              }`}
+                }`}
             >
               {f === 'all' ? '全部' : f === 'pending' ? '待审核' : '已通过'}
             </button>
@@ -155,72 +154,73 @@ export default function AdminCommentsPage() {
           </p>
         </div>
         <div className="bg-card rounded-lg border p-4">ssName="flex items-center gap-2 text-muted-foreground mb-1">
-            <span className="text-sm">已通过</span>
-          </div>
-                  ssName="text-2xl font-bold text-green-600">
-            {comments.filter(c => c.status !== 0).length}
-          </p>
+          <span className="text-sm">已通过</span>
         </div>
-      </div>
+                  ssName="text-2xl font-bold text-green-600">
+        {comments.filter(c => c.status !== 0).length}
+      </p>
+    </div>
+      </div >
 
-      <div className="space-y-4">
-        {comments.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            {searchQuery ? '没有找到匹配的评论' : '暂无评论数据'}
-          </div>
-        ) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="bg-card rounded-lg border p-4">
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{comment.username}</span>
-                  <span className="text-muted-foreground">评论</span>
-                  <span className="font-medium">《{comment.novelTitle}》</span>
-                </div>
-                <span className={`px-2 py-1 text-xs rounded ${
-                  comment.status === 0
-                    ? 'bg-yellow-100 text-yellow-700'
-                    : 'bg-green-100 text-green-700'
-                }`}>
-                  {comment.status === 0 ? '待审核' : '已通过'}
-                </span>
+    <div className="space-y-4">
+      {comments.length === 0 ? (
+        <div className="text-center py-8 text-muted-foreground">
+          {searchQuery ? '没有找到匹配的评论' : '暂无评论数据'}
+        </div>
+      ) : (
+        comments.map((comment) => (
+          <div key={comment.id} className="bg-card rounded-lg border p-4">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-center gap-2">
+                <span className="font-medium">{comment.username}</span>
+                <span className="text-muted-foreground">评论</span>
+                <span className="font-medium">《{comment.novelTitle}》</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-3">{comment.content}</p>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-muted-foreground">
-                  {new Date(comment.createdAt).toLocaleString('zh-CN')}
-                </span>
-                <div className="flex gap-2">
-                  {comment.status === 0 && (
-                    <button
-                      onClick={() => handleApprove(comment.id)}
-                      className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
-                    >
-                      通过
-                    </button>
-                  )}
+              <span className={`px-2 py-1 text-xs rounded ${comment.status === 0
+                  ? 'bg-yellow-100 text-yellow-700'
+                  : 'bg-green-100 text-green-700'
+                }`}>
+                {comment.status === 0 ? '待审核' : '已通过'}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">{comment.content}</p>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
+                {new Date(comment.createdAt).toLocaleString('zh-CN')}
+              </span>
+              <div className="flex gap-2">
+                {comment.status === 0 && (
                   <button
-                    onClick={() => handleDelete(comment.id)}
-                    className="px-3 py-1 text-xs border border-destructive text-destructive rounded hover:bg-destructive/10"
+                    onClick={() => handleApprove(comment.id)}
+                    title="审核通过"
+                    className="px-3 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200"
                   >
-                    删除
+                    通过
                   </button>
-                </div>
+                )}
+                <button
+                  onClick={() => handleDelete(comment.id)}
+                  title="删除评论"
+                  className="px-3 py-1 text-xs border border-destructive text-destructive rounded hover:bg-destructive/10"
+                >
+                  删除
+                </button>
               </div>
             </div>
-          ))
-        )}
-      </div>
-
-      {/* 分页 */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        pageSize={pageSize}
-        totalCount={totalCount}
-        onPageChange={setCurrentPage}
-        onPageSizeChange={setPageSize}
-      />
+          </div>
+        ))
+      )}
     </div>
+
+  {/* 分页 */ }
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    pageSize={pageSize}
+    totalCount={totalCount}
+    onPageChange={setCurrentPage}
+    onPageSizeChange={setPageSize}
+  />
+    </div >
   );
 }
