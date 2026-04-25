@@ -14,6 +14,7 @@ interface Novel {
   authorName?: string
   description: string
   cover?: string
+  coverImage?: string
   status: string
   totalChapters: number
   updatedAt: string
@@ -151,9 +152,9 @@ export default function HomePage() {
               >
                 {/* 封面图容器 - 文字叠加在图片上 */}
                 <div className="aspect-[2/3] relative rounded overflow-hidden bg-muted">
-                  {novel.cover ? (
+                  {(novel.cover || novel.coverImage) ? (
                     <Image
-                      src={novel.cover}
+                      src={novel.cover || novel.coverImage || ''}
                       alt={novel.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
