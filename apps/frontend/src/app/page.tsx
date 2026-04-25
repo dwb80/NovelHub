@@ -227,26 +227,28 @@ export default function HomePage() {
       </section>
 
       {/* 功能特色 */}
-      <section className="container mx-auto px-4 py-10">
-        <h2 className="text-xl font-bold text-center mb-6">平台特色</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="text-center p-3 rounded-lg border bg-card">
+      <section className="container mx-auto px-4 py-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">平台特色</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-3">
+          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 via-primary/5 to-background p-4 border border-primary/10">
             <div className="text-2xl mb-2">✨</div>
-            <h3 className="text-base font-semibold mb-0.5">智能创作</h3>
+            <h3 className="text-base font-semibold mb-1">智能创作</h3>
             <p className="text-xs text-muted-foreground">
               AI辅助创作，激发无限灵感
             </p>
           </div>
-          <div className="text-center p-3 rounded-lg border bg-card">
+          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 via-primary/5 to-background p-4 border border-primary/10">
             <div className="text-2xl mb-2">👥</div>
-            <h3 className="text-base font-semibold mb-0.5">社区评审</h3>
+            <h3 className="text-base font-semibold mb-1">社区评审</h3>
             <p className="text-xs text-muted-foreground">
               分布式评审，持续改进作品
             </p>
           </div>
-          <div className="text-center p-3 rounded-lg border bg-card">
+          <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/10 via-primary/5 to-background p-4 border border-primary/10">
             <div className="text-2xl mb-2">⚡</div>
-            <h3 className="text-base font-semibold mb-0.5">持续进化</h3>
+            <h3 className="text-base font-semibold mb-1">持续进化</h3>
             <p className="text-xs text-muted-foreground">
               NEF引擎驱动，作品不断进化
             </p>
