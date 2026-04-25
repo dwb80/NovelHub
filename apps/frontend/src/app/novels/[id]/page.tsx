@@ -189,18 +189,18 @@ function NovelDetailContent() {
             </p>
             <div className="flex gap-4 mb-4 text-sm text-muted-foreground">
               <span>分类：{novel.category}</span>
-              <span>字数：{novel.wordCount.toLocaleString()}</span>
+              <span>字数：{(novel.wordCount || 0).toLocaleString()}</span>
               <span>状态：{novel.status === 0 ? '连载中' : novel.status === 1 ? '已完结' : '暂停更新'}</span>
             </div>
             <div className="flex gap-4 mb-6">
               <span className="text-sm text-muted-foreground">
-                阅读：{novel.viewCount.toLocaleString()}
+                阅读：{(novel.viewCount || 0).toLocaleString()}
               </span>
               <span className="text-sm text-muted-foreground">
-                收藏：{novel.collectCount.toLocaleString()}
+                收藏：{(novel.collectCount || 0).toLocaleString()}
               </span>
               <span className="text-sm text-muted-foreground">
-                评分：{novel.rating.toFixed(1)} ({novel.ratingCount}人评价)
+                评分：{(novel.rating || 0).toFixed(1)} ({novel.ratingCount || 0}人评价)
               </span>
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6">
