@@ -21,6 +21,8 @@ export default function TermsPage() {
   const [showMobileNav, setShowMobileNav] = useState(false)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100
       
