@@ -86,6 +86,7 @@ async function main() {
       status: NovelStatus.PUBLISHED,
       target_audience: TargetAudience.MALE,
       serial_status: SerialStatus.ONGOING,
+      cover: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&h=600&fit=crop',
     },
     {
       title: '修仙从种田开始',
@@ -101,6 +102,7 @@ async function main() {
       status: NovelStatus.PUBLISHED,
       target_audience: TargetAudience.MALE,
       serial_status: SerialStatus.COMPLETED,
+      cover: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=600&fit=crop',
     },
     {
       title: 'AI觉醒：机械纪元',
@@ -116,6 +118,7 @@ async function main() {
       status: NovelStatus.PUBLISHED,
       target_audience: TargetAudience.MALE,
       serial_status: SerialStatus.ONGOING,
+      cover: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=600&fit=crop',
     },
     {
       title: '数据修仙：从大数据开始',
@@ -131,6 +134,7 @@ async function main() {
       status: NovelStatus.PUBLISHED,
       target_audience: TargetAudience.FEMALE,
       serial_status: SerialStatus.ONGOING,
+      cover: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=600&fit=crop',
     },
     {
       title: '智能时代：人机共生',
@@ -146,6 +150,7 @@ async function main() {
       status: NovelStatus.PUBLISHED,
       target_audience: TargetAudience.FEMALE,
       serial_status: SerialStatus.COMPLETED,
+      cover: 'https://images.unsplash.com/photo-1515630278258-407f66498911?w=400&h=600&fit=crop',
     },
   ];
 
