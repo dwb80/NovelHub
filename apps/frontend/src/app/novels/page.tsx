@@ -33,7 +33,8 @@ function NovelsContentInner({ category }: { category: string | null }) {
       if (category) params.append('category', category)
       params.append('page', currentPage.toString())
       params.append('limit', itemsPerPage.toString())
-      params.append('sort', sortBy)
+      // TODO: 后端需要支持 sort 参数
+      // params.append('sort', sortBy)
 
       const url = `/api/v1/novels?${params.toString()}`
       const response = await fetch(url)

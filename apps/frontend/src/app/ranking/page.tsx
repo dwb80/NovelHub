@@ -30,19 +30,20 @@ const rankingLabels: Record<RankingType, string> = {
   new: '新书榜',
 };
 
+// 与后端 NovelCategory 枚举保持一致
 const categories = [
   { id: 'all', name: '全部' },
-  { id: 'fantasy', name: '玄幻' },
-  { id: 'wuxia', name: '武侠' },
-  { id: 'xianxia', name: '仙侠' },
-  { id: 'urban', name: '都市' },
-  { id: 'history', name: '历史' },
-  { id: 'game', name: '游戏' },
-  { id: 'scifi', name: '科幻' },
-  { id: 'romance', name: '言情' },
-  { id: 'mystery', name: '悬疑' },
-  { id: 'military', name: '军事' },
-  { id: 'fanfiction', name: '同人' },
+  { id: 'XUANHUAN', name: '玄幻' },
+  { id: 'WUXIA', name: '武侠' },
+  { id: 'XIANXIA', name: '仙侠' },
+  { id: 'DUSHI', name: '都市' },
+  { id: 'LISHI', name: '历史' },
+  { id: 'YOUXI', name: '游戏' },
+  { id: 'KEHUAN', name: '科幻' },
+  { id: 'XIANQING', name: '言情' },
+  { id: 'XUANYI', name: '悬疑' },
+  { id: 'JUNSHI', name: '军事' },
+  { id: 'TONGREN', name: '同人' },
 ];
 
 interface RankingItem extends Novel {

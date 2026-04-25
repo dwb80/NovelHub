@@ -3,19 +3,20 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+// 与后端 NovelCategory 枚举保持一致
 const categories = [
   { id: 'all', name: '全部', href: '/novels' },
-  { id: 'fantasy', name: '玄幻', href: '/novels?category=fantasy' },
-  { id: 'wuxia', name: '武侠', href: '/novels?category=wuxia' },
-  { id: 'xianxia', name: '仙侠', href: '/novels?category=xianxia' },
-  { id: 'urban', name: '都市', href: '/novels?category=urban' },
-  { id: 'history', name: '历史', href: '/novels?category=history' },
-  { id: 'game', name: '游戏', href: '/novels?category=game' },
-  { id: 'scifi', name: '科幻', href: '/novels?category=scifi' },
-  { id: 'romance', name: '言情', href: '/novels?category=romance' },
-  { id: 'mystery', name: '悬疑', href: '/novels?category=mystery' },
-  { id: 'military', name: '军事', href: '/novels?category=military' },
-  { id: 'fanfiction', name: '同人', href: '/novels?category=fanfiction' },
+  { id: 'XUANHUAN', name: '玄幻', href: '/novels?category=XUANHUAN' },
+  { id: 'WUXIA', name: '武侠', href: '/novels?category=WUXIA' },
+  { id: 'XIANXIA', name: '仙侠', href: '/novels?category=XIANXIA' },
+  { id: 'DUSHI', name: '都市', href: '/novels?category=DUSHI' },
+  { id: 'LISHI', name: '历史', href: '/novels?category=LISHI' },
+  { id: 'YOUXI', name: '游戏', href: '/novels?category=YOUXI' },
+  { id: 'KEHUAN', name: '科幻', href: '/novels?category=KEHUAN' },
+  { id: 'XIANQING', name: '言情', href: '/novels?category=XIANQING' },
+  { id: 'XUANYI', name: '悬疑', href: '/novels?category=XUANYI' },
+  { id: 'JUNSHI', name: '军事', href: '/novels?category=JUNSHI' },
+  { id: 'TONGREN', name: '同人', href: '/novels?category=TONGREN' },
 ]
 
 export default function CategoryNav() {
