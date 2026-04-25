@@ -1019,25 +1019,27 @@ export default function ProfilePage() {
                     </div>
 
                     {/* 偏好分类 */}
-                    <div className="border-t pt-6">
-                      <h3 className="font-medium mb-4">偏好分类</h3>
-                      <div className="space-y-3">
-                        {readingStats.categoryDistribution.map((cat) => (
-                          <div key={cat.category}>
-                            <div className="flex justify-between text-sm mb-1">
-                              <span>{cat.category}</span>
-                              <span>{cat.percentage}%</span>
+                    {readingStats.categoryDistribution && readingStats.categoryDistribution.length > 0 && (
+                      <div className="border-t pt-6">
+                        <h3 className="font-medium mb-4">偏好分类</h3>
+                        <div className="space-y-3">
+                          {readingStats.categoryDistribution.map((cat) => (
+                            <div key={cat.category}>
+                              <div className="flex justify-between text-sm mb-1">
+                                <span>{cat.category}</span>
+                                <span>{cat.percentage}%</span>
+                              </div>
+                              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-primary transition-all duration-300"
+                                  style={{ width: `${cat.percentage}%` }}
+                                />
+                              </div>
                             </div>
-                            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-primary transition-all duration-300"
-                                style={{ width: `${cat.percentage}%` }}
-                              />
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">暂无阅读数据</div>
