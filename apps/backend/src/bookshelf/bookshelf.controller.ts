@@ -30,6 +30,17 @@ export class BookshelfController {
     return this.bookshelfService.getReadingHistory(readerId, limit || 50);
   }
 
+  @Get('check')
+  @ApiOperation({ summary: '检查小说是否已收藏' })
+  @ApiQuery({ name: 'novelId', required: true, type: String })
+  async checkCollectionStatus(
+    @CurrentReader() readerId: string,
+    @Query('novelId') novelId: string,
+  ): Promise<{ isCollected: boolean }> {
+    const isCollected = await this.bookshelfService.isInBookshelf(readerId, novelId);
+    return { isCollected };
+  }
+
   @Post()
   @ApiOperation({ summary: '添加小说到书架' })
   async addToBookshelf(

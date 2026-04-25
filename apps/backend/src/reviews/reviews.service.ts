@@ -253,6 +253,71 @@ export class ReviewsService {
     return this.mapReviewToResponse(review);
   }
 
+  // 获取评审任务详情
+  async getTaskById(taskId: string): Promise<ReviewTaskResponseDto> {
+    const task = await this.prisma.reviewTask.findUnique({
+      where: { id: taskId },
+      include: {
+        chapter: {
+          include: {
+            novel: { include: { author: true } },
+          },
+        },
+      },
+    });
+
+    if (!task) {
+      throw new NotFoundException('评审任务不存在');
+    }
+
+    return this.mapTaskToResponse(task, task.chapter);
+  }
+
+  // 保存评审草稿
+  async saveDraft(
+    taskId: string,
+    reviewerId: string,
+    dto: SubmitReviewDto,
+  ): Promise<void> {
+    const task = await this.prisma.reviewTask.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!task) {
+      throw new NotFoundException('评审任务不存在');
+    }
+
+    if (task.reviewerId !== reviewerId) {
+      throw new ForbiddenException('无权保存此任务的草稿');
+    }
+
+    // 保存草稿到任务记录中
+    await this.prisma.reviewTask.update({
+      where: { id: taskId },
+      data: {
+        draft: JSON.stringify(dto),
+      },
+    });
+  }
+
+  // 通过任务ID提交评审
+  async submitReviewByTask(
+    taskId: string,
+    reviewerId: string,
+    dto: SubmitReviewDto,
+  ): Promise<ReviewResponseDto> {
+    const task = await this.prisma.reviewTask.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!task) {
+      throw new NotFoundException('评审任务不存在');
+    }
+
+    // 调用现有的 submitReview 方法
+    return this.submitReview(reviewerId, { ...dto, taskId });
+  }
+
   // 获取评审统计数据
   async getStats() {
     const [

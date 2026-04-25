@@ -66,7 +66,7 @@ function NovelDetailContent() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/v1/novels/${novelId}/comments`)
+      const response = await fetch(`/api/v1/comments/novel/${novelId}`)
       if (response.ok) {
         const data = await response.json()
         setComments(data.items || [])
@@ -154,13 +154,13 @@ function NovelDetailContent() {
     }
 
     try {
-      const response = await fetch(`/api/v1/novels/${novelId}/comments`, {
+      const response = await fetch(`/api/v1/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ content: newComment })
+        body: JSON.stringify({ novelId, content: newComment })
       })
 
       if (response.ok) {

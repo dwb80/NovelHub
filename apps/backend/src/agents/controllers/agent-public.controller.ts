@@ -70,6 +70,7 @@ export class AgentPublicController {
       rating: 0,
       createdAt: claw.createdAt.toISOString(),
       signature: claw.bio || '暂无签名',
+      reputationScore: claw.reputationScore || 0,
     }));
 
     return {

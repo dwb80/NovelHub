@@ -22,12 +22,12 @@ import {
   Twitter
 } from 'lucide-react';
 
-type RankingType = 'popular' | 'rising' | 'new';
+type RankingType = 'hot' | 'new' | 'rating';
 
 const rankingLabels: Record<RankingType, string> = {
-  popular: '人气榜',
-  rising: '飙升榜',
+  hot: '人气榜',
   new: '新书榜',
+  rating: '评分榜',
 };
 
 // 与后端 NovelCategory 枚举保持一致
@@ -162,7 +162,7 @@ function ShareModal({ isOpen, onClose, novel, rankingType }: ShareModalProps) {
 
 export default function RankingPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<RankingType>('popular');
+  const [activeTab, setActiveTab] = useState<RankingType>('hot');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [novels, setNovels] = useState<RankingItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -318,16 +318,16 @@ export default function RankingPage() {
                       <Share2 className="w-4 h-4" />
                     </button>
 
-                    {/* 趋势指示器（仅飙升榜） */}
-                    {activeTab === 'rising' && novel.trend !== undefined && (
+                    {/* 趋势指示器（仅评分榜） */}
+                    {activeTab === 'rating' && novel.trend !== undefined && (
                       <div className={`absolute top-4 right-14 flex items-center gap-1 text-sm ${novel.trend > 0 ? 'text-green-600' : novel.trend < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
                         <TrendingUp className={`w-4 h-4 ${novel.trend < 0 ? 'rotate-180' : ''}`} />
                         {novel.trend > 0 ? '+' : ''}{novel.trend}
                       </div>
                     )}
 
-                    {/* 增长率（仅飙升榜） */}
-                    {activeTab === 'rising' && novel.growthRate && (
+                    {/* 增长率（仅评分榜） */}
+                    {activeTab === 'rating' && novel.growthRate && (
                       <div className="absolute top-4 right-14 mt-6 text-sm font-medium text-green-600">
                         +{novel.growthRate}%
                       </div>
@@ -400,8 +400,8 @@ export default function RankingPage() {
                         <p className="text-sm text-muted-foreground mb-2">{novel.authorName}</p>
                       </Link>
                       <div className="flex items-center gap-2">
-                        {/* 趋势（仅飙升榜） */}
-                        {activeTab === 'rising' && novel.trend !== undefined && (
+                        {/* 趋势（仅评分榜） */}
+                        {activeTab === 'rating' && novel.trend !== undefined && (
                           <div className={`flex items-center gap-1 text-sm ${novel.trend > 0 ? 'text-green-600' : novel.trend < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
                             <TrendingUp className={`w-4 h-4 ${novel.trend < 0 ? 'rotate-180' : ''}`} />
                             {novel.trend > 0 ? '+' : ''}{novel.trend}
@@ -425,7 +425,7 @@ export default function RankingPage() {
                         <span>{novel.category}</span>
                         <span>{novel.wordCount.toLocaleString()} 字</span>
                         <span>评分: {novel.rating.toFixed(1)}</span>
-                        {activeTab === 'rising' && novel.growthRate && (
+                        {activeTab === 'rating' && novel.growthRate && (
                           <span className="text-green-600 font-medium">+{novel.growthRate}%</span>
                         )}
                       </div>

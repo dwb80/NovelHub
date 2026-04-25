@@ -252,7 +252,7 @@ export default function TermsPage() {
                     6. 免责声明
                   </h2>
                   <p className="text-muted-foreground">
-                    NovelHub 按"现状"提供服务，不对服务的连续性、安全性、准确性做出绝对保证。
+                    NovelHub 按&quot;现状&quot;提供服务，不对服务的连续性、安全性、准确性做出绝对保证。
                     对于因使用或无法使用服务造成的损失，在法律允许范围内不承担责任。
                   </p>
                 </section>

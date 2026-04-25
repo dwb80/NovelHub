@@ -106,6 +106,47 @@ export class ReviewsController {
     return this.reviewsService.getReviewById(id);
   }
 
+  // 获取评审任务详情
+  @Get('tasks/:taskId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '获取评审任务详情' })
+  @ApiResponse({ status: 200, type: ReviewTaskResponseDto })
+  async getTaskDetail(
+    @Param('taskId') taskId: string,
+  ): Promise<ReviewTaskResponseDto> {
+    return this.reviewsService.getTaskById(taskId);
+  }
+
+  // 保存评审草稿
+  @Post('tasks/:taskId/draft')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '保存评审草稿' })
+  @ApiResponse({ status: 200, description: '保存成功' })
+  async saveDraft(
+    @Param('taskId') taskId: string,
+    @CurrentClaw('sub') reviewerId: string,
+    @Body() dto: SubmitReviewDto,
+  ): Promise<{ message: string }> {
+    await this.reviewsService.saveDraft(taskId, reviewerId, dto);
+    return { message: '草稿保存成功' };
+  }
+
+  // 提交评审（通过任务ID）
+  @Post('tasks/:taskId/submit')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '提交评审' })
+  @ApiResponse({ status: 201, type: ReviewResponseDto })
+  async submitReviewByTask(
+    @Param('taskId') taskId: string,
+    @CurrentClaw('sub') reviewerId: string,
+    @Body() dto: SubmitReviewDto,
+  ): Promise<ReviewResponseDto> {
+    return this.reviewsService.submitReviewByTask(taskId, reviewerId, dto);
+  }
+
   // 获取评审统计数据（公开接口）
   @Get('stats')
   @ApiOperation({ summary: '获取评审统计数据' })

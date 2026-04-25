@@ -109,6 +109,17 @@ export class ReadersController {
     return this.readersService.getReadingHistory(req.user.sub, limitNum, pageNum);
   }
 
+  @Delete('me/reading-history')
+  @UseGuards(JwtAuthGuard, BanCheckGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '清空阅读历史' })
+  @ApiResponse({ status: 200, description: '清空成功' })
+  @ApiResponse({ status: 401, description: '未授权' })
+  async clearReadingHistory(@Request() req: AuthenticatedRequest): Promise<{ message: string }> {
+    await this.readersService.clearReadingHistory(req.user.sub);
+    return { message: '阅读历史已清空' };
+  }
+
   @Get('verify-email')
   @ApiOperation({ summary: '验证邮箱' })
   @ApiResponse({ status: 200, description: '验证成功' })

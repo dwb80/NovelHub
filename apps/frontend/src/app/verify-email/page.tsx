@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [message, setMessage] = useState('正在验证邮箱...')
@@ -84,5 +84,24 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-muted/50">
+        <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-lg border shadow-sm">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold">邮箱验证</h1>
+          </div>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">正在验证邮箱...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   )
 }

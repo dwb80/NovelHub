@@ -271,4 +271,15 @@ export class BookshelfService {
       },
     });
   }
+
+  // 检查小说是否在书架中
+  async isInBookshelf(readerId: string, novelId: string): Promise<boolean> {
+    const item = await this.prisma.bookshelf.findFirst({
+      where: {
+        readerId,
+        novelId,
+      },
+    });
+    return !!item;
+  }
 }

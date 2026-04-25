@@ -25,15 +25,22 @@ interface ReviewTask {
   summary: string
 }
 
+// 与后端 SubmitReviewDto 匹配的表单结构
 interface ReviewForm {
-  plotScore: number
-  characterScore: number
-  writingScore: number
-  innovationScore: number
+  taskId: string
   overallScore: number
-  strengths: string
-  suggestions: string
-  comment: string
+  plotRating?: number
+  characterRating?: number
+  pacingRating?: number
+  styleRating?: number
+  overallComment?: string
+  insights: {
+    category: 'PLOT' | 'CHARACTER' | 'PACING' | 'STYLE' | 'OTHER'
+    severity: 'INFO' | 'WARNING' | 'CRITICAL'
+    title: string
+    description: string
+    suggestion?: string
+  }[]
 }
 
 export default function ReviewDetailPage() {
@@ -47,14 +54,14 @@ export default function ReviewDetailPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState<ReviewForm>({
-    plotScore: 0,
-    characterScore: 0,
-    writingScore: 0,
-    innovationScore: 0,
+    taskId: taskId,
     overallScore: 0,
-    strengths: '',
-    suggestions: '',
-    comment: ''
+    plotRating: 0,
+    characterRating: 0,
+    pacingRating: 0,
+    styleRating: 0,
+    overallComment: '',
+    insights: []
   })
 
   useEffect(() => {
@@ -64,13 +71,21 @@ export default function ReviewDetailPage() {
   const fetchTaskDetail = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/v1/reviews/tasks/${taskId}`)
+      const token = localStorage.getItem('accessToken')
+      const response = await fetch(`/api/v1/reviews/tasks/${taskId}`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      })
       if (response.ok) {
         const data = await response.json()
         setTask(data)
         // 如果有草稿，加载草稿
         if (data.draft) {
-          setForm(data.draft)
+          try {
+            const draftData = JSON.parse(data.draft)
+            setForm(prev => ({ ...prev, ...draftData }))
+          } catch (e) {
+            console.error('解析草稿失败:', e)
+          }
         }
       } else {
         setError('获取任务详情失败')
@@ -94,9 +109,13 @@ export default function ReviewDetailPage() {
   const handleSaveDraft = async () => {
     try {
       setSaving(true)
+      const token = localStorage.getItem('accessToken')
       const response = await fetch(`/api/v1/reviews/tasks/${taskId}/draft`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`
+        },
         body: JSON.stringify(form)
       })
 
@@ -115,23 +134,27 @@ export default function ReviewDetailPage() {
 
   const handleSubmit = async () => {
     // 验证表单
-    if (form.plotScore === 0 || form.characterScore === 0 ||
-      form.writingScore === 0 || form.innovationScore === 0 ||
+    if (form.plotRating === 0 || form.characterRating === 0 ||
+      form.pacingRating === 0 || form.styleRating === 0 ||
       form.overallScore === 0) {
       alert('请完成所有维度的评分')
       return
     }
 
-    if (form.comment.length < 100) {
-      alert('总体评语至少需要100字')
+    if (!form.overallComment || form.overallComment.length < 10) {
+      alert('总体评语至少需要10字')
       return
     }
 
     try {
       setSubmitting(true)
+      const token = localStorage.getItem('accessToken')
       const response = await fetch(`/api/v1/reviews/tasks/${taskId}/submit`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`
+        },
         body: JSON.stringify(form)
       })
 
@@ -153,7 +176,7 @@ export default function ReviewDetailPage() {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-2">
         <label className="font-medium">{label}</label>
-        <span className="text-2xl font-bold text-primary">{form[field] || '-'}/10</span>
+        <span className="text-2xl font-bold text-primary">{(form[field] as number) || '-'}/10</span>
       </div>
       <p className="text-sm text-muted-foreground mb-3">{description}</p>
       <div className="flex gap-2">
@@ -161,7 +184,7 @@ export default function ReviewDetailPage() {
           <button
             key={score}
             onClick={() => handleScoreChange(field, score)}
-            className={`w-10 h-10 rounded-lg font-medium transition-colors ${form[field] === score
+            className={`w-10 h-10 rounded-lg font-medium transition-colors ${(form[field] as number) === score
                 ? 'bg-primary text-primary-foreground'
                 : 'border bg-background hover:bg-accent'
               }`}
@@ -248,12 +271,12 @@ export default function ReviewDetailPage() {
                     <span>类型：{task.type}</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <span className="font-medium">{task.wordCount.toLocaleString()}</span>
+                    <span className="font-medium">{task.wordCount?.toLocaleString() || 0}</span>
                     <span>字</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>截止：{new Date(task.deadline).toLocaleDateString()}</span>
+                    <span>截止：{task.deadline ? new Date(task.deadline).toLocaleDateString() : '无'}</span>
                   </div>
                 </div>
               </div>
@@ -267,8 +290,8 @@ export default function ReviewDetailPage() {
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>• 情节逻辑性：故事是否合理连贯</li>
                   <li>• 人物塑造：角色是否立体生动</li>
-                  <li>• 文笔水平：语言表达是否流畅</li>
-                  <li>• 创新程度：是否有独特创意</li>
+                  <li>• 节奏把控：故事节奏是否恰当</li>
+                  <li>• 文风水平：语言表达是否流畅</li>
                   <li>• 总体评价：综合评分</li>
                 </ul>
               </div>
@@ -286,10 +309,10 @@ export default function ReviewDetailPage() {
                   <Star className="w-5 h-5 text-amber-500" />
                   多维度评分
                 </h3>
-                {renderScoreInput('情节逻辑性', 'plotScore', '故事结构是否合理，情节发展是否连贯')}
-                {renderScoreInput('人物塑造', 'characterScore', '角色性格是否鲜明，人物关系是否清晰')}
-                {renderScoreInput('文笔水平', 'writingScore', '语言表达是否流畅，描写是否生动')}
-                {renderScoreInput('创新程度', 'innovationScore', '是否有独特创意，是否突破常规')}
+                {renderScoreInput('情节逻辑性', 'plotRating', '故事结构是否合理，情节发展是否连贯')}
+                {renderScoreInput('人物塑造', 'characterRating', '角色性格是否鲜明，人物关系是否清晰')}
+                {renderScoreInput('节奏把控', 'pacingRating', '故事节奏是否恰当，张弛有度')}
+                {renderScoreInput('文风水平', 'styleRating', '语言表达是否流畅，描写是否生动')}
                 {renderScoreInput('总体评价', 'overallScore', '综合整体印象给出评分')}
               </div>
 
@@ -297,44 +320,17 @@ export default function ReviewDetailPage() {
               <div className="space-y-6">
                 <div>
                   <label className="block font-medium mb-2">
-                    优点点评 <span className="text-muted-foreground">（选填）</span>
+                    总体评语 <span className="text-destructive">*</span>
                   </label>
                   <textarea
-                    value={form.strengths}
-                    onChange={(e) => handleTextChange('strengths', e.target.value)}
-                    placeholder="请描述作品的亮点和优点..."
-                    className="w-full px-4 py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px] resize-y"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-medium mb-2">
-                    改进建议 <span className="text-muted-foreground">（选填）</span>
-                  </label>
-                  <textarea
-                    value={form.suggestions}
-                    onChange={(e) => handleTextChange('suggestions', e.target.value)}
-                    placeholder="请提供建设性的改进建议..."
-                    className="w-full px-4 py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px] resize-y"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-medium mb-2">
-                    总体评语 <span className="text-red-500">*</span>
-                    <span className="text-muted-foreground text-sm ml-2">（至少100字）</span>
-                  </label>
-                  <textarea
-                    value={form.comment}
-                    onChange={(e) => handleTextChange('comment', e.target.value)}
-                    placeholder="请对作品进行总体评价..."
-                    className="w-full px-4 py-3 border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary min-h-[150px] resize-y"
+                    value={form.overallComment || ''}
+                    onChange={(e) => handleTextChange('overallComment', e.target.value)}
+                    placeholder="请对作品进行总体评价，至少10字..."
+                    rows={6}
+                    className="w-full px-4 py-3 border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   <p className="text-sm text-muted-foreground mt-1">
-                    已输入 {form.comment.length} 字
-                    {form.comment.length < 100 && (
-                      <span className="text-red-500 ml-2">（还需要 {100 - form.comment.length} 字）</span>
-                    )}
+                    {(form.overallComment || '').length} 字
                   </p>
                 </div>
               </div>

@@ -43,14 +43,16 @@ export class NovelsController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'category', required: false, type: String })
   @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({ name: 'sort', required: false, type: String, description: '排序方式: hot-最热, new-最新, rating-评分' })
   @ApiResponse({ status: 200, description: '小说列表' })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
     @Query('category') category?: string,
     @Query('search') search?: string,
+    @Query('sort') sort?: string,
   ): Promise<{ novels: NovelResponseDto[]; total: number }> {
-    return this.novelsService.findAll(page, limit, { category, search });
+    return this.novelsService.findAll(page, limit, { category, search, sort });
   }
 
   @Get('my-novels')

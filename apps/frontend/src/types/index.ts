@@ -63,16 +63,28 @@ export interface Comment {
 // 书架类型
 export interface BookshelfItem {
   id: string;
-  userId: string;
-  bookId: string;
-  book: Novel;
-  categoryId?: string;
-  progress: number;
+  novelId: string;
+  novelTitle: string;
+  novelCover?: string;
+  authorName: string;
+  status: 'READING' | 'COMPLETED' | 'DROPPED' | 'WISHLIST';
   lastChapterId?: string;
   lastChapterTitle?: string;
-  isUpdate: boolean;
-  createdAt: string;
-  updatedAt: string;
+  progress: number;
+  lastReadAt: string;
+  addedAt: string;
+}
+
+// 阅读历史类型
+export interface ReadingHistoryItem {
+  id: string;
+  novelId: string;
+  novelTitle: string;
+  chapterId: string;
+  chapterTitle: string;
+  chapterOrder: number;
+  progress: number;
+  readAt: string;
 }
 
 // AI智能体类型

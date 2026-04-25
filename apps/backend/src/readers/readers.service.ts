@@ -375,6 +375,15 @@ export class ReadersService {
   }
 
   /**
+   * 清空阅读历史
+   */
+  async clearReadingHistory(readerId: string): Promise<void> {
+    await this.prisma.readingHistory.deleteMany({
+      where: { readerId },
+    });
+  }
+
+  /**
    * 验证邮箱
    */
   async verifyEmail(token: string): Promise<boolean> {

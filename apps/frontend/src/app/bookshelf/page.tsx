@@ -34,7 +34,7 @@ export default function BookshelfPage() {
       }
       
       const data = await response.json()
-      setItems(data.items || [])
+      setItems(data || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : '获取书架失败')
     } finally {
@@ -42,10 +42,10 @@ export default function BookshelfPage() {
     }
   }
 
-  const removeFromBookshelf = async (bookId: string) => {
+  const removeFromBookshelf = async (novelId: string) => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`/api/bookshelf/${bookId}`, {
+      const response = await fetch(`/api/v1/bookshelf/${novelId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -53,11 +53,21 @@ export default function BookshelfPage() {
       })
       
       if (response.ok) {
-        setItems(items.filter(item => item.bookId !== bookId))
+        setItems(items.filter(item => item.novelId !== novelId))
       }
     } catch (err) {
       console.error('移除失败:', err)
     }
+  }
+
+  const getStatusText = (status: string) => {
+    const statusMap: Record<string, string> = {
+      'READING': '阅读中',
+      'COMPLETED': '已读完',
+      'DROPPED': '已弃书',
+      'WISHLIST': '想读'
+    }
+    return statusMap[status] || status
   }
 
   if (loading) {
@@ -92,12 +102,12 @@ export default function BookshelfPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {items.map((item) => (
               <div key={item.id} className="group relative">
-                <Link href={`/novels/${item.bookId}`}>
+                <Link href={`/novels/${item.novelId}`}>
                   <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden mb-3">
-                    {item.book.cover ? (
+                    {item.novelCover ? (
                       <img
-                        src={item.book.cover}
-                        alt={item.book.title}
+                        src={item.novelCover}
+                        alt={item.novelTitle}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                       />
                     ) : (
@@ -107,19 +117,17 @@ export default function BookshelfPage() {
                     )}
                   </div>
                   <h3 className="font-semibold text-foreground line-clamp-1">
-                    {item.book.title}
+                    {item.novelTitle}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    阅读进度：{item.progress.toFixed(1)}%
+                    {item.authorName}
                   </p>
-                  {item.isUpdate && (
-                    <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-primary text-primary-foreground rounded">
-                      有更新
-                    </span>
-                  )}
+                  <p className="text-sm text-muted-foreground">
+                    进度：{item.progress.toFixed(1)}% · {getStatusText(item.status)}
+                  </p>
                 </Link>
                 <button
-                  onClick={() => removeFromBookshelf(item.bookId)}
+                  onClick={() => removeFromBookshelf(item.novelId)}
                   className="absolute top-2 right-2 p-1 bg-background/80 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                   title="移除"
                 >

@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import MainLayout from '@/components/MainLayout';
-import { BookshelfService } from '@/lib/api/services';
-import { BookshelfItem } from '@/types';
+import { ReadingHistoryItem } from '@/types';
 
 export default function ReadingHistoryPage() {
-  const [history, setHistory] = useState<BookshelfItem[]>([]);
+  const [history, setHistory] = useState<ReadingHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -16,8 +15,22 @@ export default function ReadingHistoryPage() {
 
   const fetchHistory = async () => {
     try {
-      const data = await BookshelfService.getReadingHistory();
-      setHistory(data);
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await fetch('/api/v1/bookshelf/history', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setHistory(data || []);
+      }
     } catch (err) {
       console.error('获取阅读历史失败:', err);
     } finally {
@@ -28,8 +41,16 @@ export default function ReadingHistoryPage() {
   const handleClearHistory = async () => {
     if (!confirm('确定要清空阅读历史吗？')) return;
     try {
-      await fetch('/api/v1/readers/history/clear', { method: 'DELETE' });
-      setHistory([]);
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch('/api/v1/readers/me/reading-history', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        setHistory([]);
+      }
     } catch (err) {
       console.error('清空历史失败:', err);
     }
@@ -71,27 +92,16 @@ export default function ReadingHistoryPage() {
             {history.map((item) => (
               <Link
                 key={item.id}
-                href={`/novels/${item.bookId}/chapters/${item.lastChapterId || ''}`}
+                href={`/novels/${item.novelId}/chapters/${item.chapterId}`}
                 className="flex gap-4 p-4 bg-card rounded-lg border hover:shadow-md transition-shadow"
               >
-                <div className="w-20 h-28 bg-muted rounded overflow-hidden flex-shrink-0">
-                  {item.book.cover ? (
-                    <img
-                      src={item.book.cover}
-                      alt={item.book.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
-                      暂无封面
-                    </div>
-                  )}
+                <div className="w-20 h-28 bg-muted rounded overflow-hidden flex-shrink-0 flex items-center justify-center text-xs text-muted-foreground">
+                  封面
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg mb-1">{item.book.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">{item.book.authorName}</p>
+                  <h3 className="font-semibold text-lg mb-1">{item.novelTitle}</h3>
                   <p className="text-sm mb-2">
-                    读到：{item.lastChapterTitle || '未开始'}
+                    读到：{item.chapterTitle || '未开始'}
                   </p>
                   <div className="w-full bg-muted rounded-full h-2 mb-2">
                     <div
@@ -100,7 +110,7 @@ export default function ReadingHistoryPage() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    进度: {item.progress.toFixed(1)}% · 更新于 {new Date(item.updatedAt).toLocaleDateString('zh-CN')}
+                    进度: {item.progress.toFixed(1)}% · 阅读于 {new Date(item.readAt).toLocaleDateString('zh-CN')}
                   </p>
                 </div>
               </Link>

@@ -37,6 +37,7 @@ export class NovelsService {
       status?: NovelStatus;
       authorId?: string;
       search?: string;
+      sort?: string;
     },
   ): Promise<{ novels: NovelResponseDto[]; total: number }> {
     const skip = (page - 1) * limit;
@@ -64,12 +65,22 @@ export class NovelsService {
       ];
     }
 
+    // 根据 sort 参数确定排序方式
+    let orderBy: Prisma.NovelOrderByWithRelationInput = { updatedAt: 'desc' };
+    if (filters?.sort === 'hot') {
+      orderBy = { viewCount: 'desc' };
+    } else if (filters?.sort === 'new') {
+      orderBy = { createdAt: 'desc' };
+    } else if (filters?.sort === 'rating') {
+      orderBy = { rating: 'desc' };
+    }
+
     const [novels, total] = await Promise.all([
       this.prisma.novel.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { updatedAt: 'desc' },
+        orderBy,
         include: {
           author: {
             select: {

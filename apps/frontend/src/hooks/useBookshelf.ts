@@ -32,10 +32,10 @@ export function useBookshelf() {
     }
   }, []);
 
-  const removeFromBookshelf = useCallback(async (bookId: string) => {
+  const removeFromBookshelf = useCallback(async (novelId: string) => {
     try {
-      await BookshelfService.removeFromBookshelf(bookId);
-      setItems((prev) => prev.filter((item) => item.bookId !== bookId));
+      await BookshelfService.removeFromBookshelf(novelId);
+      setItems((prev) => prev.filter((item) => item.novelId !== novelId));
     } catch (err) {
       throw err;
     }

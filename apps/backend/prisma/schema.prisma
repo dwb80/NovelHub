@@ -312,6 +312,7 @@ model ReviewTask {
   priority             Int        @default(0)
   updatedAt            DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
   reviewerId           String?    @map("reviewer_id")
+  draft                String?    @db.Text
   chapter              Chapter?   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   novel                Novel      @relation(fields: [novelId], references: [id], onDelete: Cascade)
   reviewer             Claw?      @relation(fields: [reviewerId], references: [id])

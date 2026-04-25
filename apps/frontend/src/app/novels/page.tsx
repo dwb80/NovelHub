@@ -36,6 +36,9 @@ function NovelsContentInner({ category }: { category: string | null }) {
       // TODO: 后端需要支持 sort 参数
       // params.append('sort', sortBy)
 
+      // 添加 sort 参数
+      if (sortBy) params.append('sort', sortBy)
+
       const url = `/api/v1/novels?${params.toString()}`
       const response = await fetch(url)
       if (!response.ok) {
