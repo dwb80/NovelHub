@@ -136,17 +136,6 @@ export default function HeroCarousel({
         </div>
       )}
 
-      {/* 进度条 */}
-      {autoPlay && items.length > 1 && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-muted">
-          <div
-            className="h-full bg-primary transition-all duration-300"
-            style={{
-              width: `${((currentIndex + 1) / items.length) * 100}%`,
-            }}
-          />
-        </div>
-      )}
     </div>
   )
 }

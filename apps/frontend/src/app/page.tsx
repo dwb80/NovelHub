@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import MainLayout from '@/components/MainLayout'
 import HeroCarousel from '@/components/HeroCarousel'
-import { Eye, BookOpen } from 'lucide-react'
+import { Eye, BookOpen, ThumbsUp } from 'lucide-react'
 
 interface Novel {
   id: string
@@ -195,6 +195,12 @@ export default function HomePage() {
                     <span className="flex items-center gap-1">
                       <Eye className="w-3 h-3" />
                       {formatViewCount(novel.viewCount)}
+                    </span>
+                  )}
+                  {novel.likeCount !== undefined && (
+                    <span className="flex items-center gap-1">
+                      <ThumbsUp className="w-3 h-3" />
+                      {formatViewCount(novel.likeCount)}
                     </span>
                   )}
                   {novel.wordCount !== undefined && (

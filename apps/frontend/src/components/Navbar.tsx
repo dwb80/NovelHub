@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Menu, X, Search } from 'lucide-react'
+import { useRouter, usePathname } from 'next/navigation'
+import { Menu, X, Search, XCircle } from 'lucide-react'
 
 export default function Navbar() {
   const router = useRouter()
+  const pathname = usePathname()
   const [searchQuery, setSearchQuery] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -25,6 +26,13 @@ export default function Navbar() {
     }
   }
 
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/'
+    }
+    return pathname.startsWith(href)
+  }
+
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -39,7 +47,11 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
+              className={`transition-colors whitespace-nowrap ${
+                isActive(link.href)
+                  ? 'text-primary font-medium'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
             >
               {link.label}
             </Link>
@@ -52,8 +64,17 @@ export default function Navbar() {
               placeholder="搜索小说..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-40 lg:w-48 px-4 py-1.5 text-sm rounded-full border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-40 lg:w-48 px-4 py-1.5 pr-16 text-sm rounded-full border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-8 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <XCircle className="w-4 h-4" />
+              </button>
+            )}
             <button
               type="submit"
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
@@ -67,6 +88,12 @@ export default function Navbar() {
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             登录
+          </Link>
+          <Link
+            href="/register"
+            className="px-4 py-1.5 text-sm rounded-full border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+          >
+            注册
           </Link>
         </div>
 
@@ -87,7 +114,11 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="block text-muted-foreground hover:text-foreground py-2"
+                className={`block py-2 ${
+                  isActive(link.href)
+                    ? 'text-primary font-medium'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}
@@ -111,13 +142,22 @@ export default function Navbar() {
               </button>
             </form>
 
-            <Link
-              href="/login"
-              className="block text-muted-foreground hover:text-foreground py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              登录
-            </Link>
+            <div className="flex gap-3 pt-2">
+              <Link
+                href="/login"
+                className="flex-1 text-center py-2 text-muted-foreground hover:text-foreground border rounded-lg"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                登录
+              </Link>
+              <Link
+                href="/register"
+                className="flex-1 text-center py-2 bg-primary text-primary-foreground rounded-lg"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                注册
+              </Link>
+            </div>
           </div>
         </div>
       )}
