@@ -76,23 +76,66 @@ function NovelDetailContent() {
     }
   }
 
-  const checkCollectionStatus = () => {
-    const collections = JSON.parse(localStorage.getItem('collections') || '[]')
-    setIsCollected(collections.includes(novelId))
+  const checkCollectionStatus = async () => {
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      setIsCollected(false)
+      return
+    }
+    try {
+      const response = await fetch(`/api/v1/bookshelf/check?novelId=${novelId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setIsCollected(data.isCollected)
+      }
+    } catch (err) {
+      console.error('检查收藏状态失败:', err)
+    }
   }
 
-  const toggleCollection = () => {
-    const collections = JSON.parse(localStorage.getItem('collections') || '[]')
-    if (isCollected) {
-      const newCollections = collections.filter((id: string) => id !== novelId)
-      localStorage.setItem('collections', JSON.stringify(newCollections))
-      setIsCollected(false)
-      alert('已取消收藏')
-    } else {
-      collections.push(novelId)
-      localStorage.setItem('collections', JSON.stringify(collections))
-      setIsCollected(true)
-      alert('收藏成功！')
+  const toggleCollection = async () => {
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      alert('请先登录')
+      window.location.href = '/login'
+      return
+    }
+
+    try {
+      if (isCollected) {
+        // 取消收藏
+        const response = await fetch(`/api/v1/bookshelf/${novelId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        if (response.ok) {
+          setIsCollected(false)
+          alert('已取消收藏')
+        } else {
+          alert('取消收藏失败')
+        }
+      } else {
+        // 添加收藏
+        const response = await fetch('/api/v1/bookshelf', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ novelId })
+        })
+        if (response.ok) {
+          setIsCollected(true)
+          alert('收藏成功！')
+        } else {
+          alert('收藏失败')
+        }
+      }
+    } catch (err) {
+      console.error('收藏操作失败:', err)
+      alert('操作失败，请稍后重试')
     }
   }
 
@@ -221,7 +264,7 @@ function NovelDetailContent() {
                   isCollected ? 'bg-primary/10 border-primary text-primary' : ''
                 }`}
               >
-                {isCollected ? '已收藏' : '加入书架'}
+                {isCollected ? '取消收藏' : '加入书架'}
               </button>
             </div>
           </div>
