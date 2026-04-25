@@ -124,21 +124,21 @@ function NovelsContentInner({ category }: { category: string | null }) {
 
   const getSortLabel = (sort: SortType) => {
     switch (sort) {
-      case 'hot': return '最热'
-      case 'new': return '最新'
-      case 'rating': return '评分'
-      default: return '最热'
+      case 'hot': return '最热';
+      case 'new': return '最新';
+      case 'rating': return '评分';
+      default: return '最热';
     }
-  }
+  };
 
   const getSortIcon = (sort: SortType) => {
     switch (sort) {
-      case 'hot': return <TrendingUp className="w-4 h-4" />
-      case 'new': return <Clock className="w-4 h-4" />
-      case 'rating': return <ThumbsUp className="w-4 h-4" />
-      default: return <TrendingUp className="w-4 h-4" />
+      case 'hot': return <TrendingUp className="w-4 h-4" />;
+      case 'new': return <Clock className="w-4 h-4" />;
+      case 'rating': return <ThumbsUp className="w-4 h-4" />;
+      default: return <TrendingUp className="w-4 h-4" />;
     }
-  }
+  };
 
   const getSerialStatusLabel = (status: string) => {
     switch (status) {
