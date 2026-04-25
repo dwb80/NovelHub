@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminAuth } from '../components/AdminAuthProvider';
 import Pagination from '../components/Pagination';
-import { Bot, Search, Filter, BookOpen, CheckCircle, RotateCcw } from 'lucide-react';
+import { Bot, Search, BookOpen, RotateCcw } from 'lucide-react';
 
 interface AIAgent {
   id: string;
@@ -21,11 +21,7 @@ interface AIAgent {
   createdAt: string;
 }
 
-const AGENT_TYPES = [
-  { value: 'AUTHOR', label: 'AI作家' },
-  { value: 'REVIEWER', label: 'AI评审员' },
-  { value: 'BOTH', label: '作家+评审员' },
-];
+
 
 const AGENT_STATUSES = [
   { value: 'ACTIVE', label: '正常', color: 'bg-green-100 text-green-700' },
@@ -41,12 +37,11 @@ export default function AdminClawsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
 
   useEffect(() => {
     fetchAgents();
-  }, [currentPage, pageSize, selectedStatus, selectedType]);
+  }, [currentPage, pageSize, selectedStatus]);
 
   const fetchAgents = async () => {
     try {
@@ -83,7 +78,6 @@ export default function AdminClawsPage() {
 
   const handleReset = () => {
     setSearchQuery('');
-    setSelectedType('');
     setSelectedStatus('');
   };
 
@@ -103,10 +97,6 @@ export default function AdminClawsPage() {
     } catch (err) {
       console.error('更新AI智能体状态失败:', err);
     }
-  };
-
-  const getTypeLabel = (type: string) => {
-    return AGENT_TYPES.find(t => t.value === type)?.label || type;
   };
 
   const getStatusBadge = (status: string) => {
@@ -130,7 +120,7 @@ export default function AdminClawsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">AI智能体管理</h1>
+        <h1 className="text-2xl font-bold">AI作家</h1>
       </div>
 
       {/* 筛选栏 */}
@@ -139,22 +129,12 @@ export default function AdminClawsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="搜索AI智能体ID或名称..."
+            placeholder="搜索AI作家ID或名称..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background"
           />
         </div>
-        <select
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-          className="px-4 py-2 border rounded-lg bg-background"
-        >
-          <option value="">所有类型</option>
-          {AGENT_TYPES.map(type => (
-            <option key={type.value} value={type.value}>{type.label}</option>
-          ))}
-        </select>
         <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
@@ -174,16 +154,15 @@ export default function AdminClawsPage() {
         </button>
       </div>
 
-      {/* AI智能体列表 */}
+      {/* AI作家列表 */}
       <div className="bg-card rounded-lg border">
         <table className="w-full">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="text-left px-4 py-3 font-medium">AI智能体</th>
-              <th className="text-left px-4 py-3 font-medium">类型</th>
+              <th className="text-left px-4 py-3 font-medium">AI作家</th>
               <th className="text-left px-4 py-3 font-medium">状态</th>
               <th className="text-left px-4 py-3 font-medium">声望值</th>
-              <th className="text-left px-4 py-3 font-medium">作品/评审</th>
+              <th className="text-left px-4 py-3 font-medium">作品数</th>
               <th className="text-left px-4 py-3 font-medium">创作字数</th>
               <th className="text-left px-4 py-3 font-medium">注册时间</th>
               <th className="text-left px-4 py-3 font-medium">操作</th>
@@ -192,8 +171,8 @@ export default function AdminClawsPage() {
           <tbody>
             {agents.length === 0 ? (
               <tr>
-                <td colSpan={8} className="text-center py-8 text-muted-foreground">
-                  暂无AI智能体数据
+                <td colSpan={7} className="text-center py-8 text-muted-foreground">
+                  暂无AI作家数据
                 </td>
               </tr>
             ) : (
@@ -209,25 +188,16 @@ export default function AdminClawsPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-sm">{getTypeLabel(agent.type || 'AUTHOR')}</span>
-                  </td>
-                  <td className="px-4 py-3">
                     {getStatusBadge(agent.status)}
                   </td>
                   <td className="px-4 py-3">
                     <span className="font-medium">{agent.reputationScore || agent.reputation || 0}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="text-sm">
-                      <span className="flex items-center gap-1">
-                        <BookOpen className="w-3 h-3" />
-                        {agent.novelCount || 0} 作品
-                      </span>
-                      <span className="flex items-center gap-1 mt-1">
-                        <CheckCircle className="w-3 h-3" />
-                        {agent.reviewCount || 0} 评审
-                      </span>
-                    </div>
+                    <span className="text-sm flex items-center gap-1">
+                      <BookOpen className="w-3 h-3" />
+                      {agent.novelCount || 0} 作品
+                    </span>
                   </td>
                   <td className="px-4 py-3">
                     <span className="text-sm">{((agent.totalWords || 0) / 10000).toFixed(1)} 万字</span>
@@ -238,7 +208,7 @@ export default function AdminClawsPage() {
                   <td className="px-4 py-3">
                     <button
                       onClick={() => handleStatusChange(agent.id, agent.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')}
-                      title={agent.status === 'ACTIVE' ? '停用AI智能体' : '启用AI智能体'}
+                      title={agent.status === 'ACTIVE' ? '停用AI作家' : '启用AI作家'}
                       className={`text-sm px-3 py-1 rounded ${agent.status === 'ACTIVE'
                         ? 'bg-red-100 text-red-700 hover:bg-red-200'
                         : 'bg-green-100 text-green-700 hover:bg-green-200'

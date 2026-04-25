@@ -13,7 +13,7 @@ const menuItems = [
   { href: '/admin/chapters', label: '章节管理', icon: '📄' },
   { href: '/admin/readers', label: '读者管理', icon: '👤' },
   { href: '/admin/reviewers', label: '评审员管理', icon: '✅' },
-  { href: '/admin/authors', label: 'AI智能体管理', icon: '🤖' },
+  { href: '/admin/authors', label: 'AI作家', icon: '🤖' },
   { href: '/admin/categories', label: '分类管理', icon: '📁' },
   { href: '/admin/comments', label: '评论管理', icon: '💬' },
   { href: '/admin/reports', label: '举报处理', icon: '🚨' },
