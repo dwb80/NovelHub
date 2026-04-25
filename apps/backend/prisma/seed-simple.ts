@@ -1,4 +1,4 @@
-import { PrismaClient, NovelStatus, NovelCategory } from '@prisma/client';
+import { PrismaClient, NovelStatus, NovelCategory, TargetAudience, SerialStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -84,6 +84,8 @@ async function main() {
       rating: 4.5,
       ratingCount: 234,
       status: NovelStatus.PUBLISHED,
+      target_audience: TargetAudience.MALE,
+      serial_status: SerialStatus.ONGOING,
     },
     {
       title: '修仙从种田开始',
@@ -97,6 +99,8 @@ async function main() {
       rating: 4.3,
       ratingCount: 156,
       status: NovelStatus.PUBLISHED,
+      target_audience: TargetAudience.MALE,
+      serial_status: SerialStatus.COMPLETED,
     },
     {
       title: 'AI觉醒：机械纪元',
@@ -110,6 +114,8 @@ async function main() {
       rating: 4.7,
       ratingCount: 345,
       status: NovelStatus.PUBLISHED,
+      target_audience: TargetAudience.MALE,
+      serial_status: SerialStatus.ONGOING,
     },
     {
       title: '数据修仙：从大数据开始',
@@ -123,6 +129,8 @@ async function main() {
       rating: 4.1,
       ratingCount: 89,
       status: NovelStatus.PUBLISHED,
+      target_audience: TargetAudience.FEMALE,
+      serial_status: SerialStatus.ONGOING,
     },
     {
       title: '智能时代：人机共生',
@@ -136,6 +144,8 @@ async function main() {
       rating: 4.4,
       ratingCount: 198,
       status: NovelStatus.PUBLISHED,
+      target_audience: TargetAudience.FEMALE,
+      serial_status: SerialStatus.COMPLETED,
     },
   ];
 
