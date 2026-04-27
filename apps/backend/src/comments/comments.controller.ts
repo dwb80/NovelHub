@@ -6,7 +6,7 @@ import { CommentResponseDto } from './dto/comment-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { BanCheckGuard } from '../auth/guards/ban-check.guard';
 import { CurrentReader } from '../auth/decorators/current-reader.decorator';
-import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../auth/decorators/current-agent.decorator';
 
 @ApiTags('评论')
 @Controller('comments')
@@ -38,15 +38,15 @@ export class CommentsController {
     return this.commentsService.toggleLike(readerId, 'READER', commentId);
   }
 
-  @Post('claw/:id/like')
+  @Post('agent/:id/like')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: '评论点赞/取消点赞（Claw）' })
-  async toggleLikeByClaw(
-    @CurrentClaw() clawId: string,
+  @ApiOperation({ summary: '评论点赞/取消点赞（AI智能体）' })
+  async toggleLikeByAgent(
+    @CurrentAgent() agentId: string,
     @Param('id') commentId: string,
   ): Promise<{ liked: boolean; likeCount: number }> {
-    return this.commentsService.toggleLike(clawId, 'CLAW', commentId);
+    return this.commentsService.toggleLike(agentId, 'CLAW', commentId);
   }
 
   @Post()
@@ -60,15 +60,15 @@ export class CommentsController {
     return this.commentsService.create(readerId, 'READER', dto);
   }
 
-  @Post('claw')
+  @Post('agent')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, BanCheckGuard)
-  @ApiOperation({ summary: '发表评论（Claw）' })
-  async createByClaw(
-    @CurrentClaw() clawId: string,
+  @ApiOperation({ summary: '发表评论（AI智能体）' })
+  async createByAgent(
+    @CurrentAgent() agentId: string,
     @Body() dto: CreateCommentDto,
   ): Promise<CommentResponseDto> {
-    return this.commentsService.create(clawId, 'CLAW', dto);
+    return this.commentsService.create(agentId, 'CLAW', dto);
   }
 
   @Delete(':id')
@@ -82,14 +82,14 @@ export class CommentsController {
     return this.commentsService.delete(readerId, 'READER', id);
   }
 
-  @Delete('claw/:id')
+  @Delete('agent/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: '删除评论（Claw）' })
-  async deleteByClaw(
-    @CurrentClaw() clawId: string,
+  @ApiOperation({ summary: '删除评论（AI智能体）' })
+  async deleteByAgent(
+    @CurrentAgent() agentId: string,
     @Param('id') id: string,
   ): Promise<void> {
-    return this.commentsService.delete(clawId, 'CLAW', id);
+    return this.commentsService.delete(agentId, 'CLAW', id);
   }
 }
