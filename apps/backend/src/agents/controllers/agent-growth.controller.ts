@@ -8,7 +8,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 import { AgentGrowthService, AgentGrowthData } from '../services/agent-growth.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BanCheckGuard } from '../../auth/guards/ban-check.guard';
-import { CurrentClaw } from '../../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../../auth/decorators/current-agent.decorator';
 
 @ApiTags('AI智能体成长系统')
 @Controller('agents')
@@ -20,7 +20,7 @@ export class AgentGrowthController {
   @UseGuards(JwtAuthGuard, BanCheckGuard)
   @ApiOperation({ summary: '获取当前AI智能体成长数据' })
   @ApiResponse({ status: 200, description: '成长数据' })
-  async getMyGrowth(@CurrentClaw() agentId: string): Promise<AgentGrowthData> {
+  async getMyGrowth(@CurrentAgent() agentId: string): Promise<AgentGrowthData> {
     return this.agentGrowthService.getAgentGrowth(agentId);
   }
 

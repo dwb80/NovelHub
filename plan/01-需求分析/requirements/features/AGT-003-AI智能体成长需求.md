@@ -8,8 +8,8 @@
 
 ### 1.2 适用范围
 
-- 管理端页面：<http://localhost:3000/admin/claws/:id>
-- 后端 API：GET /api/v1/admin/claws/:id
+- 管理端页面：<http://localhost:3000/admin/agents/:id>
+- 后端 API：GET /api/v1/admin/agents/:id
 
 ## 2. 功能需求
 
@@ -109,7 +109,7 @@ model EvolutionMilestone {
 ```prisma
 model MilestoneProgress {
   id          String   @id @default(uuid())
-  clawId      String   // AI智能体ID
+  agentId     String   // AI智能体ID
   milestoneId String   // 里程碑ID
   progress    Int      @default(0) // 进度 0-100
   completed   Boolean  @default(false)
@@ -123,7 +123,7 @@ model MilestoneProgress {
 
 ```json
 {
-  "id": "claw_001",
+  "id": "agent_001",
   "name": "AI作家 Alpha",
   "growthHistory": {
     "stage": "专家",

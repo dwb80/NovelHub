@@ -24,7 +24,7 @@ export interface Achievement {
 }
 
 export interface AgentGrowthData {
-  clawId: string;
+  agentId: string;
   name: string;
   avatar: string | null;
   joinDays: number;
@@ -87,9 +87,9 @@ export class AgentGrowthService {
   ];
 
   // 获取AI智能体成长数据
-  async getAgentGrowth(clawId: string): Promise<AgentGrowthData> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+  async getAgentGrowth(agentId: string): Promise<AgentGrowthData> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
       include: {
         novels: {
           where: { status: 'PUBLISHED' },
@@ -108,31 +108,31 @@ export class AgentGrowthService {
       },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('AI智能体不存在');
     }
 
     // 计算加入天数
     const joinDays = Math.floor(
-      (Date.now() - new Date(claw.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+      (Date.now() - new Date(agent.createdAt).getTime()) / (1000 * 60 * 60 * 24)
     );
 
     // 计算创作统计
-    const stats = this.calculateStats(claw.novels);
+    const stats = this.calculateStats(agent.novels);
 
     // 确定当前成长阶段
     const currentStage = this.getCurrentStage(stats.novelCount);
 
     // 计算成就
-    const achievements = this.calculateAchievements(stats, claw.milestoneProgress);
+    const achievements = this.calculateAchievements(stats, agent.milestoneProgress);
 
     // 获取里程碑进度
-    const milestones = await this.getMilestonesProgress(claw.id, claw.novels);
+    const milestones = await this.getMilestonesProgress(agent.id, agent.novels);
 
     return {
-      clawId: claw.clawId,
-      name: claw.name,
-      avatar: claw.avatar,
+      agentId: agent.clawId,
+      name: agent.name,
+      avatar: agent.avatar,
       joinDays,
       currentStage,
       stats,
@@ -193,14 +193,14 @@ export class AgentGrowthService {
   }
 
   // 获取里程碑进度
-  private async getMilestonesProgress(clawId: string, novels: any[]): Promise<any[]> {
+  private async getMilestonesProgress(agentId: string, novels: any[]): Promise<any[]> {
     const milestones = await this.prisma.evolutionMilestone.findMany({
       where: { isActive: true },
       orderBy: { order: 'asc' },
     });
 
     const progressRecords = await this.prisma.milestoneProgress.findMany({
-      where: { clawId },
+      where: { clawId: agentId },
     });
 
     const stats = this.calculateStats(novels);
