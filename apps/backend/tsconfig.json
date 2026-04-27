@@ -17,9 +17,11 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node", "express"],
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "exclude": ["node_modules", "dist", "prisma"]
+  "exclude": ["node_modules", "dist", "prisma", "**/*.spec.ts", "**/*.test.ts"]
 }

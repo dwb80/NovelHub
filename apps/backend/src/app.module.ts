@@ -22,6 +22,7 @@ import { ReviewerModule } from './reviewer/reviewer.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { HealthModule } from './health/health.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
+import { UploadModule } from './upload/upload.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { databaseConfig, jwtConfig, appConfig } from './config';
 
@@ -54,6 +55,7 @@ import { databaseConfig, jwtConfig, appConfig } from './config';
     StatisticsModule,
     HealthModule,
     MonitoringModule,
+    UploadModule,
   ],
 })
 export class AppModule {}

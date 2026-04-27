@@ -13,6 +13,8 @@ interface Comment {
   createdAt: string
   likeCount: number
   liked?: boolean
+  parentId?: string | null
+  replies?: Comment[]
 }
 
 interface ReadingProgress {
@@ -20,6 +22,15 @@ interface ReadingProgress {
   chapterId: string
   position: number
   percentage: number
+}
+
+interface RecommendedNovel {
+  id: string
+  title: string
+  cover: string | null
+  authorName: string
+  category: string
+  wordCount: number
 }
 
 function NovelDetailContent() {
@@ -36,6 +47,9 @@ function NovelDetailContent() {
   const [activeTab, setActiveTab] = useState<'chapters' | 'comments'>('chapters')
   const [commentSort, setCommentSort] = useState<'newest' | 'hottest'>('newest')
   const [chapterOrder, setChapterOrder] = useState<'asc' | 'desc'>('asc')
+  const [recommendations, setRecommendations] = useState<RecommendedNovel[]>([])
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  const [replyContent, setReplyContent] = useState('')
 
   useEffect(() => {
     if (novelId) {
@@ -43,8 +57,21 @@ function NovelDetailContent() {
       fetchChapters()
       fetchComments()
       checkCollectionStatus()
+      fetchRecommendations()
     }
   }, [novelId, commentSort, chapterOrder])
+
+  const fetchRecommendations = async () => {
+    try {
+      const response = await fetch(`/api/v1/novels/${novelId}/recommendations`)
+      if (response.ok) {
+        const data = await response.json()
+        setRecommendations(data)
+      }
+    } catch (err) {
+      console.error('获取推荐失败:', err)
+    }
+  }
 
   const fetchNovelDetail = async () => {
     try {
@@ -180,6 +207,41 @@ function NovelDetailContent() {
       }
     } catch (err) {
       alert('评论发表失败')
+    }
+  }
+
+  const submitReply = async (parentId: string) => {
+    if (!replyContent.trim()) {
+      alert('请输入回复内容')
+      return
+    }
+
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      alert('请先登录')
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/v1/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ novelId, content: replyContent, parentId })
+      })
+
+      if (response.ok) {
+        setReplyContent('')
+        setReplyingTo(null)
+        fetchComments()
+        alert('回复发表成功！')
+      } else {
+        alert('回复发表失败')
+      }
+    } catch (err) {
+      alert('回复发表失败')
     }
   }
 
@@ -421,16 +483,106 @@ function NovelDetailContent() {
                         </span>
                       </div>
                       <p className="text-foreground mb-3">{comment.content}</p>
-                      <button
-                        onClick={() => likeComment(comment.id)}
-                        className={`text-sm flex items-center gap-1 ${comment.liked ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}
-                      >
-                        👍 {comment.likeCount}
-                      </button>
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={() => likeComment(comment.id)}
+                          className={`text-sm flex items-center gap-1 ${comment.liked ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}
+                        >
+                          👍 {comment.likeCount}
+                        </button>
+                        <button
+                          onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                          className="text-sm text-muted-foreground hover:text-primary"
+                        >
+                          回复
+                        </button>
+                      </div>
+
+                      {/* 回复输入框 */}
+                      {replyingTo === comment.id && (
+                        <div className="mt-4 pl-4 border-l-2 border-border">
+                          <textarea
+                            value={replyContent}
+                            onChange={(e) => setReplyContent(e.target.value)}
+                            placeholder={`回复 ${comment.authorName}...`}
+                            className="w-full px-3 py-2 border rounded-lg resize-none h-20 bg-background text-sm"
+                          />
+                          <div className="flex justify-end gap-2 mt-2">
+                            <button
+                              onClick={() => setReplyingTo(null)}
+                              className="px-4 py-1 text-sm border rounded hover:bg-accent"
+                            >
+                              取消
+                            </button>
+                            <button
+                              onClick={() => submitReply(comment.id)}
+                              className="px-4 py-1 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90"
+                            >
+                              发表回复
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 回复列表 */}
+                      {comment.replies && comment.replies.length > 0 && (
+                        <div className="mt-4 pl-4 border-l-2 border-border space-y-3">
+                          {comment.replies.map((reply) => (
+                            <div key={reply.id} className="bg-muted/50 rounded-lg p-3">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-medium text-sm">{reply.authorName}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(reply.createdAt).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <p className="text-sm text-foreground">{reply.content}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* 相关推荐 */}
+        {recommendations.length > 0 && (
+          <div className="mt-12">
+            <h3 className="text-lg font-semibold mb-4">相关推荐</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {recommendations.map((novel) => (
+                <Link
+                  key={novel.id}
+                  href={`/novels/${novel.id}`}
+                  className="group"
+                >
+                  <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden mb-2">
+                    {novel.cover ? (
+                      <img
+                        src={novel.cover}
+                        alt={novel.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
+                        暂无封面
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                    {novel.title}
+                  </h4>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {novel.authorName} · {novel.category}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {(novel.wordCount / 10000).toFixed(1)}万字
+                  </p>
+                </Link>
+              ))}
             </div>
           </div>
         )}

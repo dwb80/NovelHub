@@ -298,6 +298,131 @@ export class NovelsService {
     });
   }
 
+  /**
+   * 获取相关推荐小说
+   * 推荐维度：同作者、同分类、相似标签
+   * @param novelId 当前小说ID
+   * @param limit 返回数量，默认6本
+   */
+  async getRecommendations(novelId: string, limit: number = 6): Promise<NovelResponseDto[]> {
+    // 获取当前小说信息
+    const currentNovel = await this.prisma.novel.findUnique({
+      where: { id: novelId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            displayName: true,
+            reputationScore: true,
+          },
+        },
+      },
+    });
+
+    if (!currentNovel) {
+      throw new NotFoundException('小说不存在');
+    }
+
+    // 1. 获取同作者的其他小说（2本）
+    const sameAuthorNovels = await this.prisma.novel.findMany({
+      where: {
+        authorId: currentNovel.authorId,
+        id: { not: novelId },
+        status: NovelStatus.PUBLISHED,
+      },
+      take: 2,
+      orderBy: { viewCount: 'desc' },
+      include: {
+        author: {
+          select: {
+            id: true,
+            displayName: true,
+            reputationScore: true,
+          },
+        },
+      },
+    });
+
+    // 2. 获取同分类的其他小说（2本）
+    const sameCategoryNovels = await this.prisma.novel.findMany({
+      where: {
+        category: currentNovel.category,
+        id: { not: novelId },
+        authorId: { not: currentNovel.authorId },
+        status: NovelStatus.PUBLISHED,
+      },
+      take: 2,
+      orderBy: { viewCount: 'desc' },
+      include: {
+        author: {
+          select: {
+            id: true,
+            displayName: true,
+            reputationScore: true,
+          },
+        },
+      },
+    });
+
+    // 3. 获取相似标签的小说（2本）
+    let similarTagNovels: any[] = [];
+    if (currentNovel.tags && currentNovel.tags.length > 0) {
+      similarTagNovels = await this.prisma.novel.findMany({
+        where: {
+          tags: {
+            hasSome: currentNovel.tags,
+          },
+          id: { not: novelId },
+          authorId: { not: currentNovel.authorId },
+          category: { not: currentNovel.category },
+          status: NovelStatus.PUBLISHED,
+        },
+        take: 2,
+        orderBy: { viewCount: 'desc' },
+        include: {
+          author: {
+            select: {
+              id: true,
+              displayName: true,
+              reputationScore: true,
+            },
+          },
+        },
+      });
+    }
+
+    // 合并结果并去重
+    const allRecommendations = [...sameAuthorNovels, ...sameCategoryNovels, ...similarTagNovels];
+    const uniqueRecommendations = allRecommendations.filter(
+      (novel, index, self) => index === self.findIndex((n) => n.id === novel.id)
+    );
+
+    // 如果数量不足，补充热门小说
+    if (uniqueRecommendations.length < limit) {
+      const existingIds = [novelId, ...uniqueRecommendations.map((n) => n.id)];
+      const hotNovels = await this.prisma.novel.findMany({
+        where: {
+          id: { notIn: existingIds },
+          status: NovelStatus.PUBLISHED,
+        },
+        take: limit - uniqueRecommendations.length,
+        orderBy: { viewCount: 'desc' },
+        include: {
+          author: {
+            select: {
+              id: true,
+              displayName: true,
+              reputationScore: true,
+            },
+          },
+        },
+      });
+      uniqueRecommendations.push(...hotNovels);
+    }
+
+    return uniqueRecommendations.slice(0, limit).map((n) => this.mapToResponse(n));
+  }
+
   private mapToResponse(novel: any): NovelResponseDto {
     return {
       id: novel.id,

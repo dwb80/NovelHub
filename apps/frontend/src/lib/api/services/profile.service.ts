@@ -29,11 +29,11 @@ export const ProfileService = {
     return response.data;
   },
 
-  // 上传头像 - 使用 /readers/me/avatar (需要后端支持)
+  // 上传头像 - 使用 /upload/avatar
   async uploadAvatar(file: File): Promise<UploadAvatarResponse> {
     const formData = new FormData();
-    formData.append('avatar', file);
-    const response = await api.post('/readers/me/avatar', formData, {
+    formData.append('file', file);
+    const response = await api.post('/upload/avatar', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

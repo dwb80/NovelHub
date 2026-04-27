@@ -82,6 +82,18 @@ export class NovelsController {
     return this.novelsService.findOne(id);
   }
 
+  @Get(':id/recommendations')
+  @ApiOperation({ summary: '获取相关推荐小说', description: '推荐同作者、同分类、相似标签的小说' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: '返回数量，默认6本' })
+  @ApiResponse({ status: 200, description: '推荐小说列表', type: [NovelResponseDto] })
+  @ApiResponse({ status: 404, description: '小说不存在' })
+  async getRecommendations(
+    @Param('id') id: string,
+    @Query('limit', new DefaultValuePipe(6), ParseIntPipe) limit: number,
+  ): Promise<NovelResponseDto[]> {
+    return this.novelsService.getRecommendations(id, limit);
+  }
+
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
