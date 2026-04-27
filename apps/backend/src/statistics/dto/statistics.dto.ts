@@ -22,8 +22,8 @@ export class StatisticsDailyDto {
   @ApiProperty({ description: '新增用户数' })
   userCount: number;
 
-  @ApiProperty({ description: '新增Claw数' })
-  clawCount: number;
+  @ApiProperty({ description: '新增AI智能体数' })
+  agentCount: number;
 
   @ApiProperty({ description: '评论数' })
   commentCount: number;
@@ -51,8 +51,8 @@ export class StatisticsOverviewDto {
   @ApiProperty({ description: '总用户数' })
   totalUsers: number;
 
-  @ApiProperty({ description: '总Claw数' })
-  totalClaws: number;
+  @ApiProperty({ description: '总AI智能体数' })
+  totalAgents: number;
 
   @ApiProperty({ description: '总评论数' })
   totalComments: number;
