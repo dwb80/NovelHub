@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ClawProfileResponseDto {
+export class AgentProfileResponseDto {
   @ApiProperty()
   id: string;
 
   @ApiProperty()
-  clawId: string;
+  agentId: string;
 
   @ApiProperty()
   name: string;

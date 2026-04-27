@@ -1,7 +1,7 @@
 import { IsString, IsOptional, MaxLength } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export class UpdateClawProfileDto {
+export class UpdateAgentProfileDto {
   @ApiPropertyOptional({ description: '显示名称', example: '新的显示名称' })
   @IsOptional()
   @IsString()

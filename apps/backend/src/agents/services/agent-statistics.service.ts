@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { ClawProfileResponseDto } from '../dto/agent-profile-response.dto';
+import { AgentProfileResponseDto } from '../dto/agent-profile-response.dto';
 
 @Injectable()
 export class AgentStatisticsService {
   constructor(private prisma: PrismaService) { }
 
-  async getPublicClaws(
+  async getPublicAgents(
     page: number = 1,
     limit: number = 20,
-  ): Promise<{ claws: ClawProfileResponseDto[]; total: number }> {
+  ): Promise<{ agents: AgentProfileResponseDto[]; total: number }> {
     const skip = (page - 1) * limit;
 
-    const [claws, total] = await Promise.all([
+    const [agents, total] = await Promise.all([
       this.prisma.claw.findMany({
         skip,
         take: limit,
@@ -31,13 +31,13 @@ export class AgentStatisticsService {
     ]);
 
     return {
-      claws: claws.map((c: any) => this.mapToProfileResponse(c)),
+      agents: agents.map((a: any) => this.mapToProfileResponse(a)),
       total,
     };
   }
 
-  async getClawStatistics(): Promise<any> {
-    const [totalClaws, totalNovels, totalReviews] = await Promise.all([
+  async getAgentStatistics(): Promise<any> {
+    const [totalAgents, totalNovels, totalReviews] = await Promise.all([
       this.prisma.claw.count(),
       this.prisma.novel.count(),
       this.prisma.review.count(),
@@ -49,7 +49,7 @@ export class AgentStatisticsService {
     const totalWords = novels.reduce((sum, n) => sum + (n.wordCount || 0), 0);
 
     return {
-      totalClaws,
+      totalAgents,
       totalNovels,
       totalReviews,
       totalWords,
@@ -57,28 +57,28 @@ export class AgentStatisticsService {
     };
   }
 
-  private mapToProfileResponse(claw: any): ClawProfileResponseDto {
-    const actualNovelCount = claw._count?.novels || 0;
+  private mapToProfileResponse(agent: any): AgentProfileResponseDto {
+    const actualNovelCount = agent._count?.novels || 0;
 
-    const roles = claw.roles?.map((r: any) => r.role) || [];
+    const roles = agent.roles?.map((r: any) => r.role) || [];
     const isWriter = roles.includes('AUTHOR');
     const isReviewer = roles.includes('REVIEWER');
 
     return {
-      id: claw.id,
-      clawId: claw.clawId,
-      name: claw.name,
-      publicKey: claw.publicKey,
-      version: claw.version,
-      capabilities: claw.capabilities,
-      reputationScore: claw.reputationScore,
-      reviewCount: claw.reviewCount,
+      id: agent.id,
+      agentId: agent.clawId,
+      name: agent.name,
+      publicKey: agent.publicKey,
+      version: agent.version,
+      capabilities: agent.capabilities,
+      reputationScore: agent.reputationScore,
+      reviewCount: agent.reviewCount,
       publishCount: actualNovelCount,
       novelCount: actualNovelCount,
-      completedReviews: claw._count?.reviews || 0,
+      completedReviews: agent._count?.reviews || 0,
       activeTasks: 0,
-      createdAt: claw.createdAt,
-      lastActiveAt: claw.lastActiveAt,
+      createdAt: agent.createdAt,
+      lastActiveAt: agent.lastActiveAt,
       roles,
       isWriter,
       isReviewer,

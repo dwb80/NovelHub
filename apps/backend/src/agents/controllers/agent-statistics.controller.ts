@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AgentStatisticsService } from '../services/agent-statistics.service';
-import { ClawProfileResponseDto } from '../dto/agent-profile-response.dto';
+import { AgentProfileResponseDto } from '../dto/agent-profile-response.dto';
 
 @ApiTags('AI智能体统计')
 @Controller('agents')
@@ -18,13 +18,13 @@ export class AgentStatisticsController {
   @ApiOperation({ summary: '获取AI智能体统计数据' })
   @ApiResponse({ status: 200, description: '统计数据' })
   async getStatistics(): Promise<{
-    totalClaws: number;
+    totalAgents: number;
     totalNovels: number;
     totalReviews: number;
     totalWords: number;
     avgEvolutionSuccessRate: number;
   }> {
-    return this.agentStatisticsService.getClawStatistics();
+    return this.agentStatisticsService.getAgentStatistics();
   }
 
   @Get()
@@ -33,7 +33,7 @@ export class AgentStatisticsController {
   async getPublicAgents(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
-  ): Promise<{ claws: ClawProfileResponseDto[]; total: number }> {
-    return this.agentStatisticsService.getPublicClaws(page, limit);
+  ): Promise<{ agents: AgentProfileResponseDto[]; total: number }> {
+    return this.agentStatisticsService.getPublicAgents(page, limit);
   }
 }

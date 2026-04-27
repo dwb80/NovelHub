@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpdateClawProfileDto } from '../dto/update-agent-profile.dto';
-import { ClawProfileResponseDto } from '../dto/agent-profile-response.dto';
+import { UpdateAgentProfileDto } from '../dto/update-agent-profile.dto';
+import { AgentProfileResponseDto } from '../dto/agent-profile-response.dto';
 
 @Injectable()
 export class AgentProfileService {
   constructor(private prisma: PrismaService) { }
 
-  async getProfile(clawId: string): Promise<ClawProfileResponseDto> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+  async getProfile(agentId: string): Promise<AgentProfileResponseDto> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
       include: {
         roles: true,
         _count: {
@@ -22,25 +22,25 @@ export class AgentProfileService {
       },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('AI智能体不存在');
     }
 
-    if (claw.isBanned) {
+    if (agent.isBanned) {
       throw new ForbiddenException('你被封禁，请与管理员联系');
     }
 
     await this.prisma.claw.update({
-      where: { id: clawId },
+      where: { id: agentId },
       data: { lastActiveAt: new Date() },
     });
 
-    return this.mapToProfileResponse(claw);
+    return this.mapToProfileResponse(agent);
   }
 
-  async getProfileByClawId(clawId: string): Promise<ClawProfileResponseDto> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+  async getProfileByAgentId(agentId: string): Promise<AgentProfileResponseDto> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
       include: {
         roles: true,
         _count: {
@@ -53,28 +53,28 @@ export class AgentProfileService {
       },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('AI智能体不存在');
     }
 
-    return this.mapToProfileResponse(claw);
+    return this.mapToProfileResponse(agent);
   }
 
   async updateProfile(
     id: string,
-    dto: UpdateClawProfileDto,
-  ): Promise<ClawProfileResponseDto> {
+    dto: UpdateAgentProfileDto,
+  ): Promise<AgentProfileResponseDto> {
     if (dto.name) {
-      const existingClaw = await this.prisma.claw.findUnique({
+      const existingAgent = await this.prisma.claw.findUnique({
         where: { name: dto.name },
       });
 
-      if (existingClaw && existingClaw.id !== id) {
+      if (existingAgent && existingAgent.id !== id) {
         throw new ConflictException(`AI智能体名称 "${dto.name}" 已被使用，请选择其他名称`);
       }
     }
 
-    const claw = await this.prisma.claw.update({
+    const agent = await this.prisma.claw.update({
       where: { id },
       data: {
         name: dto.name,
@@ -91,31 +91,31 @@ export class AgentProfileService {
       },
     });
 
-    return this.mapToProfileResponse(claw);
+    return this.mapToProfileResponse(agent);
   }
 
-  private mapToProfileResponse(claw: any): ClawProfileResponseDto {
-    const actualNovelCount = claw._count?.novels || 0;
+  private mapToProfileResponse(agent: any): AgentProfileResponseDto {
+    const actualNovelCount = agent._count?.novels || 0;
 
-    const roles = claw.roles?.map((r: any) => r.role) || [];
+    const roles = agent.roles?.map((r: any) => r.role) || [];
     const isWriter = roles.includes('AUTHOR');
     const isReviewer = roles.includes('REVIEWER');
 
     return {
-      id: claw.id,
-      clawId: claw.clawId,
-      name: claw.name,
-      publicKey: claw.publicKey,
-      version: claw.version,
-      capabilities: claw.capabilities,
-      reputationScore: claw.reputationScore,
-      reviewCount: claw.reviewCount,
+      id: agent.id,
+      agentId: agent.clawId,
+      name: agent.name,
+      publicKey: agent.publicKey,
+      version: agent.version,
+      capabilities: agent.capabilities,
+      reputationScore: agent.reputationScore,
+      reviewCount: agent.reviewCount,
       publishCount: actualNovelCount,
       novelCount: actualNovelCount,
-      completedReviews: claw._count?.reviews || 0,
-      activeTasks: claw._count?.reviewTasks || 0,
-      createdAt: claw.createdAt,
-      lastActiveAt: claw.lastActiveAt,
+      completedReviews: agent._count?.reviews || 0,
+      activeTasks: agent._count?.reviewTasks || 0,
+      createdAt: agent.createdAt,
+      lastActiveAt: agent.lastActiveAt,
       roles,
       isWriter,
       isReviewer,
