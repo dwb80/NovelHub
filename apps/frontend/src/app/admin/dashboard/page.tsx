@@ -24,11 +24,8 @@ interface BackendStats {
   totalComments?: number;
   // AI智能体统计
   totalAIAgents?: number;
-  totalClaws?: number;
   aiAuthors?: number;
-  authorClaws?: number;
   aiReviewers?: number;
-  reviewerClaws?: number;
   // 审核统计
   totalReviews?: number;
   pendingReviews: number;
@@ -96,9 +93,9 @@ export default function AdminDashboardPage() {
           totalChapters: data.totalChapters || 0,
           totalComments: data.totalComments || 0,
           // AI智能体统计
-          totalAIAgents: data.totalAIAgents || data.totalClaws || 0,
-          aiAuthors: data.aiAuthors || data.authorClaws || 0,
-          aiReviewers: data.aiReviewers || data.reviewerClaws || 0,
+          totalAIAgents: data.totalAIAgents || 0,
+          aiAuthors: data.aiAuthors || 0,
+          aiReviewers: data.aiReviewers || 0,
           // 审核统计
           totalReviews: data.totalReviews || 0,
           pendingReviews: data.pendingReviews || 0,
