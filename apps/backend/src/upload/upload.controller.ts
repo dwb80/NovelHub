@@ -13,7 +13,7 @@ import { extname } from 'path';
 import { Request } from 'express';
 import { UploadService } from './upload.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../auth/decorators/current-agent.decorator';
 import { PrismaService } from '../prisma/prisma.service';
 
 @ApiTags('文件上传')
@@ -67,7 +67,7 @@ export class UploadController {
   )
   async uploadAvatar(
     @UploadedFile() file: Express.Multer.File,
-    @CurrentClaw() clawId: string,
+    @CurrentAgent() agentId: string,
   ): Promise<{ avatarUrl: string; message: string }> {
     if (!file) {
       throw new BadRequestException('请选择要上传的文件');
@@ -76,7 +76,7 @@ export class UploadController {
     // 更新用户头像
     const avatarUrl = `/uploads/avatars/${file.filename}`;
     await this.prisma.claw.update({
-      where: { id: clawId },
+      where: { id: agentId },
       data: { avatar: avatarUrl },
     });
 

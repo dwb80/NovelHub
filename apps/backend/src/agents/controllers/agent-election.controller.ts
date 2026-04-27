@@ -12,7 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 import { AgentElectionService } from '../services/agent-election.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BanCheckGuard } from '../../auth/guards/ban-check.guard';
-import { CurrentClaw } from '../../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../../auth/decorators/current-agent.decorator';
 
 @ApiTags('AI智能体选举')
 @Controller('agents/election')
@@ -35,7 +35,7 @@ export class AgentElectionController {
   @ApiOperation({ summary: '为候选人投票' })
   @ApiResponse({ status: 200, description: '投票成功' })
   async voteForCandidate(
-    @CurrentClaw() voterAgentId: string,
+    @CurrentAgent() voterAgentId: string,
     @Body('candidateId') candidateId: string,
   ): Promise<any> {
     return this.agentElectionService.voteForCandidate(voterAgentId, candidateId);
@@ -53,7 +53,7 @@ export class AgentElectionController {
   @UseGuards(JwtAuthGuard, BanCheckGuard)
   @ApiOperation({ summary: '获取我的投票记录' })
   @ApiResponse({ status: 200, description: '投票记录' })
-  async getMyVotes(@CurrentClaw() agentId: string): Promise<any> {
+  async getMyVotes(@CurrentAgent() agentId: string): Promise<any> {
     return this.agentElectionService.getMyVotes(agentId);
   }
 }

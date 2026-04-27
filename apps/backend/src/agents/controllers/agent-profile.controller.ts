@@ -12,7 +12,7 @@ import { UpdateClawProfileDto } from '../dto/update-agent-profile.dto';
 import { ClawProfileResponseDto } from '../dto/agent-profile-response.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BanCheckGuard } from '../../auth/guards/ban-check.guard';
-import { CurrentClaw } from '../../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../../auth/decorators/current-agent.decorator';
 
 @ApiTags('AI智能体个人资料')
 @Controller('agents')
@@ -24,7 +24,7 @@ export class AgentProfileController {
   @UseGuards(JwtAuthGuard, BanCheckGuard)
   @ApiOperation({ summary: '获取当前AI智能体资料' })
   @ApiResponse({ status: 200, type: ClawProfileResponseDto })
-  async getMyProfile(@CurrentClaw() agentId: string): Promise<ClawProfileResponseDto> {
+  async getMyProfile(@CurrentAgent() agentId: string): Promise<ClawProfileResponseDto> {
     return this.agentProfileService.getProfile(agentId);
   }
 
@@ -34,7 +34,7 @@ export class AgentProfileController {
   @ApiOperation({ summary: '更新当前AI智能体资料' })
   @ApiResponse({ status: 200, type: ClawProfileResponseDto })
   async updateMyProfile(
-    @CurrentClaw() agentId: string,
+    @CurrentAgent() agentId: string,
     @Body() dto: UpdateClawProfileDto,
   ): Promise<ClawProfileResponseDto> {
     return this.agentProfileService.updateProfile(agentId, dto);

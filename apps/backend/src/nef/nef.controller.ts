@@ -11,7 +11,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { NefService } from './nef.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../auth/decorators/current-agent.decorator';
 import { CreatePlotPatternDto } from './dto/create-plot-pattern.dto';
 import { CreateCharacterProfileDto } from './dto/create-character-profile.dto';
 import { EvolutionRequestDto, EvolutionResponseDto } from './dto/evolution-request.dto';
@@ -28,8 +28,8 @@ export class NefController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取我的创作档案' })
-  async getMyArchive(@CurrentClaw('sub') clawId: string) {
-    return this.nefService.getOrCreateCreationArchive(clawId);
+  async getMyArchive(@CurrentAgent('sub') agentId: string) {
+    return this.nefService.getOrCreateCreationArchive(agentId);
   }
 
   // ==================== 情节模式 ====================
@@ -39,10 +39,10 @@ export class NefController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '创建情节模式' })
   async createPlotPattern(
-    @CurrentClaw('sub') clawId: string,
+    @CurrentAgent('sub') agentId: string,
     @Body() dto: CreatePlotPatternDto,
   ) {
-    return this.nefService.createPlotPattern(clawId, dto);
+    return this.nefService.createPlotPattern(agentId, dto);
   }
 
   @Get('patterns')
@@ -50,10 +50,10 @@ export class NefController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取情节模式列表' })
   async getPlotPatterns(
-    @CurrentClaw('sub') clawId: string,
+    @CurrentAgent('sub') agentId: string,
     @Query('type') type?: PatternType,
   ) {
-    return this.nefService.getPlotPatterns(clawId, type);
+    return this.nefService.getPlotPatterns(agentId, type);
   }
 
   @Get('patterns/:id')
@@ -71,10 +71,10 @@ export class NefController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '创建角色原型' })
   async createCharacterProfile(
-    @CurrentClaw('sub') clawId: string,
+    @CurrentAgent('sub') agentId: string,
     @Body() dto: CreateCharacterProfileDto,
   ) {
-    return this.nefService.createCharacterProfile(clawId, dto);
+    return this.nefService.createCharacterProfile(agentId, dto);
   }
 
   @Get('profiles')
@@ -82,10 +82,10 @@ export class NefController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取角色原型列表' })
   async getCharacterProfiles(
-    @CurrentClaw('sub') clawId: string,
+    @CurrentAgent('sub') agentId: string,
     @Query('type') type?: ArchetypeType,
   ) {
-    return this.nefService.getCharacterProfiles(clawId, type);
+    return this.nefService.getCharacterProfiles(agentId, type);
   }
 
   // ==================== 进化引擎 ====================
@@ -96,10 +96,10 @@ export class NefController {
   @ApiOperation({ summary: '进化章节内容' })
   @ApiResponse({ status: 200, type: EvolutionResponseDto })
   async evolveContent(
-    @CurrentClaw('sub') clawId: string,
+    @CurrentAgent('sub') agentId: string,
     @Body() dto: EvolutionRequestDto,
   ): Promise<EvolutionResponseDto> {
-    return this.nefService.evolveContent(clawId, dto);
+    return this.nefService.evolveContent(agentId, dto);
   }
 
   @Get('evolution-history')
@@ -107,10 +107,10 @@ export class NefController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取进化历史' })
   async getEvolutionHistory(
-    @CurrentClaw('sub') clawId: string,
+    @CurrentAgent('sub') agentId: string,
     @Query('chapterId') chapterId?: string,
   ) {
-    return this.nefService.getEvolutionHistory(clawId, chapterId);
+    return this.nefService.getEvolutionHistory(agentId, chapterId);
   }
 
   @Get('evolution/:id')
@@ -126,9 +126,9 @@ export class NefController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '应用进化结果' })
   async applyEvolution(
-    @CurrentClaw('sub') clawId: string,
+    @CurrentAgent('sub') agentId: string,
     @Param('id') evolutionId: string,
   ) {
-    return this.nefService.applyEvolution(clawId, evolutionId);
+    return this.nefService.applyEvolution(agentId, evolutionId);
   }
 }

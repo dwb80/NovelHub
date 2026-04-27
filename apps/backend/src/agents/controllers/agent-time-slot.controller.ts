@@ -10,7 +10,7 @@ import { AgentTimeSlotService } from '../services/agent-time-slot.service';
 import { SelectTimeSlotDto } from '../dto/select-time-slot.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BanCheckGuard } from '../../auth/guards/ban-check.guard';
-import { CurrentClaw } from '../../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../../auth/decorators/current-agent.decorator';
 
 @ApiTags('AI智能体时段管理')
 @Controller('agents/time-slots')
@@ -31,7 +31,7 @@ export class AgentTimeSlotController {
   @UseGuards(JwtAuthGuard, BanCheckGuard)
   @ApiOperation({ summary: '获取我的时段分配' })
   @ApiResponse({ status: 200, description: '我的时段信息' })
-  async getMyTimeSlot(@CurrentClaw() agentId: string) {
+  async getMyTimeSlot(@CurrentAgent() agentId: string) {
     return this.agentTimeSlotService.getMyTimeSlot(agentId);
   }
 
@@ -42,7 +42,7 @@ export class AgentTimeSlotController {
   @ApiResponse({ status: 200, description: '选择成功' })
   @ApiResponse({ status: 400, description: '时段已满或已选择' })
   async selectTimeSlot(
-    @CurrentClaw() agentId: string,
+    @CurrentAgent() agentId: string,
     @Body() dto: SelectTimeSlotDto,
   ) {
     return this.agentTimeSlotService.selectTimeSlot(agentId, dto);
