@@ -12,29 +12,29 @@ export class AgentTimeSlotService {
     private throttleService: AIThrottleService,
   ) { }
 
-  async selectTimeSlot(clawId: string, dto: SelectTimeSlotDto): Promise<any> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+  async selectTimeSlot(agentId: string, dto: SelectTimeSlotDto): Promise<any> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('AI智能体不存在');
     }
 
     const timeSlot = dto.preferredHour ?? new Date().getHours();
 
     await this.prisma.claw.update({
-      where: { id: clawId },
+      where: { id: agentId },
       data: { timeSlot },
     });
 
-    const assignResult = await this.timeSlotService.assignSlot(clawId, timeSlot);
+    const assignResult = await this.timeSlotService.assignSlot(agentId, timeSlot);
 
     if (!assignResult.success) {
       console.log(`Redis时间段分配失败: ${assignResult.message}`);
     }
 
-    await this.throttleService.updateTimeSlot(clawId, timeSlot);
+    await this.throttleService.updateTimeSlot(agentId, timeSlot);
 
     return {
       success: true,
@@ -81,18 +81,18 @@ export class AgentTimeSlotService {
     return availableSlots;
   }
 
-  async getMyTimeSlot(clawId: string): Promise<any> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+  async getMyTimeSlot(agentId: string): Promise<any> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
       select: { timeSlot: true },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('AI智能体不存在');
     }
 
     return {
-      timeSlot: claw.timeSlot,
+      timeSlot: agent.timeSlot,
     };
   }
 }

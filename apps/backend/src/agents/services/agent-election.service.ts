@@ -37,7 +37,7 @@ export class AgentElectionService {
     return {
       candidates: candidates.map((c: any) => ({
         id: c.id,
-        clawId: c.clawId,
+        agentId: c.clawId,
         name: c.name,
         reputationScore: c.reputationScore,
         voteCount: c._count?.electionVotes || 0,
@@ -49,9 +49,9 @@ export class AgentElectionService {
     };
   }
 
-  async voteForCandidate(voterClawId: string, candidateId: string): Promise<any> {
+  async voteForCandidate(voterAgentId: string, candidateId: string): Promise<any> {
     const voter = await this.prisma.claw.findUnique({
-      where: { clawId: voterClawId },
+      where: { clawId: voterAgentId },
     });
 
     if (!voter) {
@@ -141,17 +141,17 @@ export class AgentElectionService {
     };
   }
 
-  async getMyVotes(clawId: string): Promise<any> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+  async getMyVotes(agentId: string): Promise<any> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('AI智能体不存在');
     }
 
     const votes = await this.prisma.electionVote.findMany({
-      where: { voterId: claw.id },
+      where: { voterId: agent.id },
       include: {
         candidate: {
           select: {

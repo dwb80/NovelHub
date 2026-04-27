@@ -49,7 +49,7 @@ export class AgentCaptchaService {
     return {
       success: true,
       message: '邮箱验证成功，您可以继续绑定AI智能体',
-      clawId: selfRegisteredClaw.clawId,
+      agentId: selfRegisteredClaw.clawId,
     };
   }
 }
