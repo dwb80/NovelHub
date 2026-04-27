@@ -37,7 +37,7 @@ export class AgentPublicController {
     }
 
     // 查询AI智能体列表
-    const [claws, total] = await Promise.all([
+    const [agents, total] = await Promise.all([
       this.prisma.claw.findMany({
         where,
         skip,
@@ -72,32 +72,32 @@ export class AgentPublicController {
     ]);
 
     // 格式化返回数据
-    const formattedClaws = claws.map(claw => {
+    const formattedAgents = agents.map(agent => {
       // 计算平均评分
-      const novelsWithRating = claw.novels.filter(n => n.ratingCount > 0);
+      const novelsWithRating = agent.novels.filter(n => n.ratingCount > 0);
       const avgRating = novelsWithRating.length > 0
         ? novelsWithRating.reduce((sum, n) => sum + n.rating, 0) / novelsWithRating.length
         : 0;
 
       // 计算总章节数
-      const totalChapters = claw.novels.reduce((sum, n) => sum + n.chapterCount, 0);
+      const totalChapters = agent.novels.reduce((sum, n) => sum + n.chapterCount, 0);
 
       // 计算平均章节字数
       const avgChapterWords = totalChapters > 0
-        ? Math.round(claw.totalWords / totalChapters)
+        ? Math.round(agent.totalWords / totalChapters)
         : 0;
 
       // 计算完本率
-      const completedNovels = claw.novels.filter(n => n.serial_status === 'COMPLETED').length;
-      const completionRate = claw._count.novels > 0
-        ? completedNovels / claw._count.novels
+      const completedNovels = agent.novels.filter(n => n.serial_status === 'COMPLETED').length;
+      const completionRate = agent._count.novels > 0
+        ? completedNovels / agent._count.novels
         : 0;
 
       // 计算本周更新字数（简化处理：总字数/创建天数*7）
       const daysSinceCreated = Math.max(1, Math.floor(
-        (Date.now() - claw.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+        (Date.now() - agent.createdAt.getTime()) / (1000 * 60 * 60 * 24)
       ));
-      const weeklyWords = Math.round((claw.totalWords / daysSinceCreated) * 7);
+      const weeklyWords = Math.round((agent.totalWords / daysSinceCreated) * 7);
 
       // 根据更新频率判断
       let updateFrequency = 'irregular';
@@ -106,46 +106,46 @@ export class AgentPublicController {
       else if (weeklyWords > 1000) updateFrequency = 'monthly';
 
       // 从小说标签聚合AI擅长标签
-      const allTags = claw.novels.flatMap(n => n.tags || []);
+      const allTags = agent.novels.flatMap(n => n.tags || []);
       const uniqueTags = [...new Set(allTags)].slice(0, 5);
 
       return {
         // 基础信息
-        id: claw.clawId,
-        name: claw.displayName || claw.name,
-        avatar: claw.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${claw.clawId}`,
-        signature: claw.bio || '暂无签名',
+        id: agent.clawId,
+        name: agent.displayName || agent.name,
+        avatar: agent.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${agent.clawId}`,
+        signature: agent.bio || '暂无签名',
 
         // 类型和等级
-        type: claw.type?.toLowerCase() || 'ai',
-        level: this.calculateLevel(claw.totalWords),
-        levelProgress: this.calculateLevelProgress(claw.totalWords),
+        type: agent.type?.toLowerCase() || 'ai',
+        level: this.calculateLevel(agent.totalWords),
+        levelProgress: this.calculateLevelProgress(agent.totalWords),
         levelMaxProgress: 10000,
 
         // 信誉和评分
-        reputationScore: claw.reputationScore || 0,
+        reputationScore: agent.reputationScore || 0,
         rating: parseFloat(avgRating.toFixed(1)),
 
         // 作品统计
-        novelCount: claw._count.novels,
+        novelCount: agent._count.novels,
         totalChapters,
-        totalWords: claw.totalWords || 0,
+        totalWords: agent.totalWords || 0,
         avgChapterWords,
         completionRate: parseFloat(completionRate.toFixed(2)),
 
         // 社交数据
-        followersCount: claw._count.readers,
-        likesCount: claw.novels.reduce((sum, n) => sum + n.viewCount, 0), // 用浏览数代替点赞数
+        followersCount: agent._count.readers,
+        likesCount: agent.novels.reduce((sum, n) => sum + n.viewCount, 0), // 用浏览数代替点赞数
 
         // 活跃度
         weeklyWords,
         updateFrequency,
-        lastActiveAt: claw.lastActiveAt?.toISOString(),
-        createdAt: claw.createdAt.toISOString(),
+        lastActiveAt: agent.lastActiveAt?.toISOString(),
+        createdAt: agent.createdAt.toISOString(),
 
         // 标签和代表作
         tags: uniqueTags.length > 0 ? uniqueTags : ['未分类'],
-        featuredNovels: claw.novels.map(n => ({
+        featuredNovels: agent.novels.map(n => ({
           id: n.id,
           title: n.title,
           status: n.serial_status.toLowerCase() as 'ongoing' | 'completed' | 'paused',
@@ -154,7 +154,7 @@ export class AgentPublicController {
     });
 
     return {
-      claws: formattedClaws,
+      agents: formattedAgents,
       total,
       page: pageNum,
       totalPages: Math.ceil(total / limitNum),
@@ -203,7 +203,7 @@ export class AgentPublicController {
   @ApiResponse({ status: 200, description: '获取成功' })
   async getAIWriterStats() {
     const [
-      totalClaws,
+      totalAgents,
       writerCount,
       reviewerCount,
       totalNovels,
@@ -215,7 +215,7 @@ export class AgentPublicController {
     ]);
 
     return {
-      totalClaws,
+      totalAgents,
       writerCount,
       reviewerCount,
       totalNovels,
