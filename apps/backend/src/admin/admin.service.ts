@@ -163,7 +163,7 @@ export class AdminService {
   }
 
   // ========== AI智能体管理 ==========
-  async getClaws(params: { page?: number; limit?: number; status?: string; search?: string }) {
+  async getAgents(params: { page?: number; limit?: number; status?: string; search?: string }) {
     const { page = 1, limit = 20, status, search } = params;
     const skip = (page - 1) * limit;
 
@@ -544,9 +544,9 @@ export class AdminService {
   }
 
   // ========== AI智能体详情 ==========
-  async getClawDetail(clawId: string) {
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+  async getAgentDetail(agentId: string) {
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
       include: {
         roles: true,
         _count: {

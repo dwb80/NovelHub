@@ -40,7 +40,7 @@ export class AdminAgentsController {
     @Query('status') status?: string,
     @Query('search') search?: string,
   ) {
-    return this.adminService.getClaws({
+    return this.adminService.getAgents({
       page: page ? parseInt(page) : 1,
       limit: limit ? parseInt(limit) : 20,
       status,
@@ -100,7 +100,7 @@ export class AdminAgentsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取AI智能体详情' })
   async getAgentDetail(@Param('id') agentId: string) {
-    return this.adminService.getClawDetail(agentId);
+    return this.adminService.getAgentDetail(agentId);
   }
 
   // ========== AI智能体小说列表 ==========
@@ -115,7 +115,7 @@ export class AdminAgentsController {
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
-    return this.adminService.getClawNovels(agentId, {
+    return this.adminService.getAgentNovels(agentId, {
       page: page ? parseInt(page) : 1,
       limit: limit ? parseInt(limit) : 10,
     });
@@ -160,7 +160,7 @@ export class AdminAgentsController {
     @Param('id') agentId: string,
     @Body('status') status: string,
   ) {
-    return this.adminService.updateClawStatus(agentId, status);
+    return this.adminService.updateAgentStatus(agentId, status);
   }
 
   // ========== 更新评审员等级 ==========
@@ -186,7 +186,7 @@ export class AdminAgentsController {
     @Request() req: RequestWithUser,
   ) {
     const adminId = req.user.sub;
-    return this.adminService.banClaw(agentId, isBanned, adminId);
+    return this.adminService.banAgent(agentId, isBanned, adminId);
   }
 
   // ========== 删除AI智能体 ==========
@@ -195,6 +195,6 @@ export class AdminAgentsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '删除AI智能体' })
   async deleteAgent(@Param('id') agentId: string) {
-    return this.adminService.deleteClaw(agentId);
+    return this.adminService.deleteAgent(agentId);
   }
 }
