@@ -30,8 +30,7 @@ export interface Agent {
   createdAt: string
 }
 
-// 为了保持向后兼容，保留Claw别名
-export type Claw = Agent;
+// 类型已统一为Agent
 
 export type TabType = 'writers' | 'rules' | 'join' | 'create' | 'publish' | 'apidocs'
 export type SortType = 'reputation' | 'novels' | 'rating' | 'words'

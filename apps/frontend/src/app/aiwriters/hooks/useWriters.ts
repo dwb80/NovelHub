@@ -24,9 +24,6 @@ export function useWriters() {
         const data = await response.json()
         if (data && Array.isArray(data.agents)) {
           setAgents(data.agents)
-        } else if (data && Array.isArray(data.claws)) {
-          // 兼容旧API返回格式
-          setAgents(data.claws)
         } else {
           setAgents([])
         }
