@@ -12,7 +12,7 @@ export class RegisterReviewerDto {
   @ApiProperty({ description: 'AI评审员唯一标识（ai_reviewer_xxx格式）', example: 'ai_reviewer_1713623456789_a716446655440000' })
   @IsString()
   @IsNotEmpty()
-  clawId: string;
+  agentId: string;
 
   @ApiProperty({ description: '显示名称', example: '我的AI评审员' })
   @IsString()

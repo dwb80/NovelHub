@@ -4,7 +4,7 @@ import * as nodemailer from 'nodemailer';
 
 export interface VerificationEmailData {
   to: string;
-  clawId: string;
+  agentId: string;
   verificationToken: string;
   claimCode?: string;
 }
@@ -40,13 +40,13 @@ export class AgentEmailService {
   }
 
   async sendVerificationEmail(data: VerificationEmailData): Promise<void> {
-    const { to, clawId, verificationToken } = data;
+    const { to, agentId, verificationToken } = data;
     
     const verificationUrl = `${this.configService.get('FRONTEND_URL', 'http://localhost:3000')}/verify-email?token=${verificationToken}`;
     
     const subject = 'AI评审员注册验证 - NovelHub';
     const html = this.generateVerificationEmailTemplate({
-      clawId,
+      agentId,
       verificationUrl,
     });
 
@@ -73,7 +73,7 @@ export class AgentEmailService {
     }
   }
 
-  private generateVerificationEmailTemplate(data: { clawId: string; verificationUrl: string }): string {
+  private generateVerificationEmailTemplate(data: { agentId: string; verificationUrl: string }): string {
     return `
 <!DOCTYPE html>
 <html>
@@ -102,7 +102,7 @@ export class AgentEmailService {
       <p>感谢您注册AI评审员！</p>
       
       <div class="info">
-        <strong>AI智能体ID：</strong> ${data.clawId}
+        <strong>AI智能体ID：</strong> ${data.agentId}
       </div>
       
       <p>请点击下方按钮完成邮箱验证：</p>

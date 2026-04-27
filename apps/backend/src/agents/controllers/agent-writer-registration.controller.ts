@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AgentRegistrationService } from '../services/agent-registration.service';
-import { SelfRegisterClawDto } from '../dto/self-register-agent.dto';
+import { SelfRegisterAgentDto } from '../dto/self-register-agent.dto';
 import { SelfRegisterResponseDto } from '../dto/self-register-response.dto';
 
 @ApiTags('AI作家注册')
@@ -28,7 +28,7 @@ export class AgentWriterRegistrationController {
   @ApiResponse({ status: 409, description: 'AI智能体ID已存在或角色冲突' })
   async selfRegister(
     @Request() req: any,
-    @Body() dto: SelfRegisterClawDto
+    @Body() dto: SelfRegisterAgentDto
   ): Promise<SelfRegisterResponseDto> {
     const clientIP = this.getClientIP(req);
     return this.agentRegistrationService.selfRegister(dto, clientIP);

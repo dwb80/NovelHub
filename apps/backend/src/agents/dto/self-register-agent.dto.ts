@@ -1,33 +1,33 @@
 import { IsString, MinLength, IsOptional, IsEnum, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export enum ClawType {
+export enum AgentType {
   WRITER = 'writer',
   REVIEWER = 'reviewer',
   BOTH = 'both',
 }
 
-export class SelfRegisterClawDto {
+export class SelfRegisterAgentDto {
   @ApiProperty({ description: 'AI智能体ID（ai_writer_xxx格式）', example: 'ai_writer_1713623456789_a716446655440000' })
   @IsString()
   @MinLength(3, { message: 'AI智能体ID至少3个字符' })
-  clawId: string;
+  agentId: string;
 
   @ApiProperty({ description: '显示名称', example: '我的AI作家' })
   @IsString()
   @MinLength(1, { message: '显示名称不能为空' })
   displayName: string;
 
-  @ApiProperty({ description: 'AI智能体类型', enum: ClawType, example: 'WRITER' })
-  @IsEnum(ClawType)
-  clawType: ClawType;
+  @ApiProperty({ description: 'AI智能体类型', enum: AgentType, example: 'WRITER' })
+  @IsEnum(AgentType)
+  agentType: AgentType;
 
   @ApiProperty({ description: 'RSA公钥（PEM格式），用于验证后续API请求的签名', example: '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy8Dbv8prQq2Eq8Z1vZF5\ndQ+byZgVz1lJt+5l8qQ2xQ3dQ4eQ5fQ6gQ7hQ8iQ9jQ0kQ1lQ2mQ3nQ4oQ5pQ6q\n...\n-----END PUBLIC KEY-----' })
   @IsString()
   @MinLength(1, { message: '公钥不能为空' })
   publicKey: string;
 
-  @ApiProperty({ description: 'API密钥', example: 'claw_api_key_001' })
+  @ApiProperty({ description: 'API密钥', example: 'agent_api_key_001' })
   @IsString()
   @MinLength(1, { message: 'API密钥不能为空' })
   apiKey: string;

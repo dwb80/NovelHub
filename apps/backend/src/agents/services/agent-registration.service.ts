@@ -5,7 +5,7 @@ import { EmailService } from '../../notifications/email.service';
 import { CaptchaService } from '../../common/security/captcha.service';
 import { IPLimitService } from '../../common/security/ip-limit.service';
 import { AgentEmailService } from './agent-email.service';
-import { SelfRegisterClawDto, ClawType } from '../dto/self-register-agent.dto';
+import { SelfRegisterAgentDto, AgentType } from '../dto/self-register-agent.dto';
 import { SelfRegisterResponseDto } from '../dto/self-register-response.dto';
 import { RegisterReviewerDto, RegisterReviewerResponseDto, ReviewerLevel } from '../dto/register-reviewer.dto';
 import * as crypto from 'crypto';
@@ -21,7 +21,7 @@ export class AgentRegistrationService {
     private ipLimitService: IPLimitService,
   ) { }
 
-  async selfRegister(dto: SelfRegisterClawDto, clientIP: string): Promise<SelfRegisterResponseDto> {
+  async selfRegister(dto: SelfRegisterAgentDto, clientIP: string): Promise<SelfRegisterResponseDto> {
     const ipCheck = await this.ipLimitService.checkAndRecord(clientIP, 'registration');
     if (!ipCheck.allowed) {
       throw new HttpException(
@@ -30,7 +30,7 @@ export class AgentRegistrationService {
       );
     }
 
-    if (!dto.clawId.startsWith('ai_writer_')) {
+    if (!dto.agentId.startsWith('ai_writer_')) {
       throw new HttpException(
         'AI作家注册必须使用ai_writer_xxx格式的ID',
         HttpStatus.BAD_REQUEST,
@@ -47,8 +47,8 @@ export class AgentRegistrationService {
 
     this.validatePublicKeyFormat(dto.publicKey);
     await this.validateRegistrationRateLimit(dto.publicKey);
-    await this.validateRegistrationUniqueness(dto.clawId, dto.displayName);
-    await this.validateClawIdAndApiKeyCombination(dto.clawId, dto.apiKey);
+    await this.validateRegistrationUniqueness(dto.agentId, dto.displayName);
+    await this.validateClawIdAndApiKeyCombination(dto.agentId, dto.apiKey);
 
     // 生成验证token和临时claimCode（邮箱验证后更新为正式claimCode）
     const verificationToken = crypto.randomBytes(32).toString('hex');
@@ -57,7 +57,7 @@ export class AgentRegistrationService {
     // 创建待验证的注册记录
     const pendingRegistration = await this.prisma.selfRegisteredClaw.create({
       data: {
-        clawId: dto.clawId,
+        clawId: dto.agentId,
         name: dto.displayName,
         publicKey: dto.publicKey,
         email: dto.email,
@@ -77,7 +77,7 @@ export class AgentRegistrationService {
     // 发送验证邮件
     await this.agentEmailService.sendVerificationEmail({
       to: dto.email,
-      clawId: dto.clawId,
+      agentId: dto.agentId,
       verificationToken,
     });
 
@@ -99,7 +99,7 @@ export class AgentRegistrationService {
       );
     }
 
-    if (!dto.clawId.startsWith('ai_reviewer_')) {
+    if (!dto.agentId.startsWith('ai_reviewer_')) {
       throw new HttpException(
         'AI评审员注册必须使用ai_reviewer_xxx格式的ID',
         HttpStatus.BAD_REQUEST,
@@ -108,8 +108,8 @@ export class AgentRegistrationService {
 
     await this.validateApiKey(dto.apiKey);
     this.validatePublicKeyFormat(dto.publicKey);
-    await this.validateRegistrationUniqueness(dto.clawId, dto.displayName);
-    await this.validateClawIdAndApiKeyCombination(dto.clawId, dto.apiKey);
+    await this.validateRegistrationUniqueness(dto.agentId, dto.displayName);
+    await this.validateClawIdAndApiKeyCombination(dto.agentId, dto.apiKey);
 
     // 生成验证token和临时claimCode（邮箱验证后更新为正式claimCode）
     const verificationToken = crypto.randomBytes(32).toString('hex');
@@ -118,7 +118,7 @@ export class AgentRegistrationService {
     // 创建待验证的注册记录
     const pendingRegistration = await this.prisma.selfRegisteredClaw.create({
       data: {
-        clawId: dto.clawId,
+        clawId: dto.agentId,
         name: dto.displayName,
         publicKey: dto.publicKey,
         email: dto.email,
@@ -139,7 +139,7 @@ export class AgentRegistrationService {
     // 发送验证邮件
     await this.agentEmailService.sendVerificationEmail({
       to: dto.email,
-      clawId: dto.clawId,
+      agentId: dto.agentId,
       verificationToken,
     });
 
