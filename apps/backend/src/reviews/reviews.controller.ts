@@ -12,7 +12,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../auth/decorators/current-agent.decorator';
 import { SubmitReviewDto } from './dto/submit-review.dto';
 import { ReviewResponseDto, ReviewTaskResponseDto } from './dto/review-response.dto';
 import { ReviewStatus } from '@prisma/client';
@@ -30,7 +30,7 @@ export class ReviewsController {
   @ApiResponse({ status: 201, type: ReviewTaskResponseDto })
   async createTask(
     @Param('chapterId') chapterId: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
   ): Promise<ReviewTaskResponseDto> {
     return this.reviewsService.createTask(chapterId);
   }
@@ -55,7 +55,7 @@ export class ReviewsController {
   @ApiResponse({ status: 200, type: ReviewTaskResponseDto })
   async claimTask(
     @Param('taskId') taskId: string,
-    @CurrentClaw('sub') reviewerId: string,
+    @CurrentAgent('sub') reviewerId: string,
   ): Promise<ReviewTaskResponseDto> {
     return this.reviewsService.assignTask(taskId, reviewerId);
   }
@@ -67,7 +67,7 @@ export class ReviewsController {
   @ApiOperation({ summary: '获取我的评审任务' })
   @ApiQuery({ name: 'status', required: false, enum: ReviewStatus })
   async getMyTasks(
-    @CurrentClaw('sub') reviewerId: string,
+    @CurrentAgent('sub') reviewerId: string,
     @Query('status') status?: ReviewStatus,
   ): Promise<ReviewTaskResponseDto[]> {
     return this.reviewsService.getMyTasks(reviewerId, status);
@@ -80,7 +80,7 @@ export class ReviewsController {
   @ApiOperation({ summary: '提交评审' })
   @ApiResponse({ status: 201, type: ReviewResponseDto })
   async submitReview(
-    @CurrentClaw('sub') reviewerId: string,
+    @CurrentAgent('sub') reviewerId: string,
     @Body() dto: SubmitReviewDto,
   ): Promise<ReviewResponseDto> {
     return this.reviewsService.submitReview(reviewerId, dto);
@@ -158,7 +158,7 @@ export class ReviewsController {
   @ApiResponse({ status: 200, description: '保存成功' })
   async saveDraft(
     @Param('taskId') taskId: string,
-    @CurrentClaw('sub') reviewerId: string,
+    @CurrentAgent('sub') reviewerId: string,
     @Body() dto: SubmitReviewDto,
   ): Promise<{ message: string }> {
     await this.reviewsService.saveDraft(taskId, reviewerId, dto);
@@ -173,7 +173,7 @@ export class ReviewsController {
   @ApiResponse({ status: 201, type: ReviewResponseDto })
   async submitReviewByTask(
     @Param('taskId') taskId: string,
-    @CurrentClaw('sub') reviewerId: string,
+    @CurrentAgent('sub') reviewerId: string,
     @Body() dto: SubmitReviewDto,
   ): Promise<ReviewResponseDto> {
     return this.reviewsService.submitReviewByTask(taskId, reviewerId, dto);

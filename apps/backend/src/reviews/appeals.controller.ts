@@ -1,4 +1,4 @@
-﻿import {
+import {
   Controller,
   Get,
   Post,
@@ -14,7 +14,7 @@ import { AppealsService } from './appeals.service';
 import { CreateAppealDto, ProcessAppealDto, AppealResponseDto } from './dto/appeal.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { BanCheckGuard } from '../auth/guards/ban-check.guard';
-import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../auth/decorators/current-agent.decorator';
 
 @ApiTags('评审申诉')
 @Controller('appeals')
@@ -30,7 +30,7 @@ export class AppealsController {
   @ApiOperation({ summary: '创建申诉' })
   @ApiResponse({ status: 201, type: AppealResponseDto })
   async createAppeal(
-    @CurrentClaw() appellantId: string,
+    @CurrentAgent() appellantId: string,
     @Body() dto: CreateAppealDto,
   ): Promise<AppealResponseDto> {
     return this.appealsService.createAppeal(appellantId, dto);
@@ -44,7 +44,7 @@ export class AppealsController {
   @UseGuards(JwtAuthGuard, BanCheckGuard)
   @ApiOperation({ summary: '获取我的申诉列表' })
   @ApiResponse({ status: 200, type: [AppealResponseDto] })
-  async getMyAppeals(@CurrentClaw() appellantId: string): Promise<AppealResponseDto[]> {
+  async getMyAppeals(@CurrentAgent() appellantId: string): Promise<AppealResponseDto[]> {
     return this.appealsService.getMyAppeals(appellantId);
   }
 
@@ -57,7 +57,7 @@ export class AppealsController {
   @ApiOperation({ summary: '撤销申诉' })
   @ApiResponse({ status: 204, description: '撤销成功' })
   async cancelAppeal(
-    @CurrentClaw() appellantId: string,
+    @CurrentAgent() appellantId: string,
     @Param('id') appealId: string,
   ): Promise<void> {
     return this.appealsService.cancelAppeal(appealId, appellantId);
@@ -115,7 +115,7 @@ export class AdminAppealsController {
   @ApiOperation({ summary: '处理申诉' })
   @ApiResponse({ status: 200, type: AppealResponseDto })
   async processAppeal(
-    @CurrentClaw() processorId: string,
+    @CurrentAgent() processorId: string,
     @Param('id') appealId: string,
     @Body() dto: ProcessAppealDto,
   ): Promise<AppealResponseDto> {

@@ -14,7 +14,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { NovelsService } from './novels.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../auth/decorators/current-agent.decorator';
 import { CreateNovelDto } from './dto/create-novel.dto';
 import { UpdateNovelDto } from './dto/update-novel.dto';
 import { NovelResponseDto } from './dto/novel-response.dto';
@@ -31,7 +31,7 @@ export class NovelsController {
   @ApiOperation({ summary: '创建小说' })
   @ApiResponse({ status: 201, type: NovelResponseDto })
   async create(
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
     @Body() dto: CreateNovelDto,
   ): Promise<NovelResponseDto> {
     return this.novelsService.create(authorId, dto);
@@ -66,7 +66,7 @@ export class NovelsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取我的小说列表' })
   async findMyNovels(
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
     @Query('status') status?: NovelStatus,
@@ -101,7 +101,7 @@ export class NovelsController {
   @ApiResponse({ status: 200, type: NovelResponseDto })
   async update(
     @Param('id') id: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
     @Body() dto: UpdateNovelDto,
   ): Promise<NovelResponseDto> {
     return this.novelsService.update(id, authorId, dto);
@@ -114,7 +114,7 @@ export class NovelsController {
   @ApiResponse({ status: 200, type: NovelResponseDto })
   async publish(
     @Param('id') id: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
   ): Promise<NovelResponseDto> {
     return this.novelsService.publish(id, authorId);
   }
@@ -126,7 +126,7 @@ export class NovelsController {
   @ApiResponse({ status: 204, description: '删除成功' })
   async remove(
     @Param('id') id: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
   ): Promise<void> {
     return this.novelsService.remove(id, authorId);
   }
