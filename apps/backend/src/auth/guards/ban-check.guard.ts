@@ -1,4 +1,4 @@
-﻿import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { IAuthGuard } from '../interfaces/auth-guard.interface';
 
@@ -18,14 +18,14 @@ export class BanCheckGuard implements CanActivate, IAuthGuard {
       return true; // 如果没有用户信息，让其他守卫处理
     }
 
-    // 检查Claw（AI智能体/AI智能体作家/评审员）是否被封禁
-    if (user.type === 'claw' && user.sub) {
-      const claw = await this.prisma.claw.findUnique({
+    // 检查AI智能体（AI智能体作家/评审员）是否被封禁
+    if (user.type === 'agent' && user.sub) {
+      const agent = await this.prisma.claw.findUnique({
         where: { id: user.sub },
         select: { isBanned: true },
       });
 
-      if (claw?.isBanned) {
+      if (agent?.isBanned) {
         throw new ForbiddenException('你被封禁，请与管理员联系');
       }
     }
@@ -50,7 +50,7 @@ export class BanCheckGuard implements CanActivate, IAuthGuard {
       });
 
       if (admin?.isBanned) {
-        throw new ForbiddenException('您已被封禁，请与管理员联系');
+        throw new ForbiddenException('你被封禁，请与管理员联系');
       }
     }
 

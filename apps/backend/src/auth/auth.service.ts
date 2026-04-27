@@ -3,10 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { RegisterAgentDto as RegisterClawDto } from './dto/register-agent.dto';
-import { LoginAgentDto as LoginClawDto } from './dto/login-agent.dto';
+import { RegisterAgentDto } from './dto/register-agent.dto';
+import { LoginAgentDto } from './dto/login-agent.dto';
 import { ApiKeyLoginDto } from './dto/api-key-login.dto';
-import { AuthResponseDto, AgentProfileDto as ClawProfileDto, AgentType as OpenClawType, AgentStatus as ClawStatus } from './dto/auth-response.dto';
+import { AuthResponseDto, AgentProfileDto, AgentType, AgentStatus } from './dto/auth-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,13 +16,13 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async register(dto: RegisterClawDto): Promise<AuthResponseDto> {
+  async register(dto: RegisterAgentDto): Promise<AuthResponseDto> {
     // 检查邮箱是否已存在
-    const existingClaw = await this.prisma.claw.findUnique({
+    const existingAgent = await this.prisma.claw.findUnique({
       where: { email: dto.email },
     });
 
-    if (existingClaw) {
+    if (existingAgent) {
       throw new ConflictException('该邮箱已被注册');
     }
 
@@ -38,8 +38,8 @@ export class AuthService {
     // 加密密码
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    // 创建Claw
-    const claw = await this.prisma.claw.create({
+    // 创建AI智能体
+    const agent = await this.prisma.claw.create({
       data: {
         clawId: dto.agentName,
         name: dto.agentName,
@@ -56,48 +56,48 @@ export class AuthService {
     });
 
     // 生成令牌
-    const tokens = await this.generateTokens(claw.id, claw.name, claw.type);
+    const tokens = await this.generateTokens(agent.id, agent.name, agent.type);
 
     return {
       ...tokens,
-      agent: this.mapToClawProfile(claw),
+      agent: this.mapToAgentProfile(agent),
     };
   }
 
-  async login(dto: LoginClawDto): Promise<AuthResponseDto> {
-    // 查找Claw
-    const claw = await this.prisma.claw.findUnique({
+  async login(dto: LoginAgentDto): Promise<AuthResponseDto> {
+    // 查找AI智能体
+    const agent = await this.prisma.claw.findUnique({
       where: { email: dto.email },
     });
 
-    if (!claw || !claw.password) {
+    if (!agent || !agent.password) {
       throw new UnauthorizedException('邮箱或密码错误');
     }
 
     // 验证密码
-    const isPasswordValid = await bcrypt.compare(dto.password, claw.password);
+    const isPasswordValid = await bcrypt.compare(dto.password, agent.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('邮箱或密码错误');
     }
 
     // 检查状态
-    if (claw.status === 'SUSPENDED') {
+    if (agent.status === 'SUSPENDED') {
       throw new UnauthorizedException('账户已被暂停');
     }
 
     // 更新最后登录时间
     await this.prisma.claw.update({
-      where: { id: claw.id },
+      where: { id: agent.id },
       data: { lastLoginAt: new Date() },
     });
 
     // 生成令牌
-    const tokens = await this.generateTokens(claw.id, claw.name, claw.type);
+    const tokens = await this.generateTokens(agent.id, agent.name, agent.type);
 
     return {
       ...tokens,
-      agent: this.mapToClawProfile(claw),
+      agent: this.mapToAgentProfile(agent),
     };
   }
 
@@ -107,19 +107,19 @@ export class AuthService {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       });
 
-      const claw = await this.prisma.claw.findUnique({
+      const agent = await this.prisma.claw.findUnique({
         where: { id: payload.sub },
       });
 
-      if (!claw || claw.status !== 'ACTIVE') {
+      if (!agent || agent.status !== 'ACTIVE') {
         throw new UnauthorizedException('无效的刷新令牌');
       }
 
-      const tokens = await this.generateTokens(claw.id, claw.name, claw.type);
+      const tokens = await this.generateTokens(agent.id, agent.name, agent.type);
 
       return {
         ...tokens,
-        agent: this.mapToClawProfile(claw),
+        agent: this.mapToAgentProfile(agent),
       };
     } catch {
       throw new UnauthorizedException('无效的刷新令牌');
@@ -127,11 +127,11 @@ export class AuthService {
   }
 
   private async generateTokens(
-    clawId: string,
+    agentId: string,
     name: string,
     type: string,
   ): Promise<{ accessToken: string; refreshToken: string; tokenType: string; expiresIn: number }> {
-    const payload = { sub: clawId, name, type };
+    const payload = { sub: agentId, name, type };
 
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
@@ -153,76 +153,76 @@ export class AuthService {
 
   /**
    * API Key登录（AI智能体）
-   * 使用clawId和apiKey进行身份验证
+   * 使用agentId和apiKey进行身份验证
    */
   async loginWithApiKey(dto: ApiKeyLoginDto): Promise<AuthResponseDto> {
     // 查找AI智能体
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId: dto.clawId },
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: dto.agentId },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new UnauthorizedException('AI智能体ID不存在');
     }
 
     // 验证API Key
-    if (!claw.apiKey || claw.apiKey !== dto.apiKey) {
+    if (!agent.apiKey || agent.apiKey !== dto.apiKey) {
       throw new UnauthorizedException('API密钥无效');
     }
 
     // 检查状态
-    if (claw.status === 'SUSPENDED') {
+    if (agent.status === 'SUSPENDED') {
       throw new UnauthorizedException('账户已被暂停');
     }
 
     // 更新最后登录时间
     await this.prisma.claw.update({
-      where: { id: claw.id },
+      where: { id: agent.id },
       data: { lastLoginAt: new Date() },
     });
 
     // 生成令牌
-    const tokens = await this.generateTokens(claw.id, claw.name, claw.type);
+    const tokens = await this.generateTokens(agent.id, agent.name, agent.type);
 
     return {
       ...tokens,
-      agent: this.mapToClawProfile(claw),
+      agent: this.mapToAgentProfile(agent),
     };
   }
 
-  private mapToClawProfile(claw: any): ClawProfileDto {
+  private mapToAgentProfile(agent: any): AgentProfileDto {
     return {
-      id: claw.id,
-      agentName: claw.name,
-      displayName: claw.displayName,
-      email: claw.email,
-      type: claw.type as OpenClawType,
-      status: claw.status as ClawStatus,
-      avatar: claw.avatar,
-      bio: claw.bio,
-      reputation: claw.reputation,
-      reviewCount: claw.reviewCount,
-      createdAt: claw.createdAt,
+      id: agent.id,
+      agentName: agent.name,
+      displayName: agent.displayName,
+      email: agent.email,
+      type: agent.type as AgentType,
+      status: agent.status as AgentStatus,
+      avatar: agent.avatar,
+      bio: agent.bio,
+      reputation: agent.reputation,
+      reviewCount: agent.reviewCount,
+      createdAt: agent.createdAt,
     };
   }
 
   // 修改密码
   async changePassword(
-    clawId: string,
+    agentId: string,
     currentPassword: string,
     newPassword: string,
   ): Promise<void> {
     // 查找用户
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
     });
 
-    if (!claw || !claw.password) {
+    if (!agent || !agent.password) {
       throw new UnauthorizedException('用户不存在');
     }
 
     // 验证当前密码
-    const isPasswordValid = await bcrypt.compare(currentPassword, claw.password);
+    const isPasswordValid = await bcrypt.compare(currentPassword, agent.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('当前密码错误');
@@ -233,7 +233,7 @@ export class AuthService {
 
     // 更新密码
     await this.prisma.claw.update({
-      where: { id: clawId },
+      where: { id: agentId },
       data: { password: hashedPassword },
     });
   }

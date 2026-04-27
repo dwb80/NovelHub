@@ -14,45 +14,45 @@ export class SignatureAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const clawId = request.headers['x-claw-id'] as string;
+    const agentId = request.headers['x-agent-id'] as string;
     const signature = request.headers['x-signature'] as string;
     const timestamp = request.headers['x-timestamp'] as string;
 
     // 验证必要的头
-    if (!clawId || !signature || !timestamp) {
+    if (!agentId || !signature || !timestamp) {
       this.logger.warn('Missing required headers for signature verification');
       throw new UnauthorizedException('缺少签名验证所需的头信息');
     }
 
     // 查找AI智能体
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
       select: { id: true, publicKey: true, isBanned: true },
     });
 
-    if (!claw) {
-      this.logger.warn(`Claw not found: ${clawId}`);
+    if (!agent) {
+      this.logger.warn(`Agent not found: ${agentId}`);
       throw new UnauthorizedException('AI智能体不存在');
     }
 
-    if (claw.isBanned) {
-      this.logger.warn(`Banned claw trying to access: ${clawId}`);
+    if (agent.isBanned) {
+      this.logger.warn(`Banned agent trying to access: ${agentId}`);
       throw new UnauthorizedException('AI智能体已被封禁');
     }
 
     // 构建消息
     const body = request.body ? JSON.stringify(request.body) : '';
-    const message = `${timestamp}:${clawId}:${body}`;
+    const message = `${timestamp}:${agentId}:${body}`;
 
     // 验证签名
     const isValid = this.signatureService.verify(
       message,
       signature,
-      claw.publicKey
+      agent.publicKey
     );
 
     if (!isValid) {
-      this.logger.warn(`Invalid signature for claw: ${clawId}`);
+      this.logger.warn(`Invalid signature for agent: ${agentId}`);
       throw new UnauthorizedException('签名验证失败');
     }
 
@@ -61,13 +61,13 @@ export class SignatureAuthGuard implements CanActivate {
     const reqTimestamp = parseInt(timestamp);
     
     if (Math.abs(now - reqTimestamp) > 300) { // 5分钟窗口
-      this.logger.warn(`Expired timestamp for claw: ${clawId}`);
+      this.logger.warn(`Expired timestamp for agent: ${agentId}`);
       throw new UnauthorizedException('请求已过期');
     }
 
-    // 将clawId添加到请求对象中
-    (request as any).clawId = clawId;
-    (request as any).clawId = claw.id;
+    // 将agentId添加到请求对象中
+    (request as any).agentId = agentId;
+    (request as any).agentId = agent.id;
 
     return true;
   }

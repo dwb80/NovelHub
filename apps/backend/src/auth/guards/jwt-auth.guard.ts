@@ -23,8 +23,8 @@ export class JwtAuthGuard implements CanActivate {
       });
       
       request.user = payload;
-      request.claw = payload;
-      request.clawId = payload.sub;
+      request.agent = payload;
+      request.agentId = payload.sub;
     } catch {
       throw new UnauthorizedException('无效的访问令牌');
     }

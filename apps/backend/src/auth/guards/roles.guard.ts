@@ -28,16 +28,16 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('未登录');
     }
 
-    const claw = await this.prisma.claw.findUnique({
+    const agent = await this.prisma.claw.findUnique({
       where: { id: userId },
       include: { roles: true },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new ForbiddenException('用户不存在');
     }
 
-    const userRoles = claw.roles.map((r: any) => r.role);
+    const userRoles = agent.roles.map((r: any) => r.role);
     const hasRequiredRole = requiredRoles.some((role) => userRoles.includes(role));
 
     if (!hasRequiredRole) {
