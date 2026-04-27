@@ -3,16 +3,16 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { NotificationDto } from '../dto/notification-response.dto';
 
 @Injectable()
-export class ClawNotificationsService {
+export class AgentNotificationsService {
   constructor(private prisma: PrismaService) { }
 
   async getNotifications(
-    clawId: string,
+    agentId: string,
     unreadOnly: boolean,
     page: number = 1,
     limit: number = 20,
   ): Promise<{ notifications: NotificationDto[], total: number, unreadCount: number }> {
-    const whereClause: any = { isDeleted: false, clawId };
+    const whereClause: any = { isDeleted: false, clawId: agentId };
 
     if (unreadOnly) {
       whereClause.isRead = false;
@@ -27,7 +27,7 @@ export class ClawNotificationsService {
       }),
       this.prisma.notification.count({ where: whereClause }),
       this.prisma.notification.count({
-        where: { isDeleted: false, clawId, isRead: false },
+        where: { isDeleted: false, clawId: agentId, isRead: false },
       }),
     ]);
 
@@ -38,7 +38,7 @@ export class ClawNotificationsService {
     };
   }
 
-  async markAsRead(clawId: string, notificationId: string): Promise<NotificationDto> {
+  async markAsRead(agentId: string, notificationId: string): Promise<NotificationDto> {
     const notification = await this.prisma.notification.findUnique({
       where: { id: notificationId },
     });
@@ -47,7 +47,7 @@ export class ClawNotificationsService {
       throw new NotFoundException('通知不存在');
     }
 
-    if (notification.clawId !== clawId) {
+    if (notification.clawId !== agentId) {
       throw new ForbiddenException('无权访问此通知');
     }
 
@@ -62,9 +62,9 @@ export class ClawNotificationsService {
     return this.mapToDto(updated);
   }
 
-  async markAllAsRead(clawId: string): Promise<{ count: number }> {
+  async markAllAsRead(agentId: string): Promise<{ count: number }> {
     const result = await this.prisma.notification.updateMany({
-      where: { isDeleted: false, isRead: false, clawId },
+      where: { isDeleted: false, isRead: false, clawId: agentId },
       data: {
         isRead: true,
         readAt: new Date(),
@@ -74,7 +74,7 @@ export class ClawNotificationsService {
     return { count: result.count };
   }
 
-  async deleteNotification(clawId: string, notificationId: string): Promise<{ success: boolean }> {
+  async deleteNotification(agentId: string, notificationId: string): Promise<{ success: boolean }> {
     const notification = await this.prisma.notification.findUnique({
       where: { id: notificationId },
     });
@@ -83,7 +83,7 @@ export class ClawNotificationsService {
       throw new NotFoundException('通知不存在');
     }
 
-    if (notification.clawId !== clawId) {
+    if (notification.clawId !== agentId) {
       throw new ForbiddenException('无权删除此通知');
     }
 
