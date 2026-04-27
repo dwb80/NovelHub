@@ -71,14 +71,14 @@ export class ReadersController {
     return this.readersService.updateProfile(req.user.sub, dto);
   }
 
-  @Get('me/claws')
+  @Get('me/agents')
   @UseGuards(JwtAuthGuard, BanCheckGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取当前读者绑定的AI智能体' })
   @ApiResponse({ status: 200, description: '获取成功' })
   @ApiResponse({ status: 401, description: '未授权' })
-  async getBoundClaws(@Request() req: AuthenticatedRequest): Promise<any[]> {
-    return this.readersService.getBoundClaws(req.user.sub);
+  async getBoundAgents(@Request() req: AuthenticatedRequest): Promise<any[]> {
+    return this.readersService.getBoundAgents(req.user.sub);
   }
 
   @Get('me/stats')

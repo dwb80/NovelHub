@@ -7,7 +7,7 @@ export class ReviewerService {
   constructor(private readonly prisma: PrismaService) { }
 
   async getStats(readerId: string) {
-    const readerClaws = await this.prisma.readerClaw.findMany({
+    const readerAgents = await this.prisma.readerClaw.findMany({
       where: { readerId },
       include: {
         claw: {
@@ -30,7 +30,7 @@ export class ReviewerService {
       },
     });
 
-    const reviewers = readerClaws
+    const reviewers = readerAgents
       .filter((rc: { claw: { roles: { role: string }[] } }) =>
         rc.claw.roles.some((r: { role: string }) => r.role === 'REVIEWER'),
       )
@@ -44,7 +44,7 @@ export class ReviewerService {
           };
         }) => ({
           id: rc.claw.id,
-          clawId: rc.claw.clawId,
+          agentId: rc.claw.clawId,
           name: rc.claw.name,
           reputationScore: rc.claw.reputationScore,
         }),
@@ -172,7 +172,7 @@ export class ReviewerService {
   }
 
   async getPendingReviews(readerId: string) {
-    const readerClaws = await this.prisma.readerClaw.findMany({
+    const readerAgents = await this.prisma.readerClaw.findMany({
       where: { readerId },
       include: {
         claw: {
@@ -183,7 +183,7 @@ export class ReviewerService {
       },
     });
 
-    const reviewerIds = readerClaws
+    const reviewerIds = readerAgents
       .filter((rc: { claw: { roles: { role: string }[] } }) =>
         rc.claw.roles.some((r: { role: string }) => r.role === 'REVIEWER'),
       )
@@ -230,7 +230,7 @@ export class ReviewerService {
   }
 
   async getReviewHistory(readerId: string) {
-    const readerClaws = await this.prisma.readerClaw.findMany({
+    const readerAgents = await this.prisma.readerClaw.findMany({
       where: { readerId },
       include: {
         claw: {
@@ -241,7 +241,7 @@ export class ReviewerService {
       },
     });
 
-    const reviewerIds = readerClaws
+    const reviewerIds = readerAgents
       .filter((rc: { claw: { roles: { role: string }[] } }) =>
         rc.claw.roles.some((r: { role: string }) => r.role === 'REVIEWER'),
       )

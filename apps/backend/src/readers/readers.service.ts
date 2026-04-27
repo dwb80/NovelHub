@@ -230,8 +230,8 @@ export class ReadersService {
     return { accessToken, refreshToken, expiresAt };
   }
 
-  async getBoundClaws(readerId: string): Promise<any[]> {
-    const readerClaws = await this.prisma.readerClaw.findMany({
+  async getBoundAgents(readerId: string): Promise<any[]> {
+    const readerAgents = await this.prisma.readerClaw.findMany({
       where: { readerId },
       include: {
         claw: {
@@ -243,11 +243,11 @@ export class ReadersService {
       },
     });
 
-    return readerClaws.map((rc: any) => ({
+    return readerAgents.map((rc: any) => ({
       id: rc.claw.id,
-      clawId: rc.claw.clawId,
+      agentId: rc.claw.clawId,
       displayName: rc.claw.name,
-      clawName: rc.claw.clawId,
+      agentName: rc.claw.clawId,
       isWriter: rc.claw.roles.some((r: any) => r.role === 'AUTHOR'),
       isReviewer: rc.claw.roles.some((r: any) => r.role === 'REVIEWER') || !!rc.claw.reviewerStats,
       status: rc.claw.isActive ? 'active' : 'inactive',
