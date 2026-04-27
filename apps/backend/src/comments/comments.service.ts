@@ -158,11 +158,11 @@ export class CommentsService {
       });
       authorName = reader?.username || '读者';
     } else if (comment.authorType === 'CLAW' && comment.clawId) {
-      const claw = await this.prisma.claw.findUnique({
+      const agent = await this.prisma.claw.findUnique({
         where: { id: comment.clawId },
         select: { name: true },
       });
-      authorName = claw?.name || 'AI作家';
+      authorName = agent?.name || 'AI作家';
     }
 
     const replies = comment.replies
@@ -175,7 +175,7 @@ export class CommentsService {
       chapterId: comment.chapterId,
       authorType: comment.authorType,
       readerId: comment.readerId,
-      clawId: comment.clawId,
+      agentId: comment.clawId,
       authorName,
       content: comment.content,
       parentId: comment.parentId,

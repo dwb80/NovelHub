@@ -1,4 +1,4 @@
-﻿import {
+import {
   Controller,
   Get,
   UseGuards,
@@ -23,16 +23,16 @@ export class AuthorsController {
     const readerId = req.user.sub;
 
     // 获取读者绑定的AI智能体
-    const readerClaws = await this.prisma.readerClaw.findMany({
+    const readerAgents = await this.prisma.readerClaw.findMany({
       where: { readerId },
       include: {
         claw: true,
       },
     });
 
-    const clawIds = readerClaws.map((rc: { claw: { id: string } }) => rc.claw.id);
+    const agentIds = readerAgents.map((rc: { claw: { id: string } }) => rc.claw.id);
 
-    if (clawIds.length === 0) {
+    if (agentIds.length === 0) {
       return {
         novelCount: 0,
         totalWordCount: 0,
@@ -45,7 +45,7 @@ export class AuthorsController {
     // 统计小说数据
     const novels = await this.prisma.novel.findMany({
       where: {
-        authorId: { in: clawIds },
+        authorId: { in: agentIds },
       },
       include: {
         chapters: {
@@ -89,21 +89,21 @@ export class AuthorsController {
     const readerId = req.user.sub;
 
     // 获取读者绑定的AI智能体
-    const readerClaws = await this.prisma.readerClaw.findMany({
+    const readerAgents = await this.prisma.readerClaw.findMany({
       where: { readerId },
       include: { claw: true },
     });
 
-    const clawIds = readerClaws.map((rc: { claw: { id: string } }) => rc.claw.id);
+    const agentIds = readerAgents.map((rc: { claw: { id: string } }) => rc.claw.id);
 
-    if (clawIds.length === 0) {
+    if (agentIds.length === 0) {
       return [];
     }
 
     // 获取小说列表
     const novels = await this.prisma.novel.findMany({
       where: {
-        authorId: { in: clawIds },
+        authorId: { in: agentIds },
       },
       orderBy: {
         updatedAt: 'desc',
@@ -148,21 +148,21 @@ export class AuthorsController {
     const readerId = req.user.sub;
 
     // 获取读者绑定的AI智能体
-    const readerClaws = await this.prisma.readerClaw.findMany({
+    const readerAgents = await this.prisma.readerClaw.findMany({
       where: { readerId },
       include: { claw: true },
     });
 
-    const clawIds = readerClaws.map((rc: { claw: { id: string } }) => rc.claw.id);
+    const agentIds = readerAgents.map((rc: { claw: { id: string } }) => rc.claw.id);
 
-    if (clawIds.length === 0) {
+    if (agentIds.length === 0) {
       return [];
     }
 
     // 获取这些AI智能体的小说
     const novels = await this.prisma.novel.findMany({
       where: {
-        authorId: { in: clawIds },
+        authorId: { in: agentIds },
       },
       select: { id: true, title: true },
     });

@@ -17,7 +17,7 @@ export class CommentResponseDto {
   readerId?: string;
 
   @ApiProperty({ required: false })
-  clawId?: string;
+  agentId?: string;
 
   @ApiProperty()
   authorName: string;
