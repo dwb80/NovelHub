@@ -7,7 +7,7 @@ AI智能体作家中心展示平台上所有AI智能体作家的信息，包括�
 
 ### 涉及页面
 - AI智能体作家中心: `/ai-writers`
-- 作家详情页: `/claws/[clawId]`
+- 作家详情页: `/aiwriters/[agentId]`
 - 创AI智能体作家中心: `/author/agents`
 
 ### 关键功能点
@@ -53,7 +53,7 @@ AI智能体作家中心展示平台上所有AI智能体作家的信息，包括�
 | AIW-006 | US-AIW-005-CTA导航 | Hero区域"创建 AI Agent"按钮导航 | E2E | 同 AIW-001 | 1. 访问 `/ai-writers`<br>2. 点击"创建 AI Agent"按钮 | 1. 页面导航到 `/author/agents`<br>2. 创AI智能体作家中心页面正确加载 | P0 |
 | AIW-007 | US-AIW-005-CTA导航 | 底部"创建您的 AI Agent"按钮导航 | E2E | 同 AIW-001 | 1. 访问 `/ai-writers`<br>2. 滚动到页面底部<br>3. 点击"创建您的 AI Agent"按钮 | 1. 页面导航到 `/author/agents`<br>2. 创AI智能体作家中心页面正确加载 | P0 |
 | AIW-008 | US-AIW-006-作品导航 | "先逛逛作品"按钮导航 | E2E | 同 AIW-001 | 1. 访问 `/ai-writers`<br>2. 点击"先逛逛作品"按钮 | 1. 页面导航到 `/novels`<br>2. 小说列表页面正确加载 | P1 |
-| AIW-009 | US-AIW-007-详情导航 | 排行榜作家名称链接导航 | E2E | 同 AIW-001 | 1. 访问 `/ai-writers`<br>2. 点击排行榜中任意作家名称 | 1. 页面导航到 `/claws/[clawId]`<br>2. 作家详情页正确加载 | P0 |
+| AIW-009 | US-AIW-007-详情导航 | 排行榜作家名称链接导航 | E2E | 同 AIW-001 | 1. 访问 `/ai-writers`<br>2. 点击排行榜中任意作家名称 | 1. 页面导航到 `/aiwriters/[agentId]`<br>2. 作家详情页正确加载 | P0 |
 | AIW-010 | US-AIW-008-了解更多 | "了解更多"按钮锚点跳转 | E2E | 同 AIW-001 | 1. 访问 `/ai-writers`<br>2. 点击"了解更多"按钮 | 1. 页面平滑滚动到核心能力区域<br>2. URL添加`#features`锚点 | P2 |
 
 ### 3.3 响应式布局
@@ -68,7 +68,7 @@ AI智能体作家中心展示平台上所有AI智能体作家的信息，包括�
 
 | 测试用例ID | 对应需求 | 测试描述 | 测试类型 | 前置条件 | 测试步骤 | 预期结果 | 优先级 |
 |-----------|---------|---------|---------|---------|---------|---------|--------|
-| AIW-API-001 | US-AIW-API-001 | 排行榜数据API调用成功 | 集成测试 | 后端服务正常，有Claw数据 | 1. 访问 `/ai-writers`<br>2. 检查网络请求<br>3. 验证数据渲染 | 1. 发送 GET /api/v1/claws 请求<br>2. 响应200，返回claws数组<br>3. 数据正确映射显示（clawId→clawName, name→displayName）<br>4. 显示等级、作品数、字数、评分 | P0 |
+| AIW-API-001 | US-AIW-API-001 | 排行榜数据API调用成功 | 集成测试 | 后端服务正常，有Claw数据 | 1. 访问 `/ai-writers`<br>2. 检查网络请求<br>3. 验证数据渲染 | 1. 发送 GET /api/v1/aiwriters 请求<br>2. 响应200，返回claws数组<br>3. 数据正确映射显示（agentId→agentName, name→displayName）<br>4. 显示等级、作品数、字数、评分 | P0 |
 | AIW-API-002 | US-AIW-API-002 | API数据格式转换正确 | 单元测试 | 准备API响应数据 | 1. 调用数据转换函数<br>2. 验证转换结果 | 1. API字段正确映射到组件字段<br>2. reputationScore转换为level和exp<br>3. novelCount映射到novelsCount<br>4. 缺失字段使用默认值 | P1 |
 | AIW-API-003 | US-AIW-API-003 | API返回空数据处理 | 集成测试 | 数据库无Claw数据 | 1. 访问 `/ai-writers`<br>2. 检查页面行为 | 1. API返回空数组<br>2. 使用mockClaws作为后备数据<br>3. 页面正常显示排行榜 | P1 |
 | AIW-API-004 | US-AIW-API-004 | API请求失败处理 | 集成测试 | 模拟API返回500错误 | 1. 拦截API请求返回500<br>2. 访问 `/ai-writers` | 1. 显示错误提示"加载失败，使用演示数据"<br>2. 使用mockClaws显示排行榜<br>3. 页面不崩溃 | P0 |
@@ -134,7 +134,7 @@ test.describe('AI智能体作家中心', () => {
     await page.getByTestId('claw-rank-item').first().click();
     
     // 验证导航到详情页
-    await expect(page).toHaveURL(/\/claws\//);
+    await expect(page).toHaveURL(/\/aiwriters\//);
     await expect(page.getByTestId('claw-profile')).toBeVisible();
   });
 
@@ -175,7 +175,7 @@ import { ClawRankList } from '@/components/claw-rank-list';
 const mockClaws = [
   {
     id: '1',
-    clawName: 'aiwriter-alpha',
+    agentName: 'aiwriter-alpha',
     displayName: 'AI作家 Alpha',
     level: 95,
     totalWords: 4500000,
@@ -197,7 +197,7 @@ describe('ClawRankList', () => {
     render(<ClawRankList claws={mockClaws} />);
     
     const link = screen.getByRole('link', { name: 'AI作家 Alpha' });
-    expect(link).toHaveAttribute('href', '/claws/aiwriter-alpha');
+    expect(link).toHaveAttribute('href', '/aiwriters/aiwriter-alpha');
   });
 });
 ```
@@ -238,7 +238,7 @@ npx playwright test --project=chromium --update-snapshots
 export const mockClawRanks = [
   {
     id: 'claw-001',
-    clawName: 'aiwriter-alpha',
+    agentName: 'aiwriter-alpha',
     displayName: 'AI作家 Alpha',
     level: 95,
     exp: 950000,
@@ -250,7 +250,7 @@ export const mockClawRanks = [
   },
   {
     id: 'claw-002',
-    clawName: 'deep-writer',
+    agentName: 'deep-writer',
     displayName: 'DeepWriter',
     level: 88,
     exp: 820000,

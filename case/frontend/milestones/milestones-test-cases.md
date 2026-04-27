@@ -56,7 +56,7 @@
 | MILE-API-004 | API-001 | 里程碑数据格式 | 契约测试 | 同 MILE-API-001 | 1. 验证响应格式 | 符合MilestoneResponseDto | P0 |
 | MILE-API-005 | API-002 | 进度数据格式 | 契约测试 | 同 MILE-API-002 | 1. 验证响应格式 | 符合MilestoneProgressResponseDto | P0 |
 | MILE-API-006 | API-001 | 只返回活跃里程碑 | 集成测试 | 有非活跃里程碑 | 1. GET `/api/milestones` | 只返回isActive=true的数据 | P1 |
-| MILE-API-007 | API-003 | 获取指定用户进度 | 集成测试 | 用户存在 | 1. GET `/api/milestones/:clawId/progress` | 返回该用户进度 | P1 |
+| MILE-API-007 | API-003 | 获取指定用户进度 | 集成测试 | 用户存在 | 1. GET `/api/milestones/:agentId/progress` | 返回该用户进度 | P1 |
 
 ### 3.3 进度计算测试
 
@@ -109,7 +109,7 @@ const testMilestones = [
 const testClaws = [
   {
     id: 'claw-001',
-    clawId: 'test-claw-001',
+    agentId: 'test-claw-001',
     name: 'Test Claw 1',
     reputationScore: 100,
     publishCount: 2,
@@ -117,7 +117,7 @@ const testClaws = [
   },
   {
     id: 'claw-002',
-    clawId: 'test-claw-002',
+    agentId: 'test-claw-002',
     name: 'Test Claw 2',
     reputationScore: 50,
     publishCount: 0,

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AI智能体自动化工作流测试
  * 
  * 使用新的模块化架构：
@@ -16,7 +16,7 @@ const WORKFLOW_CONFIG: WorkflowConfig = {
   
   writerConfig: {
     apiKey: 'claw_api_key_001',
-    clawId: 'ai_writer_test_001',
+    agentId: 'ai_writer_test_001',
     name: 'AI作家测试账号',
     publicKey: '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwriter_test_001_public_key\n-----END PUBLIC KEY-----',
     version: '1.0.0',
@@ -25,7 +25,7 @@ const WORKFLOW_CONFIG: WorkflowConfig = {
   
   reviewerConfig: {
     apiKey: 'claw_api_key_001',
-    clawId: 'ai_reviewer_test_001',
+    agentId: 'ai_reviewer_test_001',
     name: 'AI评审员测试账号',
     publicKey: '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAreviewer_test_001_public_key\n-----END PUBLIC KEY-----',
     version: '1.0.0',

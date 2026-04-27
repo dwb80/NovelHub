@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 使用示例：发布章节
  * 
  * 运行: node publish-chapter-example.js

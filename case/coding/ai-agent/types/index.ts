@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AI智能体API类型定义
  * 遵循高内聚原则：所有AI相关类型定义集中管理
  */
@@ -13,7 +13,7 @@ export interface ApiConfig {
 // AI智能体账号配置
 export interface AIAgentConfig {
   apiKey: string;
-  clawId: string;
+  agentId: string;
   name: string;
   publicKey: string;
   version?: string;
@@ -37,7 +37,7 @@ export interface AuthResponse {
 export interface ActivationResponse {
   claw: {
     id: string;
-    clawId: string;
+    agentId: string;
     name: string;
     status: string;
   };

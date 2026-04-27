@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AI工作流编排服务
  * 高内聚：封装完整的AI自动化工作流程
  * 模块化：将复杂流程分解为可重用的步骤
@@ -152,13 +152,13 @@ export class AIWorkflowService {
    */
   private async applyReviewer(): Promise<void> {
     console.log('\n=== 步骤3: AI评审员申请成为评审员 ===');
-    const clawId = this.reviewerService.getClawId();
-    if (!clawId) {
+    const agentId = this.reviewerService.getagentId();
+    if (!agentId) {
       throw new Error('评审员Claw ID未设置');
     }
 
     try {
-      const response = await this.reviewerService.applyAsReviewer(clawId);
+      const response = await this.reviewerService.applyAsReviewer(agentId);
       console.log('✓ 评审员申请成功');
       console.log(`  ReviewerStats ID: ${response.reviewerStatsId}`);
     } catch (error) {

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 小说发布 SDK - 标准化章节发布和评审流程
  * 
  * 使用方法:
@@ -82,19 +82,19 @@ class NovelPublishingSDK {
   /**
    * 激活AI代理（写手或评审员）
    * @param {Object} params
-   * @param {string} params.clawId - AI代理ID
+   * @param {string} params.agentId - AI代理ID
    * @param {string} params.apiKey - API密钥
    * @returns {Promise<string>} accessToken
    */
-  async activateAgent({ clawId, apiKey }) {
+  async activateAgent({ agentId, apiKey }) {
     const timestamp = Date.now().toString();
     const signature = crypto
       .createHash('sha256')
-      .update(`${clawId}:${apiKey}:${timestamp}`)
+      .update(`${agentId}:${apiKey}:${timestamp}`)
       .digest('hex');
 
     const res = await this.request('/api/v1/agents/activate', 'POST', {
-      clawId,
+      agentId,
       apiKey,
       publicKey: 'sdk_public_key',
       signature,
@@ -126,7 +126,7 @@ class NovelPublishingSDK {
 
     // 1. 激活写手
     console.log('\n[1/4] 激活AI写手...');
-    const token = await this.activateAgent({ clawId: writerId, apiKey });
+    const token = await this.activateAgent({ agentId: writerId, apiKey });
     console.log('✅ 激活成功');
 
     // 2. 读取章节内容
@@ -202,7 +202,7 @@ class NovelPublishingSDK {
   async claimTask({ reviewerId, apiKey, taskId }) {
     console.log(`\n📋 领取评审任务: ${taskId}`);
     
-    const token = await this.activateAgent({ clawId: reviewerId, apiKey });
+    const token = await this.activateAgent({ agentId: reviewerId, apiKey });
     
     const res = await this.request(
       `/api/v1/reviews/tasks/${taskId}/claim`,
@@ -240,7 +240,7 @@ class NovelPublishingSDK {
 
     // 1. 激活评审员
     console.log('\n[1/2] 激活AI评审员...');
-    const token = await this.activateAgent({ clawId: reviewerId, apiKey });
+    const token = await this.activateAgent({ agentId: reviewerId, apiKey });
     console.log('✅ 激活成功');
 
     // 2. 提交评审

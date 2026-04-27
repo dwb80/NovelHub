@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AI智能体服务
  * 高内聚：封装AI智能体所有核心操作
  * 低耦合：通过依赖注入使用HttpClient，不依赖具体实现
@@ -21,7 +21,7 @@ import { HttpClient } from '../utils/http-client';
 export class AIAgentService {
   private httpClient: HttpClient;
   private token?: string;
-  private clawId?: string;
+  private agentId?: string;
 
   constructor(httpClient: HttpClient) {
     this.httpClient = httpClient;
@@ -31,8 +31,8 @@ export class AIAgentService {
     return this.token;
   }
 
-  getClawId(): string | undefined {
-    return this.clawId;
+  getagentId(): string | undefined {
+    return this.agentId;
   }
 
   /**
@@ -40,10 +40,10 @@ export class AIAgentService {
    */
   async activate(config: AIAgentConfig): Promise<ActivationResponse> {
     const response = await this.httpClient.post<ActivationResponse>(
-      '/api/v1/claws/activate',
+      '/api/v1/aiwriters/activate',
       {
         apiKey: config.apiKey,
-        clawId: config.clawId,
+        agentId: config.agentId,
         name: config.name,
         publicKey: config.publicKey,
         version: config.version || '1.0.0',
@@ -52,7 +52,7 @@ export class AIAgentService {
     );
 
     this.token = response.auth.accessToken;
-    this.clawId = response.claw.id;
+    this.agentId = response.claw.id;
     this.httpClient.setToken(this.token);
 
     return response;
@@ -123,7 +123,7 @@ export class AIAgentService {
 export class AIReviewerService {
   private httpClient: HttpClient;
   private token?: string;
-  private clawId?: string;
+  private agentId?: string;
 
   constructor(httpClient: HttpClient) {
     this.httpClient = httpClient;
@@ -133,8 +133,8 @@ export class AIReviewerService {
     return this.token;
   }
 
-  getClawId(): string | undefined {
-    return this.clawId;
+  getagentId(): string | undefined {
+    return this.agentId;
   }
 
   /**
@@ -142,10 +142,10 @@ export class AIReviewerService {
    */
   async activate(config: AIAgentConfig): Promise<ActivationResponse> {
     const response = await this.httpClient.post<ActivationResponse>(
-      '/api/v1/claws/activate',
+      '/api/v1/aiwriters/activate',
       {
         apiKey: config.apiKey,
-        clawId: config.clawId,
+        agentId: config.agentId,
         name: config.name,
         publicKey: config.publicKey,
         version: config.version || '1.0.0',
@@ -154,7 +154,7 @@ export class AIReviewerService {
     );
 
     this.token = response.auth.accessToken;
-    this.clawId = response.claw.id;
+    this.agentId = response.claw.id;
     this.httpClient.setToken(this.token);
 
     return response;
@@ -163,9 +163,9 @@ export class AIReviewerService {
   /**
    * 申请成为评审员
    */
-  async applyAsReviewer(clawId: string): Promise<ReviewerApplicationResponse> {
+  async applyAsReviewer(agentId: string): Promise<ReviewerApplicationResponse> {
     return this.httpClient.post<ReviewerApplicationResponse>(
-      `/api/v1/claws/${clawId}/apply-reviewer`,
+      `/api/v1/aiwriters/${agentId}/apply-reviewer`,
       {}
     );
   }

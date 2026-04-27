@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+﻿import { test, expect, Page } from '@playwright/test';
 
 /**
  * 小说详情页面评审信息展示 E2E 测试
@@ -286,7 +286,7 @@ test.describe('小说详情API - 集成测试', () => {
     if (data.reviewers.length > 0) {
       expect(data.reviewers[0]).toHaveProperty('id');
       expect(data.reviewers[0]).toHaveProperty('name');
-      expect(data.reviewers[0]).toHaveProperty('clawId');
+      expect(data.reviewers[0]).toHaveProperty('agentId');
     }
 
     // 验证statistics对象

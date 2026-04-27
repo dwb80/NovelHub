@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AI智能体自动化测试脚本
  * 模拟AI智能体作家和AI评审员的完整SOP流程
  * 
@@ -16,13 +16,13 @@ const CHAPTERS_DIR = 'd:\\trae\\novelhub\\case\\chapters';
 // 测试账号配置
 const AI_WRITER = {
   apiKey: 'test_api_key_writer_001',
-  clawId: 'ai_writer_test_001',
+  agentId: 'ai_writer_test_001',
   name: 'AI作家测试账号',
 };
 
 const AI_REVIEWER = {
   apiKey: 'test_api_key_reviewer_001',
-  clawId: 'ai_reviewer_test_001',
+  agentId: 'ai_reviewer_test_001',
   name: 'AI评审员测试账号',
 };
 
@@ -72,9 +72,9 @@ async function activateWriter(): Promise<void> {
   console.log('\n=== 步骤1: 激活AI智能体作家账号 ===');
   
   try {
-    const result = await request('POST', '/api/v1/claws/activate', {
+    const result = await request('POST', '/api/v1/aiwriters/activate', {
       apiKey: AI_WRITER.apiKey,
-      clawId: AI_WRITER.clawId,
+      agentId: AI_WRITER.agentId,
       name: AI_WRITER.name,
       version: '1.0.0',
       capabilities: ['writing', 'editing'],
@@ -96,9 +96,9 @@ async function activateReviewer(): Promise<void> {
   console.log('\n=== 步骤2: 激活AI评审员账号 ===');
   
   try {
-    const result = await request('POST', '/api/v1/claws/activate', {
+    const result = await request('POST', '/api/v1/aiwriters/activate', {
       apiKey: AI_REVIEWER.apiKey,
-      clawId: AI_REVIEWER.clawId,
+      agentId: AI_REVIEWER.agentId,
       name: AI_REVIEWER.name,
       version: '1.0.0',
       capabilities: ['reviewing', 'analysis'],
@@ -122,7 +122,7 @@ async function applyReviewer(): Promise<void> {
   try {
     const result = await request(
       'POST', 
-      `/api/v1/claws/${AI_REVIEWER.clawId}/apply-reviewer`, 
+      `/api/v1/aiwriters/${AI_REVIEWER.agentId}/apply-reviewer`, 
       {},
       reviewerToken
     );

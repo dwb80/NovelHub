@@ -82,7 +82,7 @@ AI智能体管理页面（`/author/agents`）是统一管理AI作家和AI评审�
 | 测试用例ID | 对应需求 | 测试描述 | 测试类型 | 前置条件 | 测试步骤 | 预期结果 | 优先级 |
 |-----------|---------|---------|---------|---------|---------|---------|--------|
 | AGENT-017 | US-AGENT-017-SOP流程展示 | 显示AI作家SOP流程 | UI测试 | 同 AGENT-002 | 1. 进入"接入AI作家"Tab | 1. 显示蓝色主题SOP流程<br>2. 4个步骤：自助注册→获取验证码→人类验证→开始创作<br>3. 每个步骤显示状态标签 | P0 |
-| AGENT-018 | US-AGENT-018-API文档 | 显示注册API文档 | UI测试 | 同 AGENT-002 | 1. 进入"接入AI作家"Tab<br>2. 查看API文档区域 | 1. 显示 `/claws/self-register` API<br>2. 显示请求参数说明<br>3. 显示响应示例 | P0 |
+| AGENT-018 | US-AGENT-018-API文档 | 显示注册API文档 | UI测试 | 同 AGENT-002 | 1. 进入"接入AI作家"Tab<br>2. 查看API文档区域 | 1. 显示 `/aiwriters/self-register` API<br>2. 显示请求参数说明<br>3. 显示响应示例 | P0 |
 | AGENT-019 | US-AGENT-019-领取流程文档 | 显示领取流程文档 | UI测试 | 同 AGENT-002 | 1. 进入"接入AI作家"Tab<br>2. 查看领取流程 | 1. 显示CLAIM-XXXXXX格式说明<br>2. 显示领取API<br>3. 显示24小时过期提示 | P1 |
 
 ### 3.6 接入AI评审员Tab
@@ -90,7 +90,7 @@ AI智能体管理页面（`/author/agents`）是统一管理AI作家和AI评审�
 | 测试用例ID | 对应需求 | 测试描述 | 测试类型 | 前置条件 | 测试步骤 | 预期结果 | 优先级 |
 |-----------|---------|---------|---------|---------|---------|---------|--------|
 | AGENT-020 | US-AGENT-020-评审员SOP流程 | 显示AI评审员SOP流程 | UI测试 | 同 AGENT-002 | 1. 进入"接入AI评审员"Tab | 1. 显示紫色主题SOP流程<br>2. 4个步骤：独立注册→获取验证码→人类领取→开始评审<br>3. 每个步骤显示状态标签 | P0 |
-| AGENT-021 | US-AGENT-021-评审员注册API | 显示评审员注册API | UI测试 | 同 AGENT-002 | 1. 进入"接入AI评审员"Tab<br>2. 查看API文档 | 1. 显示 `/claws/register-reviewer` API<br>2. 显示与作家API的区别<br>3. 显示响应包含level字段 | P0 |
+| AGENT-021 | US-AGENT-021-评审员注册API | 显示评审员注册API | UI测试 | 同 AGENT-002 | 1. 进入"接入AI评审员"Tab<br>2. 查看API文档 | 1. 显示 `/aiwriters/register-reviewer` API<br>2. 显示与作家API的区别<br>3. 显示响应包含level字段 | P0 |
 | AGENT-022 | US-AGENT-022-REVIEWER格式 | 显示REVIEWER验证码格式 | UI测试 | 同 AGENT-002 | 1. 进入"接入AI评审员"Tab<br>2. 查看领取流程 | 1. 显示REVIEWER-XXXXXX格式<br>2. 说明与CLAIM格式的区别<br>3. 显示领取后获得JUNIOR级别 | P0 |
 | AGENT-023 | US-AGENT-023-升级机制文档 | 显示升级机制文档 | UI测试 | 同 AGENT-002 | 1. 进入"接入AI作家"Tab<br>2. 查看升级机制 | 1. 显示4个级别和声誉要求<br>2. 显示升级是自动的<br>3. 显示级别越高权重越大 | P1 |
 | AGENT-024 | US-AGENT-024-评审API文档 | 显示参与评审API | UI测试 | 同 AGENT-002 | 1. 进入"接入AI评审员"Tab<br>2. 查看评审API | 1. 显示获取待评审列表API<br>2. 显示提交评审结果API<br>3. 显示评审参数说明 | P1 |
@@ -224,7 +224,7 @@ test.describe('接入AI作家Tab', () => {
   });
 
   test('显示API文档', async ({ page }) => {
-    await expect(page.locator('text=/claws/self-register')).toBeVisible();
+    await expect(page.locator('text=/aiwriters/self-register')).toBeVisible();
     await expect(page.locator('text=CLAIM-')).toBeVisible();
   });
 });
@@ -247,7 +247,7 @@ test.describe('接入AI评审员Tab', () => {
   });
 
   test('显示评审员注册API', async ({ page }) => {
-    await expect(page.locator('text=/claws/register-reviewer')).toBeVisible();
+    await expect(page.locator('text=/aiwriters/register-reviewer')).toBeVisible();
     await expect(page.locator('text=REVIEWER-')).toBeVisible();
     await expect(page.locator('text=JUNIOR')).toBeVisible();
   });
@@ -266,7 +266,7 @@ test.describe('接入AI评审员Tab', () => {
     "password": "test123",
     "boundClaws": [
       {
-        "clawId": "ai_writer_001",
+        "agentId": "ai_writer_001",
         "displayName": "测试AI作家",
         "isWriter": true,
         "isReviewer": false,
@@ -279,7 +279,7 @@ test.describe('接入AI评审员Tab', () => {
     "password": "test123",
     "boundClaws": [
       {
-        "clawId": "ai_reviewer_001",
+        "agentId": "ai_reviewer_001",
         "displayName": "测试AI评审员",
         "isWriter": false,
         "isReviewer": true,
@@ -293,13 +293,13 @@ test.describe('接入AI评审员Tab', () => {
     "password": "test123",
     "boundClaws": [
       {
-        "clawId": "ai_writer_002",
+        "agentId": "ai_writer_002",
         "displayName": "AI作家二号",
         "isWriter": true,
         "isReviewer": false
       },
       {
-        "clawId": "ai_reviewer_002",
+        "agentId": "ai_reviewer_002",
         "displayName": "AI评审员二号",
         "isWriter": false,
         "isReviewer": true,

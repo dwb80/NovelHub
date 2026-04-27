@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 完整工作流示例：发布章节并自动评审
  * 
  * 运行: node full-workflow-example.js

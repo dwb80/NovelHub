@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 读者注册模块 E2E 测试
  * 测试用例对应: case/frontend/auth/register-test-cases.md
  * 
@@ -19,7 +19,7 @@ const TEST_DATA = {
     confirmPassword: 'Test1234',
   },
   validClaw: {
-    clawName: `test_claw_${Date.now()}`,
+    agentName: `test_claw_${Date.now()}`,
     email: `claw_${Date.now()}@example.com`,
     password: 'Test1234',
     confirmPassword: 'Test1234',
@@ -75,7 +75,7 @@ class RegisterPage {
   }
 
   // 填写 AI智能体作家 名称
-  async fillClawName(name: string) {
+  async fillagentName(name: string) {
     await this.page.getByLabel('AI智能体作家 名称').fill(name);
   }
 
@@ -105,8 +105,8 @@ class RegisterPage {
   }
 
   // 获取 AI智能体作家 名称错误提示
-  getClawNameError() {
-    return this.page.locator('#clawName + p.text-red-500, #clawName ~ p.text-red-500');
+  getagentNameError() {
+    return this.page.locator('#agentName + p.text-red-500, #agentName ~ p.text-red-500');
   }
 
   // 获取邮箱错误提示
@@ -488,7 +488,7 @@ test.describe('AI智能体作家 注册测试', () => {
     const registerPage = new RegisterPage(page);
     const testData = TEST_DATA.validClaw;
 
-    await registerPage.fillClawName(testData.clawName);
+    await registerPage.fillagentName(testData.agentName);
     await registerPage.fillEmail(testData.email);
     await registerPage.fillPassword(testData.password);
     await registerPage.fillConfirmPassword(testData.confirmPassword);
@@ -503,11 +503,11 @@ test.describe('AI智能体作家 注册测试', () => {
   test('AI智能体作家 名称为空时显示错误', async ({ page }) => {
     const registerPage = new RegisterPage(page);
 
-    await registerPage.fillClawName('');
+    await registerPage.fillagentName('');
     await registerPage.fillEmail('test@example.com');
     await registerPage.clickRegister();
 
-    const error = registerPage.getClawNameError();
+    const error = registerPage.getagentNameError();
     await expect(error).toBeVisible();
     await expect(error).toHaveText('AI智能体作家 名称不能为空');
   });
@@ -516,10 +516,10 @@ test.describe('AI智能体作家 注册测试', () => {
   test('AI智能体作家 名称长度不足时显示错误', async ({ page }) => {
     const registerPage = new RegisterPage(page);
 
-    await registerPage.fillClawName('ab');
+    await registerPage.fillagentName('ab');
     await registerPage.fillEmail('test@example.com');
 
-    const error = registerPage.getClawNameError();
+    const error = registerPage.getagentNameError();
     await expect(error).toBeVisible();
     await expect(error).toHaveText('AI智能体作家 名称至少需要3个字符');
   });
@@ -528,10 +528,10 @@ test.describe('AI智能体作家 注册测试', () => {
   test('AI智能体作家 名称包含特殊字符时显示错误', async ({ page }) => {
     const registerPage = new RegisterPage(page);
 
-    await registerPage.fillClawName('claw@name');
+    await registerPage.fillagentName('claw@name');
     await registerPage.fillEmail('test@example.com');
 
-    const error = registerPage.getClawNameError();
+    const error = registerPage.getagentNameError();
     await expect(error).toBeVisible();
     await expect(error).toHaveText('AI智能体作家 名称只能包含字母、数字和下划线');
   });

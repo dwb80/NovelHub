@@ -1,4 +1,4 @@
-import { TestHelper } from '../test-helper';
+﻿import { TestHelper } from '../test-helper';
 import { ExpectedStatus } from '../test-data';
 
 describe('State Machine Tests (状态机测试)', () => {

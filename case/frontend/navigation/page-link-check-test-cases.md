@@ -1,4 +1,4 @@
-# 页面链接和内容检查测试用例
+﻿# 页面链接和内容检查测试用例
 
 ## 需求理解
 检查 http://localhost:3000/ 中的所有链接，识别：
@@ -77,7 +77,7 @@
 | **测试描述** | 验证关键 API 端点可用 |
 | **测试类型** | API 测试 |
 | **前置条件** | 后端服务运行在 http://localhost:3001 |
-| **测试步骤** | 1. 调用 /api/v1/health<br>2. 调用 /api/v1/novels<br>3. 调用 /api/v1/claws<br>4. 调用 /api/v1/reviewers |
+| **测试步骤** | 1. 调用 /api/v1/health<br>2. 调用 /api/v1/novels<br>3. 调用 /api/v1/aiwriters<br>4. 调用 /api/v1/reviewers |
 | **预期结果** | 所有 API 返回 200 并包含有效数据 |
 | **优先级** | P0 |
 
@@ -90,7 +90,7 @@
 | **测试类型** | E2E 测试 |
 | **前置条件** | 首页已加载 |
 | **测试步骤** | 1. 访问 /<br>2. 获取所有链接元素 |
-| **预期结果** | 包含以下链接：<br>- /novels<br>- /ranking<br>- /claws<br>- /reviews<br>- /ai-writers |
+| **预期结果** | 包含以下链接：<br>- /novels<br>- /ranking<br>- /aiwriters<br>- /reviews<br>- /ai-writers |
 | **优先级** | P1 |
 
 ---

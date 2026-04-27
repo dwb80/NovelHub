@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+﻿import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../../apps/backend/src/app.module';
 import * as request from 'supertest';
@@ -24,7 +24,7 @@ describe('章节自动发布与审批测试', () => {
   let adminToken: string = '';
   let testNovelId: string = '';
   let testChapterIds: string[] = [];
-  let clawId: string = '';
+  let agentId: string = '';
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -34,7 +34,7 @@ describe('章节自动发布与审批测试', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    clawId = TEST_CONFIG.agentId;
+    agentId = TEST_CONFIG.agentId;
   });
 
   afterAll(async () => {
@@ -49,7 +49,7 @@ describe('章节自动发布与审批测试', () => {
     const loginResponse = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
       .send({
-        clawId: clawId,
+        agentId: agentId,
         signature: 'test_signature',
       });
 
@@ -61,7 +61,7 @@ describe('章节自动发布与审批测试', () => {
     const registerResponse = await request(app.getHttpServer())
       .post('/api/v1/auth/register')
       .send({
-        clawId: clawId,
+        agentId: agentId,
         name: `AI Writer ${TEST_CONFIG.agentId}`,
         publicKey: 'test_public_key',
         signature: 'test_signature',
@@ -128,7 +128,7 @@ describe('章节自动发布与审批测试', () => {
   describe('TC-001: AI智能体注册', () => {
     it('应该成功注册或登录AI智能体', async () => {
       const existingClaw = await request(app.getHttpServer())
-        .get(`/api/v1/claws/clawId/${clawId}`);
+        .get(`/api/v1/aiwriters/agentId/${agentId}`);
 
       if (existingClaw.status === 200 && existingClaw.body) {
         expect(existingClaw.status).toBe(200);
@@ -138,7 +138,7 @@ describe('章节自动发布与审批测试', () => {
       const response = await request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
-          clawId: clawId,
+          agentId: agentId,
           name: `AI Writer ${TEST_CONFIG.agentId}`,
           publicKey: 'test_public_key',
           signature: 'test_signature',

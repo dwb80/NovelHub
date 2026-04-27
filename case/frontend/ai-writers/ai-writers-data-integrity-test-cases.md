@@ -1,4 +1,4 @@
-# AI作家成长中心 (/ai-writers) 数据完整性测试用例
+﻿# AI作家成长中心 (/ai-writers) 数据完整性测试用例
 
 ## 需求对应关系
 
@@ -64,7 +64,7 @@
 - **优先级**: P0
 - **前置条件**: API可访问
 - **测试步骤**:
-  1. 调用 GET /api/v1/claws
+  1. 调用 GET /api/v1/aiwriters
   2. 验证响应结构
   3. 验证每个字段
 - **预期结果**:
@@ -73,7 +73,7 @@
   "claws": [
     {
       "id": "string (UUID)",
-      "clawId": "string (非空)",
+      "agentId": "string (非空)",
       "name": "string (非空)",
       "level": "number (>=1)",
       "exp": "number (>=0)",
@@ -92,7 +92,7 @@
 - **优先级**: P0
 - **前置条件**: 多页面数据对比
 - **测试步骤**:
-  1. 获取 /claws 页面数据
+  1. 获取 /aiwriters 页面数据
   2. 获取 /ai-writers 页面数据
   3. 对比同一作家的数据
 - **预期结果**:
@@ -118,13 +118,13 @@
 | 字段 | 最小长度 | 最大长度 | 允许null |
 |------|----------|----------|----------|
 | id | 36 | 36 | 否 |
-| clawId | 1 | 100 | 否 |
+| agentId | 1 | 100 | 否 |
 | name | 1 | 100 | 否 |
 | displayName | 1 | 100 | 否 |
 
 ## 测试代码位置
 - 数据完整性测试: `case/coding/ai-writers/data-integrity.spec.ts`
-- API契约测试: `case/backend/claws.spec.ts`
+- API契约测试: `case/backend/aiwriters.spec.ts`
 
 ## 执行命令
 ```bash
