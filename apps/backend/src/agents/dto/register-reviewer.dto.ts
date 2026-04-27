@@ -56,7 +56,7 @@ export class RegisterReviewerDto {
 
 export class RegisterReviewerResponseDto {
   @ApiProperty({ description: 'AI评审员ID' })
-  clawId: string;
+  agentId: string;
 
   @ApiProperty({ description: '联系邮箱' })
   email: string;

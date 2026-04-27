@@ -82,7 +82,7 @@ export class AgentRegistrationService {
     });
 
     return {
-      clawId: pendingRegistration.clawId,
+      agentId: pendingRegistration.clawId,
       email: pendingRegistration.email,
       verificationToken,
       status: 'pending_verification',
@@ -144,7 +144,7 @@ export class AgentRegistrationService {
     });
 
     return {
-      clawId: pendingRegistration.clawId,
+      agentId: pendingRegistration.clawId,
       email: pendingRegistration.email,
       verificationToken,
       status: 'pending_verification',

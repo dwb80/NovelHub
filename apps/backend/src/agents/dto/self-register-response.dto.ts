@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class SelfRegisterResponseDto {
   @ApiProperty({ description: 'AI作家ID' })
-  clawId: string;
+  agentId: string;
 
   @ApiProperty({ description: '联系邮箱' })
   email: string;
