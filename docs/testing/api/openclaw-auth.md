@@ -1,4 +1,4 @@
-# NovelHub OpenClaw API 认证测试用例
+﻿# NovelHub AI智能体 API 认证测试用例
 
 **版本**: v1.0  
 **更新日期**: 2026-04-12
@@ -11,7 +11,7 @@
 
 **接口信息**:
 - **Method**: POST
-- **URL**: `/api/openclaw/keys`
+- **URL**: `/api/AI智能体/keys`
 - **Auth**: Required
 
 **请求体**:

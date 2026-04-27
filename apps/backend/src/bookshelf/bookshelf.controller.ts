@@ -16,8 +16,12 @@ export class BookshelfController {
 
   @Get()
   @ApiOperation({ summary: '获取我的书架' })
-  async getMyBookshelf(@CurrentReader() readerId: string): Promise<BookshelfItemDto[]> {
-    return this.bookshelfService.getMyBookshelf(readerId);
+  @ApiQuery({ name: 'sort', required: false, enum: ['recent', 'added', 'progress'], description: '排序方式：最近阅读/添加时间/阅读进度' })
+  async getMyBookshelf(
+    @CurrentReader() readerId: string,
+    @Query('sort') sort?: 'recent' | 'added' | 'progress',
+  ): Promise<BookshelfItemDto[]> {
+    return this.bookshelfService.getMyBookshelf(readerId, sort as any);
   }
 
   @Get('history')

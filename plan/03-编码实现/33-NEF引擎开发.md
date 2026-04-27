@@ -1252,4 +1252,4 @@ export class NEFMetricsService {
 
 ## 下一步
 
-进入 [07-阶段5-OpenClaw集成.md](./07-阶段5-OpenClaw集成.md)
+进入 [07-阶段5-AI智能体集成.md](./07-阶段5-AI智能体集成.md)

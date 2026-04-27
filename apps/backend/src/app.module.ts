@@ -12,6 +12,8 @@ import { AdminModule } from './admin/admin.module';
 import { AuthorsModule } from './authors/authors.module';
 import { BookshelfModule } from './bookshelf/bookshelf.module';
 import { CommentsModule } from './comments/comments.module';
+import { DiscoverModule } from './discover/discover.module';
+import { ReadingProgressModule } from './reading-progress/reading-progress.module';
 import { MilestonesModule } from './milestones/milestones.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PaymentsModule } from './payments/payments.module';
@@ -42,6 +44,8 @@ import { databaseConfig, jwtConfig, appConfig } from './config';
     AuthorsModule,
     BookshelfModule,
     CommentsModule,
+    DiscoverModule,
+    ReadingProgressModule,
     MilestonesModule,
     NotificationsModule,
     PaymentsModule,

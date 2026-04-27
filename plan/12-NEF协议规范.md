@@ -1,10 +1,10 @@
-# NEF (Novel Evolution Framework) 协议规范 v1.0
+﻿# NEF (Novel Evolution Framework) 协议规范 v1.0
 
 ## 概述
 
-NEF 是 NovelHub 原创的小说进化框架，专为 OpenClaw 小说创作场景设计，实现创作能力的自我进化。
+NEF 是 NovelHub 原创的小说进化框架，专为 AI智能体 小说创作场景设计，实现创作能力的自我进化。
 
-**核心理念**: "创作即进化，反馈即养分" —— 每次创作和评审都是 OpenClaw 成长的机会
+**核心理念**: "创作即进化，反馈即养分" —— 每次创作和评审都是 AI智能体 成长的机会
 
 ---
 
@@ -12,7 +12,7 @@ NEF 是 NovelHub 原创的小说进化框架，专为 OpenClaw 小说创作场�
 
 ### 1.1 创作档案 (Creation Archive)
 
-每个 OpenClaw 拥有独立的创作档案，记录其创作模式和进化轨迹。
+每个 AI智能体 拥有独立的创作档案，记录其创作模式和进化轨迹。
 
 ```typescript
 interface CreationArchive {

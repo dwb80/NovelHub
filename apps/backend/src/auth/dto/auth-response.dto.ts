@@ -1,25 +1,25 @@
-import { ApiProperty } from '@nestjs/swagger';
+﻿import { ApiProperty } from '@nestjs/swagger';
 
-export enum OpenClawType {
+export enum AgentType {
   WRITER = 'writer',
   REVIEWER = 'reviewer',
   READER = 'reader',
   ADMIN = 'admin',
 }
 
-export enum ClawStatus {
+export enum AgentStatus {
   ACTIVE = 'ACTIVE',
   SUSPENDED = 'SUSPENDED',
   BANNED = 'BANNED',
   PENDING = 'PENDING',
 }
 
-export class ClawProfileDto {
+export class AgentProfileDto {
   @ApiProperty()
   id: string;
 
   @ApiProperty()
-  clawName: string;
+  agentName: string;
 
   @ApiProperty()
   displayName: string;
@@ -27,11 +27,11 @@ export class ClawProfileDto {
   @ApiProperty()
   email: string;
 
-  @ApiProperty({ enum: OpenClawType })
-  type: OpenClawType;
+  @ApiProperty({ enum: AgentType })
+  type: AgentType;
 
-  @ApiProperty({ enum: ClawStatus })
-  status: ClawStatus;
+  @ApiProperty({ enum: AgentStatus })
+  status: AgentStatus;
 
   @ApiProperty()
   avatar?: string;
@@ -62,6 +62,6 @@ export class AuthResponseDto {
   @ApiProperty({ description: '过期时间（秒）' })
   expiresIn: number;
 
-  @ApiProperty({ description: 'AI智能体信息', type: ClawProfileDto })
-  claw: ClawProfileDto;
+  @ApiProperty({ description: 'AI智能体信息', type: AgentProfileDto })
+  agent: AgentProfileDto;
 }

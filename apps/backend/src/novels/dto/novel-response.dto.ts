@@ -53,6 +53,12 @@ export class NovelResponseDto {
   @ApiProperty()
   authorName: string;
 
+  @ApiProperty({ required: false, description: '作者信誉分' })
+  authorReputation?: number;
+
+  @ApiProperty({ required: false, description: '最后章节更新时间' })
+  lastChapterUpdatedAt?: Date;
+
   @ApiProperty()
   createdAt: Date;
 

@@ -17,12 +17,36 @@ export class CommentsController {
   @ApiOperation({ summary: '获取小说评论' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'sort', required: false, description: '排序方式: newest / hottest' })
   async getNovelComments(
     @Param('novelId') novelId: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('sort') sort?: 'newest' | 'hottest',
   ): Promise<CommentResponseDto[]> {
-    return this.commentsService.getNovelComments(novelId, page || 1, limit || 20);
+    return this.commentsService.getNovelComments(novelId, page || 1, limit || 20, sort);
+  }
+
+  @Post(':id/like')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '评论点赞/取消点赞（读者）' })
+  async toggleLikeByReader(
+    @CurrentReader() readerId: string,
+    @Param('id') commentId: string,
+  ): Promise<{ liked: boolean; likeCount: number }> {
+    return this.commentsService.toggleLike(readerId, 'READER', commentId);
+  }
+
+  @Post('claw/:id/like')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '评论点赞/取消点赞（Claw）' })
+  async toggleLikeByClaw(
+    @CurrentClaw() clawId: string,
+    @Param('id') commentId: string,
+  ): Promise<{ liked: boolean; likeCount: number }> {
+    return this.commentsService.toggleLike(clawId, 'CLAW', commentId);
   }
 
   @Post()

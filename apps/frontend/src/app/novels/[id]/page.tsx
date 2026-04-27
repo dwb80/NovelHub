@@ -11,7 +11,15 @@ interface Comment {
   content: string
   authorName: string
   createdAt: string
-  likes: number
+  likeCount: number
+  liked?: boolean
+}
+
+interface ReadingProgress {
+  novelId: string
+  chapterId: string
+  position: number
+  percentage: number
 }
 
 function NovelDetailContent() {
@@ -26,6 +34,8 @@ function NovelDetailContent() {
   const [isCollected, setIsCollected] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [activeTab, setActiveTab] = useState<'chapters' | 'comments'>('chapters')
+  const [commentSort, setCommentSort] = useState<'newest' | 'hottest'>('newest')
+  const [chapterOrder, setChapterOrder] = useState<'asc' | 'desc'>('asc')
 
   useEffect(() => {
     if (novelId) {
@@ -34,7 +44,7 @@ function NovelDetailContent() {
       fetchComments()
       checkCollectionStatus()
     }
-  }, [novelId])
+  }, [novelId, commentSort, chapterOrder])
 
   const fetchNovelDetail = async () => {
     try {
@@ -51,13 +61,12 @@ function NovelDetailContent() {
 
   const fetchChapters = async () => {
     try {
-      const response = await fetch(`/api/v1/novels/${novelId}/chapters`)
+      const response = await fetch(`/api/v1/novels/${novelId}/chapters?order=${chapterOrder}`)
       if (!response.ok) {
         throw new Error('获取章节列表失败')
       }
       const data = await response.json()
-      // API直接返回数组，不是 { items: [...] }
-      setChapters(Array.isArray(data) ? data : (data.items || []))
+      setChapters(data.items || [])
     } catch (err) {
       console.error('获取章节列表失败:', err)
     } finally {
@@ -67,10 +76,10 @@ function NovelDetailContent() {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/v1/comments/novel/${novelId}`)
+      const response = await fetch(`/api/v1/comments/novel/${novelId}?sort=${commentSort}`)
       if (response.ok) {
         const data = await response.json()
-        setComments(data.items || [])
+        setComments(data || [])
       }
     } catch (err) {
       console.error('获取评论失败:', err)
@@ -108,7 +117,6 @@ function NovelDetailContent() {
 
     try {
       if (isCollected) {
-        // 取消收藏
         const response = await fetch(`/api/v1/bookshelf/${novelId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
@@ -120,7 +128,6 @@ function NovelDetailContent() {
           alert('取消收藏失败')
         }
       } else {
-        // 添加收藏
         const response = await fetch('/api/v1/bookshelf', {
           method: 'POST',
           headers: {
@@ -176,19 +183,34 @@ function NovelDetailContent() {
     }
   }
 
-  const likeComment = (commentId: string) => {
-    const likedComments = JSON.parse(localStorage.getItem('likedComments') || '[]')
-    if (likedComments.includes(commentId)) {
-      alert('您已经点赞过了')
+  const likeComment = async (commentId: string) => {
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      alert('请先登录')
       return
     }
-    
-    likedComments.push(commentId)
-    localStorage.setItem('likedComments', JSON.stringify(likedComments))
-    
-    setComments(comments.map(c => 
-      c.id === commentId ? { ...c, likes: c.likes + 1 } : c
-    ))
+
+    try {
+      const response = await fetch(`/api/v1/comments/${commentId}/like`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        setComments(comments.map(c =>
+          c.id === commentId
+            ? { ...c, likeCount: result.likeCount, liked: result.liked }
+            : c
+        ))
+      } else {
+        const error = await response.json()
+        alert(error.message || '点赞失败')
+      }
+    } catch (err) {
+      console.error('点赞失败:', err)
+      alert('点赞失败，请稍后重试')
+    }
   }
 
   if (loading) {
@@ -209,9 +231,7 @@ function NovelDetailContent() {
 
   return (
     <MainLayout>
-      {/* 主要内容 */}
       <main className="container mx-auto px-4 py-8">
-        {/* 小说信息 */}
         <div className="flex gap-8 mb-8">
           <div className="w-48 flex-shrink-0">
             <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden">
@@ -230,9 +250,19 @@ function NovelDetailContent() {
           </div>
           <div className="flex-1">
             <h1 className="text-3xl font-bold mb-2">{novel.title}</h1>
-            <p className="text-lg text-muted-foreground mb-4">
+            <p className="text-lg text-muted-foreground mb-2">
               作者：{novel.authorName}
+              {novel.authorReputation !== undefined && (
+                <span className="ml-3 text-sm">
+                  信誉分：{novel.authorReputation}
+                </span>
+              )}
             </p>
+            {novel.lastChapterUpdatedAt && (
+              <p className="text-sm text-muted-foreground mb-4">
+                最后更新：{new Date(novel.lastChapterUpdatedAt).toLocaleDateString()}
+              </p>
+            )}
             <div className="flex gap-4 mb-4 text-sm text-muted-foreground">
               <span>分类：{novel.category}</span>
               <span>字数：{(novel.wordCount || 0).toLocaleString()}</span>
@@ -273,7 +303,6 @@ function NovelDetailContent() {
           </div>
         </div>
 
-        {/* 标签切换 */}
         <div className="border-b mb-6">
           <div className="flex gap-6">
             <button
@@ -299,9 +328,25 @@ function NovelDetailContent() {
           </div>
         </div>
 
-        {/* 章节列表 */}
         {activeTab === 'chapters' && (
           <div className="border rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">全部章节</h3>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setChapterOrder('asc')}
+                  className={`text-sm px-3 py-1 rounded ${chapterOrder === 'asc' ? 'bg-primary text-primary-foreground' : 'border'}`}
+                >
+                  正序
+                </button>
+                <button
+                  onClick={() => setChapterOrder('desc')}
+                  className={`text-sm px-3 py-1 rounded ${chapterOrder === 'desc' ? 'bg-primary text-primary-foreground' : 'border'}`}
+                >
+                  倒序
+                </button>
+              </div>
+            </div>
             {chapters.length === 0 ? (
               <p className="text-muted-foreground">暂无章节</p>
             ) : (
@@ -325,10 +370,8 @@ function NovelDetailContent() {
           </div>
         )}
 
-        {/* 评论区 */}
         {activeTab === 'comments' && (
           <div className="border rounded-lg p-6">
-            {/* 发表评论 */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-4">发表评论</h3>
               <textarea
@@ -347,9 +390,24 @@ function NovelDetailContent() {
               </div>
             </div>
 
-            {/* 评论列表 */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">全部评论</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">全部评论</h3>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCommentSort('newest')}
+                    className={`text-sm px-3 py-1 rounded ${commentSort === 'newest' ? 'bg-primary text-primary-foreground' : 'border'}`}
+                  >
+                    最新
+                  </button>
+                  <button
+                    onClick={() => setCommentSort('hottest')}
+                    className={`text-sm px-3 py-1 rounded ${commentSort === 'hottest' ? 'bg-primary text-primary-foreground' : 'border'}`}
+                  >
+                    最热
+                  </button>
+                </div>
+              </div>
               {comments.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">暂无评论，快来发表第一条评论吧！</p>
               ) : (
@@ -365,9 +423,9 @@ function NovelDetailContent() {
                       <p className="text-foreground mb-3">{comment.content}</p>
                       <button
                         onClick={() => likeComment(comment.id)}
-                        className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
+                        className={`text-sm flex items-center gap-1 ${comment.liked ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}
                       >
-                        👍 {comment.likes}
+                        👍 {comment.likeCount}
                       </button>
                     </div>
                   ))}

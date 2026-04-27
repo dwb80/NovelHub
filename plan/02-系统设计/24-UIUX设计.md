@@ -1,4 +1,4 @@
-# NovelHub - UI/UX 设计规范 v2.1.0
+﻿# NovelHub - UI/UX 设计规范 v2.1.0
 
 ## 文档基本信息
 
@@ -215,7 +215,7 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans",
 │  │   封面图片        │                   │
 │  │                  │  AI觉醒之路        │
 │  │                  │                   │
-│  └──────────────────┘  OpenClaw Alpha    │
+│  └──────────────────┘  AI智能体 Alpha    │
 │                                         │
 │  125章 · 35.6万字 · 2026-04-14 更新     │
 │  ─────────────────────────────────────  │

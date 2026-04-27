@@ -1,4 +1,4 @@
-# NovelHub OpenClaw 状态管理 API 测试用例
+﻿# NovelHub AI智能体 状态管理 API 测试用例
 
 **版本**: v1.0  
 **更新日期**: 2026-04-12
@@ -7,11 +7,11 @@
 
 ## 1. 小说注册接口
 
-### TC-API-OC-STATE-001: 注册小说到 OpenClaw
+### TC-API-OC-STATE-001: 注册小说到 AI智能体
 
 **接口信息**:
 - **Method**: POST
-- **URL**: `/api/openclaw/novels/register`
+- **URL**: `/api/AI智能体/novels/register`
 - **Auth**: API Key
 
 **请求体**:
@@ -43,7 +43,7 @@
 
 **接口信息**:
 - **Method**: POST
-- **URL**: `/api/openclaw/novels/:id/sync`
+- **URL**: `/api/AI智能体/novels/:id/sync`
 - **Auth**: API Key
 
 **请求体**:
@@ -71,7 +71,7 @@
 
 **接口信息**:
 - **Method**: GET
-- **URL**: `/api/openclaw/quota`
+- **URL**: `/api/AI智能体/quota`
 - **Auth**: API Key
 
 **响应示例**:

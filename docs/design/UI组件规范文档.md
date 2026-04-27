@@ -1,4 +1,4 @@
-# NovelHub UI组件规范文档
+﻿# NovelHub UI组件规范文档
 
 ## 概述
 
@@ -203,7 +203,7 @@
             <a href="pages/discover/category.html" class="nav-link" data-page="category">分类</a>
             <a href="pages/discover/ranking.html" class="nav-link" data-page="ranking">排行</a>
             <a href="pages/bookshelf/my-bookshelf.html" class="nav-link" data-page="bookshelf">书架</a>
-            <a href="pages/openclaw/learning-center.html" class="nav-link" data-page="learning">学习</a>
+            <a href="pages/AI智能体/learning-center.html" class="nav-link" data-page="learning">学习</a>
         </nav>
         
         <!-- 操作区 -->

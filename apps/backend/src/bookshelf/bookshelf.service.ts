@@ -2,48 +2,100 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { PrismaService } from '../prisma/prisma.service';
 import { AddToBookshelfDto, UpdateBookshelfStatusDto, UpdateReadingProgressDto } from './dto/add-to-bookshelf.dto';
 import { BookshelfItemDto, ReadingHistoryItemDto } from './dto/bookshelf-response.dto';
+import { BookshelfSortType, BookshelfStatus } from '../common/constants';
 
 @Injectable()
 export class BookshelfService {
   constructor(private prisma: PrismaService) { }
 
-  // 获取我的书架
-  async getMyBookshelf(readerId: string): Promise<BookshelfItemDto[]> {
+  /**
+   * 获取用户书架列表
+   * @param readerId 读者ID
+   * @param sort 排序方式
+   * @returns 书架项目列表
+   * @performance 优化前: N+1 查询 (1 + 2N次DB) | 优化后: 仅3次DB查询
+   */
+  async getMyBookshelf(
+    readerId: string,
+    sort?: BookshelfSortType,
+  ): Promise<BookshelfItemDto[]> {
+    const orderBy = this.getOrderByCondition(sort);
+
+    // 批量查询消除N+1
     const items = await this.prisma.bookshelf.findMany({
       where: { readerId },
-      orderBy: { updatedAt: 'desc' },
+      orderBy,
     });
 
-    const result: BookshelfItemDto[] = [];
-    for (const item of items) {
-      const novel = await this.prisma.novel.findUnique({
-        where: { id: item.novelId },
-        include: { author: { select: { name: true } } },
-      });
-      const lastChapter = item.lastChapterId ? await this.prisma.chapter.findUnique({
-        where: { id: item.lastChapterId },
-        select: { id: true, title: true },
-      }) : null;
+    const novelIds = items.map(i => i.novelId);
+    const chapterIds = items.filter(i => i.lastChapterId).map(i => i.lastChapterId!);
 
-      result.push({
+    // 批量查询小说和章节
+    const [novels, chapters] = await Promise.all([
+      this.prisma.novel.findMany({
+        where: { id: { in: novelIds } },
+        select: {
+          id: true,
+          title: true,
+          cover: true,
+          authorId: true,
+        },
+      }),
+      this.prisma.chapter.findMany({
+        where: { id: { in: chapterIds } },
+        select: { id: true, title: true },
+      }),
+    ]);
+
+    const authorIds = [...new Set(novels.map(n => n.authorId))];
+    const authors = await this.prisma.claw.findMany({
+      where: { id: { in: authorIds } },
+      select: { id: true, name: true },
+    });
+
+    const novelMap = new Map(novels.map(n => [n.id, n]));
+    const chapterMap = new Map(chapters.map(c => [c.id, c]));
+    const authorMap = new Map(authors.map(a => [a.id, a]));
+
+    return items.map(item => {
+      const novel = novelMap.get(item.novelId);
+      const author = novel?.authorId ? authorMap.get(novel.authorId) : null;
+      const lastChapter = item.lastChapterId ? chapterMap.get(item.lastChapterId) : null;
+
+      return {
         id: item.id,
         novelId: item.novelId,
         novelTitle: novel?.title || '',
         novelCover: novel?.cover || undefined,
-        authorName: (novel as any)?.author?.name || '',
+        authorName: author?.name || '',
         status: item.status as any,
         lastChapterId: lastChapter?.id || undefined,
         lastChapterTitle: lastChapter?.title || undefined,
         progress: item.progress,
         lastReadAt: item.lastReadAt || new Date(),
         addedAt: item.createdAt,
-      });
-    }
-
-    return result;
+      };
+    });
   }
 
-  // 获取阅读历史
+  private getOrderByCondition(sort?: BookshelfSortType): any {
+    switch (sort) {
+      case BookshelfSortType.ADDED:
+        return { createdAt: 'desc' };
+      case BookshelfSortType.PROGRESS:
+        return { progress: 'desc' };
+      case BookshelfSortType.RECENT:
+      default:
+        return { lastReadAt: 'desc', updatedAt: 'desc' };
+    }
+  }
+
+  /**
+   * 获取阅读历史
+   * @param readerId 读者ID
+   * @param limit 限制条数
+   * @performance 优化前: N+1 查询 | 优化后: 仅3次DB查询
+   */
   async getReadingHistory(readerId: string, limit: number = 50): Promise<ReadingHistoryItemDto[]> {
     const items = await this.prisma.readingHistory.findMany({
       where: { readerId },
@@ -51,35 +103,42 @@ export class BookshelfService {
       take: limit,
     });
 
-    const result: ReadingHistoryItemDto[] = [];
-    for (const item of items) {
-      const novel = await this.prisma.novel.findUnique({
-        where: { id: item.novelId },
+    const novelIds = items.map(i => i.novelId);
+    const chapterIds = items.map(i => i.chapterId);
+
+    // 批量查询，消除N+1
+    const [novels, chapters] = await Promise.all([
+      this.prisma.novel.findMany({
+        where: { id: { in: novelIds } },
         select: { id: true, title: true },
-      });
-      const chapter = await this.prisma.chapter.findUnique({
-        where: { id: item.chapterId },
+      }),
+      this.prisma.chapter.findMany({
+        where: { id: { in: chapterIds } },
         select: { id: true, title: true, orderIndex: true },
-      });
+      }),
+    ]);
 
-      result.push({
-        id: item.id,
-        novelId: item.novelId,
-        novelTitle: novel?.title || '',
-        chapterId: item.chapterId,
-        chapterTitle: chapter?.title || '',
-        chapterOrder: chapter?.orderIndex || 0,
-        progress: item.progress,
-        readAt: item.readAt,
-      });
-    }
+    const novelMap = new Map(novels.map(n => [n.id, n]));
+    const chapterMap = new Map(chapters.map(c => [c.id, c]));
 
-    return result;
+    return items.map(item => ({
+      id: item.id,
+      novelId: item.novelId,
+      novelTitle: novelMap.get(item.novelId)?.title || '',
+      chapterId: item.chapterId,
+      chapterTitle: chapterMap.get(item.chapterId)?.title || '',
+      chapterOrder: chapterMap.get(item.chapterId)?.orderIndex || 0,
+      progress: item.progress,
+      readAt: item.readAt,
+    }));
   }
 
-  // 添加到书架
+  /**
+   * 添加小说到书架
+   * @param readerId 读者ID
+   * @param dto 书架DTO
+   */
   async addToBookshelf(readerId: string, dto: AddToBookshelfDto): Promise<BookshelfItemDto> {
-    // 检查小说是否存在
     const novel = await this.prisma.novel.findUnique({
       where: { id: dto.novelId },
       include: { author: { select: { name: true } } },
@@ -89,7 +148,6 @@ export class BookshelfService {
       throw new NotFoundException('小说不存在');
     }
 
-    // 检查是否已在书架
     const existing = await this.prisma.bookshelf.findFirst({
       where: {
         readerId,
@@ -106,7 +164,7 @@ export class BookshelfService {
         readerId,
         clawId: readerId,
         novelId: dto.novelId,
-        status: (dto.status || 'WANT_TO_READ') as any,
+        status: (dto.status || BookshelfStatus.WANT_TO_READ) as any,
         progress: 0,
       },
     });
@@ -126,7 +184,14 @@ export class BookshelfService {
     };
   }
 
-  // 更新书架状态
+  /**
+   * 更新书架中小说的阅读状态
+   * @param readerId 读者ID
+   * @param novelId 小说ID
+   * @param dto 状态更新DTO
+   * @returns 更新后的书架项
+   * @enum READING-阅读中 / COMPLETED-已读完 / DROPPED-放弃 / WISHLIST-心愿单
+   */
   async updateStatus(
     readerId: string,
     novelId: string,

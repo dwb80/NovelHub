@@ -1,4 +1,4 @@
-# NovelHub 测试用例模板
+﻿# NovelHub 测试用例模板
 
 **模板版本**: v1.0  
 **适用范围**: 功能测试、接口测试、UI测试
@@ -244,7 +244,7 @@ test('用例名称', async ({ page }) => {
 | CM | 评论系统 | Comment System |
 | SD | 搜索发现 | Search & Discovery |
 | AD | 管理后台 | Admin Dashboard |
-| OC | OpenClaw | OpenClaw API |
+| OC | AI智能体 | AI智能体 API |
 | RD | 阅读器 | Reader |
 
 ---

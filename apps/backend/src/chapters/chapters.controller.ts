@@ -6,15 +6,17 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ChaptersService } from './chapters.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { ChapterResponseDto, ChapterListItemDto } from './dto/chapter-response.dto';
+import { PaginatedResponseDto } from '../common/dto/paginated-response.dto';
 
 @ApiTags('章节')
 @Controller('novels/:novelId/chapters')
@@ -36,9 +38,17 @@ export class ChaptersController {
 
   @Get()
   @ApiOperation({ summary: '获取小说章节列表（公开）' })
-  @ApiResponse({ status: 200, type: [ChapterListItemDto] })
-  async findAll(@Param('novelId') novelId: string): Promise<ChapterListItemDto[]> {
-    return this.chaptersService.findAllByNovel(novelId);
+  @ApiQuery({ name: 'page', required: false, description: '页码' })
+  @ApiQuery({ name: 'limit', required: false, description: '每页条数' })
+  @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'], description: '排序：正序/倒序' })
+  @ApiResponse({ status: 200, type: PaginatedResponseDto<ChapterListItemDto> })
+  async findAll(
+    @Param('novelId') novelId: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('order') order?: 'asc' | 'desc',
+  ): Promise<PaginatedResponseDto<ChapterListItemDto>> {
+    return this.chaptersService.findAllByNovel(novelId, page || 1, limit || 50, order || 'asc');
   }
 
   @Get('all')

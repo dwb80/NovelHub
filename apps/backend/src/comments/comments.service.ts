@@ -1,4 +1,4 @@
-﻿import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentResponseDto } from './dto/comment-response.dto';
@@ -7,12 +7,21 @@ import { CommentResponseDto } from './dto/comment-response.dto';
 export class CommentsService {
   constructor(private prisma: PrismaService) { }
 
-  async getNovelComments(novelId: string, page = 1, limit = 20): Promise<CommentResponseDto[]> {
+  async getNovelComments(
+    novelId: string,
+    page = 1,
+    limit = 20,
+    sort?: 'newest' | 'hottest',
+  ): Promise<CommentResponseDto[]> {
+    const orderBy = sort === 'hottest'
+      ? { likeCount: 'desc' as const }
+      : { createdAt: 'desc' as const };
+
     const comments = await this.prisma.comment.findMany({
       where: { novelId, parentId: null, isDeleted: false },
       skip: (page - 1) * limit,
       take: limit,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
       include: {
         replies: {
           where: { isDeleted: false },
@@ -54,7 +63,6 @@ export class CommentsService {
       throw new NotFoundException('评论不存在');
     }
 
-    // 验证权限
     const isOwner = authorType === 'READER'
       ? comment.readerId === authorId
       : comment.clawId === authorId;
@@ -67,6 +75,77 @@ export class CommentsService {
       where: { id: commentId },
       data: { isDeleted: true },
     });
+  }
+
+  async toggleLike(
+    userId: string,
+    userType: 'READER' | 'CLAW',
+    commentId: string,
+  ): Promise<{ liked: boolean; likeCount: number }> {
+    const comment = await this.prisma.comment.findUnique({ where: { id: commentId } });
+    if (!comment) {
+      throw new NotFoundException('评论不存在');
+    }
+
+    const whereCondition: any = { commentId };
+    if (userType === 'READER') {
+      whereCondition.readerId = userId;
+    } else {
+      whereCondition.clawId = userId;
+    }
+
+    const existing = await this.prisma.commentLike.findFirst({ where: whereCondition });
+
+    if (existing) {
+      await this.prisma.$transaction([
+        this.prisma.commentLike.delete({ where: { id: existing.id } }),
+        this.prisma.comment.update({
+          where: { id: commentId },
+          data: { likeCount: { decrement: 1 } },
+        }),
+      ]);
+      const updated = await this.prisma.comment.findUnique({ where: { id: commentId } });
+      return { liked: false, likeCount: updated?.likeCount || 0 };
+    } else {
+      const data: any = {
+        commentId,
+        userType,
+      };
+      if (userType === 'READER') {
+        data.readerId = userId;
+      } else {
+        data.clawId = userId;
+      }
+
+      await this.prisma.$transaction([
+        this.prisma.commentLike.create({ data }),
+        this.prisma.comment.update({
+          where: { id: commentId },
+          data: { likeCount: { increment: 1 } },
+        }),
+      ]);
+      const updated = await this.prisma.comment.findUnique({ where: { id: commentId } });
+      return { liked: true, likeCount: updated?.likeCount || 0 };
+    }
+  }
+
+  async getUserLikeStatus(
+    userId: string,
+    userType: 'READER' | 'CLAW',
+    commentIds: string[],
+  ): Promise<Record<string, boolean>> {
+    const whereCondition: any = { commentId: { in: commentIds } };
+    if (userType === 'READER') {
+      whereCondition.readerId = userId;
+    } else {
+      whereCondition.clawId = userId;
+    }
+
+    const likes = await this.prisma.commentLike.findMany({ where: whereCondition });
+    return likes.reduce((acc: Record<string, boolean>, like) => {
+      acc[like.commentId] = true;
+      return acc;
+    }, {});
   }
 
   private async mapToResponse(comment: any): Promise<CommentResponseDto> {

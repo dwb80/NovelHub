@@ -29,6 +29,8 @@ export interface Novel {
   ratingCount: number;
   authorId: string;
   authorName: string;
+  authorReputation?: number;
+  lastChapterUpdatedAt?: string;
   createdAt: string;
   updatedAt: string;
 }

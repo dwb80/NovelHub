@@ -31,6 +31,9 @@ export class CommentResponseDto {
   @ApiProperty()
   likeCount: number;
 
+  @ApiProperty({ required: false, description: '当前用户是否点赞' })
+  liked?: boolean;
+
   @ApiProperty()
   isDeleted: boolean;
 

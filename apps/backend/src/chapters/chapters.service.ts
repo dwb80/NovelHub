@@ -3,17 +3,29 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { ChapterResponseDto, ChapterListItemDto } from './dto/chapter-response.dto';
+import { PaginatedResponseDto, buildPaginatedResponse } from '../common/dto/paginated-response.dto';
+import { ChapterStatus, DEFAULT_PAGINATION } from '../common/constants';
 
 @Injectable()
 export class ChaptersService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * 创建新章节，包含权限验证和统计更新
+   * @param novelId 所属小说ID
+   * @param authorId 作者ID（权限验证）
+   * @param dto 章节内容DTO
+   * @returns 创建的章节信息
+   * @implementation 三步流程：
+   * 1. 两级权限验证：小说存在性 + 作者归属
+   * 2. 自动计算章节序号和字数
+   * 3. 异步更新小说总字数与章节数统计
+   */
   async create(
     novelId: string,
     authorId: string,
     dto: CreateChapterDto,
   ): Promise<ChapterResponseDto> {
-    // 验证小说存在且属于当前作者
     const novel = await this.prisma.novel.findUnique({
       where: { id: novelId },
     });
@@ -26,10 +38,8 @@ export class ChaptersService {
       throw new ForbiddenException('无权为此小说添加章节');
     }
 
-    // 计算字数
     const wordCount = this.countWords(dto.content);
 
-    // 如果没有指定order，自动计算
     let order = dto.order;
     if (!order) {
       const lastChapter = await this.prisma.chapter.findFirst({
@@ -49,28 +59,49 @@ export class ChaptersService {
       },
     });
 
-    // 更新小说字数和章节数
     await this.updateNovelStats(novelId);
 
     return this.mapToResponse(chapter);
   }
 
-  async findAllByNovel(novelId: string): Promise<ChapterListItemDto[]> {
-    const chapters = await this.prisma.chapter.findMany({
-      where: { novelId, status: 'PUBLISHED' },
-      orderBy: { orderIndex: 'asc' },
-      select: {
-        id: true,
-        title: true,
-        orderIndex: true,
-        status: true,
-        wordCount: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+  /**
+   * 分页查询小说章节列表（读者可见）
+   * @param novelId 小说ID
+   * @param page 页码，默认第1页
+   * @param limit 每页条数，默认50条
+   * @param order 排序方向：asc正序/desc倒序
+   * @returns 分页后的章节列表，仅包含已发布章节
+   * @implementation 使用$transaction并行查询count与数据，支持正序/倒序双向切换
+   */
+  async findAllByNovel(
+    novelId: string,
+    page: number = DEFAULT_PAGINATION.PAGE,
+    limit: number = DEFAULT_PAGINATION.CHAPTER_LIMIT,
+    order: 'asc' | 'desc' = 'asc',
+  ): Promise<PaginatedResponseDto<ChapterListItemDto>> {
+    const where = { novelId, status: ChapterStatus.PUBLISHED as any };
 
-    return chapters.map(c => ({...c, order: c.orderIndex}));
+    const [total, chapters] = await this.prisma.$transaction([
+      this.prisma.chapter.count({ where }),
+      this.prisma.chapter.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { orderIndex: order },
+        select: {
+          id: true,
+          title: true,
+          orderIndex: true,
+          status: true,
+          wordCount: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+    ]);
+
+    const items = chapters.map(c => ({ ...c, order: c.orderIndex }));
+    return buildPaginatedResponse(items, total, page, limit);
   }
 
   async findAllByNovelForAuthor(
