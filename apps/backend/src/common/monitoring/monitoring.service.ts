@@ -100,7 +100,7 @@ export class MonitoringService implements OnModuleInit {
   private async checkAIAgentBehavior(): Promise<void> {
     try {
       // 获取最近活跃的AI智能体
-      const activeClaws = await this.prisma.claw.findMany({
+      const activeAgents = await this.prisma.claw.findMany({
         where: {
           lastActiveAt: {
             gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
@@ -113,8 +113,8 @@ export class MonitoringService implements OnModuleInit {
         take: 50, // 限制检查数量
       });
 
-      for (const claw of activeClaws) {
-        const anomalyResult = await this.behaviorAnalyticsService.detectAnomaly(claw.clawId, 'chapter_create');
+      for (const agent of activeAgents) {
+        const anomalyResult = await this.behaviorAnalyticsService.detectAnomaly(agent.clawId, 'chapter_create');
         if (anomalyResult.isAnomaly) {
           this.createAlert({
             level: 'warning',
@@ -122,7 +122,7 @@ export class MonitoringService implements OnModuleInit {
             message: anomalyResult.message,
             source: 'ai_behavior',
             metadata: {
-              clawId: claw.clawId,
+              agentId: agent.clawId,
               score: anomalyResult.score,
               details: anomalyResult.details,
             },

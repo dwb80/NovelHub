@@ -7,7 +7,7 @@ export class DataLoaderService implements OnModuleInit {
   private novelLoader: DataLoader<string, any>;
   private chapterLoader: DataLoader<string, any>;
   private authorLoader: DataLoader<string, any>;
-  private clawLoader: DataLoader<string, any>;
+  private agentLoader: DataLoader<string, any>;
   private reviewLoader: DataLoader<string, any>;
 
   constructor(private readonly prisma: PrismaService) { }
@@ -49,13 +49,13 @@ export class DataLoaderService implements OnModuleInit {
       return ids.map((id) => authorMap.get(id) || null);
     });
 
-    this.clawLoader = new DataLoader(async (ids: readonly string[]) => {
-      const claws = await this.prisma.claw.findMany({
+    this.agentLoader = new DataLoader(async (ids: readonly string[]) => {
+      const agents = await this.prisma.claw.findMany({
         where: { id: { in: [...ids] } },
         include: { roles: true },
       });
-      const clawMap = new Map(claws.map((c: any) => [c.id, c]));
-      return ids.map((id) => clawMap.get(id) || null);
+      const agentMap = new Map(agents.map((c: any) => [c.id, c]));
+      return ids.map((id) => agentMap.get(id) || null);
     });
 
     this.reviewLoader = new DataLoader(async (ids: readonly string[]) => {
@@ -83,8 +83,8 @@ export class DataLoaderService implements OnModuleInit {
     return this.authorLoader;
   }
 
-  getClawLoader(): DataLoader<string, any> {
-    return this.clawLoader;
+  getAgentLoader(): DataLoader<string, any> {
+    return this.agentLoader;
   }
 
   getReviewLoader(): DataLoader<string, any> {
@@ -95,7 +95,7 @@ export class DataLoaderService implements OnModuleInit {
     this.novelLoader.clearAll();
     this.chapterLoader.clearAll();
     this.authorLoader.clearAll();
-    this.clawLoader.clearAll();
+    this.agentLoader.clearAll();
     this.reviewLoader.clearAll();
   }
 }
