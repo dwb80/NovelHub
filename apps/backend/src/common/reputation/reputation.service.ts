@@ -11,7 +11,7 @@ export interface ReputationLevel {
 }
 
 export interface ReputationStats {
-  clawId: string;
+  agentId: string;
   currentScore: number;
   level: string;
   totalChapters: number;
@@ -94,9 +94,9 @@ export class ReputationService {
   /**
    * 初始化AI智能体声誉
    */
-  async initializeReputation(clawId: string): Promise<ReputationStats> {
+  async initializeReputation(agentId: string): Promise<ReputationStats> {
     const stats: ReputationStats = {
-      clawId,
+      agentId,
       currentScore: this.scoring.initialScore,
       level: this.getLevelByScore(this.scoring.initialScore).name,
       totalChapters: 0,
@@ -106,8 +106,8 @@ export class ReputationService {
       lastUpdated: new Date(),
     };
 
-    await this.saveReputationStats(clawId, stats);
-    this.logger.log(`Initialized reputation for ${clawId} with score ${stats.currentScore}`);
+    await this.saveReputationStats(agentId, stats);
+    this.logger.log(`Initialized reputation for ${agentId} with score ${stats.currentScore}`);
 
     return stats;
   }
@@ -115,16 +115,16 @@ export class ReputationService {
   /**
    * 获取AI智能体声誉统计
    */
-  async getReputationStats(clawId: string): Promise<ReputationStats> {
+  async getReputationStats(agentId: string): Promise<ReputationStats> {
     // 先尝试从缓存获取
-    const cached = await this.cache.get<ReputationStats>(`reputation:${clawId}`);
+    const cached = await this.cache.get<ReputationStats>(`reputation:${agentId}`);
     if (cached) {
       return cached;
     }
 
     // 从数据库获取
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
       select: {
         reputationScore: true,
         totalChapters: true,
@@ -132,38 +132,38 @@ export class ReputationService {
       },
     });
 
-    if (!claw) {
+    if (!agent) {
       // 如果数据库中没有，初始化一个新的
-      return this.initializeReputation(clawId);
+      return this.initializeReputation(agentId);
     }
 
     // 计算平均评分
-    const avgRating = await this.calculateAverageRating(clawId);
-    
+    const avgRating = await this.calculateAverageRating(agentId);
+
     // 计算连续发布天数
-    const consecutiveDays = await this.calculateConsecutiveDays(clawId);
+    const consecutiveDays = await this.calculateConsecutiveDays(agentId);
 
     const stats: ReputationStats = {
-      clawId,
-      currentScore: claw.reputationScore || this.scoring.initialScore,
-      level: this.getLevelByScore(claw.reputationScore || this.scoring.initialScore).name,
-      totalChapters: claw.totalChapters || 0,
-      totalWords: claw.totalWords || 0,
+      agentId,
+      currentScore: agent.reputationScore || this.scoring.initialScore,
+      level: this.getLevelByScore(agent.reputationScore || this.scoring.initialScore).name,
+      totalChapters: agent.totalChapters || 0,
+      totalWords: agent.totalWords || 0,
       avgRating,
       consecutiveDays,
       lastUpdated: new Date(),
     };
 
-    await this.cache.set(`reputation:${clawId}`, stats, 60 * 60 * 1000); // 1小时缓存
+    await this.cache.set(`reputation:${agentId}`, stats, 60 * 60 * 1000); // 1小时缓存
     return stats;
   }
 
   /**
    * 更新声誉分数
    */
-  async updateReputation(clawId: string, change: ReputationChange): Promise<ReputationStats> {
-    const stats = await this.getReputationStats(clawId);
-    
+  async updateReputation(agentId: string, change: ReputationChange): Promise<ReputationStats> {
+    const stats = await this.getReputationStats(agentId);
+
     const oldScore = stats.currentScore;
     stats.currentScore = Math.max(0, stats.currentScore + change.delta); // 分数不能低于0
     stats.level = this.getLevelByScore(stats.currentScore).name;
@@ -171,19 +171,19 @@ export class ReputationService {
 
     // 保存到数据库
     await this.prisma.claw.update({
-      where: { clawId },
+      where: { clawId: agentId },
       data: {
         reputationScore: stats.currentScore,
       },
     });
 
     // 保存到缓存
-    await this.saveReputationStats(clawId, stats);
+    await this.saveReputationStats(agentId, stats);
 
     // 记录声誉变化日志
-    await this.logReputationChange(clawId, change);
+    await this.logReputationChange(agentId, change);
 
-    this.logger.log(`Reputation updated for ${clawId}: ${oldScore} -> ${stats.currentScore} (${change.reason})`);
+    this.logger.log(`Reputation updated for ${agentId}: ${oldScore} -> ${stats.currentScore} (${change.reason})`);
 
     return stats;
   }
@@ -191,9 +191,9 @@ export class ReputationService {
   /**
    * 记录章节发布对声誉的影响
    */
-  async recordChapterPublished(clawId: string, chapterRating?: number): Promise<void> {
+  async recordChapterPublished(agentId: string, chapterRating?: number): Promise<void> {
     // 基础发布分数
-    await this.updateReputation(clawId, {
+    await this.updateReputation(agentId, {
       reason: '发布章节',
       delta: this.scoring.chapterPublished,
       timestamp: new Date(),
@@ -202,13 +202,13 @@ export class ReputationService {
     // 如果提供了评分，根据评分调整
     if (chapterRating !== undefined) {
       if (chapterRating >= 4.5) {
-        await this.updateReputation(clawId, {
+        await this.updateReputation(agentId, {
           reason: '高质量章节（评分>=4.5）',
           delta: this.scoring.highRatedChapter,
           timestamp: new Date(),
         });
       } else if (chapterRating <= 2.0) {
-        await this.updateReputation(clawId, {
+        await this.updateReputation(agentId, {
           reason: '低质量章节（评分<=2.0）',
           delta: this.scoring.lowRatedChapter,
           timestamp: new Date(),
@@ -220,25 +220,25 @@ export class ReputationService {
   /**
    * 记录每日完成情况
    */
-  async recordDailyCompletion(clawId: string, metMinimum: boolean, consecutiveDays: number): Promise<void> {
+  async recordDailyCompletion(agentId: string, metMinimum: boolean, consecutiveDays: number): Promise<void> {
     if (metMinimum) {
       // 达到最低要求
       let bonus = this.scoring.dailyMinimumMet;
-      
+
       // 连续发布奖励
       if (consecutiveDays > 1) {
         const consecutiveBonus = Math.min(consecutiveDays * this.scoring.consecutiveDaysBonus, 50); // 最多50分
         bonus += consecutiveBonus;
       }
 
-      await this.updateReputation(clawId, {
+      await this.updateReputation(agentId, {
         reason: `完成每日发布目标（连续${consecutiveDays}天）`,
         delta: bonus,
         timestamp: new Date(),
       });
     } else {
       // 未达到最低要求
-      await this.updateReputation(clawId, {
+      await this.updateReputation(agentId, {
         reason: '未完成每日发布目标',
         delta: this.scoring.dailyMinimumMissed,
         timestamp: new Date(),
@@ -249,7 +249,7 @@ export class ReputationService {
   /**
    * 记录违规行为
    */
-  async recordViolation(clawId: string, type: 'content' | 'plagiarism' | 'spam'): Promise<void> {
+  async recordViolation(agentId: string, type: 'content' | 'plagiarism' | 'spam'): Promise<void> {
     const penalties = {
       content: this.scoring.contentViolation,
       plagiarism: this.scoring.plagiarism,
@@ -262,24 +262,24 @@ export class ReputationService {
       spam: '垃圾内容',
     };
 
-    await this.updateReputation(clawId, {
+    await this.updateReputation(agentId, {
       reason: reasons[type],
       delta: penalties[type],
       timestamp: new Date(),
     });
 
     // 如果分数太低，可能需要暂停账号
-    const stats = await this.getReputationStats(clawId);
+    const stats = await this.getReputationStats(agentId);
     if (stats.currentScore <= 0) {
-      await this.suspendClaw(clawId, '声誉分数过低，账号被暂停');
+      await this.suspendAgent(agentId, '声誉分数过低，账号被暂停');
     }
   }
 
   /**
    * 获取每日章节上限
    */
-  async getDailyChapterLimit(clawId: string): Promise<number> {
-    const stats = await this.getReputationStats(clawId);
+  async getDailyChapterLimit(agentId: string): Promise<number> {
+    const stats = await this.getReputationStats(agentId);
     const level = this.getLevelByScore(stats.currentScore);
     return level.dailyChapterLimit;
   }
@@ -301,7 +301,7 @@ export class ReputationService {
   /**
    * 获取声誉历史记录
    */
-  async getReputationHistory(clawId: string, limit: number = 50): Promise<ReputationChange[]> {
+  async getReputationHistory(agentId: string, limit: number = 50): Promise<ReputationChange[]> {
     // 这里可以从数据库查询历史记录
     // 目前简化实现，返回空数组
     return [];
@@ -318,15 +318,15 @@ export class ReputationService {
     return this.levels[this.levels.length - 1]; // 返回最高等级
   }
 
-  private async saveReputationStats(clawId: string, stats: ReputationStats): Promise<void> {
-    await this.cache.set(`reputation:${clawId}`, stats, 60 * 60 * 1000); // 1小时缓存
+  private async saveReputationStats(agentId: string, stats: ReputationStats): Promise<void> {
+    await this.cache.set(`reputation:${agentId}`, stats, 60 * 60 * 1000); // 1小时缓存
   }
 
-  private async calculateAverageRating(clawId: string): Promise<number> {
+  private async calculateAverageRating(agentId: string): Promise<number> {
     // 查询该AI智能体所有小说的平均评分
     const result = await this.prisma.novel.aggregate({
       where: {
-        authorId: clawId,
+        authorId: agentId,
         ratingCount: {
           gt: 0,
         },
@@ -339,7 +339,7 @@ export class ReputationService {
     return result._avg?.rating || 0;
   }
 
-  private async calculateConsecutiveDays(clawId: string): Promise<number> {
+  private async calculateConsecutiveDays(agentId: string): Promise<number> {
     // 查询最近30天的发布记录
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -347,7 +347,7 @@ export class ReputationService {
     const chapters = await this.prisma.chapter.findMany({
       where: {
         novel: {
-          authorId: clawId,
+          authorId: agentId,
         },
         createdAt: {
           gte: thirtyDaysAgo,
@@ -392,20 +392,20 @@ export class ReputationService {
     return consecutiveDays;
   }
 
-  private async logReputationChange(clawId: string, change: ReputationChange): Promise<void> {
+  private async logReputationChange(agentId: string, change: ReputationChange): Promise<void> {
     // 可以在这里记录到数据库
-    this.logger.debug(`Reputation change for ${clawId}: ${change.delta} (${change.reason})`);
+    this.logger.debug(`Reputation change for ${agentId}: ${change.delta} (${change.reason})`);
   }
 
-  private async suspendClaw(clawId: string, reason: string): Promise<void> {
-    // 更新Claw状态为暂停
+  private async suspendAgent(agentId: string, reason: string): Promise<void> {
+    // 更新Agent状态为暂停
     await this.prisma.claw.update({
-      where: { clawId },
+      where: { clawId: agentId },
       data: {
         status: 'SUSPENDED',
       },
     });
 
-    this.logger.warn(`Claw ${clawId} suspended: ${reason}`);
+    this.logger.warn(`Agent ${agentId} suspended: ${reason}`);
   }
 }
