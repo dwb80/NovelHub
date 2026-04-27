@@ -10,7 +10,7 @@ export interface TimeSlot {
 }
 
 export interface AssignedSlot {
-  clawId: string;
+  agentId: string;
   creationSlot: number;  // 创作时段 (0-23)
   reviewSlot: number;    // 评审时段 (0-23)
   assignedAt: Date;
@@ -62,18 +62,18 @@ export class TimeSlotService {
    * 
    * 注意：此方法只更新Redis时段分配，还需要调用AIThrottleService.updateTimeSlot更新AI状态
    * 
-   * @param clawId AI智能体ID
+   * @param agentId AI智能体ID
    * @param preferredHour 首选时段（0-23），可选
    * @returns 分配结果
    */
-  async assignSlot(clawId: string, preferredHour?: number): Promise<{
+  async assignSlot(agentId: string, preferredHour?: number): Promise<{
     success: boolean;
     creationSlot?: number;
     reviewSlot?: number;
     message?: string;
   }> {
     // 检查是否已分配
-    const existing = await this.getAssignedSlot(clawId);
+    const existing = await this.getAssignedSlot(agentId);
     if (existing) {
       return {
         success: false,
@@ -89,7 +89,7 @@ export class TimeSlotService {
         const reviewSlot = (creationSlot + 1) % 24;
 
         const assignment: AssignedSlot = {
-          clawId,
+          agentId,
           creationSlot,
           reviewSlot,
           assignedAt: new Date(),
@@ -99,7 +99,7 @@ export class TimeSlotService {
         await this.incrementSlotCount(creationSlot);
         await this.incrementSlotCount(reviewSlot, 'review');
 
-        this.logger.log(`Assigned slot to ${clawId}: creation=${creationSlot}:00, review=${reviewSlot}:00 (preferred)`);
+        this.logger.log(`Assigned slot to ${agentId}: creation=${creationSlot}:00, review=${reviewSlot}:00 (preferred)`);
 
         return {
           success: true,
@@ -134,7 +134,7 @@ export class TimeSlotService {
 
     // 保存分配结果
     const assignment: AssignedSlot = {
-      clawId,
+      agentId,
       creationSlot,
       reviewSlot,
       assignedAt: new Date(),
@@ -146,7 +146,7 @@ export class TimeSlotService {
     await this.incrementSlotCount(creationSlot);
     await this.incrementSlotCount(reviewSlot, 'review');
 
-    this.logger.log(`Assigned slot to ${clawId}: creation=${creationSlot}:00, review=${reviewSlot}:00`);
+    this.logger.log(`Assigned slot to ${agentId}: creation=${creationSlot}:00, review=${reviewSlot}:00`);
 
     return {
       success: true,
@@ -158,13 +158,13 @@ export class TimeSlotService {
   /**
    * 检查AI是否可以在当前时段创作
    */
-  async canCreateNow(clawId: string): Promise<{
+  async canCreateNow(agentId: string): Promise<{
     allowed: boolean;
     assignedSlot?: number;
     currentHour?: number;
     message?: string;
   }> {
-    const assigned = await this.getAssignedSlot(clawId);
+    const assigned = await this.getAssignedSlot(agentId);
 
     if (!assigned) {
       return {
@@ -194,13 +194,13 @@ export class TimeSlotService {
   /**
    * 检查AI是否可以在当前时段评审
    */
-  async canReviewNow(clawId: string): Promise<{
+  async canReviewNow(agentId: string): Promise<{
     allowed: boolean;
     assignedSlot?: number;
     currentHour?: number;
     message?: string;
   }> {
-    const assigned = await this.getAssignedSlot(clawId);
+    const assigned = await this.getAssignedSlot(agentId);
 
     if (!assigned) {
       return {
@@ -248,11 +248,11 @@ export class TimeSlotService {
   /**
    * 重新分配时段（特殊情况）
    */
-  async reassignSlot(clawId: string, newSlot: number): Promise<{
+  async reassignSlot(agentId: string, newSlot: number): Promise<{
     success: boolean;
     message?: string;
   }> {
-    const assigned = await this.getAssignedSlot(clawId);
+    const assigned = await this.getAssignedSlot(agentId);
 
     if (!assigned) {
       return {
@@ -339,14 +339,14 @@ export class TimeSlotService {
     }
   }
 
-  async getAssignedSlot(clawId: string): Promise<AssignedSlot | null> {
-    const key = `slot:assigned:${clawId}`;
+  async getAssignedSlot(agentId: string): Promise<AssignedSlot | null> {
+    const key = `slot:assigned:${agentId}`;
     const slot = await this.cache.get<AssignedSlot>(key);
     return slot || null;
   }
 
   async saveAssignedSlot(assignment: AssignedSlot): Promise<void> {
-    const key = `slot:assigned:${assignment.clawId}`;
+    const key = `slot:assigned:${assignment.agentId}`;
     await this.cache.set(key, assignment, 365 * 24 * 60 * 60 * 1000);
   }
 }
