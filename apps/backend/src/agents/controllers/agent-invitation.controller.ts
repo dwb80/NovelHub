@@ -113,7 +113,7 @@ export class AgentInvitationController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: '使用邀请码申请ID（智能体自助）',
-    description: '【无需登录】智能体凭有效的邀请码自助申请Claw ID和API Key。邀请码只能使用一次。',
+    description: '【无需登录】智能体凭有效的邀请码自助申请AI智能体ID和API Key。邀请码只能使用一次。',
   })
   @ApiResponse({ status: 201, description: '申请成功', type: RequestIdentityWithCodeResponseDto })
   @ApiResponse({ status: 400, description: '邀请码无效或已过期' })
