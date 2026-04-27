@@ -41,10 +41,10 @@ export class ForgeScoreService {
     private readonly nefAlgorithm: NefAlgorithmService,
   ) { }
 
-  async calculateForgeScore(clawId: string): Promise<ForgeScoreResult> {
-    this.logger.debug(`Calculating Forge Score for claw: ${clawId}`);
+  async calculateForgeScore(agentId: string): Promise<ForgeScoreResult> {
+    this.logger.debug(`Calculating Forge Score for agent: ${agentId}`);
 
-    const metrics = await this.nefAlgorithm.calculateNefMetrics(clawId);
+    const metrics = await this.nefAlgorithm.calculateNefMetrics(agentId);
 
     const forgeScore: ForgeScoreResult = {
       base: metrics.qualityScore * 10,
@@ -64,7 +64,7 @@ export class ForgeScoreService {
       forgeScore.consistency
     );
 
-    await this.saveForgeScoreHistory(clawId, forgeScore);
+    await this.saveForgeScoreHistory(agentId, forgeScore);
 
     return forgeScore;
   }
@@ -72,23 +72,23 @@ export class ForgeScoreService {
   async runNaturalSelection(): Promise<SelectionResult> {
     this.logger.log('Running natural selection process');
 
-    const activeClaws = await this.prisma.claw.findMany({
+    const activeAgents = await this.prisma.claw.findMany({
       where: { isActive: true, isBanned: false },
       select: { id: true, reputationScore: true },
     });
 
-    if (activeClaws.length === 0) {
+    if (activeAgents.length === 0) {
       return { totalCandidates: 0, selected: [], threshold: 0 };
     }
 
-    const scores: Array<{ clawId: string; score: number }> = await Promise.all(
-      activeClaws.map(async (claw) => {
+    const scores: Array<{ agentId: string; score: number }> = await Promise.all(
+      activeAgents.map(async (agent) => {
         try {
-          const forgeScore = await this.calculateForgeScore(claw.id);
-          return { clawId: claw.id, score: forgeScore.total };
+          const forgeScore = await this.calculateForgeScore(agent.id);
+          return { agentId: agent.id, score: forgeScore.total };
         } catch {
-          this.logger.warn(`Failed to calculate score for claw ${claw.id}`);
-          return { clawId: claw.id, score: claw.reputationScore };
+          this.logger.warn(`Failed to calculate score for agent ${agent.id}`);
+          return { agentId: agent.id, score: agent.reputationScore };
         }
       })
     );
@@ -106,10 +106,10 @@ export class ForgeScoreService {
       const parent2 = eligibleParents[i + 1];
 
       if (parent2) {
-        const childId = await this.createChildClaw(parent1.clawId);
+        const childId = await this.createChildAgent(parent1.agentId);
         if (childId) {
           selected.push({
-            parentId: parent1.clawId,
+            parentId: parent1.agentId,
             childId,
             score: parent1.score,
           });
@@ -117,10 +117,10 @@ export class ForgeScoreService {
       }
     }
 
-    this.logger.log(`Natural selection completed: ${selected.length} selected from ${activeClaws.length} candidates`);
+    this.logger.log(`Natural selection completed: ${selected.length} selected from ${activeAgents.length} candidates`);
 
     return {
-      totalCandidates: activeClaws.length,
+      totalCandidates: activeAgents.length,
       selected,
       threshold,
     };
@@ -140,7 +140,7 @@ export class ForgeScoreService {
       });
 
       if (!parentArchive) {
-        throw new Error(`Parent archive not found for claw ${parentId}`);
+        throw new Error(`Parent archive not found for agent ${parentId}`);
       }
 
       let childArchive = await this.prisma.creationArchive.findUnique({
@@ -216,15 +216,15 @@ export class ForgeScoreService {
     }
   }
 
-  async getForgeScoreHistory(clawId: string, limit: number = 30) {
+  async getForgeScoreHistory(agentId: string, limit: number = 30) {
     return this.prisma.forgeScoreHistory.findMany({
-      where: { clawId },
+      where: { clawId: agentId },
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
   }
 
-  async getTopPerformers(limit: number = 10): Promise<Array<{ clawId: string; score: number; rank: number }>> {
+  async getTopPerformers(limit: number = 10): Promise<Array<{ agentId: string; score: number; rank: number }>> {
     const recentScores = await this.prisma.forgeScoreHistory.findMany({
       where: { createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
       orderBy: { totalScore: 'desc' as const },
@@ -232,16 +232,16 @@ export class ForgeScoreService {
     });
 
     return recentScores.map((score, index: number) => ({
-      clawId: score.clawId,
+      agentId: score.clawId,
       score: score.totalScore,
       rank: index + 1,
     }));
   }
 
-  private async saveForgeScoreHistory(clawId: string, forgeScore: ForgeScoreResult): Promise<void> {
+  private async saveForgeScoreHistory(agentId: string, forgeScore: ForgeScoreResult): Promise<void> {
     await this.prisma.forgeScoreHistory.create({
       data: {
-        clawId,
+        clawId: agentId,
         baseScore: forgeScore.base,
         evolution_score: 0,
         feedback_score: 0,
@@ -254,7 +254,7 @@ export class ForgeScoreService {
     });
   }
 
-  private async createChildClaw(parentId: string): Promise<string | null> {
+  private async createChildAgent(parentId: string): Promise<string | null> {
     try {
       const parent = await this.prisma.claw.findUnique({
         where: { id: parentId },
@@ -262,7 +262,7 @@ export class ForgeScoreService {
 
       if (!parent) return null;
 
-      const childId = `claw_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const childId = `agent_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       const child = await this.prisma.claw.create({
         data: {
@@ -279,7 +279,7 @@ export class ForgeScoreService {
 
       return child.id;
     } catch (error: any) {
-      this.logger.error(`Failed to create child claw: ${error.message}`);
+      this.logger.error(`Failed to create child agent: ${error.message}`);
       return null;
     }
   }
