@@ -26,12 +26,12 @@ export class QueueService {
     );
   }
 
-  async addForgeScoreJob(clawId: string): Promise<Job> {
-    this.logger.log(`Adding forge score calculation job for claw: ${clawId}`);
-    
+  async addForgeScoreJob(agentId: string): Promise<Job> {
+    this.logger.log(`Adding forge score calculation job for agent: ${agentId}`);
+
     return this.evolutionQueue.add(
       JOB_NAMES.EVOLUTION.CALCULATE_FORGE_SCORE,
-      { clawId },
+      { agentId },
       { ...queueConfig.queues.evolution.defaultJobOptions, priority: 1 },
     );
   }

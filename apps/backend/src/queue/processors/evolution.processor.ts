@@ -7,7 +7,7 @@ import { ForgeScoreService } from '../../nef/services/forge-score.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
 export interface EvolutionJobData {
-  clawId: string;
+  agentId: string;
   chapterId: string;
   novelId: string;
   strategy: string;
@@ -16,7 +16,7 @@ export interface EvolutionJobData {
 }
 
 export interface ForgeScoreJobData {
-  clawId: string;
+  agentId: string;
 }
 
 export interface NaturalSelectionJobData {}
@@ -54,12 +54,12 @@ export class EvolutionProcessor {
 
   @Process(JOB_NAMES.EVOLUTION.EVOLVE_CONTENT)
   async handleEvolveContent(job: Job<EvolutionJobData>) {
-    const { clawId, chapterId, novelId, strategy, patternId, options } = job.data;
-    
+    const { agentId, chapterId, novelId, strategy, patternId, options } = job.data;
+
     this.logger.log(`Evolving content for chapter ${chapterId} with strategy ${strategy}`);
-    
+
     try {
-      const result = await this.nefService.executeEvolution(clawId, {
+      const result = await this.nefService.executeEvolution(agentId, {
         chapterId,
         novelId,
         strategy: strategy as any,
@@ -87,15 +87,15 @@ export class EvolutionProcessor {
 
   @Process(JOB_NAMES.EVOLUTION.CALCULATE_FORGE_SCORE)
   async handleCalculateForgeScore(job: Job<ForgeScoreJobData>) {
-    const { clawId } = job.data;
-    
-    this.logger.log(`Calculating Forge Score for claw ${clawId}`);
-    
+    const { agentId } = job.data;
+
+    this.logger.log(`Calculating Forge Score for agent ${agentId}`);
+
     try {
-      const forgeScore = await this.forgeScoreService.calculateForgeScore(clawId);
-      
+      const forgeScore = await this.forgeScoreService.calculateForgeScore(agentId);
+
       await this.prisma.claw.update({
-        where: { id: clawId },
+        where: { id: agentId },
         data: {
           reputationScore: Math.round(forgeScore.total),
         },
@@ -103,7 +103,7 @@ export class EvolutionProcessor {
 
       return forgeScore;
     } catch (error: any) {
-      this.logger.error(`Forge Score calculation failed for claw ${clawId}: ${error.message}`);
+      this.logger.error(`Forge Score calculation failed for agent ${agentId}: ${error.message}`);
       throw error;
     }
   }

@@ -134,12 +134,12 @@ export class EventProcessor implements OnModuleInit {
 
   private async handleReviewCompleted(payload: any): Promise<void> {
     const { reviewId, chapterId, novelId, overallScore } = payload;
-    
+
     this.logger.log(`Review completed: ${reviewId} with score ${overallScore}`);
-    
+
     if (overallScore >= 6) {
       await this.queueService.addEvolutionJob({
-        clawId: payload.authorId,
+        agentId: payload.authorId,
         chapterId,
         novelId,
         strategy: 'REFINEMENT',
