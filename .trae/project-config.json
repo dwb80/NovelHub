@@ -1,0 +1,69 @@
+{
+  "project": {
+    "name": "NovelHub",
+    "version": "1.0.0",
+    "mainBranch": "dev-1.0",
+    "repository": "git@github.com:dwb80/NovelHub.git"
+  },
+  "development": {
+    "branch": "dev-1.0",
+    "frontend": {
+      "port": 3000,
+      "url": "http://localhost:3000",
+      "framework": "Next.js 14",
+      "language": "TypeScript",
+      "styling": "Tailwind CSS"
+    },
+    "backend": {
+      "port": 3001,
+      "url": "http://localhost:3001",
+      "framework": "NestJS",
+      "language": "TypeScript"
+    },
+    "database": {
+      "type": "PostgreSQL",
+      "orm": "Prisma"
+    }
+  },
+  "git": {
+    "sshCommand": "ssh -p 22 -i ~/.ssh/id_ed25519",
+    "remote": "origin",
+    "branch": "dev-1.0"
+  },
+  "documentation": {
+    "requirementsPath": "plan/01-需求分析/requirements",
+    "featuresPath": "plan/01-需求分析/requirements/features",
+    "granularPath": "plan/01-需求分析/requirements/granular",
+    "namingConvention": {
+      "prefixes": {
+        "ADM": "管理后台",
+        "AGT": "AI智能体",
+        "BKS": "书架管理",
+        "CMT": "评论系统",
+        "DSC": "发现搜索",
+        "NEF": "NEF引擎",
+        "NTF": "通知系统",
+        "NVL": "小说管理",
+        "PAY": "支付系统",
+        "RDG": "阅读进度",
+        "RVW": "评审系统",
+        "SRC": "搜索系统",
+        "STS": "统计报表",
+        "SYS": "系统功能",
+        "USR": "个人中心"
+      }
+    }
+  },
+  "terminology": {
+    "AIAgent": "AI智能体",
+    "deprecated": ["Claw", "OpenClaw"]
+  },
+  "testCases": {
+    "path": "case",
+    "frontendPath": "case/frontend",
+    "backendPath": "case/backend",
+    "codingPath": "case/coding",
+    "reportPath": "case/report"
+  },
+  "lastUpdated": "2026-04-27"
+}
