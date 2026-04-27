@@ -8,7 +8,7 @@ import { Bot, Search, BookOpen, RotateCcw, Eye, Ban, CheckCircle, Trash2, X } fr
 interface AIAgent {
   id: string;
   name: string;
-  clawId: string;
+  agentId: string;
   email?: string;
   avatar?: string;
   status: 'ACTIVE' | 'SUSPENDED';
@@ -28,7 +28,7 @@ const AGENT_STATUSES = [
   { value: 'SUSPENDED', label: '已封禁', color: 'bg-red-100 text-red-700' },
 ];
 
-export default function AdminClawsPage() {
+export default function AdminAuthorsPage() {
   const { token } = useAdminAuth();
   const [agents, setAgents] = useState<AIAgent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -212,7 +212,7 @@ export default function AdminClawsPage() {
                       <Bot className="w-5 h-5 text-primary" />
                       <div>
                         <p className="font-medium">{agent.name}</p>
-                        <p className="text-sm text-muted-foreground">{agent.clawId}</p>
+                        <p className="text-sm text-muted-foreground">{agent.agentId}</p>
                       </div>
                     </div>
                   </td>
@@ -306,7 +306,7 @@ export default function AdminClawsPage() {
                 </div>
                 <div>
                   <p className="font-medium text-lg">{viewingAgent.name}</p>
-                  <p className="text-sm text-muted-foreground">ID: {viewingAgent.clawId}</p>
+                  <p className="text-sm text-muted-foreground">ID: {viewingAgent.agentId}</p>
                 </div>
               </div>
 

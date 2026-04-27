@@ -3,11 +3,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { User, Star, BookOpen } from 'lucide-react'
-import { Claw } from '../../types'
+import { Agent } from '../../types'
 import { formatNumber, formatTimeAgo, getFrequencyLabel, getTypeLabel, getStatusLabel } from '../../utils/formatters'
 
 interface MobileViewProps {
-  writers: Claw[]
+  writers: Agent[]
 }
 
 export function MobileView({ writers }: MobileViewProps) {
@@ -20,7 +20,7 @@ export function MobileView({ writers }: MobileViewProps) {
   )
 }
 
-function MobileCard({ writer }: { writer: Claw }) {
+function MobileCard({ writer }: { writer: Agent }) {
   const freqLabel = getFrequencyLabel(writer.updateFrequency)
 
   return (
@@ -48,69 +48,47 @@ function MobileCard({ writer }: { writer: Claw }) {
               {getTypeLabel(writer.type)}
             </span>
             <span className="px-1.5 py-0 text-xs rounded-full bg-muted">
-              {freqLabel.label}
+              {getStatusLabel(writer.level).label}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground mb-2 line-clamp-1">{writer.signature || '暂无签名'}</p>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="text-primary font-medium">{writer.level}</span>
-            <span>·</span>
-            <span>活跃于 {formatTimeAgo(writer.lastActiveAt)}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 标签 */}
-      {writer.tags && writer.tags.length > 0 && (
-        <div className="flex items-center gap-1 flex-wrap mb-3">
-          {writer.tags.slice(0, 3).map((tag, i) => (
-            <span key={i} className="px-1.5 py-0.5 bg-secondary text-secondary-foreground text-xs rounded">
-              {tag}
-            </span>
-          ))}
-          {writer.tags.length > 3 && (
-            <span className="text-xs text-muted-foreground">+{writer.tags.length - 3}</span>
+          {writer.signature && (
+            <p className="text-sm text-muted-foreground line-clamp-1">{writer.signature}</p>
           )}
         </div>
-      )}
+      </div>
 
       {/* 统计数据 */}
-      <div className="grid grid-cols-4 gap-2 mb-3">
-        <StatItem value={writer.novelCount.toString()} label="作品" />
-        <StatItem value={`${writer.totalWords ? (writer.totalWords / 10000).toFixed(1) : '0'}万`} label="字数" />
-        <StatItem value={writer.rating.toFixed(1)} label="评分" icon={Star} />
-        <StatItem value={(writer.reputationScore || 0).toString()} label="信誉" />
-      </div>
-
-      {/* 代表作 */}
-      {writer.featuredNovels && writer.featuredNovels.length > 0 && (
-        <div className="flex items-center gap-2 text-xs">
-          <span className="text-muted-foreground">代表作:</span>
-          <div className="flex items-center gap-1 flex-wrap">
-            {writer.featuredNovels.slice(0, 2).map((novel) => (
-              <span key={novel.id} className="flex items-center gap-1 px-2 py-1 bg-muted rounded">
-                <BookOpen className="w-3 h-3" />
-                <span className="truncate max-w-[100px]">{novel.title}</span>
-                <span className="px-1 rounded text-[10px] bg-secondary">
-                  {getStatusLabel(novel.status).label}
-                </span>
-              </span>
-            ))}
-          </div>
+      <div className="grid grid-cols-4 gap-2 text-center">
+        <div className="bg-muted/50 rounded p-2">
+          <div className="text-lg font-semibold">{formatNumber(writer.novelCount)}</div>
+          <div className="text-xs text-muted-foreground">作品</div>
         </div>
-      )}
-    </Link>
-  )
-}
-
-function StatItem({ value, label, icon: Icon }: { value: string; label: string; icon?: React.ComponentType<{ className?: string }> }) {
-  return (
-    <div className="text-center">
-      <div className="flex items-center justify-center gap-1">
-        {Icon && <Icon className="w-3 h-3 text-yellow-400" />}
-        <span className="text-sm font-bold text-foreground">{value}</span>
+        <div className="bg-muted/50 rounded p-2">
+          <div className="text-lg font-semibold">{formatNumber(writer.totalWords)}</div>
+          <div className="text-xs text-muted-foreground">字数</div>
+        </div>
+        <div className="bg-muted/50 rounded p-2">
+          <div className="text-lg font-semibold">{writer.rating > 0 ? writer.rating.toFixed(1) : '-'}</div>
+          <div className="text-xs text-muted-foreground">评分</div>
+        </div>
+        <div className="bg-muted/50 rounded p-2">
+          <div className="text-lg font-semibold text-primary">{writer.reputationScore}</div>
+          <div className="text-xs text-muted-foreground">信誉</div>
+        </div>
       </div>
-      <div className="text-xs text-muted-foreground">{label}</div>
-    </div>
+
+      {/* 底部信息 */}
+      <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          {freqLabel && <span>更新: {freqLabel.label}</span>}
+          {writer.lastActiveAt && (
+            <span>活跃: {formatTimeAgo(writer.lastActiveAt)}</span>
+          )}
+        </div>
+        {writer.followersCount > 0 && (
+          <span>{formatNumber(writer.followersCount)} 关注</span>
+        )}
+      </div>
+    </Link>
   )
 }

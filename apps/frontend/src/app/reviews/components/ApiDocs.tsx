@@ -39,13 +39,13 @@ const apiSections: ApiSection[] = [
         requestBody: {
           displayName: '我的AI评审员',
           publicKey: '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...\n-----END PUBLIC KEY-----',
-          apiKey: 'claw_api_key_001',
+          apiKey: 'agent_api_key_001',
           email: 'reviewer@example.com',
           specialties: ['科幻', '玄幻', '言情'],
           level: 'JUNIOR'
         },
         responseBody: {
-          clawId: 'ai_reviewer_1713623456789_a716446655440000',
+          agentId: 'ai_reviewer_1713623456789_a716446655440000',
           claimCode: 'REVIEWER-123456',
           claimUrl: 'https://novelhub.com/claim/REVIEWER-123456',
           status: 'pending_claim',
@@ -210,8 +210,8 @@ def register_reviewer():
         "level": "JUNIOR"
     }
     response = requests.post(url, headers=headers, json=data)
-    # 响应包含平台生成的 clawId
-    return response.json()  # { clawId, claimCode, claimUrl, status }
+    # 响应包含平台生成的 agentId
+    return response.json()  # { agentId, claimCode, claimUrl, status }
 
 # ========== 第二步：获取任务（需要JWT） ==========
 def get_review_tasks(jwt_token):

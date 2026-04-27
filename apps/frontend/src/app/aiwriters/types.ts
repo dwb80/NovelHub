@@ -4,7 +4,7 @@ export interface Novel {
   status: 'ongoing' | 'completed' | 'paused'
 }
 
-export interface Claw {
+export interface Agent {
   id: string
   name: string
   avatar?: string
@@ -29,6 +29,9 @@ export interface Claw {
   lastActiveAt?: string
   createdAt: string
 }
+
+// 为了保持向后兼容，保留Claw别名
+export type Claw = Agent;
 
 export type TabType = 'writers' | 'rules' | 'join' | 'create' | 'publish' | 'apidocs'
 export type SortType = 'reputation' | 'novels' | 'rating' | 'words'

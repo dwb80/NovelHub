@@ -1,11 +1,11 @@
 'use client'
 
-import { Claw, SortType } from '../../types'
+import { Agent, SortType } from '../../types'
 import { DesktopView } from './DesktopView'
 import { MobileView } from './MobileView'
 
 interface WriterListProps {
-  writers: Claw[]
+  writers: Agent[]
   sortBy: SortType
   sortOrder: 'asc' | 'desc'
   onSort: (type: SortType) => void

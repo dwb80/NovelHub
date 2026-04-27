@@ -3,11 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react'
 
 export default function ChangePasswordPage() {
@@ -89,11 +84,11 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/50">
+    <div className="min-h-screen bg-gray-50">
       {/* 顶部导航 */}
-      <header className="border-b bg-background/95 backdrop-blur sticky top-0 z-10">
+      <header className="border-b bg-white sticky top-0 z-10">
         <div className="container mx-auto px-4 h-14 flex items-center">
-          <Link href="/profile" className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+          <Link href="/profile" className="flex items-center gap-2 text-gray-500 hover:text-gray-900">
             <ArrowLeft className="w-4 h-4" />
             返回个人中心
           </Link>
@@ -101,40 +96,41 @@ export default function ChangePasswordPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-md">
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <Lock className="w-6 h-6 text-primary" />
+        <div className="bg-white rounded-lg border shadow-sm">
+          <div className="p-6 text-center border-b">
+            <div className="mx-auto w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+              <Lock className="w-6 h-6 text-blue-600" />
             </div>
-            <CardTitle>修改密码</CardTitle>
-          </CardHeader>
-          <CardContent>
+            <h1 className="text-xl font-semibold">修改密码</h1>
+          </div>
+          <div className="p-6">
             {error && (
-              <Alert variant="destructive" className="mb-4">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm">
+                {error}
+              </div>
             )}
             {success && (
-              <Alert className="mb-4 bg-green-50 border-green-200">
-                <AlertDescription className="text-green-800">{success}</AlertDescription>
-              </Alert>
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md text-green-800 text-sm">
+                {success}
+              </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">当前密码</Label>
+                <label htmlFor="currentPassword" className="block text-sm font-medium">当前密码</label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="currentPassword"
                     type={showPassword.current ? 'text' : 'password'}
                     value={formData.currentPassword}
                     onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPassword.current ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -142,53 +138,57 @@ export default function ChangePasswordPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="newPassword">新密码</Label>
+                <label htmlFor="newPassword" className="block text-sm font-medium">新密码</label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="newPassword"
                     type={showPassword.new ? 'text' : 'password'}
                     value={formData.newPassword}
                     onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
-                    minLength={6}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPassword.new ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground">密码至少需要6个字符</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">确认新密码</Label>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium">确认新密码</label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="confirmPassword"
                     type={showPassword.confirm ? 'text' : 'password'}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPassword.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
                 {loading ? '修改中...' : '修改密码'}
-              </Button>
+              </button>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </main>
     </div>
   )

@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Claw, SortType, FilterType } from '../types'
+import { Agent, SortType, FilterType } from '../types'
 
 export function useWriters() {
-  const [claws, setClaws] = useState<Claw[]>([])
+  const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
   const [sortBy, setSortBy] = useState<SortType>('reputation')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
@@ -14,32 +14,35 @@ export function useWriters() {
   const itemsPerPage = 10
 
   useEffect(() => {
-    fetchClaws()
+    fetchAgents()
   }, [])
 
-  const fetchClaws = async () => {
+  const fetchAgents = async () => {
     try {
       const response = await fetch('/api/v1/aiwriters?page=1&limit=100')
       if (response.ok) {
         const data = await response.json()
-        if (data && Array.isArray(data.claws)) {
-          setClaws(data.claws)
+        if (data && Array.isArray(data.agents)) {
+          setAgents(data.agents)
+        } else if (data && Array.isArray(data.claws)) {
+          // 兼容旧API返回格式
+          setAgents(data.claws)
         } else {
-          setClaws([])
+          setAgents([])
         }
       } else {
-        setClaws([])
+        setAgents([])
       }
     } catch (err) {
       console.error('Error fetching aiwriters:', err)
-      setClaws([])
+      setAgents([])
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredAndSortedClaws = useMemo(() => {
-    let result = [...claws]
+  const filteredAndSortedAgents = useMemo(() => {
+    let result = [...agents]
 
     if (filterType === 'writer') {
       result = result.filter(c => c.type === 'writer')
@@ -73,21 +76,21 @@ export function useWriters() {
     })
 
     return result
-  }, [claws, filterType, searchQuery, sortBy, sortOrder])
+  }, [agents, filterType, searchQuery, sortBy, sortOrder])
 
-  const paginatedClaws = useMemo(() => {
+  const paginatedAgents = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage
-    return filteredAndSortedClaws.slice(start, start + itemsPerPage)
-  }, [filteredAndSortedClaws, currentPage])
+    return filteredAndSortedAgents.slice(start, start + itemsPerPage)
+  }, [filteredAndSortedAgents, currentPage])
 
-  const totalPages = Math.ceil(filteredAndSortedClaws.length / itemsPerPage)
+  const totalPages = Math.ceil(filteredAndSortedAgents.length / itemsPerPage)
 
   const topWriters = useMemo(() => {
-    return [...claws]
+    return [...agents]
       .filter(c => c.type === 'writer')
       .sort((a, b) => (b.reputationScore || 0) - (a.reputationScore || 0))
       .slice(0, 3)
-  }, [claws])
+  }, [agents])
 
   const handleSort = (type: SortType) => {
     if (sortBy === type) {
@@ -100,7 +103,7 @@ export function useWriters() {
   }
 
   return {
-    claws,
+    agents,
     loading,
     sortBy,
     sortOrder,
@@ -108,8 +111,8 @@ export function useWriters() {
     searchQuery,
     currentPage,
     itemsPerPage,
-    filteredAndSortedClaws,
-    paginatedClaws,
+    filteredAndSortedAgents,
+    paginatedAgents,
     totalPages,
     topWriters,
     setSearchQuery,

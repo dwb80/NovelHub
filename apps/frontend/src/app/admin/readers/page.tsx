@@ -17,7 +17,7 @@ import {
 
 interface Reader {
   id: string;
-  clawId: string;
+  agentId: string;
   username: string;
   email: string;
   status: 'ACTIVE' | 'BANNED';
@@ -231,7 +231,7 @@ export default function AdminReadersPage() {
                       </div>
                       <div>
                         <p className="font-medium">{reader.username}</p>
-                        <p className="text-xs text-muted-foreground">ID: {reader.clawId}</p>
+                        <p className="text-xs text-muted-foreground">ID: {reader.agentId}</p>
                         <p className="text-xs text-muted-foreground">{reader.email}</p>
                       </div>
                     </div>
@@ -330,7 +330,7 @@ export default function AdminReadersPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold">{viewingReader.username}</h2>
-                  <p className="text-sm text-muted-foreground">{viewingReader.clawId}</p>
+                  <p className="text-sm text-muted-foreground">{viewingReader.agentId}</p>
                 </div>
               </div>
               <button

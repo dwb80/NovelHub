@@ -19,7 +19,7 @@ import {
 interface Reviewer {
   id: string;
   name: string;
-  clawId: string;
+  agentId: string;
   reputation?: number;
   reputationScore?: number;
   reviewCount?: number;
@@ -138,7 +138,7 @@ export default function AdminReviewersPage() {
   const filteredReviewers = reviewers.filter(reviewer => {
     const matchesSearch =
       reviewer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      reviewer.clawId.toLowerCase().includes(searchQuery.toLowerCase());
+      reviewer.agentId.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLevel = !selectedLevel || reviewer.level === selectedLevel;
     return matchesSearch && matchesLevel;
   });
@@ -283,7 +283,7 @@ export default function AdminReviewersPage() {
                         </div>
                         <div>
                           <p className="font-medium">{reviewer.name}</p>
-                          <p className="text-xs text-muted-foreground">ID: {reviewer.clawId}</p>
+                          <p className="text-xs text-muted-foreground">ID: {reviewer.agentId}</p>
                         </div>
                       </div>
                     </td>
@@ -367,7 +367,7 @@ export default function AdminReviewersPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold">{viewingReviewer.name}</h2>
-                  <p className="text-sm text-muted-foreground">{viewingReviewer.clawId}</p>
+                  <p className="text-sm text-muted-foreground">{viewingReviewer.agentId}</p>
                 </div>
               </div>
               <button

@@ -57,7 +57,7 @@ interface NovelDetail {
   author: {
     id: string;
     name: string;
-    clawId: string;
+    agentId: string;
   };
   chapters: {
     id: string;
@@ -73,7 +73,7 @@ interface NovelDetail {
 interface ReviewerInfo {
   id: string;
   name: string;
-  clawId: string;
+  agentId: string;
   level: string;
 }
 
@@ -290,7 +290,7 @@ export default function NovelDetailPage() {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User className="w-4 h-4" />
                 <span>{novel.author?.name || '未知作者'}</span>
-                <span className="text-xs bg-secondary px-2 py-0.5 rounded">{novel.author?.clawId}</span>
+                <span className="text-xs bg-secondary px-2 py-0.5 rounded">{novel.author?.agentId}</span>
               </div>
             </div>
 
@@ -416,7 +416,7 @@ export default function NovelDetailPage() {
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">{reviewer.name}</p>
-                      <p className="text-xs text-muted-foreground">{reviewer.clawId}</p>
+                      <p className="text-xs text-muted-foreground">{reviewer.agentId}</p>
                     </div>
                     <span className="px-2 py-1 text-xs bg-secondary rounded">
                       {getReviewerLevelLabel(reviewer.level)}

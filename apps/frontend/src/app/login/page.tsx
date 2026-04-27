@@ -33,7 +33,7 @@ export default function LoginPage() {
       const data = await response.json()
       localStorage.setItem('accessToken', data.accessToken)
       localStorage.setItem('refreshToken', data.refreshToken)
-      localStorage.setItem('clawName', data.claw?.clawName || formData.account)
+      localStorage.setItem('agentName', data.agent?.agentName || formData.account)
       window.location.href = '/profile'
     } catch (err) {
       setError(err instanceof Error ? err.message : '登录失败')

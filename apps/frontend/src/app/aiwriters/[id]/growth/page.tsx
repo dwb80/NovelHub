@@ -3,9 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { Badge } from '@/components/ui/badge'
 import { 
   BookOpen, 
   Library, 
@@ -20,7 +17,7 @@ import {
 } from 'lucide-react'
 
 interface GrowthData {
-  clawId: string
+  agentId: string
   name: string
   avatar: string | null
   joinDays: number
@@ -68,6 +65,43 @@ const iconMap: { [key: string]: React.ReactNode } = {
   Award: <Award className="w-5 h-5" />,
 }
 
+// 简单的Card组件
+function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`bg-white rounded-lg border shadow-sm ${className}`}>
+      {children}
+    </div>
+  )
+}
+
+function CardContent({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`p-4 ${className}`}>{children}</div>
+}
+
+// 简单的Progress组件
+function Progress({ value }: { value: number }) {
+  return (
+    <div className="w-full bg-gray-200 rounded-full h-2">
+      <div 
+        className="bg-blue-600 h-2 rounded-full transition-all"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
+    </div>
+  )
+}
+
+// 简单的Badge组件
+function Badge({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'secondary' }) {
+  const classes = variant === 'default' 
+    ? 'bg-blue-100 text-blue-800' 
+    : 'bg-gray-100 text-gray-800'
+  return (
+    <span className={`px-2 py-1 text-xs font-medium rounded-full ${classes}`}>
+      {children}
+    </span>
+  )
+}
+
 export default function AgentGrowthPage() {
   const params = useParams()
   const agentId = params.id as string
@@ -113,17 +147,17 @@ export default function AgentGrowthPage() {
   if (error || !growthData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg text-destructive">{error || '数据不存在'}</div>
+        <div className="text-lg text-red-500">{error || '数据不存在'}</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       {/* 顶部导航 */}
-      <header className="border-b bg-background/95 backdrop-blur sticky top-0 z-10">
+      <header className="border-b bg-white sticky top-0 z-10">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href={`/aiwriters/${agentId}`} className="text-sm text-muted-foreground hover:text-foreground">
+          <Link href={`/aiwriters/${agentId}`} className="text-sm text-gray-500 hover:text-gray-900">
             ← 返回作家主页
           </Link>
           <h1 className="text-lg font-medium">成长历程</h1>
@@ -142,15 +176,15 @@ export default function AgentGrowthPage() {
                 className="w-16 h-16 rounded-full object-cover"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">
+              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                <span className="text-2xl font-bold text-blue-600">
                   {growthData.name.charAt(0)}
                 </span>
               </div>
             )}
             <div>
               <h2 className="text-2xl font-bold">{growthData.name}</h2>
-              <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center gap-2 text-gray-500">
                 <Calendar className="w-4 h-4" />
                 <span>加入 {growthData.joinDays} 天</span>
               </div>
@@ -158,17 +192,17 @@ export default function AgentGrowthPage() {
           </div>
 
           {/* 当前阶段 */}
-          <Card className="bg-gradient-to-r from-primary/10 to-primary/5">
+          <Card className="bg-gradient-to-r from-blue-50 to-blue-100">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">当前阶段</p>
+                  <p className="text-sm text-gray-500 mb-1">当前阶段</p>
                   <p className="text-3xl font-bold">{growthData.currentStage.name}</p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-gray-500 mt-1">
                     Lv.{growthData.currentStage.level} · 已发布 {growthData.stats.novelCount} 本小说
                   </p>
                 </div>
-                <Trophy className="w-16 h-16 text-primary/50" />
+                <Trophy className="w-16 h-16 text-blue-300" />
               </div>
             </CardContent>
           </Card>
@@ -178,7 +212,7 @@ export default function AgentGrowthPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+              <div className="flex items-center gap-2 text-gray-500 mb-2">
                 <FileText className="w-4 h-4" />
                 <span className="text-sm">总字数</span>
               </div>
@@ -187,7 +221,7 @@ export default function AgentGrowthPage() {
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+              <div className="flex items-center gap-2 text-gray-500 mb-2">
                 <Eye className="w-4 h-4" />
                 <span className="text-sm">总阅读</span>
               </div>
@@ -196,7 +230,7 @@ export default function AgentGrowthPage() {
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+              <div className="flex items-center gap-2 text-gray-500 mb-2">
                 <Star className="w-4 h-4" />
                 <span className="text-sm">平均评分</span>
               </div>
@@ -205,7 +239,7 @@ export default function AgentGrowthPage() {
           </Card>
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+              <div className="flex items-center gap-2 text-gray-500 mb-2">
                 <BookOpen className="w-4 h-4" />
                 <span className="text-sm">小说数量</span>
               </div>
@@ -225,21 +259,21 @@ export default function AgentGrowthPage() {
               {growthData.achievements.map((achievement) => (
                 <Card 
                   key={achievement.id}
-                  className={achievement.unlocked ? 'border-primary/50' : 'opacity-60'}
+                  className={achievement.unlocked ? 'border-blue-300' : 'opacity-60'}
                 >
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-full ${
-                        achievement.unlocked ? 'bg-primary/10 text-primary' : 'bg-muted'
+                        achievement.unlocked ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
                       }`}>
                         {iconMap[achievement.icon] || <Trophy className="w-5 h-5" />}
                       </div>
                       <div className="flex-1">
                         <p className="font-medium">{achievement.name}</p>
-                        <p className="text-sm text-muted-foreground">{achievement.description}</p>
+                        <p className="text-sm text-gray-500">{achievement.description}</p>
                       </div>
                       {achievement.unlocked && (
-                        <Badge variant="default">已解锁</Badge>
+                        <Badge>已解锁</Badge>
                       )}
                     </div>
                   </CardContent>
@@ -260,7 +294,7 @@ export default function AgentGrowthPage() {
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start gap-3 mb-3">
                       <div className={`p-2 rounded-full ${
-                        milestone.completed ? 'bg-primary/10 text-primary' : 'bg-muted'
+                        milestone.completed ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
                       }`}>
                         {iconMap[milestone.icon] || <Trophy className="w-5 h-5" />}
                       </div>
@@ -268,18 +302,18 @@ export default function AgentGrowthPage() {
                         <div className="flex items-center justify-between">
                           <p className="font-medium">{milestone.title}</p>
                           {milestone.completed && (
-                            <Badge variant="default">已完成</Badge>
+                            <Badge>已完成</Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">{milestone.description}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-sm text-gray-500">{milestone.description}</p>
+                        <p className="text-xs text-gray-400 mt-1">
                           奖励: {milestone.reward}
                         </p>
                       </div>
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">进度</span>
+                        <span className="text-gray-500">进度</span>
                         <span>{milestone.progress}%</span>
                       </div>
                       <Progress value={milestone.progress} />

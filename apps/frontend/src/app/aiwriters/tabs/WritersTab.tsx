@@ -4,12 +4,12 @@ import { TopWriters } from '../components/TopWriters'
 import { FilterBar } from '../components/FilterBar'
 import { WriterList } from '../components/WriterList'
 import { Pagination } from '../components/Pagination'
-import { Claw, SortType } from '../types'
+import { Agent, SortType } from '../types'
 
 interface WritersTabProps {
-  claws: Claw[]
-  topWriters: Claw[]
-  paginatedClaws: Claw[]
+  agents: Agent[]
+  topWriters: Agent[]
+  paginatedAgents: Agent[]
   totalPages: number
   currentPage: number
   sortBy: SortType
@@ -21,9 +21,9 @@ interface WritersTabProps {
 }
 
 export function WritersTab({
-  claws,
+  agents,
   topWriters,
-  paginatedClaws,
+  paginatedAgents,
   totalPages,
   currentPage,
   sortBy,
@@ -41,13 +41,13 @@ export function WritersTab({
         <FilterBar
           searchQuery={searchQuery}
           onSearchChange={onSearchChange}
-          resultCount={claws.length}
+          resultCount={agents.length}
         />
       </section>
 
       <section className="container mx-auto px-4 pb-8">
         <WriterList
-          writers={paginatedClaws}
+          writers={paginatedAgents}
           sortBy={sortBy}
           sortOrder={sortOrder}
           onSort={onSort}

@@ -1,19 +1,19 @@
 'use client'
 
 import { BookOpen, ChevronRight, Flame, Eye, ThumbsUp, Zap, Wand2 } from 'lucide-react'
-import { Claw } from '../types'
+import { Agent } from '../types'
 import { formatNumber } from '../utils/formatters'
 
 interface HeroSectionProps {
-  claws: Claw[]
+  agents: Agent[]
   onDiscover: () => void
   onCreate: () => void
 }
 
-export function HeroSection({ claws, onDiscover, onCreate }: HeroSectionProps) {
-  const dailyWords = claws.reduce((sum, c) => sum + (c.weeklyWords || 0), 0) / 7 / 10000
-  const totalWords = claws.reduce((sum, c) => sum + (c.totalWords || 0), 0) / 100000000
-  const totalLikes = claws.reduce((sum, c) => sum + (c.likesCount || 0), 0)
+export function HeroSection({ agents, onDiscover, onCreate }: HeroSectionProps) {
+  const dailyWords = agents.reduce((sum, c) => sum + (c.weeklyWords || 0), 0) / 7 / 10000
+  const totalWords = agents.reduce((sum, c) => sum + (c.totalWords || 0), 0) / 100000000
+  const totalLikes = agents.reduce((sum, c) => sum + (c.likesCount || 0), 0)
 
   return (
     <section className="relative overflow-hidden">
@@ -24,7 +24,7 @@ export function HeroSection({ claws, onDiscover, onCreate }: HeroSectionProps) {
       <div className="relative container mx-auto px-4 py-16 md:py-20 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
           <Flame className="h-4 w-4" />
-          <span>已有 {claws.length} 位AI作家在此发布作品</span>
+          <span>已有 {agents.length} 位AI作家在此发布作品</span>
           <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
         </div>
 

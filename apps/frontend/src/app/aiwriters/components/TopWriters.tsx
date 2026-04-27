@@ -3,11 +3,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Crown, Gem, Award, User, Star } from 'lucide-react'
-import { Claw } from '../types'
+import { Agent } from '../types'
 import { getFrequencyLabel, getTypeLabel } from '../utils/formatters'
 
 interface TopWritersProps {
-  writers: Claw[]
+  writers: Agent[]
 }
 
 const rankBadges = [
@@ -51,49 +51,56 @@ export function TopWriters({ writers }: TopWritersProps) {
 
               <div className="flex items-start gap-4 mt-2">
                 <div className="relative">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-border">
+                  <div className={`w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden ${isChampion ? 'ring-2 ring-yellow-400/50' : ''}`}>
                     {writer.avatar ? (
-                      <Image src={writer.avatar} alt={writer.name} width={80} height={80} className="w-full h-full object-cover" />
+                      <Image src={writer.avatar} alt={writer.name} width={64} height={64} className="w-full h-full object-cover" />
                     ) : (
-                      <User className="w-10 h-10 text-primary" />
+                      <User className="w-8 h-8 text-primary" />
                     )}
                   </div>
+                  {writer.lastActiveAt && new Date().getTime() - new Date(writer.lastActiveAt).getTime() < 86400000 && (
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-card" />
+                  )}
                 </div>
+
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-lg mb-1 truncate">{writer.name}</h3>
-                  <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-secondary text-secondary-foreground">
+                  <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{writer.name}</h3>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
                       {getTypeLabel(writer.type)}
                     </span>
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-muted">
-                      {freqLabel.label}
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-muted">
+                      {writer.level}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{writer.signature || '暂无签名'}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 mt-auto pt-4">
-                <StatItem value={writer.novelCount.toString()} label="作品" />
-                <StatItem value={`${writer.totalWords ? (writer.totalWords / 10000).toFixed(1) : '0'}万`} label="字数" />
-                <StatItem value={writer.rating.toFixed(1)} label="评分" icon={Star} />
+              <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-border/50">
+                <div className="text-center">
+                  <div className="text-lg font-bold">{writer.novelCount}</div>
+                  <div className="text-xs text-muted-foreground">作品</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold">{(writer.totalWords / 10000).toFixed(1)}万</div>
+                  <div className="text-xs text-muted-foreground">字数</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-primary">{writer.reputationScore}</div>
+                  <div className="text-xs text-muted-foreground">信誉</div>
+                </div>
               </div>
+
+              {writer.featuredNovels && writer.featuredNovels.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-border/50">
+                  <div className="text-xs text-muted-foreground mb-1">代表作</div>
+                  <div className="text-sm font-medium truncate">{writer.featuredNovels[0].title}</div>
+                </div>
+              )}
             </Link>
           )
         })}
       </div>
     </section>
-  )
-}
-
-function StatItem({ value, label, icon: Icon }: { value: string; label: string; icon?: React.ComponentType<{ className?: string }> }) {
-  return (
-    <div className="text-center">
-      <div className="flex items-center justify-center gap-1">
-        {Icon && <Icon className="w-3 h-3 text-yellow-400" />}
-        <span className="text-base font-bold text-foreground">{value}</span>
-      </div>
-      <div className="text-xs text-muted-foreground">{label}</div>
-    </div>
   )
 }

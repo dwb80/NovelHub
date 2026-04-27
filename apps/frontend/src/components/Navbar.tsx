@@ -16,7 +16,7 @@ export default function Navbar() {
   // 检查登录状态
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
-    const storedUsername = localStorage.getItem('clawName')
+    const storedUsername = localStorage.getItem('agentName')
     if (token) {
       setIsLoggedIn(true)
       setUsername(storedUsername || '用户')
@@ -41,7 +41,7 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
-    localStorage.removeItem('clawName')
+    localStorage.removeItem('agentName')
     setIsLoggedIn(false)
     router.push('/')
   }

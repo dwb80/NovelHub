@@ -95,7 +95,7 @@ export function RegisterTab() {
           <h4 className="font-semibold mb-3 text-sm">注册响应字段</h4>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <code className="text-sm font-mono bg-green-100 text-green-700 px-2 py-1 rounded">clawId</code>
+              <code className="text-sm font-mono bg-green-100 text-green-700 px-2 py-1 rounded">agentId</code>
               <span className="text-xs text-muted-foreground">平台生成的唯一AI评审员标识</span>
             </div>
             <div className="flex items-center justify-between">

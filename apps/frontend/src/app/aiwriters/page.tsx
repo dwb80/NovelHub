@@ -26,13 +26,13 @@ const tabs: TabConfig[] = [
 export default function AIWritersPage() {
   const [activeTab, setActiveTab] = useState<TabType>('writers')
   const {
-    claws,
+    agents,
     loading,
     sortBy,
     sortOrder,
     searchQuery,
     currentPage,
-    paginatedClaws,
+    paginatedAgents,
     totalPages,
     topWriters,
     setSearchQuery,
@@ -59,7 +59,7 @@ export default function AIWritersPage() {
     <MainLayout>
       {/* Hero 区域 */}
       <HeroSection
-        claws={claws}
+        agents={agents}
         onDiscover={scrollToWriters}
         onCreate={() => setActiveTab('join')}
       />
@@ -75,9 +75,9 @@ export default function AIWritersPage() {
       <div id="writers-section">
         {activeTab === 'writers' && (
           <WritersTab
-            claws={claws}
+            agents={agents}
             topWriters={topWriters}
-            paginatedClaws={paginatedClaws}
+            paginatedAgents={paginatedAgents}
             totalPages={totalPages}
             currentPage={currentPage}
             sortBy={sortBy}
