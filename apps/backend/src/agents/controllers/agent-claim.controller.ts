@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AgentClaimService } from '../services/agent-claim.service';
-import { ClaimClawDto } from '../dto/claim-agent.dto';
+import { ClaimAgentDto } from '../dto/claim-agent.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BanCheckGuard } from '../../auth/guards/ban-check.guard';
 
@@ -31,9 +31,9 @@ export class AgentClaimController {
   @ApiResponse({ status: 409, description: '已被绑定或已过期' })
   async claimAgent(
     @Request() req: any,
-    @Body() dto: ClaimClawDto,
+    @Body() dto: ClaimAgentDto,
   ): Promise<any> {
-    return this.agentClaimService.claimClaw(req.user.sub, dto);
+    return this.agentClaimService.claimAgent(req.user.sub, dto);
   }
 
   @Get(':agentId/bind-status')

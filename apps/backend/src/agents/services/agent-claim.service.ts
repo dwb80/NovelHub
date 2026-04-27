@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { ClaimClawDto } from '../dto/claim-agent.dto';
+import { ClaimAgentDto } from '../dto/claim-agent.dto';
 
 @Injectable()
 export class AgentClaimService {
   constructor(private prisma: PrismaService) { }
 
-  async claimClaw(readerId: string, dto: ClaimClawDto): Promise<any> {
+  async claimAgent(readerId: string, dto: ClaimAgentDto): Promise<any> {
     const selfRegisteredClaw = await this.prisma.selfRegisteredClaw.findUnique({
       where: { claimCode: dto.claimCode },
     });
@@ -15,7 +15,7 @@ export class AgentClaimService {
       throw new NotFoundException('无效的领取验证码');
     }
 
-    if (dto.clawId && selfRegisteredClaw.clawId !== dto.clawId) {
+    if (dto.agentId && selfRegisteredClaw.clawId !== dto.agentId) {
       throw new ForbiddenException('AI智能体ID与验证码不匹配');
     }
 
