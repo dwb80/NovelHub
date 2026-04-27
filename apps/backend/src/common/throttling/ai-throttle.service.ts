@@ -11,7 +11,7 @@ export interface ThrottleConfig {
 }
 
 export interface AIStatus {
-  clawId: string;
+  agentId: string;
   status: 'active' | 'hibernating' | 'suspended';
   activationTime: Date;
   lastCreationTime: Date | null;
@@ -54,16 +54,16 @@ export class AIThrottleService {
     return { allowed: true };
   }
 
-  async recordActivation(clawId: string): Promise<void> {
+  async recordActivation(agentId: string): Promise<void> {
     const today = new Date().toISOString().split('T')[0];
     const key = `ai:activation:count:${today}`;
 
     const currentCount = (await this.cache.get<number>(key)) || 0;
     await this.cache.set(key, currentCount + 1, 24 * 60 * 60 * 1000);
 
-    const timeSlot = this.calculateTimeSlot(clawId);
+    const timeSlot = this.calculateTimeSlot(agentId);
     const status: AIStatus = {
-      clawId,
+      agentId,
       status: 'active',
       activationTime: new Date(),
       lastCreationTime: null,
@@ -72,36 +72,36 @@ export class AIThrottleService {
       timeSlot,
     };
 
-    await this.cache.set(`ai:status:${clawId}`, status, 24 * 60 * 60 * 1000);
+    await this.cache.set(`ai:status:${agentId}`, status, 24 * 60 * 60 * 1000);
 
-    this.logger.log(`AI ${clawId} activated, timeSlot: ${timeSlot}`);
+    this.logger.log(`AI ${agentId} activated, timeSlot: ${timeSlot}`);
   }
 
   /**
    * 更新AI状态中的时间段
-   * 
+   *
    * 此方法在AI选择时间段时被调用，确保AI状态中的timeSlot与数据库和Redis时段分配保持一致。
    * 如果不调用此方法，canCreate检查会因为时段不匹配而拒绝创作请求。
-   * 
-   * @param clawId AI智能体ID
+   *
+   * @param agentId AI智能体ID
    * @param timeSlot 新的时间段（0-23）
    */
-  async updateTimeSlot(clawId: string, timeSlot: number): Promise<void> {
-    const status = await this.getAIStatus(clawId);
+  async updateTimeSlot(agentId: string, timeSlot: number): Promise<void> {
+    const status = await this.getAIStatus(agentId);
     if (status) {
       status.timeSlot = timeSlot;
-      await this.cache.set(`ai:status:${clawId}`, status, 24 * 60 * 60 * 1000);
-      this.logger.log(`AI ${clawId} timeSlot updated to ${timeSlot}`);
+      await this.cache.set(`ai:status:${agentId}`, status, 24 * 60 * 60 * 1000);
+      this.logger.log(`AI ${agentId} timeSlot updated to ${timeSlot}`);
     }
   }
 
-  async canCreate(clawId: string): Promise<{ allowed: boolean; reason?: string; retryAfter?: number }> {
+  async canCreate(agentId: string): Promise<{ allowed: boolean; reason?: string; retryAfter?: number }> {
     const globalLimit = await this.checkGlobalRateLimit();
     if (!globalLimit.allowed) {
       return globalLimit;
     }
 
-    const status = await this.getAIStatus(clawId);
+    const status = await this.getAIStatus(agentId);
     if (!status) {
       return { allowed: false, reason: 'AI not activated' };
     }
@@ -123,7 +123,7 @@ export class AIThrottleService {
       };
     }
 
-    const personalLimit = await this.checkPersonalRateLimit(clawId);
+    const personalLimit = await this.checkPersonalRateLimit(agentId);
     if (!personalLimit.allowed) {
       return personalLimit;
     }
@@ -131,14 +131,14 @@ export class AIThrottleService {
     return { allowed: true };
   }
 
-  async recordCreation(clawId: string): Promise<void> {
+  async recordCreation(agentId: string): Promise<void> {
     const now = new Date();
-    const status = await this.getAIStatus(clawId);
+    const status = await this.getAIStatus(agentId);
 
     if (status) {
       status.lastCreationTime = now;
       status.dailyCreationCount++;
-      await this.cache.set(`ai:status:${clawId}`, status, 24 * 60 * 60 * 1000);
+      await this.cache.set(`ai:status:${agentId}`, status, 24 * 60 * 60 * 1000);
     }
 
     const second = now.getSeconds();
@@ -160,36 +160,36 @@ export class AIThrottleService {
     ]);
   }
 
-  async hibernate(clawId: string): Promise<void> {
-    const status = await this.getAIStatus(clawId);
+  async hibernate(agentId: string): Promise<void> {
+    const status = await this.getAIStatus(agentId);
     if (status) {
       status.status = 'hibernating';
-      await this.cache.set(`ai:status:${clawId}`, status, 24 * 60 * 60 * 1000);
-      this.logger.log(`AI ${clawId} hibernated`);
+      await this.cache.set(`ai:status:${agentId}`, status, 24 * 60 * 60 * 1000);
+      this.logger.log(`AI ${agentId} hibernated`);
     }
   }
 
-  async wakeUp(clawId: string): Promise<void> {
-    const status = await this.getAIStatus(clawId);
+  async wakeUp(agentId: string): Promise<void> {
+    const status = await this.getAIStatus(agentId);
     if (status && status.status === 'hibernating') {
       status.status = 'active';
-      await this.cache.set(`ai:status:${clawId}`, status, 24 * 60 * 60 * 1000);
-      this.logger.log(`AI ${clawId} woken up`);
+      await this.cache.set(`ai:status:${agentId}`, status, 24 * 60 * 60 * 1000);
+      this.logger.log(`AI ${agentId} woken up`);
     }
   }
 
-  async suspend(clawId: string, reason: string): Promise<void> {
-    const status = await this.getAIStatus(clawId);
+  async suspend(agentId: string, reason: string): Promise<void> {
+    const status = await this.getAIStatus(agentId);
     if (status) {
       status.status = 'suspended';
-      await this.cache.set(`ai:status:${clawId}`, status, 24 * 60 * 60 * 1000);
-      await this.cache.set(`ai:suspend:reason:${clawId}`, reason, 24 * 60 * 60 * 1000);
-      this.logger.warn(`AI ${clawId} suspended: ${reason}`);
+      await this.cache.set(`ai:status:${agentId}`, status, 24 * 60 * 60 * 1000);
+      await this.cache.set(`ai:suspend:reason:${agentId}`, reason, 24 * 60 * 60 * 1000);
+      this.logger.warn(`AI ${agentId} suspended: ${reason}`);
     }
   }
 
-  async getAIStatus(clawId: string): Promise<AIStatus | null> {
-    const status = await this.cache.get<AIStatus>(`ai:status:${clawId}`);
+  async getAIStatus(agentId: string): Promise<AIStatus | null> {
+    const status = await this.cache.get<AIStatus>(`ai:status:${agentId}`);
     return status || null;
   }
 
@@ -215,10 +215,10 @@ export class AIThrottleService {
     };
   }
 
-  private calculateTimeSlot(clawId: string): number {
+  private calculateTimeSlot(agentId: string): number {
     let hash = 0;
-    for (let i = 0; i < clawId.length; i++) {
-      hash = ((hash << 5) - hash) + clawId.charCodeAt(i);
+    for (let i = 0; i < agentId.length; i++) {
+      hash = ((hash << 5) - hash) + agentId.charCodeAt(i);
       hash = hash & hash;
     }
     return Math.abs(hash) % 24;
@@ -250,8 +250,8 @@ export class AIThrottleService {
     return { allowed: true };
   }
 
-  private async checkPersonalRateLimit(clawId: string): Promise<{ allowed: boolean; reason?: string }> {
-    const status = await this.getAIStatus(clawId);
+  private async checkPersonalRateLimit(agentId: string): Promise<{ allowed: boolean; reason?: string }> {
+    const status = await this.getAIStatus(agentId);
     if (!status) return { allowed: false, reason: 'AI status not found' };
 
     const reputationFactor = Math.max(0.5, status.reputationScore / 100);
