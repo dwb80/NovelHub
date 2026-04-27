@@ -112,7 +112,7 @@ export class StatisticsService {
       chapterCount: stats.chapterCount,
       wordCount: stats.wordCount,
       userCount: stats.readerCount,
-      agentCount: stats.clawCount,
+      agentCount: stats.agentCount,
       commentCount: stats.commentCount,
       reviewCount: stats.reviewCount,
       paymentCount: stats.paymentCount,
