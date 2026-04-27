@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 
 export interface IdentityRecord {
-  clawId: string;
+  agentId: string;
   apiKey: string;
   status: 'generated' | 'registered' | 'expired' | 'claimed';
   generatedAt: Date;
@@ -19,7 +19,7 @@ export class AgentIdentityRecordService {
    * 记录新生成的身份信息
    */
   async recordIdentity(data: {
-    clawId: string;
+    agentId: string;
     apiKey: string;
     customTag: string;
     expiresAt: Date;
@@ -28,8 +28,8 @@ export class AgentIdentityRecordService {
     // 状态为'generated'表示已生成但未注册
     await this.prisma.selfRegisteredClaw.create({
       data: {
-        clawId: data.clawId,
-        name: `temp_${data.clawId}`, // 临时名称
+        clawId: data.agentId,
+        name: `temp_${data.agentId}`, // 临时名称
         publicKey: '', // 占位，注册时更新
         email: '', // 占位，注册时更新
         clawType: data.customTag.toUpperCase(),

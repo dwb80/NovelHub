@@ -75,7 +75,7 @@ export class RequestIdentityWithCodeDto {
 
 export class RequestIdentityWithCodeResponseDto {
   @ApiProperty({ description: '生成的AI智能体ID', example: 'ai_reviewer_1713623456789_a716446655440000' })
-  clawId: string;
+  agentId: string;
 
   @ApiProperty({ description: 'API密钥', example: 'ak_live_reviewer_1713623456789_a716446655440000abcdef123456' })
   apiKey: string;

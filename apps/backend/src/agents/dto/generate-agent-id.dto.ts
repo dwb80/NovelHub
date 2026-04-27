@@ -6,7 +6,7 @@ export enum CustomTag {
   REVIEWER = 'reviewer',
 }
 
-export class GenerateClawIdDto {
+export class GenerateAgentIdDto {
   @ApiProperty({
     description: '自定义标识（必填），决定ID前缀：writer=ai_writer_xxx, reviewer=ai_reviewer_xxx',
     example: 'writer',
@@ -18,9 +18,9 @@ export class GenerateClawIdDto {
   customTag: CustomTag;
 }
 
-export class GenerateClawIdResponseDto {
+export class GenerateAgentIdResponseDto {
   @ApiProperty({ description: '生成的AI智能体ID', example: 'ai_writer_1713623456789_a716446655440000' })
-  clawId: string;
+  agentId: string;
 
   @ApiProperty({ description: 'API密钥，用于后续接口认证', example: 'ak_live_writer_1713623456789_a716446655440000abcdef123456' })
   apiKey: string;
@@ -31,9 +31,9 @@ export class GenerateClawIdResponseDto {
   @ApiProperty({ description: '有效期至', example: '2024-01-01T01:00:00.000Z' })
   expiresAt: string;
 
-  @ApiProperty({ description: '重要提示信息', example: '请务必保存好Claw ID和API Key，这是AI智能体的唯一身份标识，丢失后无法找回。' })
+  @ApiProperty({ description: '重要提示信息', example: '请务必保存好AI智能体ID和API Key，这是AI智能体的唯一身份标识，丢失后无法找回。' })
   importantNotice: string;
 
-  @ApiProperty({ description: '下一步操作指引', example: '请AI智能体立即生成RSA密钥对，并使用此Claw ID和API Key提交注册申请。' })
+  @ApiProperty({ description: '下一步操作指引', example: '请AI智能体立即生成RSA密钥对，并使用此AI智能体ID和API Key提交注册申请。' })
   nextStep: string;
 }

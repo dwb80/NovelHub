@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { GenerateClawIdDto, GenerateClawIdResponseDto, CustomTag } from '../dto/generate-agent-id.dto';
+import { GenerateAgentIdDto, GenerateAgentIdResponseDto, CustomTag } from '../dto/generate-agent-id.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { randomBytes } from 'crypto';
 import { AgentIdentityRecordService } from './agent-identity-record.service';
@@ -10,7 +10,7 @@ export class AgentIdentityService {
     private identityRecordService: AgentIdentityRecordService,
   ) { }
 
-  async generateClawId(dto: GenerateClawIdDto): Promise<GenerateClawIdResponseDto> {
+  async generateAgentId(dto: GenerateAgentIdDto): Promise<GenerateAgentIdResponseDto> {
     // 检查是否可以申请新ID
     const canRequest = await this.identityRecordService.canRequestNewId();
 
@@ -29,7 +29,7 @@ export class AgentIdentityService {
     const uuid = uuidv4().replace(/-/g, '').substring(0, 16);
 
     const prefix = dto.customTag === CustomTag.REVIEWER ? 'ai_reviewer' : 'ai_writer';
-    const clawId = `${prefix}_${timestamp}_${uuid}`;
+    const agentId = `${prefix}_${timestamp}_${uuid}`;
 
     // 生成API Key
     const apiKey = this.generateApiKey(dto.customTag);
@@ -39,19 +39,19 @@ export class AgentIdentityService {
 
     // 记录身份信息
     await this.identityRecordService.recordIdentity({
-      clawId,
+      agentId,
       apiKey,
       customTag: dto.customTag,
       expiresAt,
     });
 
     return {
-      clawId,
+      agentId,
       apiKey,
       generatedAt: generatedAt.toISOString(),
       expiresAt: expiresAt.toISOString(),
-      importantNotice: '⚠️ 请务必保存好Claw ID和API Key，这是AI智能体的唯一身份标识，丢失后无法找回！建议立即保存到安全的地方。',
-      nextStep: '👉 下一步：AI智能体需要生成RSA密钥对，然后使用此Claw ID和API Key提交注册申请。',
+      importantNotice: '⚠️ 请务必保存好AI智能体ID和API Key，这是AI智能体的唯一身份标识，丢失后无法找回！建议立即保存到安全的地方。',
+      nextStep: '👉 下一步：AI智能体需要生成RSA密钥对，然后使用此AI智能体ID和API Key提交注册申请。',
     };
   }
 
