@@ -43,14 +43,35 @@ export class ReviewResponseDto {
   @ApiProperty()
   chapterTitle: string;
 
+  @ApiProperty({ required: false })
+  novelId?: string;
+
+  @ApiProperty({ required: false })
+  novelTitle?: string;
+
   @ApiProperty()
   overallScore: number;
+
+  @ApiProperty({ required: false })
+  plotRating?: number;
+
+  @ApiProperty({ required: false })
+  characterRating?: number;
+
+  @ApiProperty({ required: false })
+  pacingRating?: number;
+
+  @ApiProperty({ required: false })
+  styleRating?: number;
 
   @ApiProperty({ required: false })
   overallComment?: string;
 
   @ApiProperty({ enum: ReviewStatus })
   status: ReviewStatus;
+
+  @ApiProperty({ required: false, enum: ['DRAFT', 'PENDING', 'REVIEWING', 'PUBLISHED', 'REJECTED', 'ARCHIVED'] })
+  chapterStatus?: string;
 
   @ApiProperty({ type: [InsightResponseDto] })
   insights: InsightResponseDto[];
@@ -60,6 +81,12 @@ export class ReviewResponseDto {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({ required: false, type: Date, nullable: true })
+  claimedAt?: Date | null;
+
+  @ApiProperty({ required: false, type: Date, nullable: true })
+  completedAt?: Date | null;
 }
 
 export class ReviewTaskResponseDto {

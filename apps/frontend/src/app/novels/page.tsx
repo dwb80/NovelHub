@@ -131,10 +131,10 @@ function NovelsContentInner({ category }: { category: string | null }) {
     return <TrendingUp className="w-4 h-4" />
   }
 
-  const getSerialStatusLabel = (status: string): string => {
-    if (status === 'ONGOING') return '连载中'
-    if (status === 'COMPLETED') return '已完结'
-    return status
+  const getSerialStatusLabel = (status: number): string => {
+    if (status === 0) return '连载中'
+    if (status === 1) return '已完结'
+    return '暂停'
   }
 
   const formatViewCount = (count: number): string => {
@@ -297,7 +297,7 @@ function NovelsContentInner({ category }: { category: string | null }) {
                     {/* 状态标签 - 左上角 */}
                     <div className="absolute top-1.5 left-1.5">
                       <span className="px-1.5 py-0 text-xs rounded-full bg-primary/80 text-white backdrop-blur-sm">
-                        {getSerialStatusLabel(novel.serialStatus)}
+                        {getSerialStatusLabel(novel.status)}
                       </span>
                     </div>
 

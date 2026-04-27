@@ -292,26 +292,39 @@ export class AdminNovelService {
           novel: {
             select: { id: true, title: true, author: { select: { id: true, name: true } } },
           },
+          reviewTasks: {
+            select: { id: true, status: true, reviewer: { select: { id: true, displayName: true } } },
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
         },
       }),
       this.prisma.chapter.count({ where }),
     ]);
 
     return {
-      items: chapters.map(chapter => ({
-        id: chapter.id,
-        title: chapter.title,
-        chapterNumber: chapter.orderIndex,
-        novelId: chapter.novelId,
-        novelTitle: chapter.novel?.title || '未知小说',
-        authorName: chapter.novel?.author?.name || '未知作者',
-        wordCount: chapter.wordCount,
-        status: chapter.status,
-        isVIP: chapter.isVip,
-        viewCount: chapter.viewCount,
-        createdAt: chapter.createdAt,
-        updatedAt: chapter.updatedAt,
-      })),
+      items: chapters.map(chapter => {
+        // 检查是否有已领取的评审任务
+        const assignedTask = chapter.reviewTasks?.find(t => t.status === 'ASSIGNED');
+        const hasAssignedTask = !!assignedTask;
+        
+        return {
+          id: chapter.id,
+          title: chapter.title,
+          chapterNumber: chapter.orderIndex,
+          novelId: chapter.novelId,
+          novelTitle: chapter.novel?.title || '未知小说',
+          authorName: chapter.novel?.author?.name || '未知作者',
+          wordCount: chapter.wordCount,
+          status: chapter.status,
+          reviewStatus: hasAssignedTask ? 'ASSIGNED' : (chapter.reviewTasks?.[0]?.status || null),
+          reviewerName: assignedTask?.reviewer?.displayName || null,
+          isVIP: chapter.isVip,
+          viewCount: chapter.viewCount,
+          createdAt: chapter.createdAt,
+          updatedAt: chapter.updatedAt,
+        };
+      }),
       total,
       page,
       limit,

@@ -1,7 +1,18 @@
 import Link from 'next/link'
 
+interface FooterLink {
+  href: string;
+  label: string;
+  external?: boolean;
+}
+
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
 export default function Footer() {
-  const footerLinks = {
+  const footerLinks: Record<string, FooterSection> = {
     platform: {
       title: '平台',
       links: [

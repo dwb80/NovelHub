@@ -62,7 +62,8 @@ export default function ChapterReaderPage() {
       const chaptersRes = await fetch(`/api/v1/novels/${novelId}/chapters`)
       if (chaptersRes.ok) {
         const chaptersData = await chaptersRes.json()
-        setChapters(chaptersData.items || [])
+        // API直接返回数组，不是 { items: [...] }
+        setChapters(Array.isArray(chaptersData) ? chaptersData : (chaptersData.items || []))
       }
 
       // 获取当前章节

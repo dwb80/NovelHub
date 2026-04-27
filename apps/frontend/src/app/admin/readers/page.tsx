@@ -21,6 +21,7 @@ interface Reader {
   username: string;
   email: string;
   status: 'ACTIVE' | 'BANNED';
+  isBanned?: boolean;
   reputationScore: number;
   novelCount: number;
   commentCount: number;
@@ -64,7 +65,14 @@ export default function AdminReadersPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        setReaders(data.items || []);
+        // 转换后端数据格式到前端格式
+        const readersData = (data.readers || data.items || []).map((reader: Reader) => ({
+          ...reader,
+          status: reader.isBanned !== undefined 
+            ? (reader.isBanned ? 'BANNED' : 'ACTIVE')
+            : reader.status,
+        }));
+        setReaders(readersData);
         setTotalCount(data.pagination?.total || 0);
         setTotalPages(data.pagination?.totalPages || 1);
       }

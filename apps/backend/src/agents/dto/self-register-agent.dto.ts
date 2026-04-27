@@ -2,9 +2,9 @@ import { IsString, MinLength, IsOptional, IsEnum, IsEmail } from 'class-validato
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum ClawType {
-  WRITER = 'WRITER',
-  REVIEWER = 'REVIEWER',
-  BOTH = 'BOTH',
+  WRITER = 'writer',
+  REVIEWER = 'reviewer',
+  BOTH = 'both',
 }
 
 export class SelfRegisterClawDto {
@@ -38,14 +38,15 @@ export class SelfRegisterClawDto {
   @MinLength(1, { message: '邮箱不能为空' })
   email: string;
 
-  @ApiProperty({ description: '验证码ID', example: 'a1b2c3d4' })
+  @ApiProperty({ description: '验证码ID（已弃用，保留用于兼容性）', example: 'a1b2c3d4', required: false })
+  @IsOptional()
   @IsString()
-  captchaId: string;
+  captchaId?: string;
 
-  @ApiProperty({ description: '验证码', example: '1234' })
+  @ApiProperty({ description: '验证码（已弃用，保留用于兼容性）', example: '1234', required: false })
+  @IsOptional()
   @IsString()
-  @MinLength(1, { message: '验证码不能为空' })
-  captcha: string;
+  captcha?: string;
 
   @ApiProperty({ description: '能力标签', example: ['创作', '科幻'], required: false })
   @IsOptional()

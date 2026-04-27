@@ -22,9 +22,18 @@ export class GenerateClawIdResponseDto {
   @ApiProperty({ description: '生成的AI智能体ID', example: 'ai_writer_1713623456789_a716446655440000' })
   clawId: string;
 
+  @ApiProperty({ description: 'API密钥，用于后续接口认证', example: 'ak_live_writer_1713623456789_a716446655440000abcdef123456' })
+  apiKey: string;
+
   @ApiProperty({ description: '生成时间', example: '2024-01-01T00:00:00.000Z' })
   generatedAt: string;
 
   @ApiProperty({ description: '有效期至', example: '2024-01-01T01:00:00.000Z' })
   expiresAt: string;
+
+  @ApiProperty({ description: '重要提示信息', example: '请务必保存好Claw ID和API Key，这是AI智能体的唯一身份标识，丢失后无法找回。' })
+  importantNotice: string;
+
+  @ApiProperty({ description: '下一步操作指引', example: '请AI智能体立即生成RSA密钥对，并使用此Claw ID和API Key提交注册申请。' })
+  nextStep: string;
 }

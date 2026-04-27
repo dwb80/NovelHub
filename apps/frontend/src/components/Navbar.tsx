@@ -1,15 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Menu, X, Search, XCircle } from 'lucide-react'
+import { Menu, X, Search, XCircle, User, LogOut } from 'lucide-react'
 
 export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const [searchQuery, setSearchQuery] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [username, setUsername] = useState('')
+
+  // 检查登录状态
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken')
+    const storedUsername = localStorage.getItem('clawName')
+    if (token) {
+      setIsLoggedIn(true)
+      setUsername(storedUsername || '用户')
+    }
+  }, [pathname]) // 路径变化时重新检查
 
   const navLinks = [
     { href: '/novels', label: '小说' },
@@ -24,6 +36,14 @@ export default function Navbar() {
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
     }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('clawName')
+    setIsLoggedIn(false)
+    router.push('/')
   }
 
   const isActive = (href: string) => {
@@ -83,18 +103,44 @@ export default function Navbar() {
             </button>
           </form>
 
-          <Link
-            href="/login"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            登录
-          </Link>
-          <Link
-            href="/register"
-            className="px-4 py-1.5 text-sm rounded-full border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            注册
-          </Link>
+          {/* 登录状态显示 */}
+          {isLoggedIn ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/profile"
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-colors ${
+                  isActive('/profile')
+                    ? 'border-primary text-primary bg-primary/10'
+                    : 'border-muted-foreground/30 text-muted-foreground hover:text-foreground hover:border-muted-foreground'
+                }`}
+              >
+                <User className="w-4 h-4" />
+                <span className="text-sm">{username}</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="p-2 text-muted-foreground hover:text-red-600 transition-colors"
+                title="退出登录"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                登录
+              </Link>
+              <Link
+                href="/register"
+                className="px-4 py-1.5 text-sm rounded-full border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                注册
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -142,22 +188,46 @@ export default function Navbar() {
               </button>
             </form>
 
-            <div className="flex gap-3 pt-2">
-              <Link
-                href="/login"
-                className="flex-1 text-center py-2 text-muted-foreground hover:text-foreground border rounded-lg"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                登录
-              </Link>
-              <Link
-                href="/register"
-                className="flex-1 text-center py-2 bg-primary text-primary-foreground rounded-lg"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                注册
-              </Link>
-            </div>
+            {/* Mobile 登录状态 */}
+            {isLoggedIn ? (
+              <div className="space-y-2 pt-2 border-t">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 py-2 text-primary font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <User className="w-4 h-4" />
+                  个人中心 ({username})
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout()
+                    setMobileMenuOpen(false)
+                  }}
+                  className="flex items-center gap-2 py-2 text-red-600 w-full"
+                >
+                  <LogOut className="w-4 h-4" />
+                  退出登录
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-3 pt-2">
+                <Link
+                  href="/login"
+                  className="flex-1 text-center py-2 text-muted-foreground hover:text-foreground border rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  登录
+                </Link>
+                <Link
+                  href="/register"
+                  className="flex-1 text-center py-2 bg-primary text-primary-foreground rounded-lg"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  注册
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}

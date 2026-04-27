@@ -1,8 +1,21 @@
-import { Controller, Get, Post, Body, Headers, HttpCode, HttpStatus, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Body, 
+  Headers, 
+  HttpCode, 
+  HttpStatus, 
+  UseGuards, 
+  UnauthorizedException,
+  Ip,
+  HttpException,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AdminService } from './admin.service';
+import { AdminAuthSecurityService } from './admin-auth-security.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AdminLoginDto } from './dto/admin-login.dto';
 import { AdminProfileDto, TokenValidationResponseDto, AdminAuthResponseDto } from './dto/admin-response.dto';
@@ -12,25 +25,73 @@ import { AdminProfileDto, TokenValidationResponseDto, AdminAuthResponseDto } fro
 export class AdminAuthController {
   constructor(
     private adminService: AdminService,
+    private adminAuthSecurityService: AdminAuthSecurityService,
     private jwtService: JwtService,
     private configService: ConfigService,
     private prisma: PrismaService,
   ) { }
 
+  /**
+   * 获取RSA公钥（用于前端加密密码）
+   */
+  @Get('public-key')
+  @ApiOperation({ summary: '获取RSA公钥', description: '用于前端加密密码' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  getPublicKey() {
+    return {
+      publicKey: this.adminAuthSecurityService.getPublicKey(),
+      algorithm: 'RSA-OAEP',
+      hash: 'SHA-256',
+    };
+  }
+
+  /**
+   * 管理员登录（带安全验证）
+   */
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: '管理员登录' })
+  @ApiOperation({ 
+    summary: '管理员登录',
+    description: '使用RSA加密密码登录，支持登录失败限制',
+  })
   @ApiResponse({ status: 200, description: '登录成功', type: AdminAuthResponseDto })
   @ApiResponse({ status: 401, description: '账号或密码错误' })
   @ApiResponse({ status: 423, description: '账号已锁定' })
-  async login(@Body() dto: AdminLoginDto): Promise<AdminAuthResponseDto> {
-    const admin = await this.adminService.validateAdmin(dto.username, dto.password);
-    if (!admin) {
-      throw new UnauthorizedException('账号或密码错误');
+  @ApiResponse({ status: 429, description: '请求过于频繁' })
+  async login(
+    @Body() dto: AdminLoginDto,
+    @Ip() clientIp: string,
+  ): Promise<AdminAuthResponseDto> {
+    try {
+      // 验证管理员（带安全检查）
+      const admin = await this.adminAuthSecurityService.validateAdmin(
+        dto.username,
+        dto.password, // 这是加密后的密码
+        clientIp,
+      );
+
+      if (!admin) {
+        throw new UnauthorizedException('账号或密码错误');
+      }
+
+      // 生成JWT令牌
+      const token = this.adminAuthSecurityService.generateToken(admin);
+
+      return {
+        token,
+        admin: this.adminService.mapToAdminProfile(admin),
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new UnauthorizedException(error.message || '登录失败');
     }
-    return this.adminService.login(admin);
   }
 
+  /**
+   * 验证Token有效性
+   */
   @Get('validate')
   @ApiBearerAuth()
   @ApiOperation({ summary: '验证Token有效性' })
@@ -111,68 +172,17 @@ export class AdminAuthController {
         secret: this.configService.get('JWT_SECRET'),
       });
 
-      if (payload.type !== 'admin') {
-        throw new UnauthorizedException('无效的令牌类型');
-      }
-
-      return await this.adminService.getProfile(payload.sub);
-    } catch (error) {
-      throw new UnauthorizedException('无效的令牌');
-    }
-  }
-
-  @Post('refresh-permissions')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: '刷新管理员权限' })
-  @ApiResponse({ status: 200, description: '刷新成功', type: AdminAuthResponseDto })
-  @ApiResponse({ status: 401, description: '未授权' })
-  async refreshPermissions(
-    @Headers('authorization') authHeader: string,
-  ): Promise<{ token: string; admin: AdminProfileDto }> {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('缺少认证令牌');
-    }
-
-    const token = authHeader.substring(7);
-
-    try {
-      const payload = this.jwtService.verify(token, {
-        secret: this.configService.get('JWT_SECRET'),
-      });
-
-      if (payload.type !== 'admin') {
-        throw new UnauthorizedException('无效的令牌类型');
-      }
-
       const admin = await this.prisma.admin.findUnique({
         where: { id: payload.sub },
       });
 
-      if (!admin || admin.isBanned) {
-        throw new UnauthorizedException('管理员不存在或已被封禁');
+      if (!admin) {
+        throw new UnauthorizedException('管理员不存在');
       }
 
-      // 生成新令牌（包含最新权限）
-      // 权限刷新Token有效期设置为2小时，减少频繁刷新带来的系统负担
-      const newToken = this.jwtService.sign(
-        {
-          sub: admin.id,
-          type: 'admin',
-          permissions: admin.permissions || [],
-        },
-        {
-          secret: this.configService.get('JWT_SECRET'),
-          expiresIn: '2h',
-        },
-      );
-
-      return {
-        token: newToken,
-        admin: this.adminService.mapToAdminProfile(admin),
-      };
+      return this.adminService.mapToAdminProfile(admin);
     } catch (error) {
       throw new UnauthorizedException('无效的令牌');
     }
   }
-
 }

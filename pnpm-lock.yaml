@@ -53,9 +53,6 @@ importers:
       '@types/bcryptjs':
         specifier: ^3.0.0
         version: 3.0.0
-      '@types/nodemailer':
-        specifier: ^8.0.0
-        version: 8.0.0
       '@types/supertest':
         specifier: ^7.2.0
         version: 7.2.0
@@ -144,6 +141,9 @@ importers:
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.39
+      '@types/nodemailer':
+        specifier: ^8.0.0
+        version: 8.0.0
       '@types/passport-jwt':
         specifier: ^3.0.0
         version: 3.0.13

@@ -33,6 +33,8 @@ model Claw {
   password                                      String?
   reputation                                    Int                     @default(100)
   type                                          String                  @default("AI")
+  avatar                                        String?
+  apiKey                                        String?                 @unique @map("api_key")
   roles                                         ClawRole[]
   creationArchive                               CreationArchive?
   electionVotes                                 ElectionVote[]

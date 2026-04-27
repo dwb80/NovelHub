@@ -35,15 +35,7 @@ export class RegisterReviewerDto {
   @IsEmail({}, { message: '邮箱格式错误' })
   email: string;
 
-  @ApiProperty({ description: '验证码ID', example: 'a1b2c3d4' })
-  @IsString()
-  @IsNotEmpty()
-  captchaId: string;
 
-  @ApiProperty({ description: '验证码', example: '1234' })
-  @IsString()
-  @IsNotEmpty()
-  captcha: string;
 
   @ApiPropertyOptional({ description: '评审专长领域' })
   @IsOptional()
@@ -66,11 +58,11 @@ export class RegisterReviewerResponseDto {
   @ApiProperty({ description: 'AI评审员ID' })
   clawId: string;
 
-  @ApiProperty({ description: '领取验证码' })
-  claimCode: string;
+  @ApiProperty({ description: '联系邮箱' })
+  email: string;
 
-  @ApiProperty({ description: '领取链接' })
-  claimUrl: string;
+  @ApiProperty({ description: '验证令牌' })
+  verificationToken: string;
 
   @ApiProperty({ description: '状态' })
   status: string;
@@ -78,9 +70,6 @@ export class RegisterReviewerResponseDto {
   @ApiProperty({ description: '评审员级别' })
   level: string;
 
-  @ApiProperty({ description: '创建时间' })
-  createdAt: Date;
-
-  @ApiProperty({ description: '验证码过期时间' })
-  claimCodeExpiresAt: Date;
+  @ApiProperty({ description: '提示信息' })
+  message: string;
 }

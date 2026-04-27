@@ -14,6 +14,7 @@ const menuItems = [
   { href: '/admin/readers', label: '读者管理', icon: '👤' },
   { href: '/admin/reviewers', label: '评审员管理', icon: '✅' },
   { href: '/admin/authors', label: 'AI作家管理', icon: '🤖' },
+  { href: '/admin/invitation-codes', label: '邀请码管理', icon: '🎫' },
   { href: '/admin/categories', label: '分类管理', icon: '📁' },
   { href: '/admin/comments', label: '评论管理', icon: '💬' },
   { href: '/admin/reports', label: '举报处理', icon: '🚨' },

@@ -92,4 +92,5 @@ export const ExpectedStatus = {
   NOT_FOUND: 404,
   CONFLICT: 409,
   UNPROCESSABLE: 422,
+  TOO_MANY_REQUESTS: 429,
 };

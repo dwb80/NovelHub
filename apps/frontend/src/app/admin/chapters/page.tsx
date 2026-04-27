@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useAdminAuth } from '../components/AdminAuthProvider';
 import Pagination from '../components/Pagination';
-import { 
-  FileText, 
-  Search, 
-  Filter, 
-  BookOpen, 
-  Eye, 
-  CheckCircle, 
+import {
+  FileText,
+  Search,
+  Filter,
+  BookOpen,
+  Eye,
+  CheckCircle,
   XCircle,
   Trash2
 } from 'lucide-react';
@@ -23,6 +23,8 @@ interface Chapter {
   authorName: string;
   wordCount: number;
   status: 'DRAFT' | 'PENDING' | 'PUBLISHED' | 'REJECTED';
+  reviewStatus: 'PENDING' | 'ASSIGNED' | 'COMPLETED' | null;
+  reviewerName: string | null;
   isVIP: boolean;
   viewCount: number;
   createdAt: string;
@@ -34,6 +36,12 @@ const CHAPTER_STATUS = [
   { value: 'PENDING', label: '待审核', color: 'bg-yellow-100 text-yellow-700' },
   { value: 'PUBLISHED', label: '已发布', color: 'bg-green-100 text-green-700' },
   { value: 'REJECTED', label: '已拒绝', color: 'bg-red-100 text-red-700' },
+];
+
+const REVIEW_STATUS = [
+  { value: 'PENDING', label: '待领取', color: 'bg-blue-100 text-blue-700' },
+  { value: 'ASSIGNED', label: '已领取', color: 'bg-purple-100 text-purple-700' },
+  { value: 'COMPLETED', label: '已完成', color: 'bg-green-100 text-green-700' },
 ];
 
 export default function AdminChaptersPage() {
@@ -216,7 +224,8 @@ export default function AdminChaptersPage() {
             <tr className="border-b bg-muted/50">
               <th className="text-left px-4 py-3 font-medium">章节信息</th>
               <th className="text-left px-4 py-3 font-medium">所属小说</th>
-              <th className="text-left px-4 py-3 font-medium">状态</th>
+              <th className="text-left px-4 py-3 font-medium">章节状态</th>
+              <th className="text-left px-4 py-3 font-medium">评审状态</th>
               <th className="text-left px-4 py-3 font-medium">字数</th>
               <th className="text-left px-4 py-3 font-medium">阅读量</th>
               <th className="text-left px-4 py-3 font-medium">更新时间</th>
@@ -226,7 +235,7 @@ export default function AdminChaptersPage() {
           <tbody>
             {filteredChapters.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-muted-foreground">
+                <td colSpan={8} className="text-center py-8 text-muted-foreground">
                   暂无章节数据
                 </td>
               </tr>
@@ -259,6 +268,22 @@ export default function AdminChaptersPage() {
                         <option key={status.value} value={status.value}>{status.label}</option>
                       ))}
                     </select>
+                  </td>
+                  <td className="px-4 py-3">
+                    {chapter.reviewStatus ? (
+                      <div>
+                        <span className={`px-2 py-1 text-xs rounded ${REVIEW_STATUS.find(s => s.value === chapter.reviewStatus)?.color || 'bg-gray-100 text-gray-700'}`}>
+                          {REVIEW_STATUS.find(s => s.value === chapter.reviewStatus)?.label || chapter.reviewStatus}
+                        </span>
+                        {chapter.reviewerName && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            领取人: {chapter.reviewerName}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">-</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-sm">
                     {chapter.wordCount?.toLocaleString() || 0} 字
@@ -334,7 +359,7 @@ export default function AdminChaptersPage() {
             </div>
             <div className="flex items-center justify-between p-4 border-t">
               <div className="text-sm text-muted-foreground">
-                {viewingChapter.wordCount?.toLocaleString() || 0} 字 | 
+                {viewingChapter.wordCount?.toLocaleString() || 0} 字 |
                 {viewingChapter.viewCount?.toLocaleString() || 0} 阅读
               </div>
               <div className="flex gap-2">

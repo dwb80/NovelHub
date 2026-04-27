@@ -204,6 +204,19 @@ export class ReviewsService {
         },
       });
 
+      // 根据评审得分自动更新章节状态
+      // >=9分：发布，<9分：拒绝
+      if (task.chapterId) {
+        const chapterStatus = dto.overallScore >= 9 ? 'PUBLISHED' : 'REJECTED';
+        await tx.chapter.update({
+          where: { id: task.chapterId },
+          data: {
+            status: chapterStatus,
+            publishedAt: chapterStatus === 'PUBLISHED' ? new Date() : null,
+          },
+        });
+      }
+
       return review;
     });
 
@@ -318,6 +331,47 @@ export class ReviewsService {
     return this.submitReview(reviewerId, { ...dto, taskId });
   }
 
+  // 获取所有评审记录
+  async getAllReviews(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ reviews: ReviewResponseDto[]; total: number; totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [reviews, total] = await Promise.all([
+      this.prisma.review.findMany({
+        where: { status: 'COMPLETED' },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          reviewer: true,
+          chapter: {
+            include: {
+              novel: true,
+            },
+          },
+          task: true,
+          insights: true,
+        },
+      }),
+      this.prisma.review.count({ where: { status: 'COMPLETED' } }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      reviews: reviews.map(r => ({
+        ...this.mapReviewToResponse(r),
+        novelTitle: r.chapter?.novel?.title || '',
+        claimedAt: r.task?.assignedAt || undefined,
+        completedAt: r.task?.completedAt || undefined,
+      })),
+      total,
+      totalPages,
+    };
+  }
+
   // 获取评审统计数据
   async getStats() {
     const [
@@ -329,7 +383,7 @@ export class ReviewsService {
       this.prisma.review.count(),
       this.prisma.review.count({ where: { status: 'COMPLETED' } }),
       this.prisma.reviewTask.count({ where: { status: 'PENDING' } }),
-      this.prisma.claw.count({ where: { type: 'REVIEWER', isActive: true } }),
+      this.prisma.claw.count({ where: { type: 'reviewer', isActive: true } }),
     ]);
 
     return {
@@ -346,7 +400,7 @@ export class ReviewsService {
   // 获取评审员排行
   async getReviewerRanking() {
     const reviewers = await this.prisma.claw.findMany({
-      where: { type: 'REVIEWER', isActive: true },
+      where: { type: 'reviewer', isActive: true },
       take: 10,
       orderBy: { reputationScore: 'desc' },
       select: {
@@ -391,10 +445,17 @@ export class ReviewsService {
       reviewerName: review.reviewer.displayName,
       chapterId: review.chapter.id,
       chapterTitle: review.chapter.title,
+      novelId: review.chapter.novel?.id,
+      novelTitle: review.chapter.novel?.title,
       overallScore: review.overallScore,
+      plotRating: review.plotRating,
+      characterRating: review.characterRating,
+      pacingRating: review.pacingRating,
+      styleRating: review.styleRating,
       overallComment: review.overallComment,
       status: review.status,
-      insights: review.insights.map((insight: any) => ({
+      chapterStatus: review.chapter?.status,
+      insights: review.insights?.map((insight: any) => ({
         id: insight.id,
         category: insight.category,
         severity: insight.severity,
@@ -402,9 +463,11 @@ export class ReviewsService {
         description: insight.description,
         suggestion: insight.suggestion,
         location: insight.location,
-      })),
+      })) || [],
       createdAt: review.createdAt,
       updatedAt: review.updatedAt,
+      claimedAt: review.task?.assignedAt,
+      completedAt: review.task?.completedAt,
     };
   }
 }

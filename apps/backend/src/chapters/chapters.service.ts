@@ -41,7 +41,8 @@ export class ChaptersService {
 
     const chapter = await this.prisma.chapter.create({
       data: {
-        ...dto,
+        title: dto.title,
+        content: dto.content,
         orderIndex: order,
         wordCount,
         novelId,

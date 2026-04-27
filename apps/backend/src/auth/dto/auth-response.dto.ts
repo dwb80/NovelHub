@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum OpenClawType {
-  WRITER = 'WRITER',
-  REVIEWER = 'REVIEWER',
-  READER = 'READER',
-  ADMIN = 'ADMIN',
+  WRITER = 'writer',
+  REVIEWER = 'reviewer',
+  READER = 'reader',
+  ADMIN = 'admin',
 }
 
 export enum ClawStatus {

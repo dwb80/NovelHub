@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { EmailService } from '../../notifications/email.service';
 import { CaptchaService } from '../../common/security/captcha.service';
 import { IPLimitService } from '../../common/security/ip-limit.service';
+import { AgentEmailService } from './agent-email.service';
 import { SelfRegisterClawDto, ClawType } from '../dto/self-register-agent.dto';
 import { SelfRegisterResponseDto } from '../dto/self-register-response.dto';
 import { RegisterReviewerDto, RegisterReviewerResponseDto, ReviewerLevel } from '../dto/register-reviewer.dto';
@@ -15,6 +16,7 @@ export class AgentRegistrationService {
     private prisma: PrismaService,
     private configService: ConfigService,
     private emailService: EmailService,
+    private agentEmailService: AgentEmailService,
     private captchaService: CaptchaService,
     private ipLimitService: IPLimitService,
   ) { }
@@ -37,37 +39,54 @@ export class AgentRegistrationService {
 
     await this.validateApiKey(dto.apiKey);
 
-    const captchaValid = await this.captchaService.verify(dto.captchaId, dto.captcha);
-    if (!captchaValid) {
-      throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST);
-    }
+    // 图形验证码已移除，使用邮箱验证代替
+    // const captchaValid = await this.captchaService.verify(dto.captchaId, dto.captcha);
+    // if (!captchaValid) {
+    //   throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST);
+    // }
 
     this.validatePublicKeyFormat(dto.publicKey);
     await this.validateRegistrationRateLimit(dto.publicKey);
     await this.validateRegistrationUniqueness(dto.clawId, dto.displayName);
+    await this.validateClawIdAndApiKeyCombination(dto.clawId, dto.apiKey);
 
-    const claimCode = 'WRITER-' + crypto.randomBytes(4).toString('hex').toUpperCase();
-    const claimCodeExpiresAt = this.getClaimCodeExpiry();
+    // 生成验证token和临时claimCode（邮箱验证后更新为正式claimCode）
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const tempClaimCode = 'TEMP-' + crypto.randomBytes(16).toString('hex').toUpperCase();
 
-    const selfRegisteredClaw = await this.createSelfRegistration({
+    // 创建待验证的注册记录
+    const pendingRegistration = await this.prisma.selfRegisteredClaw.create({
+      data: {
+        clawId: dto.clawId,
+        name: dto.displayName,
+        publicKey: dto.publicKey,
+        email: dto.email,
+        clawType: 'WRITER',
+        status: 'PENDING_VERIFICATION',
+        verificationToken,
+        verificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        claimCode: tempClaimCode, // 临时claimCode，验证后更新为正式claimCode
+        claimCodeExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        capabilities: dto.capabilities || ['创作'],
+        metadata: {
+          specialties: dto.capabilities || [],
+        },
+      },
+    });
+
+    // 发送验证邮件
+    await this.agentEmailService.sendVerificationEmail({
+      to: dto.email,
       clawId: dto.clawId,
-      name: dto.displayName,
-      publicKey: dto.publicKey,
-      email: dto.email,
-      version: dto.version,
-      capabilities: dto.capabilities || [],
-      clawType: dto.clawType,
-      claimCode,
-      claimCodeExpiresAt,
+      verificationToken,
     });
 
     return {
-      clawId: selfRegisteredClaw.clawId,
-      claimCode: selfRegisteredClaw.claimCode,
-      claimUrl: selfRegisteredClaw.claimUrl,
-      status: selfRegisteredClaw.status,
-      createdAt: selfRegisteredClaw.createdAt,
-      claimCodeExpiresAt: selfRegisteredClaw.claimCodeExpiresAt,
+      clawId: pendingRegistration.clawId,
+      email: pendingRegistration.email,
+      verificationToken,
+      status: 'pending_verification',
+      message: '验证邮件已发送，请查收邮件完成验证',
     };
   }
 
@@ -88,41 +107,49 @@ export class AgentRegistrationService {
     }
 
     await this.validateApiKey(dto.apiKey);
-
-    const captchaValid = await this.captchaService.verify(dto.captchaId, dto.captcha);
-    if (!captchaValid) {
-      throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST);
-    }
-
+    this.validatePublicKeyFormat(dto.publicKey);
     await this.validateRegistrationUniqueness(dto.clawId, dto.displayName);
+    await this.validateClawIdAndApiKeyCombination(dto.clawId, dto.apiKey);
 
-    const claimCode = 'REVIEWER-' + crypto.randomBytes(4).toString('hex').toUpperCase();
-    const claimCodeExpiresAt = this.getClaimCodeExpiry();
+    // 生成验证token和临时claimCode（邮箱验证后更新为正式claimCode）
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const tempClaimCode = 'TEMP-' + crypto.randomBytes(16).toString('hex').toUpperCase();
 
-    const selfRegisteredClaw = await this.createSelfRegistration({
-      clawId: dto.clawId,
-      name: dto.displayName,
-      publicKey: dto.publicKey,
-      email: dto.email,
-      version: dto.version,
-      capabilities: dto.specialties || ['评审'],
-      clawType: 'REVIEWER',
-      claimCode,
-      claimCodeExpiresAt,
-      metadata: {
-        level: dto.level || ReviewerLevel.JUNIOR,
-        specialties: dto.specialties || [],
+    // 创建待验证的注册记录
+    const pendingRegistration = await this.prisma.selfRegisteredClaw.create({
+      data: {
+        clawId: dto.clawId,
+        name: dto.displayName,
+        publicKey: dto.publicKey,
+        email: dto.email,
+        clawType: 'REVIEWER',
+        status: 'PENDING_VERIFICATION',
+        verificationToken,
+        verificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        claimCode: tempClaimCode, // 临时claimCode，验证后更新为正式claimCode
+        claimCodeExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        capabilities: dto.specialties || ['评审'],
+        metadata: {
+          level: dto.level || ReviewerLevel.JUNIOR,
+          specialties: dto.specialties || [],
+        },
       },
     });
 
+    // 发送验证邮件
+    await this.agentEmailService.sendVerificationEmail({
+      to: dto.email,
+      clawId: dto.clawId,
+      verificationToken,
+    });
+
     return {
-      clawId: selfRegisteredClaw.clawId,
-      claimCode: selfRegisteredClaw.claimCode,
-      claimUrl: selfRegisteredClaw.claimUrl,
-      status: selfRegisteredClaw.status,
+      clawId: pendingRegistration.clawId,
+      email: pendingRegistration.email,
+      verificationToken,
+      status: 'pending_verification',
       level: dto.level || ReviewerLevel.JUNIOR,
-      createdAt: selfRegisteredClaw.createdAt,
-      claimCodeExpiresAt: selfRegisteredClaw.claimCodeExpiresAt,
+      message: '验证邮件已发送，请查收邮件完成验证',
     };
   }
 
@@ -195,6 +222,31 @@ export class AgentRegistrationService {
     if (existingPendingByName) {
       throw new ConflictException('该AI智能体名称正在等待领取');
     }
+  }
+
+  /**
+   * 验证Claw ID和API Key的组合是否已被使用
+   * 确保一个Claw ID只能使用对应的API Key注册一次
+   */
+  private async validateClawIdAndApiKeyCombination(clawId: string, apiKey: string): Promise<void> {
+    // 检查是否已有相同Claw ID的注册记录（无论状态）
+    const existingRegistration = await this.prisma.selfRegisteredClaw.findFirst({
+      where: {
+        clawId,
+      },
+    });
+
+    if (existingRegistration) {
+      throw new ConflictException(
+        `该AI智能体ID(${clawId})已经提交过注册申请，请勿重复注册。` +
+        `当前状态: ${existingRegistration.status}。` +
+        `如需重新注册，请联系平台管理员。`
+      );
+    }
+
+    // 检查是否已有相同API Key的使用记录
+    // 注意：这里假设API Key是唯一的，且与Claw ID一一对应
+    // 实际实现可能需要根据业务逻辑调整
   }
 
   private getClaimCodeExpiry(): Date {

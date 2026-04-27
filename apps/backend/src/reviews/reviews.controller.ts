@@ -35,10 +35,8 @@ export class ReviewsController {
     return this.reviewsService.createTask(chapterId);
   }
 
-  // 获取待评审任务列表
+  // 获取待评审任务列表（公开接口）
   @Get('tasks/pending')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiOperation({ summary: '获取待评审任务列表' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -88,6 +86,48 @@ export class ReviewsController {
     return this.reviewsService.submitReview(reviewerId, dto);
   }
 
+  // 获取所有评审记录（公开接口）- 必须放在 :id 路由之前
+  @Get()
+  @ApiOperation({ summary: '获取所有评审记录' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  async getAllReviews(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return this.reviewsService.getAllReviews(page, limit);
+  }
+
+  // 获取评审统计数据（公开接口）- 必须放在 :id 路由之前
+  @Get('stats')
+  @ApiOperation({ summary: '获取评审统计数据' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  async getStats() {
+    return this.reviewsService.getStats();
+  }
+
+  // 获取评审任务列表（公开接口）- 必须放在 :id 路由之前
+  @Get('tasks')
+  @ApiOperation({ summary: '获取评审任务列表' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  async getTasks(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+  ) {
+    return this.reviewsService.getPendingTasks(page, limit);
+  }
+
+  // 获取评审员排行（公开接口）- 必须放在 :id 路由之前
+  @Get('ranking')
+  @ApiOperation({ summary: '获取评审员排行' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  async getRanking() {
+    return this.reviewsService.getReviewerRanking();
+  }
+
   // 获取章节的评审列表
   @Get('chapter/:chapterId')
   @ApiOperation({ summary: '获取章节的评审列表' })
@@ -96,14 +136,6 @@ export class ReviewsController {
     @Param('chapterId') chapterId: string,
   ): Promise<ReviewResponseDto[]> {
     return this.reviewsService.getChapterReviews(chapterId);
-  }
-
-  // 获取评审详情
-  @Get(':id')
-  @ApiOperation({ summary: '获取评审详情' })
-  @ApiResponse({ status: 200, type: ReviewResponseDto })
-  async getReviewById(@Param('id') id: string): Promise<ReviewResponseDto> {
-    return this.reviewsService.getReviewById(id);
   }
 
   // 获取评审任务详情
@@ -147,32 +179,11 @@ export class ReviewsController {
     return this.reviewsService.submitReviewByTask(taskId, reviewerId, dto);
   }
 
-  // 获取评审统计数据（公开接口）
-  @Get('stats')
-  @ApiOperation({ summary: '获取评审统计数据' })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  async getStats() {
-    return this.reviewsService.getStats();
-  }
-
-  // 获取评审任务列表（公开接口）
-  @Get('tasks')
-  @ApiOperation({ summary: '获取评审任务列表' })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  async getTasks(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
-  ) {
-    return this.reviewsService.getPendingTasks(page, limit);
-  }
-
-  // 获取评审员排行（公开接口）
-  @Get('ranking')
-  @ApiOperation({ summary: '获取评审员排行' })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  async getRanking() {
-    return this.reviewsService.getReviewerRanking();
+  // 获取评审详情 - 这个必须放在最后，因为它会匹配任何路径
+  @Get(':id')
+  @ApiOperation({ summary: '获取评审详情' })
+  @ApiResponse({ status: 200, type: ReviewResponseDto })
+  async getReviewById(@Param('id') id: string): Promise<ReviewResponseDto> {
+    return this.reviewsService.getReviewById(id);
   }
 }

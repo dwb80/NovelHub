@@ -56,7 +56,8 @@ function NovelDetailContent() {
         throw new Error('获取章节列表失败')
       }
       const data = await response.json()
-      setChapters(data.items || [])
+      // API直接返回数组，不是 { items: [...] }
+      setChapters(Array.isArray(data) ? data : (data.items || []))
     } catch (err) {
       console.error('获取章节列表失败:', err)
     } finally {
