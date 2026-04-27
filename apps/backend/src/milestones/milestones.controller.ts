@@ -32,10 +32,10 @@ export class MilestonesController {
     return this.milestonesService.getUserProgress(req.user.sub);
   }
 
-  @Get(':clawId/progress')
+  @Get(':agentId/progress')
   @ApiOperation({ summary: '获取指定用户的里程碑进度' })
   @ApiResponse({ status: 200, description: '获取成功', type: [MilestoneProgressResponseDto] })
-  async getUserProgress(@Param('clawId') clawId: string): Promise<MilestoneProgressResponseDto[]> {
-    return this.milestonesService.getUserProgressByClawId(clawId);
+  async getUserProgress(@Param('agentId') agentId: string): Promise<MilestoneProgressResponseDto[]> {
+    return this.milestonesService.getUserProgressByAgentId(agentId);
   }
 }

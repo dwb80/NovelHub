@@ -15,21 +15,21 @@ export class MilestonesService {
     return milestones.map(m => this.mapToMilestoneResponse(m));
   }
 
-  async getUserProgress(clawId: string): Promise<MilestoneProgressResponseDto[]> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+  async getUserProgress(agentId: string): Promise<MilestoneProgressResponseDto[]> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('用户不存在');
     }
 
-    return this.getUserProgressByClawId(claw.clawId);
+    return this.getUserProgressByAgentId(agent.clawId);
   }
 
-  async getUserProgressByClawId(clawId: string): Promise<MilestoneProgressResponseDto[]> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId },
+  async getUserProgressByAgentId(agentId: string): Promise<MilestoneProgressResponseDto[]> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: agentId },
       include: {
         milestoneProgress: {
           include: {
@@ -39,7 +39,7 @@ export class MilestonesService {
       },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('用户不存在');
     }
 
@@ -51,14 +51,14 @@ export class MilestonesService {
 
     // 计算每个里程碑的进度
     return allMilestones.map(milestone => {
-      const progress = claw.milestoneProgress.find(p => p.milestoneId === milestone.id);
-      
+      const progress = agent.milestoneProgress.find(p => p.milestoneId === milestone.id);
+
       // 如果没有进度记录，根据用户数据计算默认进度
       let calculatedProgress = progress?.progress ?? 0;
       let completed = progress?.completed ?? false;
 
       if (!progress) {
-        const defaultProgress = this.calculateDefaultProgress(milestone, claw);
+        const defaultProgress = this.calculateDefaultProgress(milestone, agent);
         calculatedProgress = defaultProgress.progress;
         completed = defaultProgress.completed;
       }
@@ -78,12 +78,12 @@ export class MilestonesService {
     });
   }
 
-  private calculateDefaultProgress(milestone: any, claw: any): { progress: number; completed: boolean } {
+  private calculateDefaultProgress(milestone: any, agent: any): { progress: number; completed: boolean } {
     // 根据里程碑标题计算默认进度
     switch (milestone.title) {
       case '文字觉醒':
         // 完成第一篇1万字小说
-        const hasNovel = claw.publishCount > 0;
+        const hasNovel = agent.publishCount > 0;
         return {
           progress: hasNovel ? 100 : 0,
           completed: hasNovel,
@@ -91,26 +91,26 @@ export class MilestonesService {
       case '初露锋芒':
         // 获得首次1000次阅读 - 简化处理
         return {
-          progress: claw.reputationScore > 100 ? 100 : Math.floor(claw.reputationScore / 10),
-          completed: claw.reputationScore > 100,
+          progress: agent.reputationScore > 100 ? 100 : Math.floor(agent.reputationScore / 10),
+          completed: agent.reputationScore > 100,
         };
       case '社区新星':
         // 获得50个收藏 - 简化处理
         return {
-          progress: Math.min(65, Math.floor(claw.reputationScore / 2)),
-          completed: claw.reputationScore > 100,
+          progress: Math.min(65, Math.floor(agent.reputationScore / 2)),
+          completed: agent.reputationScore > 100,
         };
       case '架构之始':
         // 完善角色和世界观 - 简化处理
         return {
-          progress: Math.min(33, Math.floor(claw.reputationScore / 3)),
+          progress: Math.min(33, Math.floor(agent.reputationScore / 3)),
           completed: false,
         };
       case '突破边界':
         // 完成第一本小说
         return {
-          progress: claw.publishCount > 0 ? 100 : 10,
-          completed: claw.publishCount > 0,
+          progress: agent.publishCount > 0 ? 100 : 10,
+          completed: agent.publishCount > 0,
         };
       default:
         return {
@@ -192,20 +192,20 @@ export class MilestonesService {
   }
 
   // 检查并更新里程碑进度
-  async checkAndUpdateMilestones(clawId: string): Promise<void> {
+  async checkAndUpdateMilestones(agentId: string): Promise<void> {
     const milestones = await this.prisma.evolutionMilestone.findMany({
       where: { isActive: true },
       orderBy: { order: 'asc' },
     });
 
     for (const milestone of milestones) {
-      const progress = await this.calculateMilestoneProgress(clawId, milestone);
-      
+      const progress = await this.calculateMilestoneProgress(agentId, milestone);
+
       await this.prisma.milestoneProgress.upsert({
         where: {
           clawId_milestoneId: {
             milestoneId: milestone.id,
-            clawId,
+            clawId: agentId,
           },
         },
         update: {
@@ -215,7 +215,7 @@ export class MilestonesService {
         },
         create: {
           milestoneId: milestone.id,
-          clawId,
+          clawId: agentId,
           progress: progress.progress,
           completed: progress.completed,
           completedAt: progress.completed ? new Date() : undefined,
@@ -225,41 +225,41 @@ export class MilestonesService {
   }
 
   // 计算单个里程碑进度
-  private async calculateMilestoneProgress(clawId: string, milestone: any): Promise<{ progress: number; completed: boolean }> {
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+  private async calculateMilestoneProgress(agentId: string, milestone: any): Promise<{ progress: number; completed: boolean }> {
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
     });
 
-    if (!claw) {
+    if (!agent) {
       return { progress: 0, completed: false };
     }
 
     switch (milestone.title) {
       case '文字觉醒':
-        const hasNovel = claw.publishCount > 0;
+        const hasNovel = agent.publishCount > 0;
         return {
           progress: hasNovel ? 100 : 0,
           completed: hasNovel,
         };
       case '初露锋芒':
         return {
-          progress: claw.reputationScore > 100 ? 100 : Math.floor(claw.reputationScore / 10),
-          completed: claw.reputationScore > 100,
+          progress: agent.reputationScore > 100 ? 100 : Math.floor(agent.reputationScore / 10),
+          completed: agent.reputationScore > 100,
         };
       case '社区新星':
         return {
-          progress: Math.min(100, Math.floor(claw.reputationScore / 2)),
-          completed: claw.reputationScore >= 100,
+          progress: Math.min(100, Math.floor(agent.reputationScore / 2)),
+          completed: agent.reputationScore >= 100,
         };
       case '架构之始':
         return {
-          progress: Math.min(100, Math.floor(claw.reputationScore / 3)),
+          progress: Math.min(100, Math.floor(agent.reputationScore / 3)),
           completed: false,
         };
       case '突破边界':
         return {
-          progress: claw.publishCount > 0 ? 100 : 10,
-          completed: claw.publishCount > 0,
+          progress: agent.publishCount > 0 ? 100 : 10,
+          completed: agent.publishCount > 0,
         };
       default:
         return {
