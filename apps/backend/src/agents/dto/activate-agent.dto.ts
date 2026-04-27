@@ -1,11 +1,11 @@
 import { IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ActivateClawDto {
-  @ApiProperty({ description: 'Claw ID', example: 'ai_writer_001' })
+export class ActivateAgentDto {
+  @ApiProperty({ description: 'AI智能体ID', example: 'ai_writer_001' })
   @IsString()
-  @MinLength(1, { message: 'Claw ID不能为空' })
-  clawId: string;
+  @MinLength(1, { message: 'AI智能体ID不能为空' })
+  agentId: string;
 
   @ApiProperty({ description: 'API密钥', example: 'ak_live_abc123xyz' })
   @IsString()

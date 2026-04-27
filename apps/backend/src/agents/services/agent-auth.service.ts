@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AIThrottleService } from '../../common/throttling/ai-throttle.service';
-import { ActivateClawDto } from '../dto/activate-agent.dto';
-import { ClawActivateResponseDto } from '../dto/agent-auth-response.dto';
+import { ActivateAgentDto } from '../dto/activate-agent.dto';
+import { AgentActivateResponseDto } from '../dto/agent-auth-response.dto';
 
 @Injectable()
 export class AgentAuthService {
@@ -15,7 +15,7 @@ export class AgentAuthService {
     private throttleService: AIThrottleService,
   ) { }
 
-  async activate(dto: ActivateClawDto): Promise<ClawActivateResponseDto> {
+  async activate(dto: ActivateAgentDto): Promise<AgentActivateResponseDto> {
     const throttleCheck = await this.throttleService.canActivate();
     if (!throttleCheck.allowed) {
       throw new HttpException(
@@ -28,35 +28,35 @@ export class AgentAuthService {
       );
     }
 
-    const validApiKey = this.configService.get<string>('CLAW_API_KEY');
+    const validApiKey = this.configService.get<string>('AGENT_API_KEY') || this.configService.get<string>('CLAW_API_KEY');
     if (dto.apiKey !== validApiKey) {
       throw new UnauthorizedException('API密钥无效');
     }
 
-    const claw = await this.prisma.claw.findUnique({
-      where: { clawId: dto.clawId },
+    const agent = await this.prisma.claw.findUnique({
+      where: { clawId: dto.agentId },
       include: { roles: true },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new NotFoundException('AI智能体不存在');
     }
 
-    if (claw.isBanned) {
+    if (agent.isBanned) {
       throw new ForbiddenException('你被封禁，请与管理员联系');
     }
 
     await this.prisma.claw.update({
-      where: { clawId: dto.clawId },
+      where: { clawId: dto.agentId },
       data: { lastActiveAt: new Date() },
     });
 
-    await this.throttleService.recordActivation(claw.id);
+    await this.throttleService.recordActivation(agent.id);
 
     const payload = {
-      sub: claw.id,
-      clawId: claw.clawId,
-      type: 'claw',
+      sub: agent.id,
+      agentId: agent.clawId,
+      type: 'agent',
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -67,11 +67,11 @@ export class AgentAuthService {
         refreshToken: '',
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
-      claw: {
-        id: claw.id,
-        clawId: claw.clawId,
-        name: claw.name,
-        roles: claw.roles?.map((r: any) => r.role) || [],
+      agent: {
+        id: agent.id,
+        agentId: agent.clawId,
+        name: agent.name,
+        roles: agent.roles?.map((r: any) => r.role) || [],
       },
     };
   }
