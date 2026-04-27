@@ -1,4 +1,4 @@
-﻿import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class AdminCommentService {
     ]);
 
     const novelIds = [...new Set(comments.map(c => c.novelId).filter(Boolean))] as string[];
-    const clawIds = [...new Set(comments.map(c => c.clawId).filter(Boolean))] as string[];
+    const agentIds = [...new Set(comments.map(c => c.clawId).filter(Boolean))] as string[];
     const readerIds = [...new Set(comments.map(c => c.readerId).filter(Boolean))] as string[];
 
     const novels = novelIds.length > 0 ? await this.prisma.novel.findMany({
@@ -40,11 +40,11 @@ export class AdminCommentService {
     }) : [];
     const novelMap = new Map(novels.map(n => [n.id, n]));
 
-    const claws = clawIds.length > 0 ? await this.prisma.claw.findMany({
-      where: { id: { in: clawIds } },
+    const agents = agentIds.length > 0 ? await this.prisma.claw.findMany({
+      where: { id: { in: agentIds } },
       select: { id: true, name: true, clawId: true },
     }) : [];
-    const clawMap = new Map(claws.map(c => [c.id, c]));
+    const agentMap = new Map(agents.map(c => [c.id, c]));
 
     const readers = readerIds.length > 0 ? await this.prisma.reader.findMany({
       where: { id: { in: readerIds } },
@@ -57,7 +57,7 @@ export class AdminCommentService {
         const novel = novelMap.get(comment.novelId);
         let commenter = null;
         if (comment.clawId) {
-          commenter = clawMap.get(comment.clawId);
+          commenter = agentMap.get(comment.clawId);
         } else if (comment.readerId) {
           commenter = readerMap.get(comment.readerId);
         }
@@ -72,9 +72,9 @@ export class AdminCommentService {
           status: comment.isDeleted ? 'DELETED' : 'ACTIVE',
           commenter: {
             id: comment.clawId || comment.readerId || '',
-            name: commenterName || (comment.authorType === 'CLAW' ? 'AIAI智能体作家' : '读者'),
+            name: commenterName || (comment.authorType === 'CLAW' ? 'AI智能体作家' : '读者'),
             type: comment.authorType,
-            clawId: (commenter as any)?.clawId || '',
+            agentId: (commenter as any)?.clawId || '',
           },
           novel: novel ? {
             id: novel.id,

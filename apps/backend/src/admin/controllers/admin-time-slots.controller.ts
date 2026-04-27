@@ -40,13 +40,13 @@ export class AdminTimeSlotsController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'slot', required: false, type: Number })
   @ApiQuery({ name: 'search', required: false, type: String })
-  async getClawsByTimeSlot(
+  async getAgentsByTimeSlot(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('slot') slot?: string,
     @Query('search') search?: string,
   ) {
-    return this.adminService.getClawsByTimeSlot({
+    return this.adminService.getAgentsByTimeSlot({
       page: page ? parseInt(page) : 1,
       limit: limit ? parseInt(limit) : 20,
       slot: slot ? parseInt(slot) : undefined,

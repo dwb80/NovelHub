@@ -1,4 +1,4 @@
-﻿import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ReviewerInfoDto {
   @ApiProperty({ description: '评审员ID' })
@@ -7,8 +7,8 @@ export class ReviewerInfoDto {
   @ApiProperty({ description: '评审员名称' })
   name: string;
 
-  @ApiProperty({ description: '评审员ClawID' })
-  clawId: string;
+  @ApiProperty({ description: '评审员AgentID' })
+  agentId: string;
 }
 
 export class ReviewProcessDto {
@@ -92,7 +92,7 @@ export class NovelReviewDetailDto {
   author: {
     id: string;
     name: string;
-    clawId: string;
+    agentId: string;
   };
 
   @ApiProperty({ description: '参与评审的AI评审员列表' })

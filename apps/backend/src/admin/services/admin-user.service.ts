@@ -5,7 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class AdminUserService {
   constructor(private prisma: PrismaService) {}
 
-  // ========== 用户管理（Claw）==========
+  // ========== 用户管理（AI智能体）==========
   async getUsers(params: { page?: number; limit?: number; search?: string }) {
     const { page = 1, limit = 20, search } = params;
     const skip = (page - 1) * limit;
@@ -42,7 +42,7 @@ export class AdminUserService {
     return {
       users: users.map((user: UserWithCount) => ({
         id: user.id,
-        clawId: user.clawId,
+        agentId: user.clawId,
         name: user.name,
         reputationScore: user.reputationScore,
         publishCount: user.publishCount,

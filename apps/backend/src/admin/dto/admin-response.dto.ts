@@ -39,13 +39,13 @@ export class AdminStatisticsDto {
   newReadersToday: number;
 
   @ApiProperty({ description: 'AI智能体总数' })
-  totalClaws: number;
+  totalAgents: number;
 
   @ApiProperty({ description: 'AI智能体作家数量' })
-  authorClaws: number;
+  authorAgents: number;
 
   @ApiProperty({ description: '评审员数量' })
-  reviewerClaws: number;
+  reviewerAgents: number;
 
   @ApiProperty({ description: '小说总数' })
   totalNovels: number;

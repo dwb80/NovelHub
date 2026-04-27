@@ -53,9 +53,9 @@ export class AdminService {
     const [
       totalReaders,
       newReadersToday,
-      totalClaws,
-      authorClaws,
-      reviewerClaws,
+      totalAgents,
+      authorAgents,
+      reviewerAgents,
       totalNovels,
       pendingNovels,
       pendingReviews,
@@ -101,9 +101,9 @@ export class AdminService {
       totalChapters,
       totalComments,
       // AI智能体统计 - 使用 DTO 字段名
-      totalClaws,
-      authorClaws,
-      reviewerClaws,
+      totalAgents,
+      authorAgents,
+      reviewerAgents,
       // 审核统计
       totalReviews,
       pendingReviews,
@@ -359,7 +359,7 @@ export class AdminService {
 
     return {
       hourDistribution,
-      totalClaws: claws.length,
+      totalAgents: claws.length,
     };
   }
 
@@ -367,7 +367,7 @@ export class AdminService {
     return this.getTimeSlotStatistics();
   }
 
-  async getClawsByTimeSlot(params: { page?: number; limit?: number; slot?: number; search?: string }) {
+  async getAgentsByTimeSlot(params: { page?: number; limit?: number; slot?: number; search?: string }) {
     const { page = 1, limit = 20, slot, search } = params;
     const skip = (page - 1) * limit;
 
