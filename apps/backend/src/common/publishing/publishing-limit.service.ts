@@ -10,7 +10,7 @@ export interface PublishingLimit {
 }
 
 export interface PublishingStats {
-  clawId: string;
+  agentId: string;
   todayChapterCount: number;      // 今日已发布章节数
   todayWordCount: number;         // 今日已发布字数
   lastChapterDate: Date | null;   // 最后发布日期
@@ -55,7 +55,7 @@ export class PublishingLimitService {
    * 3. 每天最少发布2章（用于计算连续天数）
    */
   async canPublishChapter(
-    clawId: string, 
+    agentId: string,
     wordCount: number,
   ): Promise<PublishingCheckResult> {
     // 1. 检查字数限制
@@ -68,7 +68,7 @@ export class PublishingLimitService {
     }
 
     // 2. 检查行为异常
-    const anomalyResult = await this.behaviorAnalyticsService.detectAnomaly(clawId, 'chapter_create');
+    const anomalyResult = await this.behaviorAnalyticsService.detectAnomaly(agentId, 'chapter_create');
     if (anomalyResult.isAnomaly) {
       return {
         allowed: false,
@@ -78,7 +78,7 @@ export class PublishingLimitService {
     }
 
     // 3. 获取今日发布统计
-    const stats = await this.getTodayPublishingStats(clawId);
+    const stats = await this.getTodayPublishingStats(agentId);
 
     // 4. 检查每日上限
     if (stats.todayChapterCount >= this.limits.maxChaptersPerDay) {
@@ -111,12 +111,12 @@ export class PublishingLimitService {
   /**
    * 记录章节发布
    */
-  async recordChapterPublished(clawId: string, wordCount: number): Promise<void> {
+  async recordChapterPublished(agentId: string, wordCount: number): Promise<void> {
     const today = new Date().toISOString().split('T')[0];
-    const cacheKey = `publishing:stats:${clawId}:${today}`;
+    const cacheKey = `publishing:stats:${agentId}:${today}`;
 
-    const stats = await this.getTodayPublishingStats(clawId);
-    
+    const stats = await this.getTodayPublishingStats(agentId);
+
     stats.todayChapterCount++;
     stats.todayWordCount += wordCount;
     stats.lastChapterDate = new Date();
@@ -125,11 +125,11 @@ export class PublishingLimitService {
     await this.cache.set(cacheKey, stats, 24 * 60 * 60 * 1000);
 
     // 同时更新数据库记录
-    await this.updateDatabaseStats(clawId, stats);
+    await this.updateDatabaseStats(agentId, stats);
 
     // 记录行为分析
     await this.behaviorAnalyticsService.recordBehavior({
-      clawId,
+      agentId,
       action: 'chapter_create',
       timestamp: Date.now(),
       metadata: {
@@ -139,15 +139,15 @@ export class PublishingLimitService {
       },
     });
 
-    this.logger.log(`AI ${clawId} published chapter, today: ${stats.todayChapterCount}/${this.limits.maxChaptersPerDay}`);
+    this.logger.log(`AI ${agentId} published chapter, today: ${stats.todayChapterCount}/${this.limits.maxChaptersPerDay}`);
   }
 
   /**
    * 获取今日发布统计
    */
-  async getTodayPublishingStats(clawId: string): Promise<PublishingStats> {
+  async getTodayPublishingStats(agentId: string): Promise<PublishingStats> {
     const today = new Date().toISOString().split('T')[0];
-    const cacheKey = `publishing:stats:${clawId}:${today}`;
+    const cacheKey = `publishing:stats:${agentId}:${today}`;
 
     // 先尝试从缓存获取
     const cached = await this.cache.get<PublishingStats>(cacheKey);
@@ -164,7 +164,7 @@ export class PublishingLimitService {
     const chapters = await this.prisma.chapter.findMany({
       where: {
         novel: {
-          authorId: clawId,
+          authorId: agentId,
         },
         createdAt: {
           gte: todayStart,
@@ -178,11 +178,11 @@ export class PublishingLimitService {
     });
 
     const stats: PublishingStats = {
-      clawId,
+      agentId,
       todayChapterCount: chapters.length,
       todayWordCount: chapters.reduce((sum, c) => sum + c.wordCount, 0),
       lastChapterDate: chapters.length > 0 ? chapters[chapters.length - 1].createdAt : null,
-      consecutiveDays: await this.calculateConsecutiveDays(clawId),
+      consecutiveDays: await this.calculateConsecutiveDays(agentId),
     };
 
     // 缓存结果
@@ -195,13 +195,13 @@ export class PublishingLimitService {
    * 检查是否达到每日最低要求
    * 用于声誉系统计算
    */
-  async checkDailyMinimum(clawId: string): Promise<{
+  async checkDailyMinimum(agentId: string): Promise<{
     met: boolean;
     published: number;
     required: number;
   }> {
-    const stats = await this.getTodayPublishingStats(clawId);
-    
+    const stats = await this.getTodayPublishingStats(agentId);
+
     return {
       met: stats.todayChapterCount >= this.limits.minChaptersPerDay,
       published: stats.todayChapterCount,
@@ -219,7 +219,7 @@ export class PublishingLimitService {
   /**
    * 计算连续发布天数
    */
-  private async calculateConsecutiveDays(clawId: string): Promise<number> {
+  private async calculateConsecutiveDays(agentId: string): Promise<number> {
     // 查询最近30天的发布记录
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -227,7 +227,7 @@ export class PublishingLimitService {
     const chapters = await this.prisma.chapter.findMany({
       where: {
         novel: {
-          authorId: clawId,
+          authorId: agentId,
         },
         createdAt: {
           gte: thirtyDaysAgo,
@@ -284,9 +284,9 @@ export class PublishingLimitService {
   /**
    * 更新数据库统计
    */
-  private async updateDatabaseStats(clawId: string, stats: PublishingStats): Promise<void> {
-    // 可以在这里更新Claw表的统计字段（如果有的话）
+  private async updateDatabaseStats(agentId: string, stats: PublishingStats): Promise<void> {
+    // 可以在这里更新Agent表的统计字段（如果有的话）
     // 目前先只记录日志
-    this.logger.debug(`Updated publishing stats for ${clawId}: ${JSON.stringify(stats)}`);
+    this.logger.debug(`Updated publishing stats for ${agentId}: ${JSON.stringify(stats)}`);
   }
 }

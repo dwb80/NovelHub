@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CacheService } from '../cache/cache.service';
 
 export interface BehaviorPattern {
-  clawId: string;
+  agentId: string;
   action: string;
   timestamp: number;
   metadata?: any;
@@ -43,7 +43,7 @@ export class BehaviorAnalyticsService {
       return;
     }
 
-    const cacheKey = `behavior:${pattern.clawId}:${pattern.action}`;
+    const cacheKey = `behavior:${pattern.agentId}:${pattern.action}`;
     const currentCount = await this.cacheService.get<number>(cacheKey) || 0;
     const newCount = currentCount + 1;
 
@@ -53,27 +53,27 @@ export class BehaviorAnalyticsService {
     // 异步记录到数据库（可选）
     this.prisma.behaviorLog.create({
       data: {
-        clawId: pattern.clawId,
-        userId: pattern.clawId,
+        clawId: pattern.agentId,
+        userId: pattern.agentId,
         action: pattern.action,
         resourceType: 'behavior',
-        resourceId: pattern.clawId,
+        resourceId: pattern.agentId,
         metadata: pattern.metadata,
       },
     }).catch(error => {
       this.logger.error('Error recording behavior:', error);
     });
 
-    this.logger.debug(`Recorded behavior: ${pattern.action} from ${pattern.clawId}`);
+    this.logger.debug(`Recorded behavior: ${pattern.action} from ${pattern.agentId}`);
   }
 
   /**
    * 检测异常行为
-   * @param clawId AI智能体ID
+   * @param agentId AI智能体ID
    * @param action 行为类型
    */
-  async detectAnomaly(clawId: string, action: string): Promise<AnomalyDetectionResult> {
-    const cacheKey = `behavior:${clawId}:${action}`;
+  async detectAnomaly(agentId: string, action: string): Promise<AnomalyDetectionResult> {
+    const cacheKey = `behavior:${agentId}:${action}`;
     const currentCount = await this.cacheService.get<number>(cacheKey) || 0;
 
     // 基于规则的异常检测
@@ -91,40 +91,40 @@ export class BehaviorAnalyticsService {
     const isAnomaly = score > 80;
 
     if (isAnomaly) {
-      this.logger.warn(`Anomaly detected: ${action} from ${clawId}, score: ${score}`);
+      this.logger.warn(`Anomaly detected: ${action} from ${agentId}, score: ${score}`);
     }
 
     return {
       isAnomaly,
       score,
-      message: isAnomaly 
+      message: isAnomaly
         ? `异常${action}行为检测到，当前频率: ${currentCount}/小时，阈值: ${threshold}/小时`
         : '行为正常',
       details: {
         currentCount,
         threshold,
         action,
-        clawId,
+        agentId,
       },
     };
   }
 
   /**
    * 获取行为统计
-   * @param clawId AI智能体ID
+   * @param agentId AI智能体ID
    * @param hours 统计小时数
    */
-  async getBehaviorStats(clawId: string, hours: number = 24): Promise<any> {
+  async getBehaviorStats(agentId: string, hours: number = 24): Promise<any> {
     const stats: Record<string, number> = {};
-    
+
     for (const action of this.actionTypes) {
-      const cacheKey = `behavior:${clawId}:${action}`;
+      const cacheKey = `behavior:${agentId}:${action}`;
       const count = await this.cacheService.get<number>(cacheKey) || 0;
       stats[action] = count;
     }
 
     return {
-      clawId,
+      agentId,
       hours,
       stats,
       timestamp: new Date(),
@@ -133,21 +133,21 @@ export class BehaviorAnalyticsService {
 
   /**
    * 检查发布限制
-   * @param clawId AI智能体ID
+   * @param agentId AI智能体ID
    * @param chapterCount 要发布的章节数
    */
-  async checkPublishingLimit(clawId: string, chapterCount: number = 1): Promise<{
+  async checkPublishingLimit(agentId: string, chapterCount: number = 1): Promise<{
     allowed: boolean;
     remaining: number;
     message: string;
   }> {
-    const cacheKey = `behavior:${clawId}:chapter_create`;
+    const cacheKey = `behavior:${agentId}:chapter_create`;
     const currentCount = await this.cacheService.get<number>(cacheKey) || 0;
     const maxPerDay = 6; // 每天最多6章
     const minPerDay = 2;  // 每天最少2章
 
     const totalAfter = currentCount + chapterCount;
-    
+
     if (totalAfter > maxPerDay) {
       return {
         allowed: false,
@@ -165,20 +165,20 @@ export class BehaviorAnalyticsService {
 
   /**
    * 重置行为计数
-   * @param clawId AI智能体ID
+   * @param agentId AI智能体ID
    * @param action 行为类型（可选）
    */
-  async resetBehavior(clawId: string, action?: string): Promise<void> {
+  async resetBehavior(agentId: string, action?: string): Promise<void> {
     if (action) {
-      const cacheKey = `behavior:${clawId}:${action}`;
+      const cacheKey = `behavior:${agentId}:${action}`;
       await this.cacheService.delete(cacheKey);
-      this.logger.debug(`Reset behavior for ${clawId}:${action}`);
+      this.logger.debug(`Reset behavior for ${agentId}:${action}`);
     } else {
       for (const actionType of this.actionTypes) {
-        const cacheKey = `behavior:${clawId}:${actionType}`;
+        const cacheKey = `behavior:${agentId}:${actionType}`;
         await this.cacheService.delete(cacheKey);
       }
-      this.logger.debug(`Reset all behaviors for ${clawId}`);
+      this.logger.debug(`Reset all behaviors for ${agentId}`);
     }
   }
 }
