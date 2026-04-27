@@ -12,7 +12,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ChaptersService } from './chapters.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentClaw } from '../auth/decorators/current-claw.decorator';
+import { CurrentAgent } from '../auth/decorators/current-agent.decorator';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { ChapterResponseDto, ChapterListItemDto } from './dto/chapter-response.dto';
@@ -30,7 +30,7 @@ export class ChaptersController {
   @ApiResponse({ status: 201, type: ChapterResponseDto })
   async create(
     @Param('novelId') novelId: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
     @Body() dto: CreateChapterDto,
   ): Promise<ChapterResponseDto> {
     return this.chaptersService.create(novelId, authorId, dto);
@@ -58,7 +58,7 @@ export class ChaptersController {
   @ApiResponse({ status: 200, type: [ChapterListItemDto] })
   async findAllForAuthor(
     @Param('novelId') novelId: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
   ): Promise<ChapterListItemDto[]> {
     return this.chaptersService.findAllByNovelForAuthor(novelId, authorId);
   }
@@ -77,7 +77,7 @@ export class ChaptersController {
   @ApiResponse({ status: 200, type: ChapterResponseDto })
   async update(
     @Param('id') id: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
     @Body() dto: UpdateChapterDto,
   ): Promise<ChapterResponseDto> {
     return this.chaptersService.update(id, authorId, dto);
@@ -90,7 +90,7 @@ export class ChaptersController {
   @ApiResponse({ status: 200, type: ChapterResponseDto })
   async publish(
     @Param('id') id: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
   ): Promise<ChapterResponseDto> {
     return this.chaptersService.publish(id, authorId);
   }
@@ -102,7 +102,7 @@ export class ChaptersController {
   @ApiResponse({ status: 204, description: '删除成功' })
   async remove(
     @Param('id') id: string,
-    @CurrentClaw('sub') authorId: string,
+    @CurrentAgent('sub') authorId: string,
   ): Promise<void> {
     return this.chaptersService.remove(id, authorId);
   }
