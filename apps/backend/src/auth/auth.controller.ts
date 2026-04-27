@@ -1,10 +1,13 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { RegisterClawDto } from './dto/register-claw.dto';
-import { LoginClawDto } from './dto/login-claw.dto';
+import { RegisterAgentDto as RegisterClawDto } from './dto/register-agent.dto';
+import { LoginAgentDto as LoginClawDto } from './dto/login-agent.dto';
 import { ApiKeyLoginDto } from './dto/api-key-login.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentClaw } from './decorators/current-claw.decorator';
 
 @ApiTags('认证')
 @Controller('auth')
@@ -44,5 +47,25 @@ export class AuthController {
   @ApiResponse({ status: 401, description: '认证失败' })
   async loginWithApiKey(@Body() dto: ApiKeyLoginDto): Promise<AuthResponseDto> {
     return this.authService.loginWithApiKey(dto);
+  }
+
+  @Post('change-password')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '修改密码' })
+  @ApiResponse({ status: 200, description: '密码修改成功' })
+  @ApiResponse({ status: 401, description: '当前密码错误' })
+  async changePassword(
+    @CurrentClaw() clawId: string,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<{ message: string }> {
+    // 验证新密码和确认密码是否一致
+    if (dto.newPassword !== dto.confirmPassword) {
+      return { message: '新密码和确认密码不一致' };
+    }
+
+    await this.authService.changePassword(clawId, dto.currentPassword, dto.newPassword);
+    return { message: '密码修改成功' };
   }
 }

@@ -20,6 +20,7 @@ import { AgentClaimService } from './services/agent-claim.service';
 import { AgentCaptchaService } from './services/agent-captcha.service';
 import { AgentElectionService } from './services/agent-election.service';
 import { AgentEmailService } from './services/agent-email.service';
+import { AgentGrowthService } from './services/agent-growth.service';
 
 // 导入控制器
 import { AgentAuthController } from './controllers/agent-auth.controller';
@@ -35,6 +36,7 @@ import { AgentProfileController } from './controllers/agent-profile.controller';
 import { AgentCaptchaController } from './controllers/agent-captcha.controller';
 import { AgentPublicController } from './controllers/agent-public.controller';
 import { AgentVerificationController } from './controllers/agent-verification.controller';
+import { AgentGrowthController } from './controllers/agent-growth.controller';
 
 @Module({
   imports: [
@@ -66,6 +68,7 @@ import { AgentVerificationController } from './controllers/agent-verification.co
     AgentCaptchaService,
     AgentElectionService,
     AgentEmailService,
+    AgentGrowthService,
   ],
   controllers: [
     // 先注册静态路由控制器，避免被动态路由拦截
@@ -80,6 +83,7 @@ import { AgentVerificationController } from './controllers/agent-verification.co
     AgentReviewerRegistrationController,
     AgentClaimController,
     AgentElectionController,
+    AgentGrowthController,
     // AgentProfileController 有 @Get(':agentId') 动态路由，必须放在最后
     AgentProfileController,
     AgentPublicController,
@@ -97,6 +101,7 @@ import { AgentVerificationController } from './controllers/agent-verification.co
     AgentCaptchaService,
     AgentElectionService,
     AgentEmailService,
+    AgentGrowthService,
   ],
 })
 export class AgentsModule {}

@@ -3,10 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
-import { RegisterClawDto } from './dto/register-claw.dto';
-import { LoginClawDto } from './dto/login-claw.dto';
+import { RegisterAgentDto as RegisterClawDto } from './dto/register-agent.dto';
+import { LoginAgentDto as LoginClawDto } from './dto/login-agent.dto';
 import { ApiKeyLoginDto } from './dto/api-key-login.dto';
-import { AuthResponseDto, ClawProfileDto, OpenClawType, ClawStatus } from './dto/auth-response.dto';
+import { AuthResponseDto, AgentProfileDto as ClawProfileDto, AgentType as OpenClawType, AgentStatus as ClawStatus } from './dto/auth-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,7 @@ export class AuthService {
 
     // 检查name是否已存在
     const existingName = await this.prisma.claw.findUnique({
-      where: { name: dto.clawName },
+      where: { name: dto.agentName },
     });
 
     if (existingName) {
@@ -41,8 +41,8 @@ export class AuthService {
     // 创建Claw
     const claw = await this.prisma.claw.create({
       data: {
-        clawId: dto.clawName,
-        name: dto.clawName,
+        clawId: dto.agentName,
+        name: dto.agentName,
         displayName: dto.displayName,
         email: dto.email,
         password: hashedPassword,
@@ -60,7 +60,7 @@ export class AuthService {
 
     return {
       ...tokens,
-      claw: this.mapToClawProfile(claw),
+      agent: this.mapToClawProfile(claw),
     };
   }
 
@@ -97,7 +97,7 @@ export class AuthService {
 
     return {
       ...tokens,
-      claw: this.mapToClawProfile(claw),
+      agent: this.mapToClawProfile(claw),
     };
   }
 
@@ -119,7 +119,7 @@ export class AuthService {
 
       return {
         ...tokens,
-        claw: this.mapToClawProfile(claw),
+        agent: this.mapToClawProfile(claw),
       };
     } catch {
       throw new UnauthorizedException('无效的刷新令牌');
@@ -186,14 +186,14 @@ export class AuthService {
 
     return {
       ...tokens,
-      claw: this.mapToClawProfile(claw),
+      agent: this.mapToClawProfile(claw),
     };
   }
 
   private mapToClawProfile(claw: any): ClawProfileDto {
     return {
       id: claw.id,
-      clawName: claw.name,
+      agentName: claw.name,
       displayName: claw.displayName,
       email: claw.email,
       type: claw.type as OpenClawType,
@@ -204,5 +204,37 @@ export class AuthService {
       reviewCount: claw.reviewCount,
       createdAt: claw.createdAt,
     };
+  }
+
+  // 修改密码
+  async changePassword(
+    clawId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    // 查找用户
+    const claw = await this.prisma.claw.findUnique({
+      where: { id: clawId },
+    });
+
+    if (!claw || !claw.password) {
+      throw new UnauthorizedException('用户不存在');
+    }
+
+    // 验证当前密码
+    const isPasswordValid = await bcrypt.compare(currentPassword, claw.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('当前密码错误');
+    }
+
+    // 加密新密码
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // 更新密码
+    await this.prisma.claw.update({
+      where: { id: clawId },
+      data: { password: hashedPassword },
+    });
   }
 }

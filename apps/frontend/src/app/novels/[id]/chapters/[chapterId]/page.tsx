@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { Chapter, Novel } from '@/types'
@@ -8,8 +8,10 @@ import { Chapter, Novel } from '@/types'
 interface ReaderSettings {
   fontSize: number
   lineHeight: number
-  theme: 'light' | 'dark' | 'sepia'
+  theme: 'light' | 'dark' | 'sepia' | 'paper'
   fontFamily: string
+  letterSpacing: number
+  pageMode: 'scroll' | 'page'
 }
 
 export default function ChapterReaderPage() {
@@ -27,8 +29,16 @@ export default function ChapterReaderPage() {
     fontSize: 18,
     lineHeight: 1.8,
     theme: 'light',
-    fontFamily: 'system-ui'
+    fontFamily: 'system-ui',
+    letterSpacing: 0,
+    pageMode: 'scroll'
   })
+  
+  // 预加载的下一章内容
+  const [preloadedNextChapter, setPreloadedNextChapter] = useState<Chapter | null>(null)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   // 从 localStorage 加载设置
   useEffect(() => {
@@ -86,8 +96,74 @@ export default function ChapterReaderPage() {
   const themeStyles = {
     light: 'bg-white text-gray-900',
     dark: 'bg-gray-900 text-gray-100',
-    sepia: 'bg-[#f4ecd8] text-[#5b4636]'
+    sepia: 'bg-[#f4ecd8] text-[#5b4636]',
+    paper: 'bg-[#f5f5dc] text-[#2c2c2c]'
   }
+
+  // 预加载下一章
+  useEffect(() => {
+    const preloadNext = async () => {
+      if (nextChapter && !preloadedNextChapter) {
+        try {
+          const res = await fetch(`/api/v1/novels/${novelId}/chapters/${nextChapter.id}`)
+          if (res.ok) {
+            const data = await res.json()
+            setPreloadedNextChapter(data)
+          }
+        } catch (err) {
+          console.log('预加载失败:', err)
+        }
+      }
+    }
+    preloadNext()
+  }, [nextChapter, novelId, preloadedNextChapter])
+
+  // 计算分页（翻页模式下）
+  useEffect(() => {
+    if (settings.pageMode === 'page' && contentRef.current) {
+      const content = contentRef.current
+      const containerHeight = window.innerHeight - 200 // 减去头部和边距
+      const contentHeight = content.scrollHeight
+      const pages = Math.ceil(contentHeight / containerHeight)
+      setTotalPages(Math.max(1, pages))
+      setCurrentPage(0)
+    }
+  }, [chapter, settings.pageMode, settings.fontSize, settings.lineHeight])
+
+  // 翻页操作
+  const handlePageTurn = (direction: 'prev' | 'next') => {
+    if (settings.pageMode === 'page') {
+      if (direction === 'next') {
+        if (currentPage < totalPages - 1) {
+          setCurrentPage(currentPage + 1)
+        } else if (nextChapter) {
+          // 翻到下一章
+          window.location.href = `/novels/${novelId}/chapters/${nextChapter.id}`
+        }
+      } else {
+        if (currentPage > 0) {
+          setCurrentPage(currentPage - 1)
+        }
+      }
+    }
+  }
+
+  // 键盘翻页
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (settings.pageMode === 'page') {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+          e.preventDefault()
+          handlePageTurn('next')
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault()
+          handlePageTurn('prev')
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [settings.pageMode, currentPage, totalPages, nextChapter])
 
   // 添加书签功能
   const addBookmark = () => {
@@ -203,7 +279,7 @@ export default function ChapterReaderPage() {
               {/* 主题 */}
               <div>
                 <label className="text-sm font-medium mb-2 block">主题</label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <button
                     onClick={() => saveSettings({ ...settings, theme: 'light' })}
                     className={`px-3 py-1 border rounded ${settings.theme === 'light' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}`}
@@ -222,6 +298,12 @@ export default function ChapterReaderPage() {
                   >
                     护眼
                   </button>
+                  <button
+                    onClick={() => saveSettings({ ...settings, theme: 'paper' })}
+                    className={`px-3 py-1 border rounded ${settings.theme === 'paper' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}`}
+                  >
+                    纸质
+                  </button>
                 </div>
               </div>
 
@@ -238,6 +320,45 @@ export default function ChapterReaderPage() {
                   <option value="sans-serif">黑体</option>
                 </select>
               </div>
+
+              {/* 字间距 */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">字间距</label>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => saveSettings({ ...settings, letterSpacing: Math.max(-2, settings.letterSpacing - 1) })}
+                    className="px-3 py-1 border rounded hover:bg-accent"
+                  >
+                    紧凑
+                  </button>
+                  <span className="text-sm">{settings.letterSpacing}px</span>
+                  <button
+                    onClick={() => saveSettings({ ...settings, letterSpacing: Math.min(5, settings.letterSpacing + 1) })}
+                    className="px-3 py-1 border rounded hover:bg-accent"
+                  >
+                    宽松
+                  </button>
+                </div>
+              </div>
+
+              {/* 翻页模式 */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">翻页模式</label>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => saveSettings({ ...settings, pageMode: 'scroll' })}
+                    className={`px-3 py-1 border rounded ${settings.pageMode === 'scroll' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}`}
+                  >
+                    滚动
+                  </button>
+                  <button
+                    onClick={() => saveSettings({ ...settings, pageMode: 'page' })}
+                    className={`px-3 py-1 border rounded ${settings.pageMode === 'page' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}`}
+                  >
+                    翻页
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -249,12 +370,17 @@ export default function ChapterReaderPage() {
           第{chapter.sequence}章 {chapter.title}
         </h1>
         
-        <article 
-          className="reader-content"
+        <article
+          ref={contentRef}
+          className={`reader-content ${settings.pageMode === 'page' ? 'overflow-hidden' : ''}`}
           style={{
             fontSize: `${settings.fontSize}px`,
             lineHeight: settings.lineHeight,
-            fontFamily: settings.fontFamily
+            fontFamily: settings.fontFamily,
+            letterSpacing: `${settings.letterSpacing}px`,
+            height: settings.pageMode === 'page' ? 'calc(100vh - 250px)' : 'auto',
+            transform: settings.pageMode === 'page' ? `translateY(-${currentPage * (window?.innerHeight - 250 || 600)}px)` : 'none',
+            transition: 'transform 0.3s ease'
           }}
         >
           {chapter.content ? (
@@ -265,6 +391,32 @@ export default function ChapterReaderPage() {
             <p className="text-center text-muted-foreground">暂无内容</p>
           )}
         </article>
+
+        {/* 翻页模式下的页码显示 */}
+        {settings.pageMode === 'page' && (
+          <div className="flex justify-center items-center gap-4 mt-4 text-sm text-muted-foreground">
+            <button
+              onClick={() => handlePageTurn('prev')}
+              disabled={currentPage === 0}
+              className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-accent"
+            >
+              ← 上一页
+            </button>
+            <span>{currentPage + 1} / {totalPages}</span>
+            <button
+              onClick={() => handlePageTurn('next')}
+              disabled={currentPage >= totalPages - 1 && !nextChapter}
+              className="px-3 py-1 border rounded disabled:opacity-50 hover:bg-accent"
+            >
+              下一页 →
+            </button>
+          </div>
+        )}
+
+        {/* 预加载提示 */}
+        {preloadedNextChapter && (
+          <div className="hidden">下一章已预加载</div>
+        )}
 
         {/* 章节导航 */}
         <div className="flex justify-between items-center mt-12 pt-8 border-t">
