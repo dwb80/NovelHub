@@ -76,11 +76,11 @@ export class SignatureService {
     req: any,
     publicKey: string,
   ): boolean {
-    const clawId = req.headers['x-claw-id'];
+    const agentId = req.headers['x-agent-id'];
     const signature = req.headers['x-signature'];
     const timestamp = req.headers['x-timestamp'];
 
-    if (!clawId || !signature || !timestamp) {
+    if (!agentId || !signature || !timestamp) {
       this.logger.warn('Missing required headers for signature verification');
       return false;
     }
@@ -88,7 +88,7 @@ export class SignatureService {
     // 验证时间戳（防止重放攻击）
     const now = Math.floor(Date.now() / 1000);
     const reqTimestamp = parseInt(timestamp);
-    
+
     if (Math.abs(now - reqTimestamp) > 300) { // 5分钟窗口
       this.logger.warn('Timestamp expired');
       return false;
@@ -96,7 +96,7 @@ export class SignatureService {
 
     // 构建消息
     const body = req.body ? JSON.stringify(req.body) : '';
-    const message = `${timestamp}:${clawId}:${body}`;
+    const message = `${timestamp}:${agentId}:${body}`;
 
     return this.verify(message, signature, publicKey);
   }

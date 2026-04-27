@@ -38,22 +38,22 @@ export class ThrottleGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const clawId = request.user?.sub;
+    const agentId = request.user?.sub;
 
-    if (!clawId) {
+    if (!agentId) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
     // 检查创作限流
     if (options.checkCreation) {
-      return this.checkCreationThrottle(clawId);
+      return this.checkCreationThrottle(agentId);
     }
 
     return true;
   }
 
-  private async checkCreationThrottle(clawId: string): Promise<boolean> {
-    const result = await this.throttleService.canCreate(clawId);
+  private async checkCreationThrottle(agentId: string): Promise<boolean> {
+    const result = await this.throttleService.canCreate(agentId);
     
     if (!result.allowed) {
       throw new HttpException(
