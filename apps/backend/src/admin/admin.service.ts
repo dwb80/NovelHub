@@ -555,33 +555,33 @@ export class AdminService {
       },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new UnauthorizedException('AI智能体不存在');
     }
 
     return {
-      id: claw.id,
-      clawId: claw.clawId,
-      name: claw.name,
-      email: claw.email,
-      avatar: (claw as any).avatar,
-      bio: claw.bio,
-      status: claw.status,
-      reputation: claw.reputation,
-      novelCount: claw._count.novels,
-      reviewCount: claw._count.reviews,
-      roles: claw.roles.map((r: any) => r.role),
-      createdAt: claw.createdAt,
+      id: agent.id,
+      agentId: agent.clawId,
+      name: agent.name,
+      email: agent.email,
+      avatar: (agent as any).avatar,
+      bio: agent.bio,
+      status: agent.status,
+      reputation: agent.reputation,
+      novelCount: agent._count.novels,
+      reviewCount: agent._count.reviews,
+      roles: agent.roles.map((r: any) => r.role),
+      createdAt: agent.createdAt,
     };
   }
 
-  async getClawNovels(clawId: string, params: { page?: number; limit?: number }) {
+  async getAgentNovels(agentId: string, params: { page?: number; limit?: number }) {
     const { page = 1, limit = 10 } = params;
     const skip = (page - 1) * limit;
 
     const [novels, total] = await Promise.all([
       this.prisma.novel.findMany({
-        where: { authorId: clawId },
+        where: { authorId: agentId },
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
@@ -596,7 +596,7 @@ export class AdminService {
           createdAt: true,
         },
       }),
-      this.prisma.novel.count({ where: { authorId: clawId } }),
+      this.prisma.novel.count({ where: { authorId: agentId } }),
     ]);
 
     return {
@@ -699,17 +699,17 @@ export class AdminService {
     };
   }
 
-  async updateClawStatus(clawId: string, status: string) {
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+  async updateAgentStatus(agentId: string, status: string) {
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new UnauthorizedException('AI智能体不存在');
     }
 
     await this.prisma.claw.update({
-      where: { id: clawId },
+      where: { id: agentId },
       data: { status: status as any },
     });
 
@@ -738,26 +738,26 @@ export class AdminService {
     return { success: true, message: '等级已更新' };
   }
 
-  async banClaw(clawId: string, isBanned: boolean, adminId?: string) {
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+  async banAgent(agentId: string, isBanned: boolean, adminId?: string) {
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new UnauthorizedException('AI智能体不存在');
     }
 
     await this.prisma.claw.update({
-      where: { id: clawId },
+      where: { id: agentId },
       data: { status: isBanned ? 'BANNED' : 'ACTIVE' },
     });
 
     return { success: true, message: isBanned ? '已封禁' : '已解封' };
   }
 
-  async deleteClaw(clawId: string) {
-    const claw = await this.prisma.claw.findUnique({
-      where: { id: clawId },
+  async deleteAgent(agentId: string) {
+    const agent = await this.prisma.claw.findUnique({
+      where: { id: agentId },
       include: {
         _count: {
           select: { novels: true, reviews: true },
@@ -765,16 +765,16 @@ export class AdminService {
       },
     });
 
-    if (!claw) {
+    if (!agent) {
       throw new UnauthorizedException('AI智能体不存在');
     }
 
-    if (claw._count.novels > 0 || claw._count.reviews > 0) {
+    if (agent._count.novels > 0 || agent._count.reviews > 0) {
       throw new UnauthorizedException('该智能体还有小说或评审记录，无法删除');
     }
 
     await this.prisma.claw.delete({
-      where: { id: clawId },
+      where: { id: agentId },
     });
 
     return { success: true, message: '已删除' };
