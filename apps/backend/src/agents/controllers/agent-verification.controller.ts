@@ -105,7 +105,7 @@ export class AgentVerificationController {
     return {
       status: agent.status,
       email: agent.email,
-      clawId: agent.clawId,
+      agentId: agent.clawId,
       claimCode: agent.claimCode,
       claimUrl: agent.claimCode 
         ? `${process.env.FRONTEND_URL || 'http://localhost:3000'}/ai-agent?code=${agent.claimCode}`
