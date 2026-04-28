@@ -1,82 +1,79 @@
 @echo off
 chcp 65001 >nul
 echo ==========================================
-echo      PostgreSQL Service Start Script
+echo      PostgreSQL Portable Start Script
 echo ==========================================
 echo.
 
-REM Check if running as administrator
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [X] Please run this script as administrator!
-    echo.
-    echo How to:
-    echo   1. Right-click on pgstart.bat
-    echo   2. Select "Run as administrator"
-    echo.
+REM Set PostgreSQL paths
+set PGDIR=%~dp0pgsql
+set PGDATA=%PGDIR%\data
+set PGLOG=%PGDIR%\log\postgresql.log
+set PGBIN=%PGDIR%\bin
+
+REM Check if PostgreSQL directory exists
+if not exist "%PGDIR%" (
+    echo [X] PostgreSQL directory not found: %PGDIR%
     pause
     exit /b 1
 )
 
-echo [OK] Administrator privileges confirmed
+echo [OK] PostgreSQL directory found: %PGDIR%
 echo.
 
-REM Check if PostgreSQL service exists
-sc query PostgreSQL >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [X] PostgreSQL service not found
+REM Check if data directory exists
+if not exist "%PGDATA%" (
+    echo [X] Data directory not found: %PGDATA%
     echo.
-    echo Searching for other PostgreSQL services...
-    sc query | findstr /i postgres >nul
-    if %errorlevel% == 0 (
-        echo.
-        echo Found related services:
-        sc query | findstr /i postgres
-        echo.
-        echo Please modify the service name in the script
-    ) else (
-        echo No PostgreSQL services found. Please confirm PostgreSQL is installed.
-    )
+    echo Please initialize the database first:
+    echo   %PGBIN%\initdb -D %PGDATA% -E UTF8 --locale=zh_CN.UTF-8
     pause
     exit /b 1
 )
 
-echo [OK] PostgreSQL service found
+echo [OK] Data directory found: %PGDATA%
 echo.
 
-REM Check service status
-sc query PostgreSQL | findstr RUNNING >nul
+REM Check if PostgreSQL is already running
+"%PGBIN%\pg_ctl" status -D "%PGDATA%" >nul 2>&1
 if %errorlevel% == 0 (
-    echo [INFO] PostgreSQL service is already running
+    echo [INFO] PostgreSQL is already running
     echo.
-    sc query PostgreSQL | findstr STATE
+    "%PGBIN%\pg_ctl" status -D "%PGDATA%"
     echo.
-    echo No need to start again
     goto :end
 )
 
-echo [*] Starting PostgreSQL service...
+echo [*] Starting PostgreSQL...
 echo.
 
-REM Start service
-net start PostgreSQL >nul 2>&1
+REM Create log directory if not exists
+if not exist "%PGDIR%\log" mkdir "%PGDIR%\log"
+
+REM Start PostgreSQL
+"%PGBIN%\pg_ctl" start -D "%PGDATA%" -l "%PGLOG%"
+
 if %errorlevel% == 0 (
-    echo [OK] PostgreSQL service started successfully!
     echo.
-    echo Service status:
-    sc query PostgreSQL | findstr STATE
+    echo [OK] PostgreSQL started successfully!
+    echo.
+    echo Connection info:
+    echo   Host: localhost
+    echo   Port: 5432
+    echo   Data: %PGDATA%
+    echo   Log:  %PGLOG%
     echo.
     echo Start time: %date% %time%
 ) else (
-    echo [X] Failed to start PostgreSQL service
+    echo.
+    echo [X] Failed to start PostgreSQL
     echo.
     echo Possible reasons:
-    echo   1. Service configuration error
-    echo   2. Data directory corrupted
-    echo   3. Port 5432 is occupied by another program
+    echo   1. Port 5432 is occupied
+    echo   2. Data directory is corrupted
+    echo   3. Permission denied
     echo.
-    echo Please check PostgreSQL logs for details
-    echo Log location: pgsql\data\log\
+    echo Check log: %PGLOG%
 )
 
 :end

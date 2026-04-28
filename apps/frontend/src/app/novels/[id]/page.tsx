@@ -294,143 +294,254 @@ function NovelDetailContent() {
   return (
     <MainLayout>
       <main className="container mx-auto px-4 py-8">
-        <div className="flex gap-8 mb-8">
-          <div className="w-48 flex-shrink-0">
-            <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden">
-              {novel.cover ? (
-                <img
-                  src={novel.cover}
-                  alt={novel.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                  暂无封面
+        {/* 小说信息卡片 */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-muted/50 border shadow-lg mb-8">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="relative flex flex-col md:flex-row gap-6 md:gap-8 p-6 md:p-8">
+            {/* 封面图 */}
+            <div className="w-32 md:w-48 flex-shrink-0 mx-auto md:mx-0">
+              <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-xl shadow-black/10">
+                {novel.cover ? (
+                  <img
+                    src={novel.cover}
+                    alt={novel.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                    <span className="text-4xl">📖</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* 信息区域 */}
+            <div className="flex-1 min-w-0">
+              {/* 标题和评分 */}
+              <div className="flex flex-wrap items-start gap-3 mb-3">
+                <h1 className="text-2xl md:text-3xl font-bold">{novel.title}</h1>
+                {novel.rating > 0 && (
+                  <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-600">
+                    <svg className="w-4 h-4 fill-yellow-500" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span className="font-semibold">{novel.rating.toFixed(1)}</span>
+                    <span className="text-xs opacity-70">({novel.ratingCount || 0}人评价)</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* 作者信息 */}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="text-muted-foreground">作者：</span>
+                <span className="font-medium text-foreground">{novel.authorName}</span>
+                {novel.authorReputation !== undefined && (
+                  <span className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary">
+                    信誉分 {novel.authorReputation}
+                  </span>
+                )}
+              </div>
+              
+              {/* 统计信息 */}
+              <div className="flex flex-wrap gap-4 md:gap-6 mb-4">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="text-xs text-muted-foreground">分类</div>
+                    <div className="font-medium">{novel.category}</div>
+                  </div>
                 </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="text-xs text-muted-foreground">字数</div>
+                    <div className="font-medium">{(novel.wordCount || 0).toLocaleString()}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="text-xs text-muted-foreground">状态</div>
+                    <div className="font-medium">{novel.status === 0 ? '连载中' : novel.status === 1 ? '已完结' : '暂停更新'}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="text-xs text-muted-foreground">阅读</div>
+                    <div className="font-medium">{(novel.viewCount || 0).toLocaleString()}</div>
+                  </div>
+                </div>
+              </div>
+              
+              {novel.lastChapterUpdatedAt && (
+                <p className="text-sm text-muted-foreground mb-4 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  最后更新：{new Date(novel.lastChapterUpdatedAt).toLocaleDateString()}
+                </p>
               )}
-            </div>
-          </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-2">{novel.title}</h1>
-            <p className="text-lg text-muted-foreground mb-2">
-              作者：{novel.authorName}
-              {novel.authorReputation !== undefined && (
-                <span className="ml-3 text-sm">
-                  信誉分：{novel.authorReputation}
-                </span>
-              )}
-            </p>
-            {novel.lastChapterUpdatedAt && (
-              <p className="text-sm text-muted-foreground mb-4">
-                最后更新：{new Date(novel.lastChapterUpdatedAt).toLocaleDateString()}
-              </p>
-            )}
-            <div className="flex gap-4 mb-4 text-sm text-muted-foreground">
-              <span>分类：{novel.category}</span>
-              <span>字数：{(novel.wordCount || 0).toLocaleString()}</span>
-              <span>状态：{novel.status === 0 ? '连载中' : novel.status === 1 ? '已完结' : '暂停更新'}</span>
-            </div>
-            <div className="flex gap-4 mb-6">
-              <span className="text-sm text-muted-foreground">
-                阅读：{(novel.viewCount || 0).toLocaleString()}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                收藏：{(novel.collectCount || 0).toLocaleString()}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                评分：{(novel.rating || 0).toFixed(1)} ({novel.ratingCount || 0}人评价)
-              </span>
-            </div>
-            <p className="text-muted-foreground leading-relaxed mb-6">
-              {novel.summary}
-            </p>
-            <div className="flex gap-3">
-              {chapters.length > 0 && (
-                <Link
-                  href={`/novels/${novelId}/chapters/${chapters[0].id}`}
-                  className="inline-flex items-center justify-center px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+              
+              {/* 简介 */}
+              <div className="bg-muted/50 rounded-xl p-4 mb-6">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {novel.summary || '暂无简介'}
+                </p>
+              </div>
+              
+              {/* 操作按钮 */}
+              <div className="flex flex-wrap gap-3">
+                {chapters.length > 0 && (
+                  <Link
+                    href={`/novels/${novelId}/chapters/${chapters[0].id}`}
+                    className="group inline-flex items-center justify-center px-6 py-2.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    开始阅读
+                  </Link>
+                )}
+                <button 
+                  onClick={toggleCollection}
+                  className={`group inline-flex items-center justify-center px-6 py-2.5 rounded-full border-2 transition-all ${
+                    isCollected 
+                      ? 'bg-primary/10 border-primary text-primary hover:bg-primary/20' 
+                      : 'border-border hover:border-primary hover:text-primary'
+                  }`}
                 >
-                  开始阅读
-                </Link>
-              )}
-              <button 
-                onClick={toggleCollection}
-                className={`inline-flex items-center justify-center px-6 py-2 border rounded-md hover:bg-accent ${
-                  isCollected ? 'bg-primary/10 border-primary text-primary' : ''
-                }`}
-              >
-                {isCollected ? '取消收藏' : '加入书架'}
-              </button>
+                  <svg className="w-4 h-4 mr-2" fill={isCollected ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                  </svg>
+                  {isCollected ? '已收藏' : '加入书架'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="border-b mb-6">
-          <div className="flex gap-6">
+        {/* 标签页 */}
+        <div className="bg-card rounded-2xl border shadow-sm overflow-hidden">
+          <div className="flex gap-1 p-1 border-b bg-muted/30">
             <button
               onClick={() => setActiveTab('chapters')}
-              className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
                 activeTab === 'chapters' 
-                  ? 'border-primary text-primary' 
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
+                  ? 'bg-background text-primary shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
               }`}
             >
-              章节列表 ({chapters.length})
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+              章节列表
+              <span className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary">
+                {chapters.length}
+              </span>
             </button>
             <button
               onClick={() => setActiveTab('comments')}
-              className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex items-center gap-2 px-6 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
                 activeTab === 'comments' 
-                  ? 'border-primary text-primary' 
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
+                  ? 'bg-background text-primary shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
               }`}
             >
-              评论 ({comments.length})
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              读者评论
+              <span className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary">
+                {comments.length}
+              </span>
             </button>
           </div>
-        </div>
 
-        {activeTab === 'chapters' && (
-          <div className="border rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">全部章节</h3>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setChapterOrder('asc')}
-                  className={`text-sm px-3 py-1 rounded ${chapterOrder === 'asc' ? 'bg-primary text-primary-foreground' : 'border'}`}
-                >
-                  正序
-                </button>
-                <button
-                  onClick={() => setChapterOrder('desc')}
-                  className={`text-sm px-3 py-1 rounded ${chapterOrder === 'desc' ? 'bg-primary text-primary-foreground' : 'border'}`}
-                >
-                  倒序
-                </button>
-              </div>
-            </div>
-            {chapters.length === 0 ? (
-              <p className="text-muted-foreground">暂无章节</p>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {chapters.map((chapter) => (
-                  <Link
-                    key={chapter.id}
-                    href={`/novels/${novelId}/chapters/${chapter.id}`}
-                    className="p-3 border rounded hover:bg-accent transition-colors"
-                  >
-                    <div className="text-sm font-medium truncate">
-                      第{chapter.sequence}章 {chapter.title}
+          <div className="p-6">
+            {activeTab === 'chapters' && (
+              <div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1 h-6 bg-gradient-to-b from-primary to-primary/50 rounded-full" />
+                    <h3 className="font-semibold text-lg">全部章节</h3>
+                  </div>
+                  <div className="flex gap-2 p-1 bg-muted/50 rounded-full">
+                    <button
+                      onClick={() => setChapterOrder('asc')}
+                      className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${chapterOrder === 'asc' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                      </svg>
+                      正序
+                    </button>
+                    <button
+                      onClick={() => setChapterOrder('desc')}
+                      className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${chapterOrder === 'desc' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+                      </svg>
+                      倒序
+                    </button>
+                  </div>
+                </div>
+                {chapters.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-2xl">📝</span>
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {chapter.wordCount} 字
-                    </div>
-                  </Link>
-                ))}
+                    <p className="text-muted-foreground">暂无章节</p>
+                    <p className="text-sm text-muted-foreground/60 mt-1">作者正在努力创作中...</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                    {chapters.map((chapter, index) => (
+                      <Link
+                        key={chapter.id}
+                        href={`/novels/${novelId}/chapters/${chapter.id}`}
+                        className="group p-4 rounded-xl border border-border/50 bg-card hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center">
+                            {chapter.sequence}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                              {chapter.title}
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1.5">
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              {chapter.wordCount?.toLocaleString() || 0} 字
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
 
         {activeTab === 'comments' && (
           <div className="border rounded-lg p-6">

@@ -233,7 +233,7 @@ export default function ChapterReaderPage() {
       </header>
 
       {/* 设置面板 */}
-      {showSettings && (
+      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${showSettings ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="border-b bg-background/95 backdrop-blur">
           <div className="container mx-auto px-4 py-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -362,7 +362,7 @@ export default function ChapterReaderPage() {
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* 章节内容 */}
       <main className="container mx-auto px-4 py-8 max-w-3xl">

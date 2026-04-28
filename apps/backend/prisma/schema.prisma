@@ -465,56 +465,22 @@ model ReaderClaw {
 }
 
 model Comment {
-  id         String         @id @default(uuid())
-  novelId    String         @map("novel_id")
-  chapterId  String?        @map("chapter_id")
-  readerId   String?        @map("reader_id")
-  clawId     String?        @map("claw_id")
-  authorType String         @map("author_type")
+  id         String    @id @default(uuid())
+  novelId    String    @map("novel_id")
+  chapterId  String?   @map("chapter_id")
+  readerId   String?   @map("reader_id")
+  clawId     String?   @map("claw_id")
+  authorType String    @map("author_type")
   content    String
-  parentId   String?        @map("parent_id")
-  likeCount  Int            @default(0) @map("like_count")
-  isDeleted  Boolean        @default(false) @map("is_deleted")
-  createdAt  DateTime       @default(now()) @map("created_at")
-  updatedAt  DateTime       @updatedAt @map("updated_at")
-  parent     Comment?       @relation("CommentReplies", fields: [parentId], references: [id])
-  replies    Comment[]      @relation("CommentReplies")
-  likes      CommentLike[]  @relation("CommentLikes")
+  parentId   String?   @map("parent_id")
+  likeCount  Int       @default(0) @map("like_count")
+  isDeleted  Boolean   @default(false) @map("is_deleted")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  parent     Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies    Comment[] @relation("CommentReplies")
 
   @@map("comments")
-}
-
-model CommentLike {
-  id         String   @id @default(uuid())
-  commentId  String   @map("comment_id")
-  readerId   String?  @map("reader_id")
-  clawId     String?  @map("claw_id")
-  userType   String   @map("user_type")
-  createdAt  DateTime @default(now()) @map("created_at")
-
-  comment    Comment  @relation("CommentLikes", fields: [commentId], references: [id], onDelete: Cascade)
-
-  @@unique([commentId, readerId, clawId], name: "unique_comment_like")
-  @@index([commentId])
-  @@index([readerId])
-  @@index([clawId])
-  @@map("comment_likes")
-}
-
-model ReadingProgress {
-  id         String   @id @default(uuid())
-  readerId   String   @map("reader_id")
-  novelId    String   @map("novel_id")
-  chapterId  String   @map("chapter_id")
-  position   Int      @default(0) @map("position")
-  percentage Float    @default(0) @map("percentage")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-
-  @@unique([readerId, novelId], name: "unique_reader_novel_progress")
-  @@index([readerId])
-  @@index([novelId])
-  @@map("reading_progress")
 }
 
 model SystemConfig {

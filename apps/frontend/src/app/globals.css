@@ -29,7 +29,7 @@
 
     /* 静音色 - 用于辅助信息 */
     --muted: 40 10% 96%;
-    --muted-foreground: 25 8% 45%;
+    --muted-foreground: 25 8% 40%;
 
     /* 强调色 */
     --accent: 40 10% 96%;
