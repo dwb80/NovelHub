@@ -1,59 +1,207 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import MainLayout from '@/components/MainLayout'
 import { Novel, Chapter } from '@/types'
-
-interface Comment {
-  id: string
-  content: string
-  authorName: string
-  createdAt: string
-  likeCount: number
-}
+import NovelHeader from './components/NovelHeader'
+import ChapterList from './components/ChapterList'
+import CommentSection from './components/CommentSection'
+import RecommendationSidebar from './components/RecommendationSidebar'
+import { Comment, ReadingProgress, RecommendedNovel } from './components/types'
 
 function NovelDetailContent() {
   const params = useParams()
   const novelId = params.id as string
-
+  
   const [novel, setNovel] = useState<Novel | null>(null)
   const [chapters, setChapters] = useState<Chapter[]>([])
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isCollected, setIsCollected] = useState(false)
   const [activeTab, setActiveTab] = useState<'chapters' | 'comments'>('chapters')
+  const [commentSort, setCommentSort] = useState<'newest' | 'hottest'>('newest')
+  const [chapterOrder, setChapterOrder] = useState<'asc' | 'desc'>('asc')
+  const [recommendations, setRecommendations] = useState<RecommendedNovel[]>([])
+  const [readingProgress, setReadingProgress] = useState<ReadingProgress | null>(null)
 
   useEffect(() => {
-    fetchNovelDetail()
+    if (novelId) {
+      fetchNovelDetail()
+      fetchChapters()
+      fetchComments()
+      checkCollectionStatus()
+      fetchRecommendations()
+      fetchReadingProgress()
+    }
   }, [novelId])
 
   const fetchNovelDetail = async () => {
     try {
-      setLoading(true)
+    setLoading(true)
       const response = await fetch(`/api/v1/novels/${novelId}`)
       if (!response.ok) throw new Error('获取小说详情失败')
       const data = await response.json()
       setNovel(data)
-
-      // 获取章节列表
-      const chaptersRes = await fetch(`/api/v1/novels/${novelId}/chapters`)
-      if (chaptersRes.ok) {
-        const chaptersData = await chaptersRes.json()
-        setChapters(chaptersData.items || [])
-      }
-
-      // 获取评论
-      const commentsRes = await fetch(`/api/v1/novels/${novelId}/comments`)
-      if (commentsRes.ok) {
-        const commentsData = await commentsRes.json()
-        setComments(commentsData.items || [])
-      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : '加载失败')
+      setError(err instanceof Error ? err.message : '获取小说详情失败')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchChapters = async () => {
+    try {
+      const response = await fetch(`/api/v1/novels/${novelId}/chapters`)
+      if (!response.ok) throw new Error('获取章节列表失败')
+      const data = await response.json()
+      setChapters(data.items || [])
+    } catch (err) {
+      console.error('获取章节列表失败:', err)
+    }
+  }
+
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`/api/v1/novels/${novelId}/comments?sort=${commentSort}`)
+      if (!response.ok) throw new Error('获取评论失败')
+      const data = await response.json()
+      setComments(data.items || [])
+    } catch (err) {
+      console.error('获取评论失败:', err)
+    }
+  }
+
+  const checkCollectionStatus = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      const response = await fetch(`/api/v1/bookshelf/check?novelId=${novelId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setIsCollected(data.isCollected)
+      }
+    } catch (err) {
+      console.error('检查收藏状态失败:', err)
+    }
+  }
+
+  const fetchRecommendations = async () => {
+    try {
+      const response = await fetch(`/api/v1/novels/${novelId}/recommendations`)
+      if (!response.ok) throw new Error('获取推荐失败')
+      const data = await response.json()
+      setRecommendations(data.items || [])
+    } catch (err) {
+      console.error('获取推荐失败:', err)
+    }
+  }
+
+  const fetchReadingProgress = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      const response = await fetch(`/api/v1/novels/${novelId}/progress`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setReadingProgress(data)
+      }
+    } catch (err) {
+      console.error('获取阅读进度失败:', err)
+    }
+  }
+
+  const toggleCollection = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        alert('请先登录')
+        return
+      }
+      const method = isCollected ? 'DELETE' : 'POST'
+      const response = await fetch('/api/v1/bookshelf', {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ novelId })
+      })
+      if (response.ok) {
+        setIsCollected(!isCollected)
+      }
+    } catch (err) {
+      console.error('收藏操作失败:', err)
+    }
+  }
+
+  const submitComment = async (content: string) => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        alert('请先登录')
+        return
+      }
+      const response = await fetch(`/api/v1/novels/${novelId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content })
+      })
+      if (response.ok) {
+        fetchComments()
+      }
+    } catch (err) {
+      console.error('发表评论失败:', err)
+    }
+  }
+
+  const submitReply = async (parentId: string, content: string) => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        alert('请先登录')
+        return
+      }
+      const response = await fetch(`/api/v1/novels/${novelId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content, parentId })
+      })
+      if (response.ok) {
+        fetchComments()
+      }
+    } catch (err) {
+      console.error('回复评论失败:', err)
+    }
+  }
+
+  const likeComment = async (commentId: string) => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        alert('请先登录')
+        return
+      }
+      const response = await fetch(`/api/v1/comments/${commentId}/like`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (response.ok) {
+        fetchComments()
+      }
+    } catch (err) {
+      console.error('点赞失败:', err)
     }
   }
 
@@ -76,137 +224,76 @@ function NovelDetailContent() {
   return (
     <MainLayout>
       <main className="container mx-auto px-4 py-8">
-        {/* 小说信息卡片 */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-muted/50 border shadow-lg mb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="relative flex flex-col md:flex-row gap-6 md:gap-8 p-6 md:p-8">
-            {/* 封面图 */}
-            <div className="w-32 md:w-48 flex-shrink-0 mx-auto md:mx-0">
-              <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-xl shadow-black/10">
-                {novel.cover ? (
-                  <img
-                    src={novel.cover}
-                    alt={novel.title}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                    <span className="text-4xl">📖</span>
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* 小说头部信息 */}
+        <NovelHeader
+          novel={novel}
+          chapters={chapters}
+          readingProgress={readingProgress}
+          isCollected={isCollected}
+          onToggleCollection={toggleCollection}
+        />
 
-            {/* 信息区域 */}
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl md:text-3xl font-bold mb-3">{novel.title}</h1>
-
-              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
-                <span className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary">
-                  {novel.category}
-                </span>
-                <span>{novel.authorName}</span>
-                <span>·</span>
-                <span>{novel.wordCount?.toLocaleString() || 0} 字</span>
-                <span>·</span>
-                <span>{novel.status === 'completed' ? '已完结' : '连载中'}</span>
-              </div>
-
-              <p className="text-muted-foreground mb-6 line-clamp-3">
-                {novel.summary}
-              </p>
-
-              {/* 操作按钮 */}
-              <div className="flex flex-wrap gap-3">
-                {chapters.length > 0 && (
-                  <Link
-                    href={`/novels/${novelId}/chapters/${chapters[0].id}`}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-colors"
-                  >
-                    开始阅读
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 标签切换 */}
-        <div className="flex gap-6 border-b mb-6">
-          <button
-            onClick={() => setActiveTab('chapters')}
-            className={`pb-3 text-sm font-medium transition-colors relative ${activeTab === 'chapters'
-                ? 'text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-              }`}
-          >
-            目录 ({chapters.length})
-            {activeTab === 'chapters' && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('comments')}
-            className={`pb-3 text-sm font-medium transition-colors relative ${activeTab === 'comments'
-                ? 'text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-              }`}
-          >
-            评论 ({comments.length})
-            {activeTab === 'comments' && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
-            )}
-          </button>
-        </div>
-
-        {/* 内容区域 */}
-        {activeTab === 'chapters' ? (
-          <div className="space-y-2">
-            {chapters.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                暂无章节
-              </div>
-            ) : (
-              chapters.map((chapter, index) => (
-                <Link
-                  key={chapter.id}
-                  href={`/novels/${novelId}/chapters/${chapter.id}`}
-                  className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors"
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* 左侧主要内容 */}
+          <div className="lg:col-span-2">
+            {/* 标签切换 */}
+            <div className="flex items-center justify-between border-b mb-6">
+              <div className="flex gap-6">
+                <button
+                  onClick={() => setActiveTab('chapters')}
+                  className={`pb-3 text-sm font-medium transition-colors relative ${
+                    activeTab === 'chapters' 
+                      ? 'text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-muted-foreground w-12">
-                      第{index + 1}章
-                    </span>
-                    <span className="font-medium">{chapter.title}</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    {new Date(chapter.createdAt).toLocaleDateString()}
-                  </span>
-                </Link>
-              ))
-            )}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {comments.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                暂无评论
+                  目录 ({chapters.length})
+                  {activeTab === 'chapters' && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setActiveTab('comments')}
+                  className={`pb-3 text-sm font-medium transition-colors relative ${
+                    activeTab === 'comments' 
+                      ? 'text-primary' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  评论 ({comments.length})
+                  {activeTab === 'comments' && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                  )}
+                </button>
               </div>
+            </div>
+
+            {/* 内容区域 */}
+            {activeTab === 'chapters' ? (
+              <ChapterList
+                novelId={novelId}
+                chapters={chapters}
+                chapterOrder={chapterOrder}
+                onToggleOrder={() => setChapterOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+              />
             ) : (
-              comments.map((comment) => (
-                <div key={comment.id} className="p-4 rounded-lg border">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">{comment.authorName}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {new Date(comment.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="text-muted-foreground">{comment.content}</p>
-                </div>
-              ))
+              <CommentSection
+                novelId={novelId}
+                comments={comments}
+                commentSort={commentSort}
+                onChangeSort={setCommentSort}
+                onSubmitComment={submitComment}
+                onSubmitReply={submitReply}
+                onLikeComment={likeComment}
+  />
             )}
           </div>
-        )}
+
+          {/* 右侧边栏 */}
+          <div className="space-y-6">
+            <RecommendationSidebar recommendations={recommendations} />
+          </div>
+        </div>
       </main>
     </MainLayout>
   )
