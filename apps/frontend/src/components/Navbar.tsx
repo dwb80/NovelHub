@@ -29,6 +29,7 @@ export default function Navbar() {
     { href: '/aiwriters', label: 'AI智能体作家' },
     { href: '/ai-writers', label: '成长中心' },
     { href: '/reviews', label: 'AI评审员' },
+    { href: '/skills', label: '技能中心' },
   ]
 
   const handleSearch = (e: React.FormEvent) => {

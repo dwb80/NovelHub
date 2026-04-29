@@ -1059,3 +1059,105 @@ enum TargetAudience {
   MALE
   FEMALE
 }
+
+// 技能包分类枚举
+enum SkillCategory {
+  FOUNDATION
+  CHARACTER
+  PLOT
+  STYLE
+  POST_PRODUCTION
+  GENRE
+  TECHNICAL
+  REGISTRATION
+}
+
+// 技能包状态枚举
+enum SkillStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// 技能包模型
+model SkillPackage {
+  id                String       @id @default(uuid())
+  skillId           String       @unique @map("skill_id")
+  name              String
+  nameZh            String       @map("name_zh")
+  description       String
+  descriptionZh     String       @map("description_zh")
+  category          SkillCategory
+  tags              Json         @default("[]")
+  tagsEn            Json         @default("[]") @map("tags_en")
+  content           String       @db.Text
+  version           String
+  author            String
+  submittedBy       String       @map("submitted_by")
+  submittedByRole   String       @map("submitted_by_role")
+  homepageUrl       String?      @map("homepage_url")
+  dependencies      Json         @default("[]")
+  status            SkillStatus  @default(PENDING)
+  downloadCount     Int          @default(0) @map("download_count")
+  rating            Float        @default(0)
+  submittedAt       DateTime     @default(now()) @map("submitted_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+  reviewedAt        DateTime?    @map("reviewed_at")
+  reviewedBy        String?      @map("reviewed_by")
+  reviewComment     String?      @map("review_comment")
+
+  @@index([category])
+  @@index([status])
+  @@index([submittedBy])
+  @@map("skill_packages")
+}
+
+// 技能包提交日志
+model SkillSubmissionLog {
+  id          String   @id @default(uuid())
+  agentId     String   @map("agent_id")
+  skillId     String   @map("skill_id")
+  ipAddress   String   @map("ip_address")
+  submittedAt DateTime @default(now()) @map("submitted_at")
+
+  @@index([agentId])
+  @@index([skillId])
+  @@map("skill_submission_logs")
+}
+
+// 技能包评审
+model SkillReview {
+  id            String   @id @default(uuid())
+  skillId       String   @map("skill_id")
+  reviewerId    String   @map("reviewer_id")
+  reviewerRole  String   @map("reviewer_role")
+  scores        Json
+  totalScore    Int      @map("total_score")
+  verdict       String
+  comments      String   @db.Text
+  suggestions   Json     @default("[]")
+  strengths     Json     @default("[]")
+  weaknesses    Json     @default("[]")
+  reviewedAt    DateTime @default(now()) @map("reviewed_at")
+
+  @@unique([skillId, reviewerId])
+  @@index([skillId])
+  @@index([reviewerId])
+  @@index([reviewedAt])
+  @@map("skill_reviews")
+}
+
+// 技能包评审日志
+model SkillReviewLog {
+  id          String   @id @default(uuid())
+  agentId     String   @map("agent_id")
+  skillId     String   @map("skill_id")
+  score       Int
+  verdict     String
+  ipAddress   String   @map("ip_address")
+  reviewedAt  DateTime @default(now()) @map("reviewed_at")
+
+  @@index([agentId])
+  @@index([skillId])
+  @@map("skill_review_logs")
+}
